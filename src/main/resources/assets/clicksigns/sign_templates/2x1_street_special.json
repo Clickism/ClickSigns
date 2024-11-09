@@ -1,0 +1,68 @@
+{
+  "width": 2,
+  "height": 1,
+  "id": "2x1_street_special_{direction}",
+  "name": "Street Special",
+  "pack": {
+    "id": "clicksigns",
+    "name": "ClickSigns"
+  },
+  "category": "PART",
+  "author": "Clickism",
+  "templateGenerator": {
+    "directions": [
+      {
+        "direction": "left",
+        "arrows": [ "L" ]
+      },
+      {
+        "direction": "right",
+        "arrows": [ "R" ]
+      },
+      {
+        "direction": "forward",
+        "arrows": [ "F" ]
+      }
+    ]
+  },
+  "variants": [
+    {
+      "name": "White",
+      "front": "2x1_street_special/{direction}_white.png",
+      "back": "backs/2x1_back.png",
+      "colors": [ 2697513, 13684944 ]
+    },
+    {
+      "name": "Brown",
+      "front": "2x1_street_special/{direction}_brown.png",
+      "back": "backs/2x1_back.png",
+      "colors": [ 13684944, 13684944 ]
+    },
+    {
+      "name": "Green",
+      "front": "2x1_street_special/{direction}_green.png",
+      "back": "backs/2x1_back.png",
+      "colors": [ 13684944, 13684944 ]
+    }
+  ],
+  "textPositions": [
+    {
+      "x": 9,
+      "y": 10,
+      "maxWidth": 22,
+      "colorIndex": 0
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "maxWidth": 22,
+      "colorIndex": 0
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "maxWidth": 19,
+      "colorIndex": 1
+    }
+  ]
+}

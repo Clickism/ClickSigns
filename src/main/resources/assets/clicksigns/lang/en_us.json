@@ -1,0 +1,20 @@
+{
+  "clicksigns.text.road_signs": "Road Signs",
+  "clicksigns.text.road_sign_editor": "Road Sign Editor",
+  "clicksigns.text.road_sign_template_selection": "Road Sign Template Selection",
+  "clicksigns.text.alignment": "Alignment: %s",
+  "clicksigns.text.left": "Left",
+  "clicksigns.text.right": "Right",
+  "clicksigns.text.forward": "Forward",
+  "clicksigns.text.width": "→ Width: %d",
+  "clicksigns.text.height": "↓ Height: %d",
+  "clicksigns.text.arrows": "🪧 Arrows: %s",
+  "clicksigns.text.variants": "🎨 Variants: %s",
+  "clicksigns.text.category": "📂 Category: %s",
+  "clicksigns.text.pack": "📦 Pack: %s",
+  "clicksigns.text.author": "👤 Author: %s",
+  "clicksigns.text.confirm": "Confirm",
+  "clicksigns.text.change_template": "Change Template",
+
+  "block.clicksigns.road_sign": "Road Sign"
+}

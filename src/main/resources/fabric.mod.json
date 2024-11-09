@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "clicksigns",
+	"version": "${version}",
+	"name": "ClickSigns",
+	"description": "An innovative mod that lets you create custom highway & street signs!",
+	"authors": [
+		"Clickism"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/Clickism/ClickSigns"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/clicksigns/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"me.clickism.clicksigns.ClickSigns"
+		],
+		"client": [
+			"me.clickism.clicksigns.ClickSignsClient"
+		],
+		"fabric-datagen": [
+			"me.clickism.clicksigns.ClickSignsDataGenerator"
+		]
+	},
+	"mixins": [
+		"clicksigns.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.7",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

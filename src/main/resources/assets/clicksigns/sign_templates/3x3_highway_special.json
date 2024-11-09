@@ -1,0 +1,88 @@
+{
+  "width": 3,
+  "height": 3,
+  "id": "3x3_highway_special_{direction}",
+  "name": "Highway Special",
+  "pack": {
+    "id": "clicksigns",
+    "name": "ClickSigns"
+  },
+  "category": "PART",
+  "author": "Clickism",
+  "templateGenerator": {
+    "replace": {
+      "name": "3x3_highway_special",
+      "back": "backs/3x3_back.png"
+    },
+    "directions": [
+      {
+        "direction": "left",
+        "arrows": [ "L" ]
+      },
+      {
+        "direction": "right",
+        "arrows": [ "R" ]
+      },
+      {
+        "direction": "forward",
+        "arrows": [ "F" ]
+      },
+      {
+        "direction": "forward_right",
+        "arrows": [ "F", "R" ]
+      },
+      {
+        "direction": "forward_left",
+        "arrows": [ "F", "L" ]
+      }
+    ]
+  },
+  "variants": [
+    {
+      "name": "Green",
+      "front": "{name}/{direction}_green.png",
+      "back": "{back}",
+      "colors": [ 13684944, 13684944 ]
+    },
+    {
+      "name": "Blue",
+      "front": "{name}/{direction}_blue.png",
+      "back": "{back}",
+      "colors": [ 13684944, 2697513 ]
+    }
+  ],
+  "textPositions": [
+    {
+      "x": 5,
+      "y": 12,
+      "maxWidth": 38,
+      "colorIndex": 1,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 21,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 28,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 35,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    }
+  ]
+}
