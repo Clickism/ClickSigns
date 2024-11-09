@@ -11,7 +11,7 @@
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/Clickism/ClickSigns"
 	},
-	"license": "CC0-1.0",
+	"license": "ARR",
 	"icon": "assets/clicksigns/icon.png",
 	"environment": "*",
 	"entrypoints": {
