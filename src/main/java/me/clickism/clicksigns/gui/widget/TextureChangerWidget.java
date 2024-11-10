@@ -19,8 +19,8 @@ public class TextureChangerWidget extends ClickableWidget {
     private static final int PADDING = 3;
 
     private final TextureIndexDisplay indexDisplay;
-    private final TextureChangeButtonWidget nextButton;
-    private final TextureChangeButtonWidget prevButton;
+    private final ButtonWidget nextButton;
+    private final ButtonWidget prevButton;
 
     private final int textureCount;
 
@@ -28,10 +28,16 @@ public class TextureChangerWidget extends ClickableWidget {
         super(0, 0, BUTTON_HEIGHT * 4 + PADDING * 2, BUTTON_HEIGHT, Text.empty());
         this.textureCount = textureCount;
         this.indexDisplay = new TextureIndexDisplay(textRenderer, BUTTON_HEIGHT * 2, BUTTON_HEIGHT, textureCount);
-        this.nextButton = new TextureChangeButtonWidget(BUTTON_HEIGHT, Text.literal(">"),
+        this.nextButton = createTextureChangeButton(Text.literal(">"),
                 (button) -> onIncrement.accept(button, 1));
-        this.prevButton = new TextureChangeButtonWidget(BUTTON_HEIGHT, Text.literal("<"),
+        this.prevButton = createTextureChangeButton(Text.literal("<"),
                 (button) -> onIncrement.accept(button, -1));
+    }
+
+    private ButtonWidget createTextureChangeButton(Text message, ButtonWidget.PressAction onPress) {
+        return new ButtonWidget.Builder(message, onPress)
+                .dimensions(0, 0, BUTTON_HEIGHT, BUTTON_HEIGHT)
+                .build();
     }
 
     public void setTextureIndex(int textureIndex) {

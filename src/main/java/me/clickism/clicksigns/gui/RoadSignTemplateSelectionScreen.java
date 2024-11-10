@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static me.clickism.clicksigns.gui.GuiConstants.NOT_SELECTED_ALPHA;
+
 @Environment(EnvType.CLIENT)
 public class RoadSignTemplateSelectionScreen extends Screen {
     private static final int PADDING = 3;
@@ -182,13 +184,13 @@ public class RoadSignTemplateSelectionScreen extends Screen {
                                 button.setAlpha(1);
                             } else {
                                 filter.remove(arrows);
-                                button.setAlpha(.3f);
+                                button.setAlpha(NOT_SELECTED_ALPHA);
                             }
                             applyFilters();
                         })
                 .dimensions(0, 0, 50, 20)
                 .build();
-        widget.setAlpha(.3f);
+        widget.setAlpha(NOT_SELECTED_ALPHA);
         return addDrawableChild(widget);
     }
 

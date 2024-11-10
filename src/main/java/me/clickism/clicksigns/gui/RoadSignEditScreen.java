@@ -1,5 +1,6 @@
 package me.clickism.clicksigns.gui;
 
+import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.Utils;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.widget.EditableTextWidget;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static me.clickism.clicksigns.gui.GuiConstants.BUTTON_HEIGHT;
 import static me.clickism.clicksigns.gui.GuiConstants.BUTTON_WIDTH;
+import static me.clickism.clicksigns.gui.GuiConstants.NOT_SELECTED_ALPHA;
 import static me.clickism.clicksigns.gui.GuiConstants.PIXELS_PER_BLOCK;
 
 @Environment(EnvType.CLIENT)
@@ -67,6 +69,7 @@ public class RoadSignEditScreen extends Screen {
         Text templateName = Text.of("🪧 " + template.getFormattedName());
         if (template.equals(RoadSignTemplateRegistration.ERROR)) {
             templateName = Text.of("⚠ " + builder.templateId().toString());
+            builder.templateId(ClickSigns.ERROR_TEMPLATE_ID);
         }
         int textureCount = template.getTextures().size();
         if (builder.textureIndex() >= textureCount) {
@@ -139,8 +142,10 @@ public class RoadSignEditScreen extends Screen {
         return addDrawableChild(new ButtonWidget.Builder(
                 Text.translatable("clicksigns.text.confirm"),
                 button -> {
-                    builder.texts(readEditorTexts());
-                    ClientPlayNetworking.send(builder.build().toPayload(entity.getPos()));
+                    if (!builder.templateId().equals(ClickSigns.ERROR_TEMPLATE_ID)) {
+                        builder.texts(readEditorTexts());
+                        ClientPlayNetworking.send(builder.build().toPayload(entity.getPos()));
+                    }
                     this.close();
                 }).size(BUTTON_WIDTH, BUTTON_HEIGHT).build());
     }
@@ -176,7 +181,7 @@ public class RoadSignEditScreen extends Screen {
                 .dimensions(0, 0, BUTTON_HEIGHT, BUTTON_HEIGHT)
                 .build();
         if (alignment != builder.alignment()) {
-            widget.setAlpha(.3f);
+            widget.setAlpha(NOT_SELECTED_ALPHA);
         }
         return addDrawableChild(widget);
     }
