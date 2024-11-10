@@ -42,6 +42,7 @@ public class TextureIndexDisplay extends ClickableWidget {
         textWidget.setY(y + 1);
         textFieldWidget.setY(y);
     }
+
     @Override
     public int getWidth() {
         return Math.max(textFieldWidget.getWidth(), textWidget.getWidth());

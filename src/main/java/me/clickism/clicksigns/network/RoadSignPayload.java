@@ -36,6 +36,10 @@ public record RoadSignPayload(
             RoadSignPayload::new
     );
 
+    public RoadSign toRoadSign() {
+        return new RoadSign(identifier, textureIndex, texts, RoadSign.Alignment.values()[alignment]);
+    }
+
     @Override
     public Id<? extends CustomPayload> getId() {
         return PAYLOAD_ID;
@@ -47,13 +51,8 @@ public record RoadSignPayload(
             ServerWorld world = context.player().getServerWorld();
             if (world.getBlockEntity(payload.pos()) instanceof RoadSignBlockEntity entity) {
                 if (payload.identifier().equals(ClickSigns.ERROR_TEMPLATE_ID)) return;
-                entity.setRoadSign(
-                        new RoadSign(payload.identifier(), payload.textureIndex(),
-                                payload.texts(), RoadSign.Alignment.values()[payload.alignment()])
-                );
-                PlayerLookup.world(world).forEach(player -> {
-                    ServerPlayNetworking.send(player, payload);
-                });
+                entity.setRoadSign(payload.toRoadSign());
+                PlayerLookup.world(world).forEach(player -> ServerPlayNetworking.send(player, payload));
             }
         }
     }
@@ -65,10 +64,7 @@ public record RoadSignPayload(
             client.execute(() -> {
                 if (client.world == null) return;
                 if (client.world.getBlockEntity(payload.pos()) instanceof RoadSignBlockEntity entity) {
-                    entity.setRoadSign(
-                            new RoadSign(payload.identifier(), payload.textureIndex(),
-                                    payload.texts(), RoadSign.Alignment.values()[payload.alignment()])
-                    );
+                    entity.setRoadSign(payload.toRoadSign());
                 }
             });
         }

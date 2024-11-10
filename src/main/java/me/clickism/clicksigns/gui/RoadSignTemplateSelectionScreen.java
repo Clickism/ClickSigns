@@ -119,24 +119,6 @@ public class RoadSignTemplateSelectionScreen extends Screen {
     }
 
     private MultilineTextWidget addInfoWidget(RoadSignTemplate template) {
-//        MultilineTextWidget widget = new MultilineTextWidget(Text.literal(String.format("""
-//                        Width: %d, Height: %d
-//                        Arrows: %s
-//                        Variants: %s
-//                        Category: %s
-//                        Pack: %s
-//                        Author: %s
-//                        """,
-//                template.getWidth(),
-//                template.getHeight(),
-//                RoadSignTemplate.formatArrows(template.getArrows()),
-//                template.getTextures().stream()
-//                        .map(RoadSignTexture::getName)
-//                        .collect(Collectors.joining(", ")),
-//                Utils.titleCase(template.getCategory().name()),
-//                template.getPack().name(),
-//                template.getAuthor()
-//        )), textRenderer);
         return addDrawableChild(new MultilineTextWidget(getInfoText(template), textRenderer));
     }
 

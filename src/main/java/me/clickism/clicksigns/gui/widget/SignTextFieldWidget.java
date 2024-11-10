@@ -46,6 +46,7 @@ public class SignTextFieldWidget extends TextFieldWidget {
 
     /**
      * Get the width of the text when rendered on a sign.
+     *
      * @param str the text to measure.
      * @return the rendered width of the text.
      */

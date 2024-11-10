@@ -8,6 +8,7 @@ import me.clickism.clicksigns.gui.widget.TextureChangerWidget;
 import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.IconWidget;
@@ -29,7 +30,6 @@ public class RoadSignEditScreen extends Screen {
     private static final float ICON_SCALE = 3.5f;
     private static final int PADDING = 3;
 
-    private static final int MAX_LENGTH_COLOR = 0xFF5555;
     private static final String[] ALIGNMENT_ICONS = {"↖", "↑", "↗", "←", "•", "→", "↙", "↓", "↘"};
 
     private final RoadSignBlockEntity entity;
@@ -37,7 +37,6 @@ public class RoadSignEditScreen extends Screen {
 
     private List<SignTextFieldWidget> signTextFieldWidgets;
     private TextureChangerWidget textureChangerWidget;
-    private EditableTextWidget alignmentTextWidget;
 
     public RoadSignEditScreen(RoadSignBlockEntity entity) {
         super(Text.translatable("clicksigns.text.road_sign_editor"));
@@ -64,10 +63,10 @@ public class RoadSignEditScreen extends Screen {
 
     @Override
     protected void init() {
-        String templateName = "Error: Missing Template";
         RoadSignTemplate template = RoadSignTemplateRegistration.getTemplateOrError(builder.templateId());
-        if (!template.equals(RoadSignTemplateRegistration.ERROR)) {
-            templateName = template.getFormattedName();
+        Text templateName = Text.of("🪧 " + template.getFormattedName());
+        if (template.equals(RoadSignTemplateRegistration.ERROR)) {
+            templateName = Text.of("⚠ " + builder.templateId().toString());
         }
         int textureCount = template.getTextures().size();
         if (builder.textureIndex() >= textureCount) {
@@ -80,15 +79,18 @@ public class RoadSignEditScreen extends Screen {
         textureChangerWidget = addTextureChangeButton(textureCount);
         textureChangerWidget.setTextureIndex(builder.textureIndex() + 1);
         int startingY = iconWidget.getY() + iconWidget.getHeight() + PADDING;
-        alignmentTextWidget = addEditableTextField(Text.translatable("clicksigns.text.alignment",
-                        Utils.titleCase(builder.alignment().name().replace('_', ' '))));
         AxisOrganizer organizer = AxisOrganizer.vertical(width / 2, startingY, true, PADDING)
-                .organize(addEditableTextField(Text.literal(templateName)))
+                .organize(addEditableTextField(templateName))
                 .organize(addConfirmButton())
                 .organize(textureChangerWidget)
                 .organize(addTemplateChangeButton())
-                .organize(alignmentTextWidget);
+                .organize(addAlignmentTextWidget());
         addAlignmentButtons(organizer.getLastY() + PADDING);
+    }
+
+    private EditableTextWidget addAlignmentTextWidget() {
+        return addEditableTextField(Text.translatable("clicksigns.text.alignment",
+                Utils.titleCase(builder.alignment().name().replace('_', ' '))));
     }
 
     private EditableTextWidget addEditableTextField(Text text) {
@@ -138,7 +140,7 @@ public class RoadSignEditScreen extends Screen {
                 Text.translatable("clicksigns.text.confirm"),
                 button -> {
                     builder.texts(readEditorTexts());
-                    entity.setRoadSign(builder.build());
+                    ClientPlayNetworking.send(builder.build().toPayload(entity.getPos()));
                     this.close();
                 }).size(BUTTON_WIDTH, BUTTON_HEIGHT).build());
     }
@@ -151,10 +153,10 @@ public class RoadSignEditScreen extends Screen {
     }
 
     private void addAlignmentButtons(int y) {
-        int startingX = width / 2 - (int) (1.5 * BUTTON_HEIGHT);
-        addAlignmentRow(startingX, y, 0, 1, 2);
-        addAlignmentRow(startingX, y + BUTTON_HEIGHT, 3, 4, 5);
-        addAlignmentRow(startingX, y + BUTTON_HEIGHT * 2, 6, 7, 8);
+        int x = width / 2 - (int) (1.5 * BUTTON_HEIGHT);
+        addAlignmentRow(x, y, 0, 1, 2);
+        addAlignmentRow(x, y + BUTTON_HEIGHT, 3, 4, 5);
+        addAlignmentRow(x, y + BUTTON_HEIGHT * 2, 6, 7, 8);
     }
 
     private void addAlignmentRow(int x, int y, int i1, int i2, int i3) {
