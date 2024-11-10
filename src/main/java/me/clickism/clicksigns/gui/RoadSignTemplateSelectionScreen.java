@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static me.clickism.clicksigns.gui.GuiConstants.NOT_SELECTED_ALPHA;
@@ -39,9 +39,9 @@ public class RoadSignTemplateSelectionScreen extends Screen {
     private RoadSignTemplate selectedTemplate = null;
     private final AtomicInteger textureIndex = new AtomicInteger(0);
 
-    private final SearchFilter<Integer> widthFilter = new SearchFilter<>();
-    private final SearchFilter<Integer> heightFilter = new SearchFilter<>();
-    private final SearchFilter<Set<Arrows>> arrowsFilter = new SearchFilter<>(new HashSet<>(3));
+    private static final SearchFilter<Integer> widthFilter = new SearchFilter<>();
+    private static final SearchFilter<Integer> heightFilter = new SearchFilter<>();
+    private static final SearchFilter<Set<Arrows>> arrowsFilter = new SearchFilter<>(new HashSet<>(3));
 
     protected RoadSignTemplateSelectionScreen(RoadSignEditScreen parent) {
         super(Text.translatable("clicksigns.text.road_sign_template_selection"));
@@ -83,6 +83,7 @@ public class RoadSignTemplateSelectionScreen extends Screen {
         templates.forEach(template -> templateList.add(new RoadSignTemplateListWidget.Entry(template)));
         addDrawableChild(templateList);
         addFilters();
+        applyFilters();
         addConfirmButton();
     }
 
@@ -150,9 +151,9 @@ public class RoadSignTemplateSelectionScreen extends Screen {
         AxisOrganizer.horizontal(5, 20, true, PADDING)
                 .organize(addFilterLabel(Text.literal("Filter by: ").fillStyle(Style.EMPTY.withBold(true))))
                 .organize(PADDING * 2, addFilterLabel(Text.translatable("clicksigns.text.width", "")))
-                .organize(addTextFieldFilter(20, s -> widthFilter.setFilter(Utils.parseIntOrNull(s))))
+                .organize(addTextFieldFilter(20, widthFilter, Utils::parseIntOrNull))
                 .organize(PADDING * 2, addFilterLabel(Text.translatable("clicksigns.text.height", "")))
-                .organize(addTextFieldFilter(20, s -> heightFilter.setFilter(Utils.parseIntOrNull(s))))
+                .organize(addTextFieldFilter(20, heightFilter, Utils::parseIntOrNull))
                 .organize(PADDING * 2, addFilterLabel(Text.translatable("clicksigns.text.arrows", "")))
                 .organize(addArrowsFilterButton(Arrows.LEFT))
                 .organize(addArrowsFilterButton(Arrows.RIGHT))
@@ -165,10 +166,13 @@ public class RoadSignTemplateSelectionScreen extends Screen {
         return widget;
     }
 
-    private TextFieldWidget addTextFieldFilter(int width, Consumer<String> consumer) {
+    private <T> TextFieldWidget addTextFieldFilter(int width, SearchFilter<T> filter, Function<String, T> parser) {
         TextFieldWidget widget = new TextFieldWidget(textRenderer, 0, 0, width, 20, Text.literal(""));
+        if (filter.getFilter() != null) {
+            widget.setText(filter.getFilter().toString());
+        }
         widget.setChangedListener((s) -> {
-            consumer.accept(s);
+            filter.setFilter(parser.apply(s));
             applyFilters();
         });
         return addDrawableChild(widget);
@@ -190,7 +194,11 @@ public class RoadSignTemplateSelectionScreen extends Screen {
                         })
                 .dimensions(0, 0, 50, 20)
                 .build();
-        widget.setAlpha(NOT_SELECTED_ALPHA);
+        if (arrowsFilter.getFilter() != null && arrowsFilter.getFilter().contains(arrows)) {
+            widget.setAlpha(1);
+        } else {
+            widget.setAlpha(NOT_SELECTED_ALPHA);
+        }
         return addDrawableChild(widget);
     }
 

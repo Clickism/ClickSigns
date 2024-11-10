@@ -3,7 +3,6 @@ package me.clickism.clicksigns;
 import me.clickism.clicksigns.block.ModBlocks;
 import me.clickism.clicksigns.entity.ModBlockEntityTypes;
 import me.clickism.clicksigns.item.ModItemGroups;
-import me.clickism.clicksigns.item.ModItems;
 import me.clickism.clicksigns.network.RoadSignPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -22,7 +21,6 @@ public class ClickSigns implements ModInitializer {
     @Override
     public void onInitialize() {
         ModBlocks.registerBlocks();
-        ModItems.registerItems();
         ModItemGroups.registerItemGroups();
 
         ModBlockEntityTypes.initialize();

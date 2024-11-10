@@ -2,6 +2,7 @@ package me.clickism.clicksigns.gui;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class SearchFilter<T> {
@@ -14,6 +15,7 @@ public class SearchFilter<T> {
         this.filter = filter;
     }
 
+    @Nullable
     public T getFilter() {
         return filter;
     }
