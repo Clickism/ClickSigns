@@ -63,6 +63,10 @@ public class RoadSignEditScreen extends Screen {
         refresh();
     }
 
+    public boolean isSelectedTemplate(RoadSignTemplate template) {
+        return builder.templateId().equals(template.getId());
+    }
+
     @Override
     protected void init() {
         RoadSignTemplate template = RoadSignTemplateRegistration.getTemplateOrError(builder.templateId());

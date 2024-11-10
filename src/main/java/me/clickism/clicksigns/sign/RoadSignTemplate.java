@@ -46,7 +46,7 @@ public class RoadSignTemplate {
         this.arrows = arrows;
         this.author = author;
         this.pack = pack;
-        this.formattedName = formatName(width, height, pack, name, arrows);
+        this.formattedName = formatName();
     }
 
     public Vec2f toGlobalPos(Vec2f localPos) {
@@ -110,9 +110,12 @@ public class RoadSignTemplate {
         return RoadSignTemplateRegistration.ERROR_TEXTURE;
     }
 
-    private static String formatName(int width, int height, RoadSignPack pack, String name, Set<Arrows> arrows) {
+    private String formatName() {
+        String suffix = category == RoadSignTemplateCategory.TEMPLATE
+                ? "Template"
+                : formatArrows(arrows);
         return width + "x" + height + " : " + Utils.capitalize(pack.name()) + " : " + Utils.capitalize(name)
-                + " (" + formatArrows(arrows) + ")";
+                + " (" + suffix + ")";
     }
 
     public static String formatArrows(Collection<Arrows> arrows) {

@@ -11,6 +11,8 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public class RoadSignTemplateRegistration {
 
+    private static final Identifier DEFAULT_TEMPLATE_ID = ClickSigns.identifier("2x1_street_left");
+
     public static final RoadSignTexture ERROR_TEXTURE = new RoadSignTexture(
             ClickSigns.identifier("sign_templates/textures/error.png"),
             ClickSigns.identifier("sign_templates/textures/error.png"),
@@ -24,10 +26,15 @@ public class RoadSignTemplateRegistration {
     );
 
     private static final SequencedMap<Identifier, RoadSignTemplate> templates = new LinkedHashMap<>();
+    private static final Map<RoadSignTemplateCategory, SequencedSet<RoadSignTemplate>> categoryMap = new HashMap<>();
     private static final Set<RoadSignPack> packs = new HashSet<>();
 
     public static SequencedCollection<RoadSignTemplate> getTemplates() {
         return templates.sequencedValues();
+    }
+
+    public static SequencedCollection<RoadSignTemplate> getTemplates(RoadSignTemplateCategory category) {
+        return categoryMap.getOrDefault(category, new LinkedHashSet<>());
     }
 
     public static Set<RoadSignPack> getPacks() {
@@ -35,8 +42,12 @@ public class RoadSignTemplateRegistration {
     }
 
     public static RoadSignTemplate getDefaultTemplate() {
-        if (getTemplates().isEmpty()) return ERROR;
-        return getTemplates().getFirst();
+        RoadSignTemplate template = templates.get(DEFAULT_TEMPLATE_ID);
+        if (template != null) {
+            return template;
+        }
+        if (templates.isEmpty()) return ERROR;
+        return templates.sequencedValues().getFirst();
     }
 
     @NotNull
@@ -50,6 +61,9 @@ public class RoadSignTemplateRegistration {
 
     public static void registerTemplate(RoadSignTemplate template) {
         templates.put(template.getId(), template);
+        RoadSignTemplateCategory category = template.getCategory();
+        categoryMap.computeIfAbsent(category, k -> new LinkedHashSet<>())
+                .add(template);
         packs.add(template.getPack());
     }
 

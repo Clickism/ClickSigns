@@ -3,10 +3,7 @@ package me.clickism.clicksigns.gui;
 import me.clickism.clicksigns.Utils;
 import me.clickism.clicksigns.gui.widget.RoadSignTemplateListWidget;
 import me.clickism.clicksigns.gui.widget.TextureChangerWidget;
-import me.clickism.clicksigns.sign.Arrows;
-import me.clickism.clicksigns.sign.RoadSignTemplate;
-import me.clickism.clicksigns.sign.RoadSignTemplateRegistration;
-import me.clickism.clicksigns.sign.RoadSignTexture;
+import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,13 +61,8 @@ public class RoadSignTemplateSelectionScreen extends Screen {
         infoWidget.setY(textureChangerWidget.getY() + textureChangerWidget.getHeight() + PADDING);
     }
 
-    public void applyFilters() {
-        templateList.filter(widthFilter.getFilter(), heightFilter.getFilter(), arrowsFilter.getFilter());
-    }
-
     @Override
     protected void init() {
-        Collection<RoadSignTemplate> templates = RoadSignTemplateRegistration.getTemplates();
         templateList = new RoadSignTemplateListWidget(
                 MinecraftClient.getInstance(),
                 width / 2,
@@ -80,11 +71,31 @@ public class RoadSignTemplateSelectionScreen extends Screen {
                 20,
                 this
         );
-        templates.forEach(template -> templateList.add(new RoadSignTemplateListWidget.Entry(template)));
         addDrawableChild(templateList);
         addFilters();
-        applyFilters();
+        addFilteredEntries();
         addConfirmButton();
+    }
+
+    private void addFilteredEntries() {
+        templateList.children().clear();
+        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.PART).forEach(this::addFilteredTemplateEntry);
+        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.TEMPLATE).forEach(this::addFilteredTemplateEntry);
+        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.CUSTOM).forEach(this::addFilteredTemplateEntry);
+    }
+
+    private void addFilteredTemplateEntry(RoadSignTemplate template) {
+        Integer width = widthFilter.getFilter();
+        Integer height = heightFilter.getFilter();
+        Set<Arrows> arrows = arrowsFilter.getFilter();
+        if (width != null && template.getWidth() != width) return;
+        if (height != null && template.getHeight() != height) return;
+        if (arrows != null && !template.getArrows().containsAll(arrows)) return;
+        RoadSignTemplateListWidget.Entry entry = new RoadSignTemplateListWidget.Entry(template);
+        templateList.add(entry);
+        if (parent.isSelectedTemplate(template)) {
+            templateList.setSelected(entry);
+        }
     }
 
     @Override
@@ -173,7 +184,7 @@ public class RoadSignTemplateSelectionScreen extends Screen {
         }
         widget.setChangedListener((s) -> {
             filter.setFilter(parser.apply(s));
-            applyFilters();
+            addFilteredEntries();
         });
         return addDrawableChild(widget);
     }
@@ -190,7 +201,7 @@ public class RoadSignTemplateSelectionScreen extends Screen {
                                 filter.remove(arrows);
                                 button.setAlpha(NOT_SELECTED_ALPHA);
                             }
-                            applyFilters();
+                            addFilteredEntries();
                         })
                 .dimensions(0, 0, 50, 20)
                 .build();
