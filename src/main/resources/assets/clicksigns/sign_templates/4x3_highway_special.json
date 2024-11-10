@@ -1,8 +1,8 @@
 {
-  "width": 3,
+  "width": 4,
   "height": 3,
-  "id": "3x3_highway_{direction}",
-  "name": "Highway",
+  "id": "4x3_highway_special_{direction}",
+  "name": "Highway Special",
   "pack": {
     "id": "clicksigns",
     "name": "ClickSigns"
@@ -11,8 +11,8 @@
   "author": "Clickism",
   "templateGenerator": {
     "replace": {
-      "name": "3x3_highway",
-      "back": "backs/3x3_back.png"
+      "name": "4x3_highway_special",
+      "back": "backs/4x3_back.png"
     },
     "directions": [
       {
@@ -42,28 +42,28 @@
       "name": "Green",
       "front": "{name}/{direction}_green.png",
       "back": "{back}",
-      "colors": [ 13684944 ]
+      "colors": [ 13684944, 13684944 ]
     },
     {
       "name": "Blue",
       "front": "{name}/{direction}_blue.png",
       "back": "{back}",
-      "colors": [ 13684944 ]
+      "colors": [ 13684944, 2697513 ]
     }
   ],
   "textPositions": [
     {
-      "x": 3,
-      "y": 14,
-      "maxWidth": 42,
-      "colorIndex": 0,
+      "x": 5,
+      "y": 12,
+      "maxWidth": 54,
+      "colorIndex": 1,
       "alignment": "CENTER",
       "scale": 1.5
     },
     {
       "x": 3,
       "y": 21,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
@@ -71,7 +71,7 @@
     {
       "x": 3,
       "y": 28,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
@@ -79,7 +79,7 @@
     {
       "x": 3,
       "y": 35,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5

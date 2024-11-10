@@ -1,7 +1,7 @@
 {
-  "width": 3,
+  "width": 4,
   "height": 3,
-  "id": "3x3_highway_{direction}",
+  "id": "4x3_highway_{direction}",
   "name": "Highway",
   "pack": {
     "id": "clicksigns",
@@ -11,8 +11,8 @@
   "author": "Clickism",
   "templateGenerator": {
     "replace": {
-      "name": "3x3_highway",
-      "back": "backs/3x3_back.png"
+      "name": "4x3_highway",
+      "back": "backs/4x3_back.png"
     },
     "directions": [
       {
@@ -55,7 +55,7 @@
     {
       "x": 3,
       "y": 14,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
@@ -63,7 +63,7 @@
     {
       "x": 3,
       "y": 21,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
@@ -71,7 +71,7 @@
     {
       "x": 3,
       "y": 28,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
@@ -79,7 +79,7 @@
     {
       "x": 3,
       "y": 35,
-      "maxWidth": 42,
+      "maxWidth": 58,
       "colorIndex": 0,
       "alignment": "CENTER",
       "scale": 1.5
