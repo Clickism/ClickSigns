@@ -160,7 +160,7 @@ public class RoadSignTemplateSelectionScreen extends Screen {
 
     private void addFilters() {
         AxisOrganizer.horizontal(5, 20, true, PADDING)
-                .organize(addFilterLabel(Text.literal("Filter by: ").fillStyle(Style.EMPTY.withBold(true))))
+                .organize(addFilterLabel(Text.translatable("clicksigns.text.filter_by").fillStyle(Style.EMPTY.withBold(true))))
                 .organize(PADDING * 2, addFilterLabel(Text.translatable("clicksigns.text.width", "")))
                 .organize(addTextFieldFilter(20, widthFilter, Utils::parseIntOrNull))
                 .organize(PADDING * 2, addFilterLabel(Text.translatable("clicksigns.text.height", "")))

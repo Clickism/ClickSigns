@@ -6,6 +6,7 @@
   "clicksigns.text.left": "Left",
   "clicksigns.text.right": "Right",
   "clicksigns.text.forward": "Forward",
+  "clicksigns.text.filter_by": "Filter by:",
   "clicksigns.text.width": "→ Width: %d",
   "clicksigns.text.height": "↓ Height: %d",
   "clicksigns.text.arrows": "🪧 Arrows: %s",

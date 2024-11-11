@@ -69,6 +69,7 @@ public class RoadSignTemplateRegistration {
 
     public static void clearTemplates() {
         templates.clear();
+        categoryMap.clear();
         packs.clear();
     }
 }
