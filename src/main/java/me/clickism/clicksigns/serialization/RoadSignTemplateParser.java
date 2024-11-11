@@ -66,7 +66,7 @@ public class RoadSignTemplateParser {
         String name = rootNode.get("name").getAsString();
         RoadSignPack pack = parsePack(rootNode.get("pack").getAsJsonObject());
         Identifier identifier = Identifier.of(pack.id(), id);
-        RoadSignTemplateCategory category = RoadSignTemplateCategory.fromString(rootNode.get("category").getAsString());
+        RoadSignCategory category = RoadSignCategory.fromString(rootNode.get("category").getAsString());
         // Use passed arrows if possible for template generation
         if (arrows == null) {
             arrows = parseArrows(rootNode.getAsJsonArray("arrows"));

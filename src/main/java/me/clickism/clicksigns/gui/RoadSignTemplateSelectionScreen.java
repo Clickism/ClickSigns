@@ -79,9 +79,9 @@ public class RoadSignTemplateSelectionScreen extends Screen {
 
     private void addFilteredEntries() {
         templateList.children().clear();
-        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.PART).forEach(this::addFilteredTemplateEntry);
-        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.TEMPLATE).forEach(this::addFilteredTemplateEntry);
-        RoadSignTemplateRegistration.getTemplates(RoadSignTemplateCategory.CUSTOM).forEach(this::addFilteredTemplateEntry);
+        RoadSignTemplateRegistration.getTemplates(RoadSignCategory.PART).forEach(this::addFilteredTemplateEntry);
+        RoadSignTemplateRegistration.getTemplates(RoadSignCategory.TEMPLATE).forEach(this::addFilteredTemplateEntry);
+        RoadSignTemplateRegistration.getTemplates(RoadSignCategory.CUSTOM).forEach(this::addFilteredTemplateEntry);
     }
 
     private void addFilteredTemplateEntry(RoadSignTemplate template) {

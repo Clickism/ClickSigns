@@ -23,7 +23,7 @@ public class RoadSignTemplate {
     private final List<SignTextField> textFields;
     private final List<RoadSignTexture> textures;
     private final Set<Arrows> arrows;
-    private final RoadSignTemplateCategory category;
+    private final RoadSignCategory category;
 
     public RoadSignTemplate(
             Identifier id,
@@ -31,7 +31,7 @@ public class RoadSignTemplate {
             int width, int height,
             List<SignTextField> textFields,
             List<RoadSignTexture> textures,
-            RoadSignTemplateCategory category,
+            RoadSignCategory category,
             Set<Arrows> arrows,
             String author,
             RoadSignPack pack
@@ -57,7 +57,7 @@ public class RoadSignTemplate {
         return name;
     }
 
-    public RoadSignTemplateCategory getCategory() {
+    public RoadSignCategory getCategory() {
         return category;
     }
 
@@ -111,7 +111,7 @@ public class RoadSignTemplate {
     }
 
     private String formatName() {
-        String suffix = category == RoadSignTemplateCategory.TEMPLATE
+        String suffix = category == RoadSignCategory.TEMPLATE
                 ? "Template"
                 : formatArrows(arrows);
         return width + "x" + height + " : " + Utils.capitalize(pack.name()) + " : " + Utils.capitalize(name)

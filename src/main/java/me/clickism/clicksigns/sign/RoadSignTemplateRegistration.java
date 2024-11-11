@@ -21,19 +21,19 @@ public class RoadSignTemplateRegistration {
 
     public static final RoadSignTemplate ERROR = new RoadSignTemplate(
             ClickSigns.ERROR_TEMPLATE_ID, "Error", 2, 1,
-            List.of(), List.of(ERROR_TEXTURE), RoadSignTemplateCategory.CUSTOM,
+            List.of(), List.of(ERROR_TEXTURE), RoadSignCategory.CUSTOM,
             Set.of(), "Clickism", new RoadSignPack("clicksigns", "ClickSigns")
     );
 
     private static final SequencedMap<Identifier, RoadSignTemplate> templates = new LinkedHashMap<>();
-    private static final Map<RoadSignTemplateCategory, SequencedSet<RoadSignTemplate>> categoryMap = new HashMap<>();
+    private static final Map<RoadSignCategory, SequencedSet<RoadSignTemplate>> categoryMap = new HashMap<>();
     private static final Set<RoadSignPack> packs = new HashSet<>();
 
     public static SequencedCollection<RoadSignTemplate> getTemplates() {
         return templates.sequencedValues();
     }
 
-    public static SequencedCollection<RoadSignTemplate> getTemplates(RoadSignTemplateCategory category) {
+    public static SequencedCollection<RoadSignTemplate> getTemplates(RoadSignCategory category) {
         return categoryMap.getOrDefault(category, new LinkedHashSet<>());
     }
 
@@ -61,7 +61,7 @@ public class RoadSignTemplateRegistration {
 
     public static void registerTemplate(RoadSignTemplate template) {
         templates.put(template.getId(), template);
-        RoadSignTemplateCategory category = template.getCategory();
+        RoadSignCategory category = template.getCategory();
         categoryMap.computeIfAbsent(category, k -> new LinkedHashSet<>())
                 .add(template);
         packs.add(template.getPack());
