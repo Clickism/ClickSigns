@@ -1,0 +1,40 @@
+{
+  "width": 2,
+  "height": 1,
+  "id": "2x1_half_street_{direction}",
+  "name": "Half-Street",
+  "pack": {
+    "id": "clicksigns",
+    "name": "ClickSigns"
+  },
+  "category": "PART",
+  "author": "Clickism",
+  "templateGenerator": {
+    "directions": [
+      {
+        "direction": "left",
+        "arrows": [ "L" ]
+      },
+      {
+        "direction": "forward",
+        "arrows": [ "F" ]
+      }
+    ]
+  },
+  "variants": [
+    {
+      "name": "White",
+      "front": "2x1_half_street/{direction}.png",
+      "back": "backs/2x1_half_back.png",
+      "colors": [ 2697513 ]
+    }
+  ],
+  "textPositions": [
+    {
+      "x": 9,
+      "y": 3,
+      "maxWidth": 22,
+      "colorIndex": 0
+    }
+  ]
+}

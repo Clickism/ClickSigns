@@ -1,0 +1,68 @@
+{
+  "width": 3,
+  "height": 1,
+  "id": "3x1_distance",
+  "name": "Distance Sign",
+  "pack": {
+    "id": "clicksigns",
+    "name": "ClickSigns"
+  },
+  "category": "TEMPLATE",
+  "author": "Clickism",
+  "arrows": [],
+  "variants": [
+    {
+      "name": "Green",
+      "front": "templates/3x1_distance/green.png",
+      "back": "backs/3x1_back.png",
+      "colors": [ 13684944 ]
+    },
+    {
+      "name": "Blue",
+      "front": "templates/3x1_distance/blue.png",
+      "back": "backs/3x1_back.png",
+      "colors": [ 13684944 ]
+    }
+  ],
+  "textPositions": [
+    {
+      "x": 2,
+      "y": 10,
+      "maxWidth": 33,
+      "colorIndex": 0
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "maxWidth": 33,
+      "colorIndex": 0
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "maxWidth": 33,
+      "colorIndex": 0
+    },
+    {
+      "x": 36,
+      "y": 10,
+      "alignment": "RIGHT",
+      "maxWidth": 10,
+      "colorIndex": 0
+    },
+    {
+      "x": 36,
+      "y": 6,
+      "alignment": "RIGHT",
+      "maxWidth": 10,
+      "colorIndex": 0
+    },
+    {
+      "x": 36,
+      "y": 2,
+      "alignment": "RIGHT",
+      "maxWidth": 10,
+      "colorIndex": 0
+    }
+  ]
+}

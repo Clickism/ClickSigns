@@ -1,0 +1,31 @@
+{
+    "width": 1,
+    "height": 1,
+    "id": "1x1_stop",
+    "name": "Stop Sign",
+    "pack": {
+      "id": "clicksigns",
+      "name": "ClickSigns"
+    },
+    "category": "TEMPLATE",
+    "author": "Clickism",
+    "arrows": [],
+    "variants": [
+      {
+        "name": "Universal",
+        "front": "templates/signs/stop.png",
+        "back": "backs/1x1_octagonal_back.png",
+        "colors": [ 13684944 ]
+      }
+    ],
+    "textPositions": [
+      {
+        "x": 2,
+        "y": 5.5,
+        "alignment": "CENTER",
+        "maxWidth": 12,
+        "scale": 1.25,
+        "colorIndex": 0
+      }
+    ]
+  }

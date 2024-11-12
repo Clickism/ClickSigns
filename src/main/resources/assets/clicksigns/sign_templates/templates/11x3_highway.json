@@ -1,0 +1,127 @@
+{
+  "width": 11,
+  "height": 3,
+  "id": "11x3_highway",
+  "name": "Highway",
+  "pack": {
+    "id": "clicksigns",
+    "name": "ClickSigns"
+  },
+  "category": "TEMPLATE",
+  "author": "Clickism",
+  "arrows": [ "F" ],
+  "variants": [
+    {
+      "name": "Green",
+      "front": "templates/11x3_highway/green.png",
+      "back": "backs/11x3_back.png",
+      "colors": [ 13684944 ]
+    },
+    {
+      "name": "Blue",
+      "front": "templates/11x3_highway/blue.png",
+      "back": "backs/11x3_back.png",
+      "colors": [ 13684944 ]
+    }
+  ],
+  "textPositions": [
+    {
+      "x": 3,
+      "y": 14,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 21,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 28,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 3,
+      "y": 35,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+
+    {
+      "x": 67,
+      "y": 14,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 67,
+      "y": 21,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 67,
+      "y": 28,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 67,
+      "y": 35,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+
+    {
+      "x": 131,
+      "y": 14,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 131,
+      "y": 21,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 131,
+      "y": 28,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    },
+    {
+      "x": 131,
+      "y": 35,
+      "maxWidth": 42,
+      "colorIndex": 0,
+      "alignment": "CENTER",
+      "scale": 1.5
+    }
+  ]
+}

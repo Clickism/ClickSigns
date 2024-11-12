@@ -1,0 +1,31 @@
+{
+    "width": 1,
+    "height": 1,
+    "id": "1x1_speed",
+    "name": "Speed Sign",
+    "pack": {
+      "id": "clicksigns",
+      "name": "ClickSigns"
+    },
+    "category": "TEMPLATE",
+    "author": "Clickism",
+    "arrows": [],
+    "variants": [
+      {
+        "name": "EU",
+        "front": "templates/signs/speed.png",
+        "back": "backs/1x1_circular_back.png",
+        "colors": [ 2697513 ]
+      }
+    ],
+    "textPositions": [
+      {
+        "x": 2,
+        "y": 4.5,
+        "alignment": "CENTER",
+        "maxWidth": 12,
+        "scale": 1.75,
+        "colorIndex": 0
+      }
+    ]
+  }
