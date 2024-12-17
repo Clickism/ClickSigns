@@ -19,7 +19,13 @@ public class TextureIndexDisplay extends ClickableWidget {
 
     public TextureIndexDisplay(TextRenderer textRenderer, int width, int height, int textureCount) {
         super(0, 0, width, height, Text.empty());
-        this.textFieldWidget = new TextFieldWidget(textRenderer, width, height, Text.empty());
+        this.textFieldWidget = new TextFieldWidget(
+                textRenderer, 
+                //? if <1.20.5 {
+                /*0, 0,
+                *///?}
+                width, height, Text.empty()
+        );
         this.textWidget = new EditableTextWidget(width, height, Text.empty(), textRenderer);
         this.textureCount = textureCount;
         this.textWidget.alignCenter();
@@ -60,7 +66,7 @@ public class TextureIndexDisplay extends ClickableWidget {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+    protected void /*? if >=1.20.5 {*/ renderWidget /*?} else {*/ /*renderButton *//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {
         textFieldWidget.render(context, mouseX, mouseY, delta);
         textWidget.render(context, mouseX, mouseY, delta);
     }

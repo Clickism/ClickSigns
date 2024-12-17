@@ -71,7 +71,7 @@ public class TextureChangerWidget extends ClickableWidget {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+    protected void /*? if >=1.20.5 {*/ renderWidget /*?} else {*/ /*renderButton *//*?}*/(DrawContext context, int mouseX, int mouseY, float delta) {
         indexDisplay.render(context, mouseX, mouseY, delta);
         nextButton.render(context, mouseX, mouseY, delta);
         prevButton.render(context, mouseX, mouseY, delta);

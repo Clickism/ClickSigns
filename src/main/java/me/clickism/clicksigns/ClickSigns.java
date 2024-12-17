@@ -1,11 +1,14 @@
 package me.clickism.clicksigns;
 
+//? if >=1.20.5 {
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+//?}
+
 import me.clickism.clicksigns.block.ModBlocks;
 import me.clickism.clicksigns.entity.ModBlockEntityTypes;
 import me.clickism.clicksigns.item.ModItemGroups;
-import me.clickism.clicksigns.network.RoadSignPayload;
+import me.clickism.clicksigns.network.RoadSignPacket;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
@@ -24,10 +27,13 @@ public class ClickSigns implements ModInitializer {
         ModItemGroups.registerItemGroups();
 
         ModBlockEntityTypes.initialize();
-        PayloadTypeRegistry.playS2C().register(RoadSignPayload.PAYLOAD_ID, RoadSignPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(RoadSignPayload.PAYLOAD_ID, RoadSignPayload.CODEC);
-        ServerPlayNetworking.registerGlobalReceiver(RoadSignPayload.PAYLOAD_ID, new RoadSignPayload.ServerHandler());
-
+        //? if >=1.20.5 {
+        PayloadTypeRegistry.playS2C().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ServerHandler());
+        //?} else {
+        /*ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ServerHandler());
+        *///?}
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
                 new RoadSignTemplateReloadListener()
         );

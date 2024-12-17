@@ -80,32 +80,40 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
                 .texture(0f, 1f)
                 .overlay(overlay)
                 .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f);
-
+                .normal(0.0f, 0.0f, -1.0f)
+                //? if <1.20.5
+                /*.next();*/
+        ;
         // Bottom-right
         vertexConsumer.vertex(matrix, x2, y1, 0.0f)
                 .color(255, 255, 255, 255)
                 .texture(1f, 1f)
                 .overlay(overlay)
                 .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f);
-
+                .normal(0.0f, 0.0f, -1.0f)
+                //? if <1.20.5
+                /*.next();*/
+        ;
         // Top-right
         vertexConsumer.vertex(matrix, x2, y2, 0.0f)
                 .color(255, 255, 255, 255)
                 .texture(1f, 0f)
                 .overlay(overlay)
                 .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f);
-
+                .normal(0.0f, 0.0f, -1.0f)
+                //? if <1.20.5
+                /*.next();*/
+        ;
         // Top-left
         vertexConsumer.vertex(matrix, x1, y2, 0.0f)
                 .color(255, 255, 255, 255)
                 .texture(0f, 0f)
                 .overlay(overlay)
                 .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f);
-
+                .normal(0.0f, 0.0f, -1.0f)
+                //? if <1.20.5
+                /*.next();*/
+        ;
         if (!isBack) {
             List<SignTextField> textFields = template.getTextFields();
             List<String> texts = roadSign.getTexts();

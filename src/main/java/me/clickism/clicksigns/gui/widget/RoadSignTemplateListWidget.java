@@ -31,7 +31,7 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
             int itemHeight,
             RoadSignTemplateSelectionScreen parent
     ) {
-        super(client, width, height, y, itemHeight);
+        super(client, width, height, y, /*? if <1.20.5 {*/ /*0,*//*?}*/ itemHeight);
         this.parent = parent;
     }
 
@@ -54,7 +54,7 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     }
 
     @Override
-    public int getScrollbarX() {
+    public int /*? if >=1.20.5 {*/ getScrollbarX() /*?} else {*/ /*getScrollbarPositionX() *//*?}*/ {
         return this.width - 6;
     }
 
@@ -69,9 +69,15 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
         parent.setSelectedTemplate(entry == null ? null : entry.template, 0);
     }
 
+    //? if >=1.20.5 {
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
+    //?} else {
+    /*@Override
+    public void appendNarrations(NarrationMessageBuilder builder) {
+    }
+    *///?}
 
     public static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         public final RoadSignTemplate template;

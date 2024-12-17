@@ -15,16 +15,28 @@ public abstract class HorizontalFacingBlockWithEntity extends BlockWithEntity {
         super(settings);
     }
 
+    //? if >=1.20.5 {
     @Override
     protected abstract MapCodec<? extends BlockWithEntity> getCodec();
+    //?}
 
     @Override
-    protected BlockState rotate(BlockState state, BlockRotation rotation) {
+    //? if >=1.20.5 {
+    protected
+     //?} else {
+    /*public
+    *///?}
+    BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, BlockMirror mirror) {
+    //? if >=1.20.5 {
+    protected
+     //?} else {
+    /*public
+    *///?}
+    BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 }

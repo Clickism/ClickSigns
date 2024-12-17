@@ -14,7 +14,6 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
 public class RoadSignBlockEntity extends BlockEntity {
@@ -41,8 +40,16 @@ public class RoadSignBlockEntity extends BlockEntity {
     }
 
     @Override
+    //? if >=1.20.5 {
     protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+    //?} else {
+    /*public void writeNbt(NbtCompound nbt) {
+    *///?}
+        //? if >=1.20.5 {
         super.writeNbt(nbt, registryLookup);
+        //?} else {
+        /*super.writeNbt(nbt);
+        *///?}
         if (roadSign == null) return;
         nbt.putString("template", roadSign.templateId().toString());
         NbtList list = new NbtList();
@@ -54,8 +61,16 @@ public class RoadSignBlockEntity extends BlockEntity {
     }
 
     @Override
+    //? if >=1.20.5 {
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+    //?} else {
+    /*public void readNbt(NbtCompound nbt) {
+    *///?}
+        //? if >=1.20.5 {
         super.readNbt(nbt, registryLookup);
+        //?} else {
+        /*super.readNbt(nbt);
+        *///?}
         String templateId = nbt.getString("template");
         if (templateId.isEmpty()) return;
         Identifier id = Identifier.tryParse(templateId);
@@ -77,8 +92,10 @@ public class RoadSignBlockEntity extends BlockEntity {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
+    //? if >=1.20.5 {
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createComponentlessNbt(registryLookup);
     }
+    //?}
 }

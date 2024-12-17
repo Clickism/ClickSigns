@@ -1,6 +1,11 @@
 package me.clickism.clicksigns.block;
 
+//? if >=1.20.5 {
 import com.mojang.serialization.MapCodec;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ItemActionResult;
+//?}
+
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.RoadSignEditScreen;
 import net.minecraft.block.Block;
@@ -10,12 +15,11 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
+
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -26,6 +30,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements BlockEntityProvider {
+    //? if >=1.20.5
     public static final MapCodec<RoadSignBlock> CODEC = Block.createCodec(RoadSignBlock::new);
 
     public RoadSignBlock(Settings settings) {
@@ -34,12 +39,22 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    //? if >=1.20.5 {
+    protected
+    //?} else {
+    /*public
+    *///?}
+    VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getOutlineShape(state, world, pos, context);
     }
 
     @Override
-    protected VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    //? if >=1.20.5 {
+    protected
+    //?} else {
+    /*public
+    *///?}
+    VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
         return VoxelShapes.empty();
     }
 
@@ -47,7 +62,8 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
     public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new RoadSignBlockEntity(pos, state);
     }
-
+    
+    //? if >=1.20.5 {
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
@@ -59,12 +75,26 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         onUse(state, world, pos, player, hit);
         return ItemActionResult.CONSUME;
     }
+    //?}
 
     @Override
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    //? if >=1.20.5 {
+    protected
+     //?} else {
+    /*public
+    *///?}
+    ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player,
+                                 //? if <1.20.5
+                                 /*Hand hand,*/
+                                 BlockHitResult hit) {
         if (!world.isClient) {
             return ActionResult.PASS;
         }
+        //? if <1.20.5 {
+        /*if (player.isSneaking()) {
+            return ActionResult.PASS;
+        }
+        *///?}
         if (world.getBlockEntity(pos) instanceof RoadSignBlockEntity entity) {
             RoadSignEditScreen.openScreen(entity);
         }
@@ -101,8 +131,10 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         return super.getPlacementState(ctx).with(Properties.HORIZONTAL_FACING, ctx.getHorizontalPlayerFacing());
     }
 
+    //? if >=1.20.5 {
     @Override
     protected MapCodec<? extends RoadSignBlock> getCodec() {
         return CODEC;
     }
+    //?}
 }

@@ -1,6 +1,7 @@
 package me.clickism.clicksigns.gui;
 
 import me.clickism.clicksigns.Utils;
+import me.clickism.clicksigns.VersionHelper;
 import me.clickism.clicksigns.gui.widget.RoadSignTemplateListWidget;
 import me.clickism.clicksigns.gui.widget.TextureChangerWidget;
 import me.clickism.clicksigns.sign.*;
@@ -126,7 +127,7 @@ public class RoadSignTemplateSelectionScreen extends Screen {
             iconWidth = (int) (maxHeight * aspectRatio);
         }
         Identifier texture = template.getTextureOrError(textureIndex.get()).getFrontTexture();
-        IconWidget widget = IconWidget.create(iconWidth, iconHeight, texture, iconWidth, iconHeight);
+        IconWidget widget = VersionHelper.createIconWidget(iconWidth, iconHeight, texture, iconWidth, iconHeight);
         widget.setX(width / 2 + 10);
         widget.setY(40);
         return addDrawableChild(widget);

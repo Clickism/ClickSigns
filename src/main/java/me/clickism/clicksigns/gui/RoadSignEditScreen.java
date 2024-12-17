@@ -2,10 +2,12 @@ package me.clickism.clicksigns.gui;
 
 import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.Utils;
+import me.clickism.clicksigns.VersionHelper;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.widget.EditableTextWidget;
 import me.clickism.clicksigns.gui.widget.SignTextFieldWidget;
 import me.clickism.clicksigns.gui.widget.TextureChangerWidget;
+import me.clickism.clicksigns.network.RoadSignPacket;
 import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -120,9 +122,7 @@ public class RoadSignEditScreen extends Screen {
         int iconWidth = (int) (ICON_SCALE * template.getWidth() * PIXELS_PER_BLOCK);
         int iconHeight = (int) (ICON_SCALE * template.getHeight() * PIXELS_PER_BLOCK);
         Identifier texture = template.getTextureOrError(textureIndex).getFrontTexture();
-        var widget = IconWidget.create(
-                iconWidth, iconHeight, texture, iconWidth, iconHeight
-        );
+        IconWidget widget = VersionHelper.createIconWidget(iconWidth, iconHeight, texture, iconWidth, iconHeight);
         widget.active = false;
         return widget;
     }
@@ -148,7 +148,11 @@ public class RoadSignEditScreen extends Screen {
                 button -> {
                     if (!builder.templateId().equals(ClickSigns.ERROR_TEMPLATE_ID)) {
                         builder.texts(readEditorTexts());
-                        ClientPlayNetworking.send(builder.build().toPayload(entity.getPos()));
+                        //? if >=1.20.5 {
+                        ClientPlayNetworking.send(builder.build().toPacket(entity.getPos()));
+                        //?} else {
+                        /*ClientPlayNetworking.send(RoadSignPacket.PACKET_ID, builder.build().toPacket(entity.getPos()).toPacketByteBuf());
+                        *///?}
                     }
                     this.close();
                 }).size(BUTTON_WIDTH, BUTTON_HEIGHT).build());

@@ -1,10 +1,9 @@
 package me.clickism.clicksigns.sign;
 
-import me.clickism.clicksigns.network.RoadSignPayload;
+import me.clickism.clicksigns.network.RoadSignPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector2f;
-
 import java.util.List;
 
 public final class RoadSign {
@@ -26,8 +25,8 @@ public final class RoadSign {
         this.alignment = alignment;
     }
 
-    public RoadSignPayload toPayload(BlockPos pos) {
-        return new RoadSignPayload(pos, templateId, textureIndex, texts, alignment.ordinal());
+    public RoadSignPacket toPacket(BlockPos pos) {
+        return new RoadSignPacket(pos, templateId, textureIndex, texts, alignment.ordinal());
     }
 
     public Identifier templateId() {
