@@ -75,17 +75,19 @@ public record RoadSignPacket(
             /*ServerWorld world = player.getServerWorld();
             RoadSignPacket packet = fromPacketByteBuf(buf);
             *///?}
-            if (world.getBlockEntity(packet.pos()) instanceof RoadSignBlockEntity entity) {
-                if (packet.identifier().equals(ClickSigns.ERROR_TEMPLATE_ID)) return;
-                entity.setRoadSign(packet.toRoadSign());
-                PlayerLookup.world(world).forEach(p ->
-                        //? if >=1.20.5 {
-                        ServerPlayNetworking.send(p, packet)
-                        //?} else {
-                        /*ServerPlayNetworking.send(p, PACKET_ID, packet.toPacketByteBuf())
-                        *///?}
-                );
-            }
+            world.getServer().execute(() -> {
+                if (world.getBlockEntity(packet.pos()) instanceof RoadSignBlockEntity entity) {
+                    if (packet.identifier().equals(ClickSigns.ERROR_TEMPLATE_ID)) return;
+                    entity.setRoadSign(packet.toRoadSign());
+                    PlayerLookup.world(world).forEach(p ->
+                                    //? if >=1.20.5 {
+                                    ServerPlayNetworking.send(p, packet)
+                                     //?} else {
+                                    /*ServerPlayNetworking.send(p, PACKET_ID, packet.toPacketByteBuf())
+                            *///?}
+                    );
+                }
+            });
         }
     }
 
