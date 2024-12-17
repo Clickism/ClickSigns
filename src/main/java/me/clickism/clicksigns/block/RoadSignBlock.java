@@ -1,17 +1,17 @@
 package me.clickism.clicksigns.block;
 
-//? if >=1.20.5 {
+//? if >=1.21.2 {
+/*import com.mojang.serialization.MapCodec;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+*///?} elif >=1.20.5 {
 import com.mojang.serialization.MapCodec;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemActionResult;
 //?}
-
+import net.minecraft.block.*;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.RoadSignEditScreen;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -48,13 +48,17 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         return getOutlineShape(state, world, pos, context);
     }
 
+
     @Override
     //? if >=1.20.5 {
     protected
     //?} else {
     /*public
     *///?}
-    VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    VoxelShape getCullingShape(BlockState state
+            //? if <1.21.2
+            , BlockView world, BlockPos pos
+    ) {
         return VoxelShapes.empty();
     }
 
@@ -63,7 +67,19 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         return new RoadSignBlockEntity(pos, state);
     }
     
-    //? if >=1.20.5 {
+    //? if >1.21.2 {
+    /*@Override
+    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.isSneaking()) {
+            return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+        }
+        if (!world.isClient) {
+            return ActionResult.CONSUME;
+        }
+        onUse(state, world, pos, player, hit);
+        return ActionResult.CONSUME;
+    }
+    *///?} elif >=1.20.5 {
     @Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
@@ -124,6 +140,16 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
             case EAST -> EAST_SHAPE;
             default -> VoxelShapes.fullCube();
         };
+    }
+
+    @Override
+    //? if >=1.20.5 {
+    protected
+     //?} else {
+    /*public
+    *///?}
+    BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override

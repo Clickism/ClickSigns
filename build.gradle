@@ -37,7 +37,8 @@ processResources {
     def properties = [
             "version" : version,
             "targetVersion" : project.property('mod.mc_version'),
-            "minecraftVersion" : stonecutter.current.version
+            "minecraftVersion" : stonecutter.current.version,
+            "fabricVersion" : project.property('deps.fabric_loader'),
     ]
 
     filesMatching("fabric.mod.json") {

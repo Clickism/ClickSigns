@@ -29,7 +29,7 @@
 		"clicksigns.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.7",
+		"fabricloader": ">=${fabricVersion}",
 		"minecraft": "${targetVersion}",
 		"java": ">=17",
 		"fabric-api": "*"

@@ -31,7 +31,7 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
             int itemHeight,
             RoadSignTemplateSelectionScreen parent
     ) {
-        super(client, width, height, y, /*? if <1.20.5 {*/ /*0,*//*?}*/ itemHeight);
+        super(client, width, height, y, /*? if <1.20.5 {*/ /*height,*//*?}*/ itemHeight);
         this.parent = parent;
     }
 
@@ -78,6 +78,8 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     public void appendNarrations(NarrationMessageBuilder builder) {
     }
     *///?}
+    
+    
 
     public static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         public final RoadSignTemplate template;

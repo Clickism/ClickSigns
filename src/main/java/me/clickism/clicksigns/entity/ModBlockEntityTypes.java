@@ -10,7 +10,7 @@ import net.minecraft.registry.Registry;
 public class ModBlockEntityTypes {
     public static final BlockEntityType<RoadSignBlockEntity> ROAD_SIGN = register(
             "road_sign",
-            //? if >=1.20.5 {
+            //? if >=1.20.5 <1.21.2 {
             BlockEntityType.Builder
             //?} else {
             /*FabricBlockEntityTypeBuilder

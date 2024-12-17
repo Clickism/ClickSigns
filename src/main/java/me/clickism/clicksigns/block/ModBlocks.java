@@ -8,11 +8,16 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 
 public class ModBlocks {
 
     public static final Block ROAD_SIGN = registerBlock("road_sign",
-            new RoadSignBlock(AbstractBlock.Settings.copy(Blocks.STONE)));
+            new RoadSignBlock(AbstractBlock.Settings.copy(Blocks.STONE)
+                    //? if >=1.21.2
+                    /*.registryKey(RegistryKey.of(RegistryKeys.BLOCK, ClickSigns.identifier("road_sign")))*/
+            ));
 
     private static Block registerBlock(String id, Block block) {
         registerBlockItem(id, block);
@@ -23,7 +28,10 @@ public class ModBlocks {
         Registry.register(
                 Registries.ITEM,
                 ClickSigns.identifier(id),
-                new BlockItem(block, new Item.Settings())
+                new BlockItem(block, new Item.Settings()
+                    //? if >=1.21.2
+                    /*.registryKey(RegistryKey.of(RegistryKeys.ITEM, ClickSigns.identifier(id)))*/
+                )
         );
     }
 
