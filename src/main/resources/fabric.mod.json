@@ -25,9 +25,7 @@
 			"me.clickism.clicksigns.ClickSignsDataGenerator"
 		]
 	},
-	"mixins": [
-		"clicksigns.mixins.json"
-	],
+	"mixins": [],
 	"depends": {
 		"fabricloader": ">=${fabricVersion}",
 		"minecraft": "${targetVersion}",
