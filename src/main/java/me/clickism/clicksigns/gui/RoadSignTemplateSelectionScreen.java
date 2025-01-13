@@ -138,7 +138,7 @@ public class RoadSignTemplateSelectionScreen extends RoadSignScreen {
 
     private TextureChangerWidget addTextureChangerWidget(int textureCount) {
         return addDrawableChild(new TextureChangerWidget(textRenderer, textureCount, (button, increment) -> {
-            int index = Math.clamp(textureIndex.get() + increment, 0, textureCount - 1);
+            int index = Utils.clamp(textureIndex.get() + increment, 0, textureCount - 1);
             textureIndex.set(index);
             textureChangerWidget.setTextureIndex(index + 1);
             setSelectedTemplate(selectedTemplate, index);

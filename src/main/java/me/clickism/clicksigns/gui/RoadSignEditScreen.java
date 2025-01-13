@@ -109,7 +109,7 @@ public class RoadSignEditScreen extends RoadSignScreen {
 
     private TextureChangerWidget addTextureChangeButton(int textureCount) {
         return addDrawableChild(new TextureChangerWidget(textRenderer, textureCount, (button, increment) -> {
-            int index = Math.clamp(builder.textureIndex() + increment, 0, textureCount - 1);
+            int index = Utils.clamp(builder.textureIndex() + increment, 0, textureCount - 1);
             builder.textureIndex(index);
             textureChangerWidget.setTextureIndex(index + 1);
             refresh();

@@ -25,15 +25,15 @@ public class RoadSignTemplateRegistration {
             Set.of(), "Clickism", new RoadSignPack("clicksigns", "ClickSigns")
     );
 
-    private static final SequencedMap<Identifier, RoadSignTemplate> templates = new LinkedHashMap<>();
-    private static final Map<RoadSignCategory, SequencedSet<RoadSignTemplate>> categoryMap = new HashMap<>();
+    private static final Map<Identifier, RoadSignTemplate> templates = new LinkedHashMap<>();
+    private static final Map<RoadSignCategory, Set<RoadSignTemplate>> categoryMap = new HashMap<>();
     private static final Set<RoadSignPack> packs = new HashSet<>();
 
-    public static SequencedCollection<RoadSignTemplate> getTemplates() {
-        return templates.sequencedValues();
+    public static Collection<RoadSignTemplate> getTemplates() {
+        return templates.values();
     }
 
-    public static SequencedCollection<RoadSignTemplate> getTemplates(RoadSignCategory category) {
+    public static Collection<RoadSignTemplate> getTemplates(RoadSignCategory category) {
         return categoryMap.getOrDefault(category, new LinkedHashSet<>());
     }
 
@@ -47,7 +47,7 @@ public class RoadSignTemplateRegistration {
             return template;
         }
         if (templates.isEmpty()) return ERROR;
-        return templates.sequencedValues().getFirst();
+        return templates.values().iterator().next();
     }
 
     @NotNull

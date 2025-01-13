@@ -50,19 +50,21 @@ public class AxisOrganizer {
             widgets.add(widget);
             return this;
         }
-        Widget last = widgets.getLast();
+        Widget last = widgets.get(widgets.size() - 1);
         int axisPos = getAxisPosition(last) + getLength(last) + padding;
         setAxisPosition(widget, axisPos);
-        widgets.addLast(widget);
+        widgets.add(widget);
         return this;
     }
 
     public int getLastX() {
-        return widgets.getLast().getX() + widgets.getLast().getWidth();
+        Widget last = widgets.get(widgets.size() - 1);
+        return last.getX() + last.getWidth();
     }
 
     public int getLastY() {
-        return widgets.getLast().getY() + widgets.getLast().getHeight();
+        Widget last = widgets.get(widgets.size() - 1);
+        return last.getY() + last.getHeight();
     }
 
     private void center(Widget widget) {
