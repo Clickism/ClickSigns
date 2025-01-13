@@ -1,6 +1,7 @@
 package me.clickism.clicksigns;
 
 //? if >=1.20.5 {
+import me.clickism.clicksigns.serialization.RoadSignTemplateReloadListener;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 //?}
 

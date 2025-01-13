@@ -52,9 +52,9 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
         Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
         matrices.translate(0.5, 0.5, 0.5);
         //? if >1.21.2 {
-        /*matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.getPositiveHorizontalDegrees())));
-        *///?} else
-        matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.asRotation())));
+        matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.getPositiveHorizontalDegrees())));
+        //?} else
+        /*matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.asRotation())));*/
         matrices.translate(0, 0, .5f - Z_FIGHTING_OFFSET);
         float halfWidth = (float) template.getWidth() / 2 - .5f;
         float halfHeight = (float) template.getHeight() / 2 - .5f;

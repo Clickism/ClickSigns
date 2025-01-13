@@ -1,19 +1,16 @@
 package me.clickism.clicksigns.gui;
 
 import me.clickism.clicksigns.ClickSigns;
-import me.clickism.clicksigns.Utils;
-import me.clickism.clicksigns.VersionHelper;
+import me.clickism.clicksigns.util.Utils;
+import me.clickism.clicksigns.util.VersionHelper;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.widget.EditableTextWidget;
 import me.clickism.clicksigns.gui.widget.SignTextFieldWidget;
 import me.clickism.clicksigns.gui.widget.TextureChangerWidget;
-import me.clickism.clicksigns.network.RoadSignPacket;
 import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.IconWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;

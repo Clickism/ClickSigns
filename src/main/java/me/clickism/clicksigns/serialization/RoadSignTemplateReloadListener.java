@@ -1,6 +1,6 @@
-package me.clickism.clicksigns;
+package me.clickism.clicksigns.serialization;
 
-import me.clickism.clicksigns.serialization.RoadSignTemplateParser;
+import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.sign.RoadSignTemplateRegistration;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;

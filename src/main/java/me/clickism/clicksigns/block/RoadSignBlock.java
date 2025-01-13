@@ -1,14 +1,14 @@
 package me.clickism.clicksigns.block;
 
 //? if >=1.21.2 {
-/*import com.mojang.serialization.MapCodec;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-*///?} elif >=1.20.5 {
 import com.mojang.serialization.MapCodec;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+//?} elif >=1.20.5 {
+/*import com.mojang.serialization.MapCodec;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemActionResult;
-//?}
+*///?}
 import net.minecraft.block.*;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.gui.RoadSignEditScreen;
@@ -57,7 +57,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
     *///?}
     VoxelShape getCullingShape(BlockState state
             //? if <1.21.2
-            , BlockView world, BlockPos pos
+            /*, BlockView world, BlockPos pos*/
     ) {
         return VoxelShapes.empty();
     }
@@ -68,7 +68,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
     }
     
     //? if >1.21.2 {
-    /*@Override
+    @Override
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
             return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
@@ -79,8 +79,8 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         onUse(state, world, pos, player, hit);
         return ActionResult.CONSUME;
     }
-    *///?} elif >=1.20.5 {
-    @Override
+    //?} elif >=1.20.5 {
+    /*@Override
     protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
             return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -91,7 +91,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
         onUse(state, world, pos, player, hit);
         return ItemActionResult.CONSUME;
     }
-    //?}
+    *///?}
 
     @Override
     //? if >=1.20.5 {

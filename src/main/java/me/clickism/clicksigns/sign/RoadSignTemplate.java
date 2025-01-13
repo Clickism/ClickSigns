@@ -1,6 +1,6 @@
 package me.clickism.clicksigns.sign;
 
-import me.clickism.clicksigns.Utils;
+import me.clickism.clicksigns.util.Utils;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.NotNull;

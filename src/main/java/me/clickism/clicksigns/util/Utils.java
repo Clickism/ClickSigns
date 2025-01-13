@@ -1,4 +1,4 @@
-package me.clickism.clicksigns;
+package me.clickism.clicksigns.util;
 
 public class Utils {
     public static String titleCase(String string) {

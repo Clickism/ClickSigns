@@ -1,4 +1,4 @@
-package me.clickism.clicksigns;
+package me.clickism.clicksigns.util;
 
 import net.minecraft.client.gui.widget.IconWidget;
 import net.minecraft.util.Identifier;

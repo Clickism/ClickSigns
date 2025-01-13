@@ -16,7 +16,7 @@ public class ModBlocks {
     public static final Block ROAD_SIGN = registerBlock("road_sign",
             new RoadSignBlock(AbstractBlock.Settings.copy(Blocks.STONE)
                     //? if >=1.21.2
-                    /*.registryKey(RegistryKey.of(RegistryKeys.BLOCK, ClickSigns.identifier("road_sign")))*/
+                    .registryKey(RegistryKey.of(RegistryKeys.BLOCK, ClickSigns.identifier("road_sign")))
             ));
 
     private static Block registerBlock(String id, Block block) {
@@ -30,7 +30,7 @@ public class ModBlocks {
                 ClickSigns.identifier(id),
                 new BlockItem(block, new Item.Settings()
                     //? if >=1.21.2
-                    /*.registryKey(RegistryKey.of(RegistryKeys.ITEM, ClickSigns.identifier(id)))*/
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, ClickSigns.identifier(id)))
                 )
         );
     }

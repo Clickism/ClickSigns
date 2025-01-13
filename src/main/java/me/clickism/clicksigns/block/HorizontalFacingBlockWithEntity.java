@@ -1,10 +1,10 @@
 package me.clickism.clicksigns.block;
 
 //? if >=1.21.2 {
-/*import net.minecraft.state.property.EnumProperty;
-*///?} else {
-import net.minecraft.state.property.DirectionProperty;
-//?}
+import net.minecraft.state.property.EnumProperty;
+//?} else {
+/*import net.minecraft.state.property.DirectionProperty;
+*///?}
 
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
@@ -20,10 +20,10 @@ import net.minecraft.util.math.Direction;
 
 public abstract class HorizontalFacingBlockWithEntity extends BlockWithEntity {
     //? if >=1.21.2 {
-    /*public static final EnumProperty<Direction>FACING = Properties.HORIZONTAL_FACING;
-    *///?} else {
-    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    //?}
+    public static final EnumProperty<Direction>FACING = Properties.HORIZONTAL_FACING;
+    //?} else {
+    /*public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    *///?}
 
     protected HorizontalFacingBlockWithEntity(Settings settings) {
         super(settings);
