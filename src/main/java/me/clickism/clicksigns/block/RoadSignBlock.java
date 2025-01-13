@@ -104,7 +104,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity implements Bl
                                  /*Hand hand,*/
                                  BlockHitResult hit) {
         if (!world.isClient) {
-            return ActionResult.PASS;
+            return ActionResult.SUCCESS;
         }
         //? if <1.20.5 {
         /*if (player.isSneaking()) {
