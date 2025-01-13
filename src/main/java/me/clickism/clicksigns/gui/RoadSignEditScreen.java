@@ -12,6 +12,7 @@ import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.IconWidget;
@@ -29,7 +30,7 @@ import static me.clickism.clicksigns.gui.GuiConstants.NOT_SELECTED_ALPHA;
 import static me.clickism.clicksigns.gui.GuiConstants.PIXELS_PER_BLOCK;
 
 @Environment(EnvType.CLIENT)
-public class RoadSignEditScreen extends Screen {
+public class RoadSignEditScreen extends RoadSignScreen {
 
     private static final float ICON_SCALE = 3.5f;
     private static final int PADDING = 3;

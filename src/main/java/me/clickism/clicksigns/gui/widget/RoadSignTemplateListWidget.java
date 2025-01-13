@@ -12,6 +12,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,10 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     ) {
         super(client, width, height, y, /*? if <1.20.5 {*/ /*height,*//*?}*/ itemHeight);
         this.parent = parent;
+        //? if <1.20.5 {
+        /*setRenderBackground(false);
+        setRenderHorizontalShadows(false);
+        *///?}
     }
 
     public void filter(
@@ -78,8 +83,15 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     public void appendNarrations(NarrationMessageBuilder builder) {
     }
     *///?}
-    
-    
+
+    //? if <1.20.5 {
+    /*@Override
+    protected void renderBackground(DrawContext context) {
+        context.fillGradient(0, this.top, this.width, this.height, -0x8FEFEFF0, -0x6FEFEFF0);
+        context.fillGradient(RenderLayer.getGuiOverlay(), this.left, this.top, this.right, this.top + 4, -16777216, 0, 0);
+        context.fillGradient(RenderLayer.getGuiOverlay(), this.left, this.bottom - 4, this.right, this.bottom, 0, -16777216, 0);
+    }
+    *///?}
 
     public static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         public final RoadSignTemplate template;
@@ -93,6 +105,11 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             context.drawTextWithShadow(textRenderer, template.getFormattedName(), x + 5, y + 5, 0xFFFFFF);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            return true;
         }
 
         @Override

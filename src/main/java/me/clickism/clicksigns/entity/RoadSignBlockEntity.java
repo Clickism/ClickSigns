@@ -56,9 +56,10 @@ public class RoadSignBlockEntity extends BlockEntity {
         list.addAll(roadSign.getTexts().stream().map(NbtString::of).toList());
         nbt.put("texts", list);
         nbt.putInt("textureIndex", roadSign.getTextureIndex());
-        // nbt.putBoolean("flipped", roadSign.isFlipped());
         nbt.putInt("alignment", roadSign.getAlignment().ordinal());
     }
+
+
 
     @Override
     //? if >=1.20.5 {
@@ -82,7 +83,6 @@ public class RoadSignBlockEntity extends BlockEntity {
                     .toList();
         }
         int textureIndex = nbt.getInt("textureIndex");
-        // boolean flipped = nbt.getBoolean("flipped");
         int alignment = nbt.getInt("alignment");
         this.roadSign = new RoadSign(id, textureIndex, texts, RoadSign.Alignment.values()[alignment]);
     }
@@ -97,5 +97,12 @@ public class RoadSignBlockEntity extends BlockEntity {
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createComponentlessNbt(registryLookup);
     }
-    //?}
+    //?} else {
+    /*@Override
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound nbtCompound = new NbtCompound();
+        this.writeNbt(nbtCompound);
+        return nbtCompound;
+    }
+    *///?}
 }

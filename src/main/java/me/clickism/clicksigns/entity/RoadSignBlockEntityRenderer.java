@@ -1,6 +1,5 @@
-package me.clickism.clicksigns.entity.renderer;
+package me.clickism.clicksigns.entity;
 
-import me.clickism.clicksigns.entity.RoadSignBlockEntity;
 import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

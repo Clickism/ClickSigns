@@ -8,6 +8,7 @@ import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Style;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 import static me.clickism.clicksigns.gui.GuiConstants.NOT_SELECTED_ALPHA;
 
 @Environment(EnvType.CLIENT)
-public class RoadSignTemplateSelectionScreen extends Screen {
+public class RoadSignTemplateSelectionScreen extends RoadSignScreen {
     private static final int PADDING = 3;
 
     private final RoadSignEditScreen parent;

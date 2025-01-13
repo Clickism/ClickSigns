@@ -7,7 +7,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 
-import static me.clickism.clicksigns.entity.renderer.RoadSignBlockEntityRenderer.TEXT_RENDER_SCALE;
+import static me.clickism.clicksigns.entity.RoadSignBlockEntityRenderer.TEXT_RENDER_SCALE;
 import static me.clickism.clicksigns.gui.GuiConstants.PIXELS_PER_BLOCK;
 
 @Environment(EnvType.CLIENT)

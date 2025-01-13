@@ -1,7 +1,7 @@
 package me.clickism.clicksigns;
 
 import me.clickism.clicksigns.entity.ModBlockEntityTypes;
-import me.clickism.clicksigns.entity.renderer.RoadSignBlockEntityRenderer;
+import me.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import me.clickism.clicksigns.network.RoadSignPacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
