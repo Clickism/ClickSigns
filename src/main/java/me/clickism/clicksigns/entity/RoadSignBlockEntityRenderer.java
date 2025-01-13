@@ -1,5 +1,6 @@
 package me.clickism.clicksigns.entity;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.clickism.clicksigns.sign.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,11 +11,13 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
@@ -66,56 +69,29 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
             texture = roadSignTexture.getFrontTexture();
             matrices.scale(-1.0f, 1.0f, -1.0f); // Flip for front face
         }
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
-        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture));
+        MatrixStack.Entry entry = matrices.peek();
+        Matrix4f positionMatrix = entry.getPositionMatrix();
+        Matrix3f normalMatrix = entry.getNormalMatrix();
+
+        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(texture));
+
         float width = template.getWidth();
         float height = template.getHeight();
         float x1 = -width / 2;
         float y1 = -height / 2;
         float x2 = width / 2;
         float y2 = height / 2;
-        int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getPos().up());
 
+        boolean xAxis = direction.getAxis() == Direction.Axis.X;
         // Bottom-left
-        vertexConsumer.vertex(matrix, x1, y1, 0.0f)
-                .color(255, 255, 255, 255)
-                .texture(0f, 1f)
-                .overlay(overlay)
-                .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f)
-                //? if <1.20.5
-                /*.next();*/
-        ;
+        vertex(vertexConsumer, positionMatrix, normalMatrix, x1, y1, 0.0f, 0f, 1f, light, overlay, xAxis);
         // Bottom-right
-        vertexConsumer.vertex(matrix, x2, y1, 0.0f)
-                .color(255, 255, 255, 255)
-                .texture(1f, 1f)
-                .overlay(overlay)
-                .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f)
-                //? if <1.20.5
-                /*.next();*/
-        ;
+        vertex(vertexConsumer, positionMatrix, normalMatrix, x2, y1, 0.0f, 1f, 1f, light, overlay, xAxis);
         // Top-right
-        vertexConsumer.vertex(matrix, x2, y2, 0.0f)
-                .color(255, 255, 255, 255)
-                .texture(1f, 0f)
-                .overlay(overlay)
-                .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f)
-                //? if <1.20.5
-                /*.next();*/
-        ;
+        vertex(vertexConsumer, positionMatrix, normalMatrix, x2, y2, 0.0f, 1f, 0f, light, overlay, xAxis);
         // Top-left
-        vertexConsumer.vertex(matrix, x1, y2, 0.0f)
-                .color(255, 255, 255, 255)
-                .texture(0f, 0f)
-                .overlay(overlay)
-                .light(lightAbove)
-                .normal(0.0f, 0.0f, -1.0f)
-                //? if <1.20.5
-                /*.next();*/
-        ;
+        vertex(vertexConsumer, positionMatrix, normalMatrix, x1, y2, 0.0f, 0f, 0f, light, overlay, xAxis);
+
         if (!isBack) {
             List<SignTextField> textFields = template.getTextFields();
             List<String> texts = roadSign.getTexts();
@@ -125,6 +101,23 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
             }
         }
         matrices.pop();
+    }
+
+    private void vertex(VertexConsumer vertexConsumer, Matrix4f positionMatrix, Matrix3f normalMatrix,
+                        float x, float y, float z, float u, float v, int light, int overlay, boolean xAxis) {
+        vertexConsumer.vertex(positionMatrix, x, y, z)
+                .color(255, 255, 255, 255)
+                .texture(u, v)
+                .overlay(overlay)
+                .light(light)
+                .normal(
+                        //? if <1.20.5 {
+                        /*normalMatrix, xAxis ? 1f : 0f, 0f, xAxis ? 0f : 1f)
+                        *///?} else
+                        0f, 0f, 1f)
+                //? if <1.20.5
+                /*.next()*/
+        ;
     }
 
     public static final float TEXT_RENDER_SCALE = .022f;
