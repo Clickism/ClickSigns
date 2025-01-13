@@ -5,6 +5,8 @@ import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
 import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.*;
 //?} elif >=1.20.5 {
 /*import net.minecraft.data.server.recipe.RecipeExporter;
@@ -49,7 +51,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("#*#")
                         .pattern("###")
                         .input('#', Items.IRON_INGOT)
-                        .input('*', ItemTags.SIGNS)
+                        .input('*', ingredientFromTag(ItemTags.SIGNS))
                         .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
                         .offerTo(recipeExporter, RegistryKey.of(RegistryKeys.RECIPE, ClickSigns.identifier("road_sign")));
             }

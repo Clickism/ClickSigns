@@ -1,7 +1,6 @@
 package me.clickism.clicksigns;
 
 //? if >=1.20.5 {
-import me.clickism.clicksigns.serialization.RoadSignTemplateReloadListener;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 //?}
 
@@ -9,6 +8,7 @@ import me.clickism.clicksigns.block.ModBlocks;
 import me.clickism.clicksigns.entity.ModBlockEntityTypes;
 import me.clickism.clicksigns.item.ModItemGroups;
 import me.clickism.clicksigns.network.RoadSignPacket;
+import me.clickism.clicksigns.serialization.RoadSignTemplateReloadListener;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
