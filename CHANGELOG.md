@@ -1,0 +1,2 @@
+- Fix block placing when right clicking on a road sign.
+- Added 1.20.1 support.
