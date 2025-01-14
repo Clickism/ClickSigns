@@ -1,6 +1,7 @@
 package me.clickism.clicksigns.gui;
 
 import me.clickism.clicksigns.ClickSigns;
+import me.clickism.clicksigns.network.RoadSignPacket;
 import me.clickism.clicksigns.util.Utils;
 import me.clickism.clicksigns.util.VersionHelper;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
