@@ -70,14 +70,14 @@ publishMods {
         requires("fabric-api")
         minecraftVersions.addAll(mcVersions)
     }
-//    curseforge {
-//        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
-//        projectId.set("1161795")
-//        clientRequired.set(true)
-//        serverRequired.set(true)
-//        requires("fabric-api")
-//        minecraftVersions.addAll(mcVersions)
-//    }
+    curseforge {
+        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+        projectId.set("1161795")
+        clientRequired.set(true)
+        serverRequired.set(true)
+        requires("fabric-api")
+        minecraftVersions.addAll(mcVersions)
+    }
 }
 
 loom {
