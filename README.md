@@ -42,5 +42,5 @@ Then, place it on a wall, on iron bars or anywhere you'd like, then click on the
 - That means, you can create or install custom resourcepacks to have access to new road sign templates. These don't have to be installed on the server, but other players would need to have the same resourcepack installed in order to see them.
 
 ### Licensing
-- This project is licensed under the GPT v3 license.
+- This project is licensed under the GPLv3 license.
 - Refer to LICENSE.md for more information.
