@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.sign.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
@@ -28,11 +27,11 @@ public class RoadSignTemplateParser {
     private static final String TEXTURE_ID_PREFIX = "sign_templates/textures/";
     private static final String DIRECTION_KEY = "{direction}";
 
-    public static void parseAndRegister(InputStream stream) {
+    public static void parseAndRegister(InputStream stream, String namespace) {
         JsonObject rootNode = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
         // Single template
         if (!rootNode.has("templateGenerator")) {
-            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, "", null, new Parameterizer()));
+            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, "", null, new Parameterizer(), namespace));
             return;
         }
         // Use template generator to generate multiple templates
@@ -40,14 +39,14 @@ public class RoadSignTemplateParser {
         Parameterizer parameterizer = parseReplacements(generatorNode);
         if (!generatorNode.has("directions")) {
             // Parse only with replacements
-            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, "", null, parameterizer));
+            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, "", null, parameterizer, namespace));
         }
         JsonArray directionsNode = generatorNode.getAsJsonArray("directions");
         for (JsonElement jsonElement : directionsNode) {
             JsonObject directionNode = jsonElement.getAsJsonObject();
             String direction = directionNode.get("direction").getAsString();
             Set<Arrows> arrows = parseArrows(directionNode.getAsJsonArray("arrows"));
-            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, direction, arrows, parameterizer));
+            RoadSignTemplateRegistration.registerTemplate(parse(rootNode, direction, arrows, parameterizer, namespace));
         }
     }
 
@@ -64,7 +63,8 @@ public class RoadSignTemplateParser {
             JsonObject rootNode,
             @NotNull String direction,
             @Nullable Set<Arrows> arrows,
-            Parameterizer parameterizer
+            Parameterizer parameterizer,
+            String namespace
     ) {
         int width = rootNode.get("width").getAsInt();
         int height = rootNode.get("height").getAsInt();
@@ -78,11 +78,9 @@ public class RoadSignTemplateParser {
             arrows = parseArrows(rootNode.getAsJsonArray("arrows"));
         }
         String author = rootNode.get("author").getAsString();
-        List<RoadSignTexture> textureVariants = parseVariants(
-                rootNode.getAsJsonArray("variants"),
-                direction,
-                parameterizer
-        );
+        JsonArray variantsArray = rootNode.getAsJsonArray("variants");
+
+        List<RoadSignTexture> textureVariants = parseVariants(variantsArray, direction, parameterizer, namespace);
         List<SignTextField> textFields = parseTextPositions(rootNode.getAsJsonArray("textPositions"));
         return new RoadSignTemplate(
                 identifier, name, width, height, textFields, textureVariants, category, arrows, author, pack
@@ -103,7 +101,12 @@ public class RoadSignTemplateParser {
         return arrows;
     }
 
-    private static List<RoadSignTexture> parseVariants(JsonArray variantsNode, String direction, Parameterizer parameterizer) {
+    private static List<RoadSignTexture> parseVariants(
+            JsonArray variantsNode,
+            String direction,
+            Parameterizer parameterizer,
+            String namespace
+    ) {
         List<RoadSignTexture> textureVariants = new ArrayList<>();
         for (JsonElement variantElement : variantsNode) {
             JsonObject variantNode = variantElement.getAsJsonObject();
@@ -117,7 +120,10 @@ public class RoadSignTemplateParser {
             for (int i = 0; i < colorsNode.size(); i++) {
                 colors[i] = colorsNode.get(i).getAsInt();
             }
-            textureVariants.add(new RoadSignTexture(ClickSigns.identifier(front), ClickSigns.identifier(back), colors, variantName));
+            Identifier frontTexture = Identifier.of(namespace, front);
+            Identifier backTexture = Identifier.of(namespace, back);
+            RoadSignTexture roadSignTexture = new RoadSignTexture(frontTexture, backTexture, colors, variantName);
+            textureVariants.add(roadSignTexture);
         }
         return textureVariants;
     }

@@ -30,7 +30,7 @@ public class RoadSignTemplateReloadListener implements SimpleSynchronousResource
                 identifier -> identifier.getPath().endsWith(".json")
         ).forEach((identifier, resource) -> {
             try (InputStream stream = resource.getInputStream()) {
-                RoadSignTemplateParser.parseAndRegister(stream);
+                RoadSignTemplateParser.parseAndRegister(stream, identifier.getNamespace());
             } catch (Exception exception) {
                 ClickSigns.LOGGER.error("Error occurred while loading resource json " + identifier.toString(), exception);
             }
