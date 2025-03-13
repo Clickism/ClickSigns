@@ -1,2 +1,2 @@
-- Fix block placing when right clicking on a road sign.
-- Added 1.20.1 support.
+- Fix external resourcepack textures only loading when the folder name is "clicksigns".
+- Fix missing "Road Sign" item name.
