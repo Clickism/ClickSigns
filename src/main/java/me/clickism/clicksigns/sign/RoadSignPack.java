@@ -6,5 +6,10 @@
 
 package me.clickism.clicksigns.sign;
 
+import net.minecraft.util.Identifier;
+
 public record RoadSignPack(String id, String name) {
+    public Identifier identifier(String path) {
+        return Identifier.of(id, path);
+    }
 }
