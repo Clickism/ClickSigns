@@ -1,2 +1,1 @@
-- Fix external resourcepack textures only loading when the folder name is "clicksigns".
-- Fix missing "Road Sign" item name.
+- Updated to 1.21.5
