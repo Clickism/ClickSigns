@@ -21,6 +21,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class RoadSignBlockEntity extends BlockEntity {
     private RoadSign roadSign = null;
@@ -78,18 +79,36 @@ public class RoadSignBlockEntity extends BlockEntity {
         //?} else {
         /*super.readNbt(nbt);
         *///?}
-        String templateId = nbt.getString("template");
+
+        String templateId = nbt.getString("template")
+                //? if >=1.21.5
+                .orElse("")
+                ;
         if (templateId.isEmpty()) return;
         Identifier id = Identifier.tryParse(templateId);
-        NbtList textsNbtList = nbt.getList("texts", NbtElement.STRING_TYPE);
+        NbtList textsNbtList = nbt.getList("texts"
+                //? if <1.21.5
+                /*, NbtElement.STRING_TYPE*/
+        )
+                //? if >=1.21.5
+                .orElse(null)
+                ;
         List<String> texts = List.of();
         if (textsNbtList != null) {
             texts = textsNbtList.stream()
                     .map(NbtElement::asString)
+                    //? if >=1.21.5
+                    .map(Optional::orElseThrow)
                     .toList();
         }
-        int textureIndex = nbt.getInt("textureIndex");
-        int alignment = nbt.getInt("alignment");
+        int textureIndex = nbt.getInt("textureIndex")
+                //? if >=1.21.5
+                .orElse(0)
+                ;
+        int alignment = nbt.getInt("alignment")
+                //? if >=1.21.5
+                .orElse(RoadSign.Alignment.CENTER.ordinal())
+                ;
         this.roadSign = new RoadSign(id, textureIndex, texts, RoadSign.Alignment.values()[alignment]);
     }
 
