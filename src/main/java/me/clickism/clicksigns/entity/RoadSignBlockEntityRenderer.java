@@ -23,6 +23,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -41,7 +42,10 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
 
     @Override
     public void render(RoadSignBlockEntity entity, float tickDelta, MatrixStack matrices,
-                       VertexConsumerProvider vertexConsumers, int light, int overlay) {
+                       VertexConsumerProvider vertexConsumers, int light, int overlay
+                       //? if >=1.21.5
+                       ,Vec3d cameraPos
+                       ) {
         RoadSign roadSign = entity.getRoadSign();
         if (roadSign == null) {
             RoadSignTemplate first = RoadSignTemplateRegistration.getDefaultTemplate();
