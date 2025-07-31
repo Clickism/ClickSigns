@@ -10,6 +10,7 @@ import me.clickism.clicksigns.gui.RoadSignTemplateSelectionScreen;
 import me.clickism.clicksigns.sign.Arrows;
 import me.clickism.clicksigns.sign.RoadSignTemplate;
 import me.clickism.clicksigns.sign.RoadSignTemplateRegistration;
+import me.clickism.clicksigns.util.VersionHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -110,7 +111,8 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            context.drawTextWithShadow(textRenderer, template.getFormattedName(), x + 5, y + 5, 0xFFFFFF);
+            int color = VersionHelper.normalizeColor(0xFFFFFF);
+            context.drawTextWithShadow(textRenderer, template.getFormattedName(), x + 5, y + 5, color);
         }
 
         @Override

@@ -6,6 +6,7 @@
 
 package me.clickism.clicksigns.sign;
 
+import me.clickism.clicksigns.util.VersionHelper;
 import net.minecraft.util.Identifier;
 
 public class RoadSignTexture {
@@ -37,6 +38,7 @@ public class RoadSignTexture {
         if (colors.length <= index) {
             return 0;
         }
-        return colors[index];
+        int color = colors[index];
+        return VersionHelper.normalizeColor(color);
     }
 }

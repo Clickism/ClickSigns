@@ -17,4 +17,11 @@ public class VersionHelper {
         //?} else
         /*return new IconWidget(x, y, iconWidth, iconHeight, texture);*/
     }
+
+    public static int normalizeColor(int color) {
+        //? if >=1.21.6 {
+        return 0xFF000000 | color;
+        //?} else
+        /*return color;*/
+    }
 }

@@ -75,9 +75,11 @@ public record RoadSignPacket(
                 PacketByteBuf buf, PacketSender packetSender
                 *//*?}*/
     ) {
-            //? if >=1.20.5 {
-            ServerWorld world = context.player().getServerWorld();
-            //?} else {
+            //? if >=1.21.6 {
+            ServerWorld world = context.player().getWorld();
+            //?} elif >=1.20.5 {
+            /*ServerWorld world = context.player().getServerWorld();
+            *///?} else {
             /*ServerWorld world = player.getServerWorld();
             RoadSignPacket packet = fromPacketByteBuf(buf);
             *///?}
