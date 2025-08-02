@@ -12,6 +12,7 @@ base {
 
 repositories {
     gradlePluginPortal()
+    mavenCentral()
 }
 
 fabricApi {
@@ -25,6 +26,11 @@ dependencies {
     mappings("net.fabricmc:yarn:${property("deps.yarn_mappings")}:v2")
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation(include("de.clickism:modrinth-update-checker:1.0")!!)
+    // Configured
+    val configuredVersion = "0.2.4"
+    implementation(include("de.clickism:configured-core:${configuredVersion}")!!)
+    implementation(include("de.clickism:configured-json:${configuredVersion}")!!)
 }
 
 tasks.processResources {
