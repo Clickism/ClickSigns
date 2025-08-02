@@ -83,7 +83,10 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
         Matrix4f positionMatrix = entry.getPositionMatrix();
         Matrix3f normalMatrix = entry.getNormalMatrix();
 
-        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(texture));
+        //? if >=1.21.6 {
+        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture));
+        //?} else
+        /*VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(texture));*/
 
         float width = template.getWidth();
         float height = template.getHeight();
