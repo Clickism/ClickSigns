@@ -6,13 +6,14 @@
 
 package me.clickism.clicksigns.entity;
 
+import com.mojang.serialization.Codec;
 import me.clickism.clicksigns.sign.RoadSign;
-import me.clickism.clicksigns.util.nbt.NbtHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -29,6 +30,11 @@ import net.minecraft.storage.WriteView;
 //?}
 
 public class RoadSignBlockEntity extends BlockEntity {
+    private static final String TEMPLATE_KEY = "template";
+    private static final String TEXTS_KEY = "texts";
+    private static final String TEXTURE_INDEX_KEY = "textureIndex";
+    private static final String ALIGNMENT_KEY = "alignment";
+
     private RoadSign roadSign = null;
 
     public RoadSignBlockEntity(BlockPos pos, BlockState state) {
@@ -56,59 +62,90 @@ public class RoadSignBlockEntity extends BlockEntity {
 
     @Override
     //? if >=1.21.6 {
-    protected void writeData(WriteView readView) {
+    protected void writeData(WriteView nbt) {
     //?} elif >=1.20.5 {
     /*protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
     *///?} else {
     /*public void writeNbt(NbtCompound nbt) {
     *///?}
         //? if >=1.21.6 {
-        super.writeData(readView);
+        super.writeData(nbt);
         //?} elif >=1.20.5 {
         /*super.writeNbt(nbt, registryLookup);
         *///?} else {
         /*super.writeNbt(nbt);
         *///?}
-        //? if >=1.21.6 {
-        NbtHelper helper = NbtHelper.create(readView, null);
-         //?} else
-        /*NbtHelper helper = NbtHelper.create(nbt);*/
         if (roadSign == null) return;
-        helper.put("template", roadSign.templateId().toString());
-        helper.putStringList("texts", roadSign.getTexts());
-        helper.put("textureIndex", roadSign.getTextureIndex());
-        helper.put("alignment", roadSign.getAlignment().ordinal());
+        //? if <1.21.6 {
+        /*NbtList list = new NbtList();
+        List<NbtString> roadSignTexts = roadSign.getTexts()
+                .stream()
+                .map(NbtString::of)
+                .toList();
+        list.addAll(roadSignTexts);
+        *///?}
+        // Write Nbt
+        nbt.putString(TEMPLATE_KEY, roadSign.templateId().toString());
+        nbt.putInt(TEXTURE_INDEX_KEY, roadSign.getTextureIndex());
+        nbt.putInt(ALIGNMENT_KEY, roadSign.getAlignment().ordinal());
+        // Write List
+        //? if >=1.21.6 {
+        nbt.remove(TEXTS_KEY);
+        var appender = nbt.getListAppender(TEXTS_KEY, Codec.STRING);
+        roadSign.getTexts().forEach(appender::add);
+        //?} else
+        /*nbt.put(TEXTS_KEY, list);*/
     }
-
-
 
     @Override
     //? if >=1.21.6 {
     protected void readData(ReadView readView) {
     //?} elif >=1.20.5 {
-    /*protected void readNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup registryLookup) {
+    /*protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
     *///?} else {
-    /*public void readNbt(NbtCompound nbtCompound) {
-    *///?}
+    /*public void readNbt(NbtCompound nbt) {
+     *///?}
         //? if >=1.21.6 {
         super.readData(readView);
-        //?} elif >=1.20.5 {
-        /*super.readNbt(nbtCompound, registryLookup);
+         //?} elif >=1.20.5 {
+        /*super.readNbt(nbt, registryLookup);
         *///?} else {
-        /*super.readNbt(nbtCompound);
+        /*super.readNbt(nbt);
+         *///?}
+        int defaultAlignment = RoadSign.Alignment.CENTER.ordinal();
+
+        // Read Nbt
+        //? if >=1.21.6 {
+        String templateId = readView.getString(TEMPLATE_KEY, "");
+        List<String> texts = readView.getTypedListView(TEXTS_KEY, Codec.STRING)
+                .stream()
+                .toList();
+        int textureIndex = readView.getInt(TEXTURE_INDEX_KEY, 0);
+        int alignment = readView.getInt(ALIGNMENT_KEY, defaultAlignment);
+        //?} elif >=1.21.5 {
+        /*String templateId = nbt.getString(TEMPLATE_KEY).orElse("");
+        List<String> texts = getTextsFromNbt(nbt.getListOrEmpty(TEXTS_KEY));
+        int textureIndex = nbt.getInt(TEXTURE_INDEX_KEY).orElse(0);
+        int alignment = nbt.getInt(ALIGNMENT_KEY).orElse(defaultAlignment);
+        *///?} else {
+        /*String templateId = nbt.getString(TEMPLATE_KEY);
+        List<String> texts = getTextsFromNbt(nbt.getList(TEXTS_KEY, NbtElement.STRING_TYPE));
+        int textureIndex = nbt.getInt(TEXTURE_INDEX_KEY);
+        int alignment = nbt.getInt(ALIGNMENT_KEY);
         *///?}
 
-        //? if >=1.21.6 {
-        NbtHelper helper = NbtHelper.create(null, readView);
-        //?} else
-        /*NbtHelper helper = NbtHelper.create(nbtCompound);*/
-        String templateId = helper.getOrDefault("template", "");
+        // Parse
         if (templateId.isEmpty()) return;
         Identifier id = Identifier.tryParse(templateId);
-        List<String> texts = helper.getStringList("texts");
-        int textureIndex = helper.getOrDefault("textureIndex", 0);
-        int alignment = helper.getOrDefault("alignment", RoadSign.Alignment.CENTER.ordinal());
         this.roadSign = new RoadSign(id, textureIndex, texts, RoadSign.Alignment.values()[alignment]);
+    }
+
+    private List<String> getTextsFromNbt(NbtList nbtList) {
+        return nbtList.stream()
+                .map(NbtElement::asString)
+                //? if >=1.21.5
+                .map(Optional::orElseThrow)
+                .toList();
     }
 
     @Override

@@ -10,6 +10,8 @@ import me.clickism.clicksigns.network.RoadSignPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector2f;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public final class RoadSign {
@@ -27,7 +29,7 @@ public final class RoadSign {
     ) {
         this.templateId = templateId;
         this.textureIndex = textureIndex;
-        this.texts = texts;
+        this.texts = new ArrayList<>(texts);
         this.alignment = alignment;
     }
 
