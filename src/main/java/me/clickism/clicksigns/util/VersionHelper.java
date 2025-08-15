@@ -16,22 +16,22 @@ public class VersionHelper {
     
     public static IconWidget createIconWidget(int x, int y, Identifier texture, int iconWidth, int iconHeight) {
         //? if >=1.20.5 {
-        return IconWidget.create(x, y, texture, iconWidth, iconHeight);
-        //?} else
-        /*return new IconWidget(x, y, iconWidth, iconHeight, texture);*/
+        /*return IconWidget.create(x, y, texture, iconWidth, iconHeight);
+        *///?} else
+        return new IconWidget(x, y, iconWidth, iconHeight, texture);
     }
 
     public static int normalizeColor(int color) {
         //? if >=1.21.6 {
-        return 0xFF000000 | color;
-        //?} else
-        /*return color;*/
+        /*return 0xFF000000 | color;
+        *///?} else
+        return color;
     }
 
     public static void playSound(PlayerEntity player, SoundEvent soundEvent, SoundCategory category, float volume, float pitch) {
         //? if >=1.21.1 {
-        player.playSoundToPlayer(soundEvent, category, volume, pitch);
-        //?} else
-        /*player.playSound(soundEvent, category, volume, pitch);*/
+        /*player.playSoundToPlayer(soundEvent, category, volume, pitch);
+        *///?} else
+        player.playSound(soundEvent, category, volume, pitch);
     }
 }

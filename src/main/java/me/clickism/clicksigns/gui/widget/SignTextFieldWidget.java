@@ -29,8 +29,8 @@ public class SignTextFieldWidget extends TextFieldWidget {
                                float iconScale, TextRenderer textRenderer) {
         super(textRenderer,
                 //? if <1.20.5 {
-                /*0, 0,
-                *///?}
+                0, 0,
+                //?}
                 (int) (signTextField.maxWidth * iconScale),
                 (int) (TEXT_FIELD_HEIGHT * iconScale * signTextField.scale),
                 Text.empty());

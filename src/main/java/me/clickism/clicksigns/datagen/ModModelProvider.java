@@ -6,19 +6,22 @@
 
 package me.clickism.clicksigns.datagen;
 
+
 //? if <=1.21.1 {
-/*import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
-*///?} else {
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+//?} else {
+/*import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.ItemModelGenerator;
 import net.minecraft.client.data.Models;
-//?}
+*///?}
 import me.clickism.clicksigns.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+
+import static me.clickism.clicksigns.ClickSigns.unwrap;
 
 public class ModModelProvider extends FabricModelProvider {
     public ModModelProvider(FabricDataOutput output) {
@@ -27,11 +30,11 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerSimpleCubeAll(ModBlocks.ROAD_SIGN);
+        blockStateModelGenerator.registerSimpleCubeAll(unwrap(ModBlocks.ROAD_SIGN));
     }
 
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        itemModelGenerator.register(ModBlocks.ROAD_SIGN.asItem(), Models.GENERATED);
+        itemModelGenerator.register(unwrap(ModBlocks.ROAD_SIGN).asItem(), Models.GENERATED);
     }
 }

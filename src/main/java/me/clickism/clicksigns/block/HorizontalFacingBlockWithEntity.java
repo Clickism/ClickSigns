@@ -7,10 +7,10 @@
 package me.clickism.clicksigns.block;
 
 //? if >=1.21.2 {
-import net.minecraft.state.property.EnumProperty;
-//?} else {
-/*import net.minecraft.state.property.DirectionProperty;
-*///?}
+/*import net.minecraft.state.property.EnumProperty;
+*///?} else {
+import net.minecraft.state.property.DirectionProperty;
+//?}
 
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
@@ -26,36 +26,36 @@ import net.minecraft.util.math.Direction;
 
 public abstract class HorizontalFacingBlockWithEntity extends BlockWithEntity {
     //? if >=1.21.2 {
-    public static final EnumProperty<Direction>FACING = Properties.HORIZONTAL_FACING;
-    //?} else {
-    /*public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    *///?}
+    /*public static final EnumProperty<Direction>FACING = Properties.HORIZONTAL_FACING;
+    *///?} else {
+    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    //?}
 
     protected HorizontalFacingBlockWithEntity(Settings settings) {
         super(settings);
     }
 
     //? if >=1.20.5 {
-    @Override
+    /*@Override
     protected abstract MapCodec<? extends BlockWithEntity> getCodec();
-    //?}
+    *///?}
 
     @Override
     //? if >=1.20.5 {
-    protected
-     //?} else {
-    /*public
-    *///?}
+    /*protected
+     *///?} else {
+    public
+    //?}
     BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
     //? if >=1.20.5 {
-    protected
-     //?} else {
-    /*public
-    *///?}
+    /*protected
+     *///?} else {
+    public
+    //?}
     BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }

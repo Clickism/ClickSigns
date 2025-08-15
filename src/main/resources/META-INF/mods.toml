@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="*"
+license="GPL-3.0"
+issueTrackerURL="https://github.com/Clickism/ClickSigns/issues"
+showAsResourcePack=false
+
+[[mods]]
+modId="clicksigns"
+version="${forgeVersion}"
+displayName="ClickSigns"
+logoFile="assets/clicksigns/icon.png"
+authors="Clickism"
+description="An innovative mod that lets you create custom highway & street signs!"
+
+[[dependencies.clicksigns]]
+modId="forge"
+mandatory=true
+versionRange="*"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.clicksigns]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,)"
+ordering="NONE"
+side="BOTH"

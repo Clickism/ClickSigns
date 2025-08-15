@@ -7,19 +7,19 @@
 package me.clickism.clicksigns.network;
 
 //? if >=1.20.5 {
-import net.minecraft.network.RegistryByteBuf;
+/*import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
-//?} else {
-/*import net.fabricmc.fabric.api.networking.v1.PacketSender;
+*///?} else {
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-*///?}
+//?}
 
 import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.entity.RoadSignBlockEntity;
@@ -39,10 +39,10 @@ public record RoadSignPacket(
         int textureIndex,
         List<String> texts,
         int alignment
-) /*? if >=1.20.5 {*/ implements CustomPayload /*?}*/ {
+) /*? if >=1.20.5 {*/ /*implements CustomPayload *//*?}*/ {
     public static final Identifier PACKET_ID = ClickSigns.identifier("road_sign");
     //? if >=1.20.5 {
-    public static final Id<RoadSignPacket> PAYLOAD_ID = new Id<>(PACKET_ID);
+    /*public static final Id<RoadSignPacket> PAYLOAD_ID = new Id<>(PACKET_ID);
 
     @Override
     public Id<? extends CustomPayload> getId() {
@@ -57,42 +57,42 @@ public record RoadSignPacket(
             PacketCodecs.INTEGER, RoadSignPacket::alignment,
             RoadSignPacket::new
     );
-    //?}
+    *///?}
     
     public static class ServerHandler implements 
             /*? if >=1.20.5 {*/ 
-            ServerPlayNetworking.PlayPayloadHandler<RoadSignPacket>
-            /*?} else {*/ 
-            /*ServerPlayNetworking.PlayChannelHandler 
-            *//*?}*/
+            /*ServerPlayNetworking.PlayPayloadHandler<RoadSignPacket>
+            *//*?} else {*/ 
+            ServerPlayNetworking.PlayChannelHandler 
+            /*?}*/
     {
         @Override
         public void receive(
                 /*? if >=1.20.5 {*/ 
-                RoadSignPacket packet, ServerPlayNetworking.Context context
-                /*?} else {*/ 
-                /*MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
+                /*RoadSignPacket packet, ServerPlayNetworking.Context context
+                *//*?} else {*/ 
+                MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
                 PacketByteBuf buf, PacketSender packetSender
-                *//*?}*/
+                /*?}*/
     ) {
             //? if >=1.21.6 {
-            ServerWorld world = context.player().getWorld();
-            //?} elif >=1.20.5 {
+            /*ServerWorld world = context.player().getWorld();
+            *///?} elif >=1.20.5 {
             /*ServerWorld world = context.player().getServerWorld();
             *///?} else {
-            /*ServerWorld world = player.getServerWorld();
+            ServerWorld world = player.getServerWorld();
             RoadSignPacket packet = fromPacketByteBuf(buf);
-            *///?}
+            //?}
             world.getServer().execute(() -> {
                 if (world.getBlockEntity(packet.pos()) instanceof RoadSignBlockEntity entity) {
                     if (packet.identifier().equals(ClickSigns.ERROR_TEMPLATE_ID)) return;
                     entity.setRoadSign(packet.toRoadSign());
                     PlayerLookup.world(world).forEach(p ->
                                     //? if >=1.20.5 {
-                                    ServerPlayNetworking.send(p, packet)
-                                     //?} else {
-                                    /*ServerPlayNetworking.send(p, PACKET_ID, packet.toPacketByteBuf())
-                            *///?}
+                                    /*ServerPlayNetworking.send(p, packet)
+                                     *///?} else {
+                                    ServerPlayNetworking.send(p, PACKET_ID, packet.toPacketByteBuf())
+                            //?}
                     );
                 }
             });
@@ -101,23 +101,23 @@ public record RoadSignPacket(
 
     public static class ClientHandler implements
             /*? if >=1.20.5 {*/ 
-            ClientPlayNetworking.PlayPayloadHandler<RoadSignPacket>
-            /*?} else {*/ 
-            /*ClientPlayNetworking.PlayChannelHandler 
-            *//*?}*/
+            /*ClientPlayNetworking.PlayPayloadHandler<RoadSignPacket>
+            *//*?} else {*/ 
+            ClientPlayNetworking.PlayChannelHandler 
+            /*?}*/
     {
         @Override
         public void receive(
                 /*? if >=1.20.5 {*/ 
-                RoadSignPacket packet, ClientPlayNetworking.Context context
-                /*?} else {*/
-                /*MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender packetSender
-                *//*?}*/
+                /*RoadSignPacket packet, ClientPlayNetworking.Context context
+                *//*?} else {*/
+                MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender packetSender
+                /*?}*/
         ) {
             //? if >=1.20.5
-            MinecraftClient client = context.client();
+            /*MinecraftClient client = context.client();*/
             //? if <1.20.5
-            /*RoadSignPacket packet = fromPacketByteBuf(buf);*/
+            RoadSignPacket packet = fromPacketByteBuf(buf);
             client.execute(() -> {
                 if (client.world == null) return;
                 if (client.world.getBlockEntity(packet.pos()) instanceof RoadSignBlockEntity entity) {
@@ -128,7 +128,7 @@ public record RoadSignPacket(
     }
     
     //? if <1.20.5 {
-    /*public PacketByteBuf toPacketByteBuf() {
+    public PacketByteBuf toPacketByteBuf() {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBlockPos(pos);
         buf.writeIdentifier(identifier);
@@ -147,7 +147,7 @@ public record RoadSignPacket(
                 buf.readInt()
         );
     }
-    *///?}
+    //?}
 
     public RoadSign toRoadSign() {
         return new RoadSign(identifier, textureIndex, texts, RoadSign.Alignment.values()[alignment]);

@@ -1,15 +1,11 @@
 /*
- * Copyright 2020-2025 Clickism
+ * Copyright 2025 Clickism
  * Released under the GNU General Public License 3.0.
  * See LICENSE.md for details.
  */
 
-package me.clickism.clicksigns;
+package me.clickism.clicksigns.datagen;
 
-import me.clickism.clicksigns.datagen.ModBlockTagProvider;
-import me.clickism.clicksigns.datagen.ModLootTableProvider;
-import me.clickism.clicksigns.datagen.ModModelProvider;
-import me.clickism.clicksigns.datagen.ModRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 

@@ -16,7 +16,7 @@ public abstract class RoadSignScreen extends Screen {
     }
 
     //? if <1.20.5 {
-    /*@Override
+    @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
@@ -26,5 +26,5 @@ public abstract class RoadSignScreen extends Screen {
     public void renderBackground(DrawContext context) {
         context.fillGradient(0, 0, this.width, this.height, -0x4FEFEFF0, -0x3FEFEFF0);
     }
-    *///?}
+    //?}
 }

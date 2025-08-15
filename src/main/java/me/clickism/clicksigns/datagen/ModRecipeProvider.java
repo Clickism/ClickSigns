@@ -7,14 +7,14 @@
 package me.clickism.clicksigns.datagen;
 
 //? if >=1.21.2 {
-import net.minecraft.data.recipe.RecipeExporter;
+/*import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.*;
-//?} elif >=1.20.5 {
+*///?} elif >=1.20.5 {
 /*import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
@@ -22,10 +22,10 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.registry.*;
 *///?} else {
-/*import java.util.function.Consumer;
+import java.util.function.Consumer;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-*///?}
+//?}
 
 import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.block.ModBlocks;
@@ -35,19 +35,21 @@ import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.tag.ItemTags;
 
+import static me.clickism.clicksigns.ClickSigns.unwrap;
+
 public class ModRecipeProvider extends FabricRecipeProvider {
     public ModRecipeProvider(FabricDataOutput output
              //? if >=1.20.5
-            , CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture
+            /*, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture*/
     ) {
         super(output
                 //? if >=1.20.5
-                , registriesFuture
+                /*, registriesFuture*/
         );
     }
     
     //? if >=1.21.2 {
-    @Override
+    /*@Override
     protected RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup wrapperLookup, RecipeExporter recipeExporter) {
         return new RecipeGenerator(wrapperLookup, recipeExporter) {
             @Override
@@ -68,16 +70,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     public String getName() {
         return ClickSigns.identifier("recipes").toString();
     }
-    //?} else {
-    /*@Override
+    *///?} else {
+    @Override
     public void generate(
             //? if >=1.20.5 {
-            RecipeExporter recipeExporter
-            //?} else {
-            /^Consumer<RecipeJsonProvider> recipeExporter
-            ^///?}
+            /*RecipeExporter recipeExporter
+            *///?} else {
+            Consumer<RecipeJsonProvider> recipeExporter
+            //?}
     ) {
-        ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, ModBlocks.ROAD_SIGN, 4)
+        ShapedRecipeJsonBuilder.create(RecipeCategory.DECORATIONS, unwrap(ModBlocks.ROAD_SIGN), 4)
                 .pattern("###")
                 .pattern("#*#")
                 .pattern("###")
@@ -86,5 +88,5 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
                 .offerTo(recipeExporter, ClickSigns.identifier("road_sign"));
     }
-    *///?}
+    //?}
 }
