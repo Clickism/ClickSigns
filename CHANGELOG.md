@@ -1,1 +1,2 @@
 - Ported to Forge 1.20.1
+- Fix: Transparent textures not rendering properly.
