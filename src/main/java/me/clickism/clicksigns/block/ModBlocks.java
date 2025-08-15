@@ -17,19 +17,19 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 //? if forge {
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+/*import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-//?}
+*///?}
 
 public class ModBlocks {
 
     //? if fabric {
-    /*public static final Block ROAD_SIGN = registerBlock("road_sign",
+    public static final Block ROAD_SIGN = registerBlock("road_sign",
             new RoadSignBlock(AbstractBlock.Settings.copy(Blocks.STONE)
                     //? if >=1.21.2
-                    /^.registryKey(RegistryKey.of(RegistryKeys.BLOCK, ClickSigns.identifier("road_sign")))^/
+                    .registryKey(RegistryKey.of(RegistryKeys.BLOCK, ClickSigns.identifier("road_sign")))
             ));
 
     private static Block registerBlock(String id, Block block) {
@@ -43,14 +43,14 @@ public class ModBlocks {
                 ClickSigns.identifier(id),
                 new BlockItem(block, new Item.Settings()
                     //? if >=1.21.2
-                    /^.registryKey(RegistryKey.of(RegistryKeys.ITEM, ClickSigns.identifier(id)))^/
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, ClickSigns.identifier(id)))
                 )
         );
     }
-    *///?}
+    //?}
 
     //? if forge {
-    public static final DeferredRegister<Block> BLOCKS =
+    /*public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, ClickSigns.MOD_ID);
 
     public static final DeferredRegister<Item> ITEMS =
@@ -63,12 +63,12 @@ public class ModBlocks {
     public static final RegistryObject<Item> ROAD_SIGN_ITEM = ITEMS.register("road_sign",
             () -> new BlockItem(ROAD_SIGN.get(), new Item.Settings())
     );
-    //?}
+    *///?}
 
     public static void registerBlocks() {
         //? if forge {
-        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        /*BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        //?}
+        *///?}
     }
 }

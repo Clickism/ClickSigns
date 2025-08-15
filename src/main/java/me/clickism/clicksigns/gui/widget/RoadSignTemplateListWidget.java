@@ -39,12 +39,12 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
             int itemHeight,
             RoadSignTemplateSelectionScreen parent
     ) {
-        super(client, width, height, y, /*? if <1.20.5 {*/ height,/*?}*/ itemHeight);
+        super(client, width, height, y, /*? if <1.20.5 {*/ /*height,*//*?}*/ itemHeight);
         this.parent = parent;
         //? if <1.20.5 {
-        setRenderBackground(false);
+        /*setRenderBackground(false);
         setRenderHorizontalShadows(false);
-        //?}
+        *///?}
     }
 
     public void filter(
@@ -66,7 +66,7 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     }
 
     @Override
-    public int /*? if >=1.20.5 {*/ /*getScrollbarX() *//*?} else {*/ getScrollbarPositionX() /*?}*/ {
+    public int /*? if >=1.20.5 {*/ getScrollbarX() /*?} else {*/ /*getScrollbarPositionX() *//*?}*/ {
         return this.width - 6;
     }
 
@@ -82,23 +82,23 @@ public class RoadSignTemplateListWidget extends EntryListWidget<RoadSignTemplate
     }
 
     //? if >=1.20.5 {
-    /*@Override
+    @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
-    *///?} else {
-    @Override
+    //?} else {
+    /*@Override
     public void appendNarrations(NarrationMessageBuilder builder) {
     }
-    //?}
+    *///?}
 
     //? if <1.20.5 {
-    @Override
+    /*@Override
     protected void renderBackground(DrawContext context) {
         context.fillGradient(0, this.top, this.width, this.height, -0x8FEFEFF0, -0x6FEFEFF0);
         context.fillGradient(RenderLayer.getGuiOverlay(), this.left, this.top, this.right, this.top + 4, -16777216, 0, 0);
         context.fillGradient(RenderLayer.getGuiOverlay(), this.left, this.bottom - 4, this.right, this.bottom, 0, -16777216, 0);
     }
-    //?}
+    *///?}
 
     public static class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         public final RoadSignTemplate template;

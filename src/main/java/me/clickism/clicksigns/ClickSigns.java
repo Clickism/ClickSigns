@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 //? if forge
-import net.minecraftforge.registries.RegistryObject;
+/*import net.minecraftforge.registries.RegistryObject;*/
 
 public class ClickSigns {
     public static final String MOD_ID = "clicksigns";
@@ -31,9 +31,9 @@ public class ClickSigns {
                 .map(container -> container.getMetadata().getVersion().getFriendlyString())
                 .orElse(null);
         //? if >= 1.21.6 {
-        /*String minecraftVersion = MinecraftVersion.CURRENT.name();
-        *///?} else
-        String minecraftVersion = MinecraftVersion.CURRENT.getName();
+        String minecraftVersion = MinecraftVersion.CURRENT.name();
+        //?} else
+        /*String minecraftVersion = MinecraftVersion.CURRENT.getName();*/
         new ModrinthUpdateChecker(ClickSigns.MOD_ID, "fabric", minecraftVersion).checkVersion(version -> {
             if (modVersion == null || ModrinthUpdateChecker.getRawVersion(modVersion).equals(version)) {
                 return;
@@ -44,13 +44,13 @@ public class ClickSigns {
     }
 
     //? if fabric {
-    /*public static <T> T unwrap(T block) {
+    public static <T> T unwrap(T block) {
         return block;
     }
-    *///?}
+    //?}
     //? if forge {
-    public static <T> T unwrap(RegistryObject<T> block) {
+    /*public static <T> T unwrap(RegistryObject<T> block) {
         return block.get();
     }
-    //?}
+    *///?}
 }

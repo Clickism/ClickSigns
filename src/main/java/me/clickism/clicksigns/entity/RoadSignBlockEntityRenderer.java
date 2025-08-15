@@ -44,7 +44,7 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
     public void render(RoadSignBlockEntity entity, float tickDelta, MatrixStack matrices,
                        VertexConsumerProvider vertexConsumers, int light, int overlay
                        //? if >=1.21.5
-                       /*,Vec3d cameraPos*/
+                       ,Vec3d cameraPos
                        ) {
         RoadSign roadSign = entity.getRoadSign();
         if (roadSign == null) {
@@ -65,9 +65,9 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
         Direction direction = entity.getCachedState().get(Properties.HORIZONTAL_FACING);
         matrices.translate(0.5, 0.5, 0.5);
         //? if >1.21.2 {
-        /*matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.getPositiveHorizontalDegrees())));
-        *///?} else
-        matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.asRotation())));
+        matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.getPositiveHorizontalDegrees())));
+        //?} else
+        /*matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-direction.asRotation())));*/
         matrices.translate(0, 0, .5f - Z_FIGHTING_OFFSET);
         float halfWidth = (float) template.getWidth() / 2 - .5f;
         float halfHeight = (float) template.getHeight() / 2 - .5f;
@@ -122,11 +122,11 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
                 .light(light)
                 .normal(
                         //? if <1.20.5 {
-                        normalMatrix, xAxis ? 1f : 0f, 0f, xAxis ? 0f : 1f)
-                        //?} else
-                        /*0f, 0f, 1f)*/
+                        /*normalMatrix, xAxis ? 1f : 0f, 0f, xAxis ? 0f : 1f)
+                        *///?} else
+                        0f, 0f, 1f)
                 //? if <1.20.5
-                .next()
+                /*.next()*/
         ;
     }
 

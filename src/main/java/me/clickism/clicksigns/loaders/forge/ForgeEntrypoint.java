@@ -4,7 +4,7 @@
  * See LICENSE.md for details.
  */
 //? if forge {
-package me.clickism.clicksigns.loaders.forge;
+/*package me.clickism.clicksigns.loaders.forge;
 
 import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.block.ModBlocks;
@@ -35,12 +35,12 @@ public class ForgeEntrypoint {
         ModBlockEntityTypes.initialize();
 
         //? if >=1.20.5 {
-        /*PayloadTypeRegistry.playS2C().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ServerHandler());
-        *///?} else {
-        ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ServerHandler());
-        //?}
+        //?} else {
+        /^ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ServerHandler());
+        ^///?}
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
                 new RoadSignTemplateReloadListener()
         );
@@ -61,10 +61,10 @@ public class ForgeEntrypoint {
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             //? if >=1.20.5 {
-            /*ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ClientHandler());
-             *///?} else
-            ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ClientHandler());
+            ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ClientHandler());
+             //?} else
+            /^ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ClientHandler());^/
         }
     }
 }
-//?}
+*///?}

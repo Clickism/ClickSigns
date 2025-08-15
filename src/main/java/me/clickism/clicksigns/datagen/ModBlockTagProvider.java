@@ -24,11 +24,11 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
         //? if >=1.21.6 {
-        /*valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
+        valueLookupBuilder(BlockTags.PICKAXE_MINEABLE)
                 .add(ModBlocks.ROAD_SIGN);
-        *///?} else {
-        getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+        //?} else {
+        /*getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
                 .add(unwrap(ModBlocks.ROAD_SIGN));
-        //?}
+        *///?}
     }
 }

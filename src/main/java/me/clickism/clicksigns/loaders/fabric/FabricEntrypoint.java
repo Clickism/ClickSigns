@@ -7,9 +7,9 @@
 package me.clickism.clicksigns.loaders.fabric;
 
 //? if fabric {
-/*//? if >=1.20.5 {
-/^import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-^///?}
+//? if >=1.20.5 {
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+//?}
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import me.clickism.clicksigns.ClickSigns;
 import me.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
@@ -38,12 +38,12 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
 
         ModBlockEntityTypes.initialize();
         //? if >=1.20.5 {
-        /^PayloadTypeRegistry.playS2C().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RoadSignPacket.PAYLOAD_ID, RoadSignPacket.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ServerHandler());
-        ^///?} else {
-        ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ServerHandler());
-        //?}
+        //?} else {
+        /*ServerPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ServerHandler());
+        *///?}
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(
                 new RoadSignTemplateReloadListener()
         );
@@ -58,9 +58,9 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
     public void onInitializeClient() {
         BlockEntityRendererFactories.register(ModBlockEntityTypes.ROAD_SIGN, RoadSignBlockEntityRenderer::new);
         //? if >=1.20.5 {
-        /^ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ClientHandler());
-        ^///?} else
-        ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ClientHandler());
+        ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PAYLOAD_ID, new RoadSignPacket.ClientHandler());
+        //?} else
+        /*ClientPlayNetworking.registerGlobalReceiver(RoadSignPacket.PACKET_ID, new RoadSignPacket.ClientHandler());*/
     }
 }
-*///?}
+//?}

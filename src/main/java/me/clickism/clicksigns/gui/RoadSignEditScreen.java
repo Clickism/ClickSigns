@@ -154,10 +154,10 @@ public class RoadSignEditScreen extends RoadSignScreen {
                     if (!builder.templateId().equals(ClickSigns.ERROR_TEMPLATE_ID)) {
                         builder.texts(readEditorTexts());
                         //? if >=1.20.5 {
-                        /*ClientPlayNetworking.send(builder.build().toPacket(entity.getPos()));
-                        *///?} else {
-                        ClientPlayNetworking.send(RoadSignPacket.PACKET_ID, builder.build().toPacket(entity.getPos()).toPacketByteBuf());
-                        //?}
+                        ClientPlayNetworking.send(builder.build().toPacket(entity.getPos()));
+                        //?} else {
+                        /*ClientPlayNetworking.send(RoadSignPacket.PACKET_ID, builder.build().toPacket(entity.getPos()).toPacketByteBuf());
+                        *///?}
                     }
                     this.close();
                 }).size(BUTTON_WIDTH, BUTTON_HEIGHT).build());
