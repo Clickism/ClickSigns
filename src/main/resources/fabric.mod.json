@@ -19,7 +19,7 @@
           "me.clickism.clicksigns.loaders.fabric.FabricEntrypoint"
 		],
 		"client": [
-          "me.clickism.clicksigns.loaders.fabric.FabricEntrypoint"
+          "me.clickism.clicksigns.loaders.fabric.FabricClientEntrypoint"
 		],
 		"fabric-datagen": [
           "me.clickism.clicksigns.datagen.ClickSignsDataGenerator"
