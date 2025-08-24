@@ -16,13 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-          "me.clickism.clicksigns.loaders.fabric.FabricEntrypoint"
+          "de.clickism.clicksigns.loaders.fabric.FabricEntrypoint"
 		],
 		"client": [
-          "me.clickism.clicksigns.loaders.fabric.FabricClientEntrypoint"
+          "de.clickism.clicksigns.loaders.fabric.FabricClientEntrypoint"
 		],
 		"fabric-datagen": [
-          "me.clickism.clicksigns.datagen.ClickSignsDataGenerator"
+          "de.clickism.clicksigns.datagen.ClickSignsDataGenerator"
 		]
 	},
 	"mixins": [],
