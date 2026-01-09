@@ -1,0 +1,120 @@
+---- Minecraft Crash Report ----
+// On the bright side, I bought you a teddy bear!
+
+Time: 2026-01-09 18:02:47
+Description: Initializing game
+
+java.lang.NullPointerException: Initializing game
+	at java.base/java.util.Objects.requireNonNull(Objects.java:233) ~[?:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.PreparableReloadListener$SharedState.get(PreparableReloadListener.java:44) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.resources.model.ModelManager.reload(ModelManager.java:110) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance$StateFactory.lambda$static$0(SimpleReloadInstance.java:145) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.prepareTasks(SimpleReloadInstance.java:86) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.startTasks(SimpleReloadInstance.java:50) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.of(SimpleReloadInstance.java:33) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.create(SimpleReloadInstance.java:140) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.ReloadableResourceManager.createReload(ReloadableResourceManager.java:50) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {neoforge:access_transformer}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.Minecraft.<init>(Minecraft.java:678) [neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.main.Main.main(Main.java:214) [neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at net.neoforged.fml.startup.Client.main(Client.java:19) [loader-10.0.36.jar:10.0] {}
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?] {}
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?] {}
+	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at java.base/java.util.Objects.requireNonNull(Objects.java:233) ~[?:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.PreparableReloadListener$SharedState.get(PreparableReloadListener.java:44) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.resources.model.ModelManager.reload(ModelManager.java:110) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance$StateFactory.lambda$static$0(SimpleReloadInstance.java:145) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.prepareTasks(SimpleReloadInstance.java:86) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.startTasks(SimpleReloadInstance.java:50) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.of(SimpleReloadInstance.java:33) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.SimpleReloadInstance.create(SimpleReloadInstance.java:140) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.server.packs.resources.ReloadableResourceManager.createReload(ReloadableResourceManager.java:50) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {neoforge:access_transformer}
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.Minecraft.<init>(Minecraft.java:678) ~[neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+-- Initialization --
+Details:
+	Modules: 
+Stacktrace:
+	at TRANSFORMER/minecraft@1.21.11/net.minecraft.client.main.Main.main(Main.java:214) [neoforge-21.11.26-beta-client-extra-aka-minecraft-resources.jar:?] {}
+	at net.neoforged.fml.startup.Client.main(Client.java:19) [loader-10.0.36.jar:10.0] {}
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?] {}
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?] {}
+	at net.neoforged.devlaunch.Main.main(Main.java:57) [DevLaunch-1.0.2.jar:?] {}
+
+
+-- System Details --
+Details:
+	Minecraft Version: 1.21.11
+	Minecraft Version ID: 1.21.11
+	Operating System: Mac OS X (aarch64) version 26.1
+	Java Version: 21.0.5, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode, sharing), Oracle Corporation
+	Memory: 94232048 bytes (89 MiB) / 457179136 bytes (436 MiB) up to 4294967296 bytes (4096 MiB)
+	CPUs: 10
+	Processor Vendor: Apple Inc.
+	Processor Name: Apple M4
+	Identifier: Apple Inc. Family 0x1b588bb3 Model 0 Stepping 0
+	Microarchitecture: ARM64 SoC: Firestorm + Icestorm
+	Frequency (GHz): 0.00
+	Number of physical packages: 1
+	Number of physical CPUs: 10
+	Number of logical CPUs: 10
+	Graphics card #0 name: Apple M4
+	Graphics card #0 vendor: Apple (0x106b)
+	Graphics card #0 VRAM (MiB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: unknown
+	Memory slot #0 capacity (MiB): 0.00
+	Memory slot #0 clockSpeed (GHz): 0.00
+	Memory slot #0 type: unknown
+	Virtual memory max (MiB): 21504.00
+	Virtual memory used (MiB): 16818.45
+	Swap memory total (MiB): 5120.00
+	Swap memory used (MiB): 3977.56
+	Space in storage for jna.tmpdir (MiB): <path not set>
+	Space in storage for org.lwjgl.system.SharedLibraryExtractPath (MiB): <path not set>
+	Space in storage for io.netty.native.workdir (MiB): <path not set>
+	Space in storage for java.io.tmpdir (MiB): available: 14408.05, total: 471482.09
+	Space in storage for workdir (MiB): available: 14408.03, total: 471482.09
+	JVM Flags: 0 total; 
+	Debug Flags: 0 total; 
+	Launched Version: 21.11.26-beta
+	Backend library: LWJGL version 3.3.3+5
+	Backend API: Apple M4 GL version 4.1 Metal - 90.5, Apple
+	Window size: <not initialized>
+	GFLW Platform: cocoa
+	Render Extensions: GL_EXT_texture_filter_anisotropic
+	GL debug messages: <debugging unavailable>
+	Is Modded: Definitely; Client brand changed to 'neoforge'
+	Universe: 404
+	Type: Client (map_client.txt)
+	Locale: en_US
+	System encoding: UTF-8
+	File encoding: UTF-8
+	CPU: 10x Apple M4
+	Class Processors: 
+		00.00%: neoforge:neoforge_dev_dist_cleaner
+		00.00%: neoforge:computing_frames (marker)
+		00.00%: neoforge:runtime_enum_extender
+		05.30%: neoforge:access_transformer
+		00.06%: neoforge:mixin
+		00.00%: neoforge:simple_processors_default (marker)
+		00.02%: neoforge.coremods:field_to_getter.net.minecraft.world.level.biome.biome
+		00.02%: neoforge.coremods:field_to_getter.net.minecraft.world.level.block.flowerpotblock
+		00.02%: neoforge.coremods:field_to_getter.net.minecraft.world.level.levelgen.structure.structure
+		00.31%: neoforge.coremods:method_redirector
+	Mod List: 
+		main                                              |ClickSigns                    |clicksigns                    |1.1                 |Manifest: NOSIGNATURE
+		kffmod-neoforge-6.0.0.jar                         |Kotlin For Forge              |kotlinforforge                |6.0.0               |Manifest: 6fbfa504065a4ef8805d18477c5cd2da3454cfc13385096ce66e8ea10401f307
+		neoforge-21.11.26-beta-client-extra-aka-minecraft-|Minecraft                     |minecraft                     |1.21.11             |Manifest: NOSIGNATURE
+		neoforge-21.11.26-beta.jar                        |NeoForge                      |neoforge                      |21.11.26-beta       |Manifest: NOSIGNATURE
+	Crash Report UUID: 9626c057-df79-4f79-b367-fde7943f9568
+	FML: 10.0.36
+	NeoForge: 21.11.26-beta

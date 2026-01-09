@@ -1,0 +1,27 @@
+modLoader="kotlinforforge"
+loaderVersion="[5,)"
+license="GPL-3.0"
+issueTrackerURL="https://github.com/Clickism/ClickSigns/issues"
+showAsResourcePack=false
+
+[[mods]]
+modId="clicksigns"
+version="${mod_version}"
+displayName="ClickSigns"
+logoFile="assets/clicksigns/icon.png"
+authors="Clickism"
+description="An innovative mod that lets you create custom highway & street signs!"
+
+[[dependencies.clicksigns]]
+modId="neoforge"
+type="required"
+versionRange="*"
+side="BOTH"
+
+[[dependencies.clicksigns]]
+modId = "minecraft"
+type = "required"
+
+[[dependencies.clicksigns]]
+modId = "kotlinforforge"
+type = "required"
