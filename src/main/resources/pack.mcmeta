@@ -1,0 +1,8 @@
+{
+  "pack": {
+    "description": "ClickSigns",
+    "pack_format": 6,
+    "min_format": 0,
+    "max_format": 1000000
+  }
+}

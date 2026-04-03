@@ -61,13 +61,6 @@ kotlin {
     jvmToolchain(17)
 }
 
-sourceSets.configureEach {
-    val dir = layout.buildDirectory.dir("sourcesSets/$name")
-    output.setResourcesDir(dir)
-    java.destinationDirectory.set(dir)
-    kotlin.destinationDirectory.set(dir)
-}
-
 base {
     archivesName.set(property("archives_base_name").toString())
 }
