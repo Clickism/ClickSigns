@@ -3,7 +3,7 @@ plugins {
     id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
-val minecraftVersion = stonecutter.current.project.substringBeforeLast('-')
+val minecraftVersion = property("mod.minecraft_version").toString()
 val loader = stonecutter.current.project.substringAfterLast('-')
 
 group = project.property("maven_group").toString()
