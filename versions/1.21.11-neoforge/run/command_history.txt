@@ -1,3 +1,0 @@
-/give @p clicksigns:road_sign
-/setblock -497 94 160 clicksigns:road_sign
-/give @p clicksigns:road_sign
