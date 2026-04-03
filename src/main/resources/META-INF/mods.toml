@@ -13,7 +13,7 @@ authors="Clickism"
 description="An innovative mod that lets you create custom highway & street signs!"
 
 [[dependencies.clicksigns]]
-modId="neoforge"
+modId="forge"
 type="required"
 versionRange="*"
 side="BOTH"

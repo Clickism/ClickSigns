@@ -1,18 +1,26 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.3.20"
     id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
+val minecraftVersion = stonecutter.current.project.substringBeforeLast('-')
+val loader = stonecutter.current.project.substringAfterLast('-')
 
 group = project.property("maven_group").toString()
-version = "${modVersion}+${stonecutter.current.project}"
+version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+
+    }
+}
+
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 base {
@@ -20,7 +28,7 @@ base {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${property("mod.minecraft_version")}")
+    minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
@@ -30,7 +38,7 @@ dependencies {
 tasks.processResources {
     val properties = mapOf(
         "mod_version" to modVersion,
-        "minecraft_version" to project.property("mod.minecraft_version"),
+        "minecraft_version" to minecraftVersion,
         "fabric_loader_version" to project.property("deps.fabric_loader")
     )
 
