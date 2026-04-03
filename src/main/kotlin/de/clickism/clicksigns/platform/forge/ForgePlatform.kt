@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.forge
 //? if forge {
-import de.clickism.clicksigns.ClickSigns
+/*import de.clickism.clicksigns.ClickSigns
 import de.clickism.clicksigns.platform.ObjectSupplier
 import de.clickism.clicksigns.platform.PlatformInterface
 import net.minecraft.world.item.BlockItem
@@ -47,4 +47,4 @@ object ForgePlatform : PlatformInterface {
         return block
     }
 }
-//?}
+*///?}

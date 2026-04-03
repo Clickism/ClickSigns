@@ -5,18 +5,18 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 
 //? if fabric {
-/*import de.clickism.clicksigns.platform.fabric.FabricPlatform
+import de.clickism.clicksigns.platform.fabric.FabricPlatform
 
 typealias Platform = FabricPlatform
-*///?} elif neoforge {
+//?} elif neoforge {
 /*import de.clickism.clicksigns.platform.neoforge.NeoforgePlatform
 
 typealias Platform = NeoforgePlatform
 *///?} elif forge {
-import de.clickism.clicksigns.platform.forge.ForgePlatform
+/*import de.clickism.clicksigns.platform.forge.ForgePlatform
 
 typealias Platform = ForgePlatform
-//?}
+*///?}
 
 fun interface ObjectSupplier<T> {
     fun get(): T

@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.forge
 //? if forge {
-import de.clickism.clicksigns.ClickSigns
+/*import de.clickism.clicksigns.ClickSigns
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
@@ -34,4 +34,4 @@ object ForgeEntrypoint {
     fun onServerSetup(event: FMLDedicatedServerSetupEvent) {
     }
 }
-//?}
+*///?}

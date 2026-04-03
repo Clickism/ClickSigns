@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.fabric.datagen
 //? if fabric {
-/*import de.clickism.clicksigns.ClickSigns
+import de.clickism.clicksigns.ClickSigns
 import de.clickism.clicksigns.registry.ModBlocks
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
@@ -76,4 +76,4 @@ class ModRecipeProvider(output: FabricDataOutput) : FabricRecipeProvider(output)
         return ClickSigns.identifier("recipes").toString()
     }
 }
-*///?}
+//?}
