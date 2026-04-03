@@ -15,7 +15,9 @@ repositories {
 
 sourceSets {
     main {
-
+        resources.srcDir(
+            "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
+        )
     }
 }
 
@@ -48,10 +50,17 @@ tasks.processResources {
     inputs.properties(properties)
 }
 
+fabricApi {
+    configureDataGeneration {
+        outputDirectory = rootProject.file("versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated")
+        client = true
+    }
+}
+
 loom {
     runConfigs.all {
         ideConfigGenerated(true)
-        runDir = "../../run"
+        runDir = "../../runs/fabric"
         if (environment == "client") {
             programArgs("--username=ClickToPlay")
         }

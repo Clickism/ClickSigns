@@ -45,5 +45,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+# For runs
 **/run/**
 **/runs/**
+# For datagen
+.cache

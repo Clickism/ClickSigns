@@ -19,7 +19,7 @@ object FabricPlatform : PlatformInterface {
         itemSupplier: (Item.Properties) -> T
     ): ObjectSupplier<T> {
         val itemKey = ResourceKey.create(Registries.ITEM, ClickSigns.identifier(name))
-        val item = itemSupplier(settings.setId(itemKey))
+        val item = itemSupplier(settings)
         val registeredItem = Registry.register(
             BuiltInRegistries.ITEM,
             itemKey,
@@ -34,7 +34,7 @@ object FabricPlatform : PlatformInterface {
         blockSupplier: (BlockBehaviour.Properties) -> T
     ): ObjectSupplier<T> {
         val blockKey = ResourceKey.create(Registries.BLOCK, ClickSigns.identifier(name))
-        val block = blockSupplier(settings.setId(blockKey))
+        val block = blockSupplier(settings)
         val registeredBlock = Registry.register(
             BuiltInRegistries.BLOCK,
             blockKey,
@@ -49,7 +49,7 @@ object FabricPlatform : PlatformInterface {
         blockSupplier: (BlockBehaviour.Properties) -> T
     ): ObjectSupplier<T> {
         val block = registerBlock(name, settings, blockSupplier)
-        registerItem(name, Item.Properties().useBlockDescriptionPrefix()) { BlockItem(block.get(), it) }
+        registerItem(name, Item.Properties()) { BlockItem(block.get(), it) }
         return block
     }
 }

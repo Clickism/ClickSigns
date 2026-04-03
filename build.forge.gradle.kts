@@ -37,7 +37,6 @@ legacyForge {
             sourceSet(sourceSets["main"])
         }
     }
-//    sourceSets["main"].resources.srcDir("${rootDir}/versions/datagen/${stonecutter.current.version.split("-")[0]}/src/main/generated")
 }
 
 dependencies {
@@ -45,9 +44,13 @@ dependencies {
     implementation("thedarkcolour:kotlinforforge:${property("deps.forge_kotlin")}")
 }
 
-//sourceSets.main {
-//    kotlin.exclude("**/platfotm/fabric/**", "**/platform/neoforge/**")
-//}
+sourceSets {
+    main {
+        resources.srcDir(
+            "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
+        )
+    }
+}
 
 //mixin {
 //    add(sourceSets.main.get(), "${property("mod.id")}.mixins.refmap.json")
