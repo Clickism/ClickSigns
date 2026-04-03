@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 
 //? if fabric {
 import de.clickism.clicksigns.platform.fabric.FabricPlatform
+import net.minecraft.world.item.CreativeModeTabs
 
 typealias Platform = FabricPlatform
 //?} elif neoforge {
@@ -39,4 +40,6 @@ interface PlatformInterface {
         name: String,
         settings: BlockBehaviour.Properties, blockSupplier: (BlockBehaviour.Properties) -> T
     ): ObjectSupplier<T>
+
+    // TODO: Add to creative tab
 }
