@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour
 object ModItems {
     val ROAD_SIGN = Platform.registerBlockWithItem(
         "road_sign",
-        BlockBehaviour.Properties.ofFullCopy(Blocks.STONE)
+        BlockBehaviour.Properties.copy(Blocks.STONE)
     ) { blockSettings ->
         Block(blockSettings)
     }

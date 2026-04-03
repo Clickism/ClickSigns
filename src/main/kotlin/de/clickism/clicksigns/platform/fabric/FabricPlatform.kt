@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.fabric
 //? if fabric {
-import de.clickism.clicksigns.ClickSigns
+/*import de.clickism.clicksigns.ClickSigns
 import de.clickism.clicksigns.platform.ObjectSupplier
 import de.clickism.clicksigns.platform.PlatformInterface
 import net.minecraft.core.Registry
@@ -53,4 +53,4 @@ object FabricPlatform : PlatformInterface {
         return block
     }
 }
-//?}
+*///?}

@@ -12,16 +12,16 @@ logoFile="assets/clicksigns/icon.png"
 authors="Clickism"
 description="An innovative mod that lets you create custom highway & street signs!"
 
-[[dependencies.clicksigns]]
-modId="forge"
-type="required"
-versionRange="*"
-side="BOTH"
+#[[dependencies.clicksigns]]
+#modId="forge"
+#type="required"
+#versionRange="*"
+#side="BOTH"
 
-[[dependencies.clicksigns]]
-modId = "minecraft"
-type = "required"
-
-[[dependencies.clicksigns]]
-modId = "kotlinforforge"
-type = "required"
+#[[dependencies.clicksigns]]
+#modId = "minecraft"
+#type = "required"
+#
+#[[dependencies.clicksigns]]
+#modId = "kotlinforforge"
+#type = "required"

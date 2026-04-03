@@ -16,18 +16,18 @@ repositories {
 }
 
 legacyForge {
-    version = "$minecraftVersion-${property("deps.forge")}"
+    version = "${property("mod.minecraft_version")}-${property("deps.forge")}"
 
     runs {
         register("client") {
             client()
-            gameDirectory = file("run/")
+            gameDirectory = rootProject.file("runs/forge")
             ideName = "Forge Client (${stonecutter.active?.version})"
             programArgument("--username=ClickToPlay")
         }
         register("server") {
             server()
-            gameDirectory = file("run/")
+            gameDirectory = rootProject.file("runs/forge")
             ideName = "Forge Server (${stonecutter.active?.version})"
         }
     }
@@ -42,13 +42,17 @@ legacyForge {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
-    modImplementation("thedarkcolour:kotlinforforge:${property("deps.forge_kotlin")}")
+    implementation("thedarkcolour:kotlinforforge:${property("deps.forge_kotlin")}")
 }
 
-mixin {
-    add(sourceSets.main.get(), "${property("mod.id")}.mixins.refmap.json")
-    config("${property("mod.id")}.mixins.json")
-}
+//sourceSets.main {
+//    kotlin.exclude("**/platfotm/fabric/**", "**/platform/neoforge/**")
+//}
+
+//mixin {
+//    add(sourceSets.main.get(), "${property("mod.id")}.mixins.refmap.json")
+//    config("${property("mod.id")}.mixins.json")
+//}
 
 kotlin {
     jvmToolchain(17)
