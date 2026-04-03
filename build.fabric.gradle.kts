@@ -38,6 +38,7 @@ dependencies {
 }
 
 tasks.processResources {
+    dependsOn(tasks.named("stonecutterGenerate"))
     val properties = mapOf(
         "mod_version" to modVersion,
         "minecraft_version" to minecraftVersion,
