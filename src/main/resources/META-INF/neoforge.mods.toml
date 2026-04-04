@@ -1,8 +1,10 @@
-modLoader="kotlinforforge"
+modLoader="javafml"
 loaderVersion="[4,)"
+
 license="GPL-3.0"
 issueTrackerURL="https://github.com/Clickism/ClickSigns/issues"
 showAsResourcePack=false
+clientSideOnly=false
 
 [[mods]]
 modId="clicksigns"
@@ -20,8 +22,4 @@ side="BOTH"
 
 [[dependencies.clicksigns]]
 modId = "minecraft"
-type = "required"
-
-[[dependencies.clicksigns]]
-modId = "kotlinforforge"
 type = "required"

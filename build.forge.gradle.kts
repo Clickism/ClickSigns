@@ -1,7 +1,6 @@
 plugins {
-    id("net.neoforged.moddev.legacyforge") version "2.0.141"
-    kotlin("jvm") version "2.2.21"
     id("java")
+    id("net.neoforged.moddev.legacyforge") version "2.0.141"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -41,7 +40,6 @@ legacyForge {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
-    implementation("thedarkcolour:kotlinforforge:${property("deps.forge_kotlin")}")
 }
 
 sourceSets {
@@ -49,6 +47,11 @@ sourceSets {
         resources.srcDir(
             "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
         )
+        java {
+            val platform = "de/clickism/clicksigns/platform"
+            exclude("$platform/fabric/**")
+            exclude("$platform/neoforge/**")
+        }
     }
 }
 
@@ -57,8 +60,10 @@ sourceSets {
 //    config("${property("mod.id")}.mixins.json")
 //}
 
-kotlin {
-    jvmToolchain(17)
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 base {

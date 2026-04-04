@@ -1,0 +1,85 @@
+package de.clickism.clicksigns.platform.forge;
+
+import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.platform.Platform;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Supplier;
+
+/**
+ * Forge platform implementation
+ */
+public class ForgePlatform implements Platform {
+
+    public static final ForgePlatform INSTANCE = new ForgePlatform();
+
+    static final DeferredRegister<Item> ITEMS_REGISTRY =
+            DeferredRegister.create(ForgeRegistries.ITEMS, ClickSigns.MOD_ID);
+
+    static final DeferredRegister<Block> BLOCKS_REGISTRY =
+            DeferredRegister.create(ForgeRegistries.BLOCKS, ClickSigns.MOD_ID);
+
+    static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY =
+            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
+
+    private ForgePlatform() {
+        // Singleton class
+    }
+
+    @Override
+    public <T extends Item> Supplier<T> registerItem(
+            String name,
+            Item.Properties settings,
+            ItemFactory<T> itemSupplier
+    ) {
+        var holder = ITEMS_REGISTRY.register(name, () -> itemSupplier.create(settings));
+        return () -> holder.get();
+    }
+
+    @Override
+    public <T extends Block> Supplier<T> registerBlock(
+            String name,
+            BlockBehaviour.Properties settings,
+            BlockFactory<T> blockSupplier
+    ) {
+        var holder = BLOCKS_REGISTRY.register(name, () -> blockSupplier.create(settings));
+        return () -> holder.get();
+    }
+
+    @Override
+    public <T extends Block> Supplier<T> registerBlockWithItem(
+            String name,
+            BlockBehaviour.Properties settings,
+            BlockFactory<T> blockSupplier
+    ) {
+        var block = registerBlock(name, settings, blockSupplier);
+
+        ITEMS_REGISTRY.register(name, () ->
+                new BlockItem(
+                        block.get(),
+                        new Item.Properties()
+                )
+        );
+
+        return block;
+    }
+
+    @Override
+    public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(
+            String name,
+            BlockEntityFactory<T> factory,
+            Supplier<Block> block
+    ) {
+        return BLOCK_ENTITY_TYPE_REGISTRY.register(
+                name,
+                () -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
+        );
+    }
+}

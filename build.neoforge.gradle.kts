@@ -1,6 +1,5 @@
 plugins {
     id("net.neoforged.moddev") version "2.0.137"
-    kotlin("jvm") version "2.2.20"
     id("java")
 }
 val modVersion = property("mod.version").toString()
@@ -49,8 +48,10 @@ sourceSets {
     }
 }
 
-kotlin {
-    jvmToolchain(21)
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 base {

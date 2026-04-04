@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.3.20"
+    id("java")
     id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
@@ -18,11 +18,18 @@ sourceSets {
         resources.srcDir(
             "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
         )
+        java {
+            val platform = "de/clickism/clicksigns/platform"
+            exclude("$platform/forge/**")
+            exclude("$platform/neoforge/**")
+        }
     }
 }
 
-kotlin {
-    jvmToolchain(17)
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 base {
@@ -34,7 +41,6 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${property("deps.fabric_kotlin")}")
 }
 
 tasks.processResources {
@@ -53,7 +59,8 @@ tasks.processResources {
 
 fabricApi {
     configureDataGeneration {
-        outputDirectory = rootProject.file("versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated")
+        val currentVersion = sc.current.version.substringBeforeLast("-")
+        outputDirectory = rootProject.file("versions/datagen/$currentVersion/src/main/generated")
         client = true
     }
 }
