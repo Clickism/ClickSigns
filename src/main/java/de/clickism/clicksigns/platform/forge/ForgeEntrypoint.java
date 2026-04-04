@@ -1,6 +1,9 @@
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
+import de.clickism.clicksigns.registry.ModBlockEntityTypes;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -22,6 +25,11 @@ public class ForgeEntrypoint {
 
         // Register platform instance events
         bus.register(ForgePlatform.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.ROAD_SIGN.get(), RoadSignBlockEntityRenderer::new);
     }
 
     @SubscribeEvent
