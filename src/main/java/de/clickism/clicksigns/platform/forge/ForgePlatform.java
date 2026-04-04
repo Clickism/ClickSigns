@@ -2,15 +2,21 @@ package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -28,6 +34,10 @@ public class ForgePlatform implements Platform {
 
     static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
+
+    private final List<TabEntry> tabEntries = new ArrayList<>();
+
+    private record TabEntry(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {}
 
     private ForgePlatform() {
         // Singleton class
@@ -81,5 +91,18 @@ public class ForgePlatform implements Platform {
                 name,
                 () -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
         );
+    }
+
+    @Override
+    public void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {
+        tabEntries.add(new TabEntry(tab, item));
+    }
+
+    @SubscribeEvent
+    public void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
+        var tab = event.getTabKey();
+        tabEntries.stream()
+                .filter(entry -> entry.tab.equals(tab))
+                .forEach(entry -> event.accept(entry.item.get()));
     }
 }

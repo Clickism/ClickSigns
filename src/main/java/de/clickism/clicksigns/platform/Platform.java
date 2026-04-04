@@ -1,6 +1,8 @@
 package de.clickism.clicksigns.platform;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,9 +21,9 @@ public interface Platform {
     static Platform get() {
         //? if fabric {
         return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;
-         //? } elif forge {
+        //? } elif forge {
         /*return de.clickism.clicksigns.platform.forge.ForgePlatform.INSTANCE;
-        *///? } else {
+         *///? } else {
         /*throw new UnsupportedOperationException("No platform implementation found");
          *///? }
     }
@@ -61,6 +63,11 @@ public interface Platform {
             BlockEntityFactory<T> blockEntitySupplier,
             Supplier<Block> block
     );
+
+    /**
+     * Adds an item to a creative tab
+     */
+    void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item);
 
     /**
      * Factory for creating items

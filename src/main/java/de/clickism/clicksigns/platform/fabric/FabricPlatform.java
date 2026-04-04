@@ -3,12 +3,14 @@ package de.clickism.clicksigns.platform.fabric;
 import de.clickism.clicksigns.ClickSigns;
 
 import de.clickism.clicksigns.platform.Platform;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -78,5 +80,11 @@ public class FabricPlatform implements Platform {
             Supplier<Block> block
     ) {
         return () -> FabricBlockEntityTypeBuilder.create(factory::create, block.get()).build();
+    }
+
+    @Override
+    public void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {
+        ItemGroupEvents.modifyEntriesEvent(tab)
+                .register(entries -> entries.accept(item.get()));
     }
 }

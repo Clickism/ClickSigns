@@ -2,6 +2,7 @@ package de.clickism.clicksigns.registry;
 
 import de.clickism.clicksigns.block.RoadSignBlock;
 import de.clickism.clicksigns.platform.Platform;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -23,5 +24,6 @@ public class ModBlocks {
 
     public static void initialize() {
         // Empty method to trigger static initializers
+        Platform.get().addItemToCreativeTab(CreativeModeTabs.FUNCTIONAL_BLOCKS, () -> ROAD_SIGN.get().asItem());
     }
 }

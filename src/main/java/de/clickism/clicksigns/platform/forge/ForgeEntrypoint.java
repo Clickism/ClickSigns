@@ -19,6 +19,9 @@ public class ForgeEntrypoint {
         ForgePlatform.ITEMS_REGISTRY.register(bus);
         ForgePlatform.BLOCKS_REGISTRY.register(bus);
         ForgePlatform.BLOCK_ENTITY_TYPE_REGISTRY.register(bus);
+
+        // Register platform instance events
+        bus.register(ForgePlatform.INSTANCE);
     }
 
     @SubscribeEvent
