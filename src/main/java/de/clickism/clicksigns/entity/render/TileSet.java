@@ -16,7 +16,6 @@ public class TileSet {
     private final NativeImage image;
     private final int cornerSize;
     private final int centerSize;
-    private final int totalSize;
 
     /**
      * Loads a tileset from the given resource location.
@@ -31,7 +30,7 @@ public class TileSet {
         this.image = NativeImage.read(Minecraft.getInstance().getResourceManager().open(texture));
         this.cornerSize = cornerSize;
         this.centerSize = centerSize;
-        this.totalSize = 2 * cornerSize + centerSize;
+        int totalSize = 2 * cornerSize + centerSize;
         // Check if dimensions match
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
