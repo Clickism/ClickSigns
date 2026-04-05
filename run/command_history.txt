@@ -1,1 +1,0 @@
-/give @a clicksigns:road_sign
