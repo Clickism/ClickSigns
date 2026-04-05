@@ -1,17 +1,10 @@
 package de.clickism.clicksigns.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import de.clickism.clicksigns.entity.render.RoadSignRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
-import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 /**
  * Renderer for road signs
@@ -31,6 +24,8 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
             int light,
             int overlay
     ) {
-
+        // Use road sign renderer
+        var renderer = new RoadSignRenderer(entity, stack, source, light, overlay);
+        renderer.render();
     }
 }

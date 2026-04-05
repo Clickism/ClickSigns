@@ -79,7 +79,9 @@ public class FabricPlatform implements Platform {
             BlockEntityFactory<T> factory,
             Supplier<Block> block
     ) {
-        return () -> FabricBlockEntityTypeBuilder.create(factory::create, block.get()).build();
+        var type = FabricBlockEntityTypeBuilder.create(factory::create, block.get()).build();
+        var registeredType = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ClickSigns.identifier(name), type);
+        return () -> registeredType;
     }
 
     @Override

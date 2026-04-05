@@ -3,6 +3,8 @@ package de.clickism.clicksigns.platform.fabric;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 /**
