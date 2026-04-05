@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.entity.render;
+package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 

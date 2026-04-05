@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.entity.render.RoadSignRenderer;
+import de.clickism.clicksigns.render.RoadSignRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

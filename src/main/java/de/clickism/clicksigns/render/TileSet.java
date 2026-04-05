@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.entity.render;
+package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
