@@ -2,7 +2,6 @@ package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -48,6 +47,7 @@ public class TextRenderer {
      * @param y      the y offset to translate by (in blocks)
      * @param zIndex the z index to render at, higher values will render on top
      */
+    // TODO: Add background color support
     public void render(String text, Color color, float textScale, float x, float y, int zIndex, Alignment alignment) {
         stack.pushPose();
         // Offset by z index to prevent z-fighting
