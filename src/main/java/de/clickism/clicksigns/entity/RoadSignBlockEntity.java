@@ -1,6 +1,12 @@
 package de.clickism.clicksigns.entity;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
+import de.clickism.clicksigns.render.TileSet;
+import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.util.texture.StaticTexture;
+import de.clickism.clicksigns.util.texture.TiledTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -11,12 +17,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * Road sign block entity
  */
 public class RoadSignBlockEntity extends BlockEntity {
+    private final RoadSign roadSign = new RoadSign(
+            TiledTexture.fromTileSet(
+                    TileSet.load(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
+                    2f, 1f
+            ),
+            List.of(
+                    new SymbolElement(2, 2,
+                            StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png")))
+            )
+    );
+
     public RoadSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.ROAD_SIGN.get(), pos, state);
+    }
+
+    public RoadSign roadSign() {
+        return roadSign;
     }
 
     @Override
