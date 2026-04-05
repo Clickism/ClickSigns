@@ -5,8 +5,8 @@ import de.clickism.clicksigns.util.texture.Texture;
 public final class SymbolElement extends RoadSignElement {
     private final Texture texture;
 
-    public SymbolElement(int x, int y, Texture texture) {
-        super(x, y);
+    public SymbolElement(int localX, int localY, Texture texture) {
+        super(localX, localY);
         this.texture = texture;
     }
 

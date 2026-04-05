@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
@@ -51,8 +52,8 @@ public final class RoadSignRenderer {
 
         roadSign.symbols().forEach(symbol -> {
             // Render each symbol on top of the road sign
-            var renderCoords = toRenderCoordinates(roadSign.texture(), 0, 0);
-            textureRenderer.render(symbol.texture(), renderCoords.x, renderCoords.y, 2);
+            var renderCoords = toRenderCoordinates(roadSign.texture(), symbol.localX(), symbol.localY());
+            textureRenderer.render(symbol.texture(), renderCoords.x, renderCoords.y, 2, Alignment.TOP_RIGHT);
         });
 
         stack.popPose();
@@ -73,8 +74,8 @@ public final class RoadSignRenderer {
      */
     private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
         // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture
-        float renderX = localX / BLOCK_PIXELS + texture.blockWidth() / 2; // For some reason X is flipped
+        float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
         float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
-        return new Vector2f(renderX, renderY);
+        return new Vector2f(-renderX, renderY);
     }
 }
