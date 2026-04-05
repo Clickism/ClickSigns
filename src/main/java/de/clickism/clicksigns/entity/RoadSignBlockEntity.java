@@ -5,6 +5,7 @@ import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.render.TileSet;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.texture.StaticTexture;
 import de.clickism.clicksigns.util.texture.TiledTexture;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -29,8 +31,8 @@ public class RoadSignBlockEntity extends BlockEntity {
                     2f, 1f
             ),
             List.of(
-                    new SymbolElement(2, 2,
-                            StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png")))
+                    new SymbolElement(2, 2, StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
+                    new TextElement(16, 8, "Main Street", Color.BLACK, 1f)
             )
     );
 

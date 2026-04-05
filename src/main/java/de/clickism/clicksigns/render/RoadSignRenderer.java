@@ -1,14 +1,14 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
@@ -50,12 +50,19 @@ public final class RoadSignRenderer {
         // Render the road sign texture
         textureRenderer.render(roadSign.texture(), 1);
 
-        roadSign.symbols().forEach(symbol -> {
-            // Render each symbol on top of the road sign
-            var renderCoords = toRenderCoordinates(roadSign.texture(), symbol.localX(), symbol.localY());
-            textureRenderer.render(symbol.texture(), renderCoords.x, renderCoords.y, 2, Alignment.TOP_RIGHT);
+        var textRenderer = new TextRenderer(stack, source, light);
+        roadSign.elements().forEach(element -> {
+            var renderCoords = toRenderCoordinates(roadSign.texture(), element.localX(), element.localY());
+            // Render element
+            if (element instanceof SymbolElement symbol) {
+                // Render each element on top of the road sign
+                textureRenderer.render(symbol.texture(), renderCoords.x, renderCoords.y, 2, Alignment.TOP_RIGHT);
+            } else if (element instanceof TextElement text) {
+                textRenderer.render(text.text(), text.color(), text.scale(), renderCoords.x, renderCoords.y, 3, Alignment.TOP_RIGHT);
+            }
         });
 
+        // Finish rendering
         stack.popPose();
     }
 

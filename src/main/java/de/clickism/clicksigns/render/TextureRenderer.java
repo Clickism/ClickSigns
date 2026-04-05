@@ -8,15 +8,19 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
+import static de.clickism.clicksigns.util.Constants.Z_FIGHTING_OFFSET;
 
+/**
+ * Texture renderer utility class
+ */
 public class TextureRenderer {
-    private static final float Z_FIGHTING_OFFSET = 0.001f;
-
     private final PoseStack stack;
     private final MultiBufferSource source;
     private final int light;
 
+    /**
+     * Create a new texture renderer with the given rendering context.
+     */
     public TextureRenderer(
             PoseStack stack,
             MultiBufferSource source,
