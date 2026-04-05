@@ -22,7 +22,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  */
 public final class RoadSignRenderer {
     private static final ResourceLocation TEST_TEXTURE = ClickSigns.identifier("textures/block/road_sign.png");
-    private static final ResourceLocation TEST_TILESET = ClickSigns.identifier("textures/block/tileset_white.png");
+    private static final ResourceLocation TEST_TILESET = ClickSigns.identifier("roadsigns/tileset/white.png");
 
     private static final float Z_FIGHTING_OFFSET = 0.001f;
 
