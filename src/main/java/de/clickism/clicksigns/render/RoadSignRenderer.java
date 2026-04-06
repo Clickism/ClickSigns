@@ -42,7 +42,7 @@ public final class RoadSignRenderer extends Renderer {
 
         var textureRenderer = new TextureRenderer(stack, source, light);
         // Render the road sign texture
-        textureRenderer.renderTexture(roadSign.texture(), 1);
+        textureRenderer.renderTexture(roadSign.texture(), 0);
 
         var textRenderer = new TextRenderer(stack, source, light);
         roadSign.elements().forEach(element -> {
@@ -50,15 +50,15 @@ public final class RoadSignRenderer extends Renderer {
             // Render element
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 10, Alignment.TOP_RIGHT);
+                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 1, Alignment.TOP_RIGHT);
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), Color.BLUE, text.scale(), renderCoords.x, renderCoords.y, 3, Alignment.TOP_RIGHT);
+                textRenderer.render(text.text(), text.color(), Color.BLUE, text.scale(), renderCoords.x, renderCoords.y, 2, Alignment.TOP_RIGHT);
             }
         });
 
         // Render back
         stack.mulPose(FLIP);
-        textureRenderer.renderTexture(roadSign.backTexture(), 1);
+        textureRenderer.renderTexture(roadSign.backTexture(), 0);
 
         // Finish rendering
         stack.popPose();
