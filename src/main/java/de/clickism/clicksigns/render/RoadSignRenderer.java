@@ -12,6 +12,8 @@ import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
+import java.awt.*;
+
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -23,7 +25,6 @@ public final class RoadSignRenderer {
     private final PoseStack stack;
     private final MultiBufferSource source;
     private final int light;
-    private final int overlay;
 
     private final Direction direction;
     private final RoadSign roadSign;
@@ -31,12 +32,11 @@ public final class RoadSignRenderer {
     /**
      * Creates a new road sign renderer for the given block entity and rendering context.
      */
-    public RoadSignRenderer(RoadSignBlockEntity entity, PoseStack stack, MultiBufferSource source, int light, int overlay) {
+    public RoadSignRenderer(RoadSignBlockEntity entity, PoseStack stack, MultiBufferSource source, int light) {
         this.entity = entity;
         this.stack = stack;
         this.source = source;
         this.light = light;
-        this.overlay = overlay;
         this.direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
         this.roadSign = entity.roadSign();
     }
@@ -48,7 +48,7 @@ public final class RoadSignRenderer {
 
         var textureRenderer = new TextureRenderer(stack, source, light);
         // Render the road sign texture
-        textureRenderer.render(roadSign.texture(), 1);
+        textureRenderer.renderTexture(roadSign.texture(), 1);
 
         var textRenderer = new TextRenderer(stack, source, light);
         roadSign.elements().forEach(element -> {
@@ -56,9 +56,9 @@ public final class RoadSignRenderer {
             // Render element
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                textureRenderer.render(symbol.texture(), renderCoords.x, renderCoords.y, 2, Alignment.TOP_RIGHT);
+                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 10, Alignment.TOP_RIGHT);
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), text.scale(), renderCoords.x, renderCoords.y, 3, Alignment.TOP_RIGHT);
+                textRenderer.render(text.text(), text.color(), Color.BLUE, text.scale(), renderCoords.x, renderCoords.y, 3, Alignment.TOP_RIGHT);
             }
         });
 

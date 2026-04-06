@@ -25,7 +25,7 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
             int overlay
     ) {
         // Use road sign renderer
-        var renderer = new RoadSignRenderer(entity, stack, source, light, overlay);
+        var renderer = new RoadSignRenderer(entity, stack, source, light);
         renderer.render();
     }
 }

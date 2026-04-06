@@ -29,6 +29,7 @@ public class TileSet {
      * @param centerSize the width of the center tile in pixels (e.g. 8)
      * @throws IOException if the image cannot be loaded
      */
+    // TODO: Optimize?
     protected TileSet(ResourceLocation location, int cornerSize, int centerSize) throws IOException {
         this.location = location;
         this.image = NativeImage.read(Minecraft.getInstance().getResourceManager().open(location));

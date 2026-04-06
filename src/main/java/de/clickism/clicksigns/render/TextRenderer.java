@@ -5,6 +5,7 @@ import de.clickism.clicksigns.util.Alignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.awt.*;
@@ -16,6 +17,10 @@ import static de.clickism.clicksigns.util.Constants.Z_FIGHTING_OFFSET;
  */
 public class TextRenderer {
     private static final float TEXT_RENDER_SCALE = .022f;
+    private static final float TEXT_PADDING_X = .1f;
+    private static final float TEXT_PADDING_Y = .1f;
+
+    private static final Quaternionf FLIP = new Quaternionf().rotateY((float) (Math.PI));
 
     private final PoseStack stack;
     private final MultiBufferSource source;
@@ -47,24 +52,35 @@ public class TextRenderer {
      * @param y      the y offset to translate by (in blocks)
      * @param zIndex the z index to render at, higher values will render on top
      */
-    // TODO: Add background color support
-    public void render(String text, Color color, float textScale, float x, float y, int zIndex, Alignment alignment) {
+    public void render(
+            String text,
+            Color color,
+            @Nullable Color backgroundColor,
+            float textScale,
+            float x,
+            float y,
+            int zIndex,
+            Alignment alignment
+    ) {
         stack.pushPose();
         // Offset by z index to prevent z-fighting
         stack.translate(x, y, -zIndex * Z_FIGHTING_OFFSET);
+        // Render background if given
+        if (backgroundColor != null) {
+            renderBackground(text, backgroundColor, textScale, x, y, alignment);
+        }
         // Scale text
         float scale = TEXT_RENDER_SCALE * textScale;
         stack.scale(scale, -scale, scale);
         // Rotate text to face the player
-        stack.mulPose(new Quaternionf().rotateY((float) (Math.PI)));
-
+        stack.mulPose(FLIP);
         // Calculate offset, by default renders at bottom right
         float textWidth = font.width(text);
         float textHeight = font.lineHeight;
         // Offset to center
         float textX = -textWidth / 2f;
         float textY = -textHeight / 2f;
-        // Apply alignment offset from center
+        // Apply alignment offset from center (in text coordinates)
         textX += alignment.offset().x * textWidth / 2;
         textY -= alignment.offset().y * textHeight / 2; // y is flipped so subtract
         // Draw text
@@ -83,5 +99,29 @@ public class TextRenderer {
         );
         // Finish rendering
         stack.popPose();
+    }
+
+    /**
+     * Renders a background rectangle with the given color behind the text,
+     * with padding based on the text size.
+     */
+    private void renderBackground(String text, Color backgroundColor, float scale, float x, float y, Alignment alignment) {
+        float textWidth = font.width(text);
+        float textHeight = font.lineHeight;
+        float blockWidth = textWidth * TEXT_RENDER_SCALE * scale;
+        float blockHeight = textHeight * TEXT_RENDER_SCALE * scale;
+        // Apply padding
+        float paddingX = blockWidth * TEXT_PADDING_X;
+        float paddingY = blockHeight * TEXT_PADDING_Y;
+        blockWidth += paddingX * 2;
+        blockHeight += paddingY * 2;
+        // Apply offset to account for padding
+        x += alignment.offset().x * paddingX;
+        y -= alignment.offset().y * paddingY; // y is flipped so subtract
+        // Adjust y to visually center
+        y += paddingY / 2;
+        // Render background
+        var textureRenderer = new TextureRenderer(stack, source, light);
+        textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, alignment);
     }
 }
