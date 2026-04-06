@@ -1,7 +1,5 @@
 package de.clickism.clicksigns.util.texture;
 
-import de.clickism.clicksigns.render.TileSet;
-import de.clickism.clicksigns.util.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;

@@ -8,11 +8,13 @@ import java.util.List;
 /**
  * Road sign class.
  *
- * @param texture  Texture of the roadsign
- * @param elements Elements of the roadsign
+ * @param texture     Texture of the roadsign
+ * @param backTexture Texture of the back of the roadsign
+ * @param elements    Elements of the roadsign
  */
 public record RoadSign(
         Texture texture,
+        Texture backTexture,
         List<RoadSignElement> elements
 ) {
 }

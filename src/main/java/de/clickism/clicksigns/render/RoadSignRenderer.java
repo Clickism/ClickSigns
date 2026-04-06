@@ -20,12 +20,8 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 /**
  * Road sign renderer
  */
-public final class RoadSignRenderer {
+public final class RoadSignRenderer extends Renderer {
     private final RoadSignBlockEntity entity;
-    private final PoseStack stack;
-    private final MultiBufferSource source;
-    private final int light;
-
     private final Direction direction;
     private final RoadSign roadSign;
 
@@ -33,10 +29,8 @@ public final class RoadSignRenderer {
      * Creates a new road sign renderer for the given block entity and rendering context.
      */
     public RoadSignRenderer(RoadSignBlockEntity entity, PoseStack stack, MultiBufferSource source, int light) {
+        super(stack, source, light);
         this.entity = entity;
-        this.stack = stack;
-        this.source = source;
-        this.light = light;
         this.direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
         this.roadSign = entity.roadSign();
     }
@@ -62,6 +56,10 @@ public final class RoadSignRenderer {
             }
         });
 
+        // Render back
+        stack.mulPose(FLIP);
+        textureRenderer.renderTexture(roadSign.backTexture(), 1);
+
         // Finish rendering
         stack.popPose();
     }
@@ -77,7 +75,7 @@ public final class RoadSignRenderer {
     }
 
     /**
-     * Converts local texture coordinates to render coordinates.
+     * Converts local sign coordinates to render coordinates.
      */
     private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
         // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture

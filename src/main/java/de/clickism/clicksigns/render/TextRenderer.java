@@ -10,37 +10,24 @@ import org.joml.Quaternionf;
 
 import java.awt.*;
 
-import static de.clickism.clicksigns.util.Constants.Z_FIGHTING_OFFSET;
-
 /**
  * Text renderer utility class
  */
-public class TextRenderer {
+public class TextRenderer extends Renderer {
     private static final float TEXT_RENDER_SCALE = .022f;
     private static final float TEXT_PADDING_X = .1f;
     private static final float TEXT_PADDING_Y = .1f;
-
-    private static final Quaternionf FLIP = new Quaternionf().rotateY((float) (Math.PI));
-
-    private final PoseStack stack;
-    private final MultiBufferSource source;
-    private final int light;
-
     private final Font font;
+    private final TextureRenderer textureRenderer;
 
     /**
      * Create a new text renderer with the given rendering context.
      */
-    public TextRenderer(
-            PoseStack stack,
-            MultiBufferSource source,
-            int light
-    ) {
-        this.stack = stack;
-        this.source = source;
-        this.light = light;
+    public TextRenderer(PoseStack stack, MultiBufferSource source, int light) {
+        super(stack, source, light);
         // Use client font
         this.font = Minecraft.getInstance().font;
+        this.textureRenderer = new TextureRenderer(stack, source, light);
     }
 
     /**
@@ -63,26 +50,25 @@ public class TextRenderer {
             Alignment alignment
     ) {
         stack.pushPose();
-        // Offset by z index to prevent z-fighting
-        stack.translate(x, y, -zIndex * Z_FIGHTING_OFFSET);
+        // Calculate dimensions
+        float textWidth = font.width(text);
+        float textHeight = font.lineHeight;
+        float blockWidth = textWidth * TEXT_RENDER_SCALE * textScale;
+        float blockHeight = textHeight * TEXT_RENDER_SCALE * textScale;
+        // Align text
+        align(x, y, blockWidth, blockHeight, zIndex, alignment);
         // Render background if given
         if (backgroundColor != null) {
-            renderBackground(text, backgroundColor, textScale, x, y, alignment);
+            renderBackground(backgroundColor, blockWidth, blockHeight);
         }
         // Scale text
         float scale = TEXT_RENDER_SCALE * textScale;
         stack.scale(scale, -scale, scale);
         // Rotate text to face the player
         stack.mulPose(FLIP);
-        // Calculate offset, by default renders at bottom right
-        float textWidth = font.width(text);
-        float textHeight = font.lineHeight;
         // Offset to center
         float textX = -textWidth / 2f;
         float textY = -textHeight / 2f;
-        // Apply alignment offset from center (in text coordinates)
-        textX += alignment.offset().x * textWidth / 2;
-        textY -= alignment.offset().y * textHeight / 2; // y is flipped so subtract
         // Draw text
         font.drawInBatch(
                 text,
@@ -105,23 +91,16 @@ public class TextRenderer {
      * Renders a background rectangle with the given color behind the text,
      * with padding based on the text size.
      */
-    private void renderBackground(String text, Color backgroundColor, float scale, float x, float y, Alignment alignment) {
-        float textWidth = font.width(text);
-        float textHeight = font.lineHeight;
-        float blockWidth = textWidth * TEXT_RENDER_SCALE * scale;
-        float blockHeight = textHeight * TEXT_RENDER_SCALE * scale;
+    private void renderBackground(Color backgroundColor, float blockWidth, float blockHeight) {
         // Apply padding
         float paddingX = blockWidth * TEXT_PADDING_X;
         float paddingY = blockHeight * TEXT_PADDING_Y;
         blockWidth += paddingX * 2;
         blockHeight += paddingY * 2;
-        // Apply offset to account for padding
-        x += alignment.offset().x * paddingX;
-        y -= alignment.offset().y * paddingY; // y is flipped so subtract
-        // Adjust y to visually center
-        y += paddingY / 2;
+
+        float x = 0;
+        float y = paddingY / 2; // Adjust y to visually center
         // Render background
-        var textureRenderer = new TextureRenderer(stack, source, light);
-        textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, alignment);
+        textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, Alignment.CENTER);
     }
 }

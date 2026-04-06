@@ -2,7 +2,7 @@ package de.clickism.clicksigns.entity;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
-import de.clickism.clicksigns.render.TileSet;
+import de.clickism.clicksigns.util.texture.TileSet;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -28,6 +28,10 @@ public class RoadSignBlockEntity extends BlockEntity {
     private final RoadSign roadSign = new RoadSign(
             TiledTexture.fromTileSet(
                     TileSet.load(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
+                    2f, 1f
+            ),
+            TiledTexture.fromTileSet(
+                    TileSet.load(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8),
                     2f, 1f
             ),
             List.of(
