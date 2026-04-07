@@ -1,8 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
-import de.clickism.clicksigns.gui.util.LinearLayout;
-import de.clickism.clicksigns.gui.util.ScreenWithBackground;
+import de.clickism.clicksigns.gui.layout.LinearLayout;
 import de.clickism.clicksigns.gui.widget.TextElementBox;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
 import de.clickism.clicksigns.sign.element.RoadSignElement;

@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.util;
+package de.clickism.clicksigns.gui.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
