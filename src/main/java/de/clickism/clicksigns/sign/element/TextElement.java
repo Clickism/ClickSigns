@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.util.Alignment;
 import org.w3c.dom.Text;
 
 import java.awt.*;
@@ -15,14 +16,15 @@ public final class TextElement extends RoadSignElement {
     /**
      * Creates a new text element with the given properties.
      *
-     * @param x     local X coordinate
-     * @param y     local Y coordinate
-     * @param text  text to display
-     * @param color color of the text
-     * @param scale scale of the text, where 1.0 is the default size
+     * @param x         local X coordinate
+     * @param y         local Y coordinate
+     * @param alignment alignment of the text
+     * @param text      text to display
+     * @param color     color of the text
+     * @param scale     scale of the text, where 1.0 is the default size
      */
-    public TextElement(int x, int y, String text, Color color, float scale) {
-        super(x, y);
+    public TextElement(int x, int y, Alignment alignment, String text, Color color, float scale) {
+        super(x, y, alignment);
         this.text = text;
         this.color = color;
         this.scale = scale;
@@ -55,19 +57,23 @@ public final class TextElement extends RoadSignElement {
         return scale;
     }
 
-    public TextElement withText(String newText) {
-        return new TextElement(localX(), localY(), newText, color, scale);
+    public TextElement withText(String text) {
+        return new TextElement(localX(), localY(), alignment(), text, color, scale);
     }
 
-    public TextElement withColor(Color newColor) {
-        return new TextElement(localX(), localY(), text, newColor, scale);
+    public TextElement withColor(Color color) {
+        return new TextElement(localX(), localY(), alignment(), text, color, scale);
     }
 
-    public TextElement withScale(float newScale) {
-        return new TextElement(localX(), localY(), text, color, newScale);
+    public TextElement withScale(float scale) {
+        return new TextElement(localX(), localY(), alignment(), text, color, scale);
     }
 
     public TextElement withPosition(int localX, int localY) {
-        return new TextElement(localX, localY, text, color, scale);
+        return new TextElement(localX, localY, alignment(), text, color, scale);
+    }
+
+    public TextElement withAlignment(Alignment alignment) {
+        return new TextElement(localX(), localY(), alignment, text, color, scale);
     }
 }

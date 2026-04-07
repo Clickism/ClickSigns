@@ -2,6 +2,7 @@ package de.clickism.clicksigns.entity;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
+import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.TileSet;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
@@ -35,8 +36,8 @@ public class RoadSignBlockEntity extends BlockEntity {
                     2f, 1f
             ),
             List.of(
-                    new SymbolElement(2, 2, StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
-                    new TextElement(16, 8, "Main Street", Color.BLACK, 1f)
+                    new SymbolElement(2, 2, Alignment.TOP_RIGHT, StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
+                    new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", Color.BLACK, 1f)
             )
     );
 
