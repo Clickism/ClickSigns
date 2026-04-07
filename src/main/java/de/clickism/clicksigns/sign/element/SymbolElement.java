@@ -28,4 +28,12 @@ public final class SymbolElement extends RoadSignElement {
     public Texture texture() {
         return texture;
     }
+
+    public SymbolElement withTexture(Texture newTexture) {
+        return new SymbolElement(localX(), localY(), newTexture);
+    }
+
+    public SymbolElement withPosition(int localX, int localY) {
+        return new SymbolElement(localX, localY, texture);
+    }
 }

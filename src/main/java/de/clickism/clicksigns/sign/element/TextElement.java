@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
+import org.w3c.dom.Text;
+
 import java.awt.*;
 
 /**
@@ -51,5 +53,21 @@ public final class TextElement extends RoadSignElement {
      */
     public float scale() {
         return scale;
+    }
+
+    public TextElement withText(String newText) {
+        return new TextElement(localX(), localY(), newText, color, scale);
+    }
+
+    public TextElement withColor(Color newColor) {
+        return new TextElement(localX(), localY(), text, newColor, scale);
+    }
+
+    public TextElement withScale(float newScale) {
+        return new TextElement(localX(), localY(), text, color, newScale);
+    }
+
+    public TextElement withPosition(int localX, int localY) {
+        return new TextElement(localX, localY, text, color, scale);
     }
 }

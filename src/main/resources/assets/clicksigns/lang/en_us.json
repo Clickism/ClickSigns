@@ -1,6 +1,7 @@
 {
+  "clicksigns.text.road_sign_edit_screen": "Road Sign Editor",
+
   "clicksigns.text.road_signs": "Road Signs",
-  "clicksigns.text.road_sign_editor": "Road Sign Editor",
   "clicksigns.text.road_sign_template_selection": "Road Sign Template Selection",
   "clicksigns.text.alignment": "Alignment: %s",
   "clicksigns.text.left": "Left",

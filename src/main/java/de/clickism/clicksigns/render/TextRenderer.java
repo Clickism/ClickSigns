@@ -14,7 +14,11 @@ import java.awt.*;
  * Text renderer utility class
  */
 public class TextRenderer extends Renderer {
-    private static final float TEXT_RENDER_SCALE = .022f;
+    /**
+     * The scale multiplier used to render text
+     */
+    public static final float TEXT_RENDER_SCALE = .022f;
+
     private static final float TEXT_PADDING_X = .1f;
     private static final float TEXT_PADDING_Y = .1f;
     private final Font font;

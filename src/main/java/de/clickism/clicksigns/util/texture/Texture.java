@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.util.texture;
 
 import net.minecraft.resources.ResourceLocation;
-import org.joml.Vector2f;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
