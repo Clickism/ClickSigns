@@ -14,6 +14,7 @@ public class SymbolWidget extends TextureWidget {
         super(anchorX, anchorY, symbol.texture());
         // Calculate position
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, symbol, this.width, this.height);
-        this.setPosition(pos.x, pos.y);
+        // Need to move up by half a pixel to align for some reason???
+        this.setPosition(pos.x, pos.y - TEXTURE_RENDER_SCALE / 2);
     }
 }
