@@ -60,7 +60,8 @@ public class TextRenderer extends Renderer {
         float blockWidth = textWidth * TEXT_RENDER_SCALE * textScale;
         float blockHeight = textHeight * TEXT_RENDER_SCALE * textScale;
         // Align text
-        align(x, y, blockWidth, blockHeight, zIndex, alignment);
+        // Use higher z index because background will subtract one later
+        align(x, y, blockWidth, blockHeight, zIndex + 1, alignment);
         // Render background if given
         if (backgroundColor != null) {
             renderBackground(backgroundColor, blockWidth, blockHeight);
