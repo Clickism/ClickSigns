@@ -2,25 +2,26 @@ package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.layout.LinearLayout;
-import de.clickism.clicksigns.gui.widget.TextElementBox;
+import de.clickism.clicksigns.gui.widget.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
 /**
- * Road sign editor screen
+ * Road sign screen
  */
-public class RoadSignEditScreen extends ScreenWithBackground {
+public class RoadSignScreen extends ScreenWithBackground {
     private static final int PADDING = 8;
 
     private final RoadSignBlockEntity entity;
 
     /**
-     * Creates a new road sign editor screen.
+     * Creates a new road sign screen.
      */
-    public RoadSignEditScreen(RoadSignBlockEntity entity) {
+    public RoadSignScreen(RoadSignBlockEntity entity) {
         super(Component.translatable("clicksigns.text.road_sign_edit_screen"));
         this.entity = entity;
     }
@@ -43,20 +44,27 @@ public class RoadSignEditScreen extends ScreenWithBackground {
         this.addRenderableWidget(confirmButton);
 
         // Layout
-        var layoutX = halfWidth;
-        var layoutY = halfHeight;
-
         LinearLayout.vertical()
                 .center()
                 .padding(PADDING)
                 .add(textureWidget)
                 .add(confirmButton)
-                .layout(layoutX, layoutY);
+                // Layout from center
+                .layout(halfWidth, halfHeight);
 
-        // Add text element boxes
-        for (RoadSignElement element : roadSign.elements()) {
+        // Add symbol elements
+        int anchorX = textureWidget.getX();
+        int anchorY = textureWidget.getY() + textureWidget.getHeight();
+        for (var element : roadSign.elements()) {
+            if (!(element instanceof SymbolElement symbol)) continue;
+            var symbolWidget = new SymbolWidget(anchorX, anchorY, symbol);
+            this.addRenderableWidget(symbolWidget);
+        }
+
+        // Add elements
+        for (var element : roadSign.elements()) {
             if (!(element instanceof TextElement textElement)) continue;
-            var textBox = new TextElementBox(textElement, textureWidget.getX(), textureWidget.getY());
+            var textBox = new TextElementWidget(anchorX, anchorY, textElement);
             this.addRenderableWidget(textBox);
         }
     }
