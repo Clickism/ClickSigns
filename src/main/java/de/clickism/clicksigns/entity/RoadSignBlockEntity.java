@@ -2,12 +2,12 @@ package de.clickism.clicksigns.entity;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
-import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.texture.TileSet;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.StaticTexture;
+import de.clickism.clicksigns.util.texture.TileSet;
 import de.clickism.clicksigns.util.texture.TiledTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

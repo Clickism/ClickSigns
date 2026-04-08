@@ -18,6 +18,11 @@ import static net.minecraft.world.item.Item.*;
  * Platform wrapper interface
  */
 public interface Platform {
+    /**
+     * Gets the current platform instance
+     *
+     * @return Current platform instance
+     */
     static Platform get() {
         //? if fabric {
         return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;

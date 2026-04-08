@@ -5,7 +5,6 @@ import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;

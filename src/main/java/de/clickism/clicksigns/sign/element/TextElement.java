@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.util.Alignment;
-import org.w3c.dom.Text;
 
 import java.awt.*;
 

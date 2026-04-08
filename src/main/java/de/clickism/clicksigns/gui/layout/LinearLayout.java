@@ -176,6 +176,6 @@ public class LinearLayout {
      * Axis to organize the layout in.
      */
     public enum Axis {
-        HORIZONTAL, VERTICAL;
+        HORIZONTAL, VERTICAL
     }
 }
