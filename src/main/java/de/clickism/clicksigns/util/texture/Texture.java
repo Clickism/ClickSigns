@@ -3,6 +3,7 @@ package de.clickism.clicksigns.util.texture;
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * @param width    width of the texture in pixels
  * @param height   height of the texture in pixels
  */
+// TODO: Split again into StaticTexture and TiledTexture
 public record Texture(ResourceLocation location, int width, int height) {
     /**
      * Cache for texture sizes
@@ -109,4 +111,12 @@ public record Texture(ResourceLocation location, int width, int height) {
      * @param height height of the texture in pixels
      */
     private record TextureSize(int width, int height) {}
+
+    public static final FriendlyByteBuf.Writer<Texture> WRITER = (buf, texture) -> {
+        buf.writeResourceLocation(texture.location());
+    };
+
+    public static final FriendlyByteBuf.Reader<Texture> READER = (buf) -> {
+        return Texture.load(buf.readResourceLocation());
+    };
 }

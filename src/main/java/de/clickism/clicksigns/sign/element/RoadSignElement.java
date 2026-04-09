@@ -1,6 +1,10 @@
 package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.util.Alignment;
+import de.clickism.clicksigns.util.texture.Texture;
+import net.minecraft.network.FriendlyByteBuf;
+
+import java.awt.*;
 
 /**
  * An element that can be placed on a road sign.
@@ -51,5 +55,39 @@ public abstract sealed class RoadSignElement permits TextElement, SymbolElement 
      */
     public Alignment alignment() {
         return alignment;
+    }
+
+    public static final FriendlyByteBuf.Writer<RoadSignElement> WRITER = (buf, element) -> {
+        buf.writeInt(typeOf(element));
+        buf.writeInt(element.localX());
+        buf.writeInt(element.localY());
+        buf.writeInt(element.alignment().ordinal());
+        if (element instanceof TextElement text) {
+            buf.writeFloat(text.scale());
+            buf.writeInt(text.color().getRGB());
+            buf.writeUtf(text.text());
+        } else if (element instanceof SymbolElement symbol) {
+            Texture.WRITER.accept(buf, symbol.texture());
+        }
+    };
+
+    public static final FriendlyByteBuf.Reader<RoadSignElement> READER = (buf) -> {
+        int type = buf.readInt();
+        int localX = buf.readInt();
+        int localY = buf.readInt();
+        Alignment alignment = Alignment.values()[buf.readInt()];
+        if (type == 1) {
+            float scale = buf.readFloat();
+            int color = buf.readInt();
+            String text = buf.readUtf();
+            return new TextElement(localX, localY, alignment, text, new Color(color, true), scale);
+        } else {
+            Texture texture = Texture.READER.apply(buf);
+            return new SymbolElement(localX, localY, alignment, texture);
+        }
+    };
+
+    private static int typeOf(RoadSignElement element) {
+        return element instanceof TextElement ? 1 : 0;
     }
 }

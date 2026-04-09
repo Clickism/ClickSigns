@@ -34,9 +34,7 @@ public class TiledTextureGenerator {
     public static @Nullable Texture generateAndRegister(TileSet tileSet, float blockWidth, float blockHeight) {
         var location = generateImageAndRegister(tileSet, blockWidth, blockHeight);
         if (location == null) return null;
-        int pixelWidth = (int) (blockWidth * BLOCK_PIXELS);
-        int pixelHeight = (int) (blockHeight * BLOCK_PIXELS);
-        return new Texture(location, pixelWidth, pixelHeight);
+        return Texture.wrapFromBlocks(location, blockWidth, blockHeight);
     }
 
     /**

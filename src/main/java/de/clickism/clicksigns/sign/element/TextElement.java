@@ -10,6 +10,7 @@ import java.awt.*;
 public final class TextElement extends RoadSignElement {
     private final String text;
     private final Color color;
+    // TODO: Background color?
     private final float scale;
 
     /**
