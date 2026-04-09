@@ -6,9 +6,9 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.texture.StaticTexture;
+import de.clickism.clicksigns.util.texture.Texture;
 import de.clickism.clicksigns.util.texture.TileSet;
-import de.clickism.clicksigns.util.texture.TiledTexture;
+import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -27,16 +27,16 @@ import java.util.List;
  */
 public class RoadSignBlockEntity extends BlockEntity {
     private final RoadSign roadSign = new RoadSign(
-            TiledTexture.fromTileSet(
-                    TileSet.load(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
+            TiledTextureGenerator.generateAndRegister(
+                    new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
                     2f, 1f
             ),
-            TiledTexture.fromTileSet(
-                    TileSet.load(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8),
+            TiledTextureGenerator.generateAndRegister(
+                    new TileSet(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8),
                     2f, 1f
             ),
             List.of(
-                    new SymbolElement(2, 2, Alignment.TOP_RIGHT, StaticTexture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
+                    new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
                     new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", Color.BLACK, 1f)
             )
     );
