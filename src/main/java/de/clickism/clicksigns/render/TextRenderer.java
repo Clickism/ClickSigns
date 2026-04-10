@@ -36,16 +36,17 @@ public class TextRenderer extends Renderer {
     /**
      * Renders the given text at the center (0, 0) with the given z index and color.
      *
-     * @param text   the text to render
-     * @param color  the color to render the text in
-     * @param x      the x offset to translate by (in blocks)
-     * @param y      the y offset to translate by (in blocks)
-     * @param zIndex the z index to render at, higher values will render on top
+     * @param text            the text to render
+     * @param color           the color to render the text in
+     * @param backgroundColor the color to render the text background in, or 0 for no background
+     * @param x               the x offset to translate by (in blocks)
+     * @param y               the y offset to translate by (in blocks)
+     * @param zIndex          the z index to render at, higher values will render on top
      */
     public void render(
             String text,
-            Color color,
-            @Nullable Color backgroundColor,
+            int color,
+            int backgroundColor,
             float textScale,
             float x,
             float y,
@@ -62,7 +63,7 @@ public class TextRenderer extends Renderer {
         // Use higher z index because background will subtract one later
         align(x, y, blockWidth, blockHeight, zIndex + 1, alignment);
         // Render background if given
-        if (backgroundColor != null) {
+        if (backgroundColor != 0) {
             renderBackground(backgroundColor, blockWidth, blockHeight);
         }
         // Scale text
@@ -79,7 +80,7 @@ public class TextRenderer extends Renderer {
                 // Apply text offset
                 textX, textY,
                 // Apply color
-                color.getRGB(),
+                color,
                 false,
                 stack.last().pose(),
                 source,
@@ -95,7 +96,7 @@ public class TextRenderer extends Renderer {
      * Renders a background rectangle with the given color behind the text,
      * with padding based on the text size.
      */
-    private void renderBackground(Color backgroundColor, float blockWidth, float blockHeight) {
+    private void renderBackground(int backgroundColor, float blockWidth, float blockHeight) {
         // Apply padding
         float paddingX = blockWidth * TEXT_PADDING_X;
         float paddingY = blockHeight * TEXT_PADDING_Y;

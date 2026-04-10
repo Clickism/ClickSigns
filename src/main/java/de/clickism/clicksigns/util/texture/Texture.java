@@ -80,6 +80,9 @@ public sealed interface Texture permits StaticTexture, TiledTexture {
         return new TiledTexture(generated, pixelWidth, pixelHeight, tileSet);
     }
 
+    /**
+     * Writer for packets
+     */
     FriendlyByteBuf.Writer<Texture> WRITER = (buf, texture) -> {
         int type = texture instanceof TiledTexture ? 1 : 0;
         buf.writeInt(type);
@@ -94,6 +97,9 @@ public sealed interface Texture permits StaticTexture, TiledTexture {
         }
     };
 
+    /**
+     * Reader for packets
+     */
     FriendlyByteBuf.Reader<Texture> READER = (buf) -> {
         int type = buf.readInt();
         if (type == 1) {

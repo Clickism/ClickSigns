@@ -47,7 +47,7 @@ public class TextureRenderer extends Renderer {
     public void renderTexture(Texture texture, float x, float y, int zIndex, Alignment alignment) {
         var textureLocation = texture.location();
         var buffer = source.getBuffer(RenderType.entityTranslucentCull(textureLocation));
-        render(buffer, x, y, texture.blockWidth(), texture.blockHeight(), zIndex, alignment, DEFAULT_COLOR);
+        render(buffer, x, y, texture.blockWidth(), texture.blockHeight(), zIndex, alignment, DEFAULT_COLOR.getRGB());
     }
 
     /**
@@ -61,7 +61,7 @@ public class TextureRenderer extends Renderer {
      * @param zIndex    the z index to render at, higher values will render on top
      * @param alignment the alignment to render the quad with
      */
-    public void renderColor(Color color, float blockWidth, float blockHeight, float x, float y, float zIndex, Alignment alignment) {
+    public void renderColor(int color, float blockWidth, float blockHeight, float x, float y, float zIndex, Alignment alignment) {
         var buffer = source.getBuffer(RenderType.gui());
         render(buffer, x, y, blockWidth, blockHeight, zIndex, alignment, color);
     }
@@ -76,7 +76,7 @@ public class TextureRenderer extends Renderer {
             float blockHeight,
             float zIndex,
             Alignment alignment,
-            Color color
+            int color
     ) {
         stack.pushPose();
         // Apply alignment and z index offset
@@ -95,7 +95,7 @@ public class TextureRenderer extends Renderer {
     /**
      * Creates a quad with the given vertex positions
      */
-    private void quad(VertexConsumer buffer, PoseStack.Pose pose, float x1, float y1, float x2, float y2, Color color) {
+    private void quad(VertexConsumer buffer, PoseStack.Pose pose, float x1, float y1, float x2, float y2, int color) {
         vertex(buffer, pose, x1, y1, 1, 1, color); // Bottom left
         vertex(buffer, pose, x1, y2, 1, 0, color); // Top left
         vertex(buffer, pose, x2, y2, 0, 0, color); // Top right
@@ -105,9 +105,9 @@ public class TextureRenderer extends Renderer {
     /**
      * Creates a vertex with the given positions and UV coordinates
      */
-    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, Color color) {
+    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
         buffer.vertex(pose.pose(), x, y, 0)
-                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .color(color)
                 .uv(u, v)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(light)

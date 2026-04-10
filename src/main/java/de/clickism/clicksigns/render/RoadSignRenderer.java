@@ -51,7 +51,7 @@ public final class RoadSignRenderer extends Renderer {
                 // Render each element on top of the road sign
                 textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 1, symbol.alignment());
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), Color.BLUE, text.scale(), renderCoords.x, renderCoords.y, 2, text.alignment());
+                textRenderer.render(text.text(), text.color(), text.backgroundColor(), text.scale(), renderCoords.x, renderCoords.y, 2, text.alignment());
             }
         });
 
