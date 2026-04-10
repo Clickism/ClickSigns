@@ -5,6 +5,7 @@ import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.Texture;
 import de.clickism.clicksigns.util.texture.TileSet;
@@ -26,6 +27,11 @@ import java.util.List;
  * Road sign block entity
  */
 public class RoadSignBlockEntity extends BlockEntity {
+    static {
+        TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8));
+        TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8));
+    }
+
     private RoadSign roadSign = new RoadSign(
             TiledTextureGenerator.generateAndRegister(
                     new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
@@ -49,7 +55,7 @@ public class RoadSignBlockEntity extends BlockEntity {
         return roadSign;
     }
 
-    public void roadSign(RoadSign roadSign) {
+    public void updateRoadSign(RoadSign roadSign) {
         this.roadSign = roadSign;
         setChanged();
     }

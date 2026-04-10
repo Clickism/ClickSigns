@@ -1,13 +1,20 @@
 package de.clickism.clicksigns.network;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.Packet;
 import de.clickism.clicksigns.platform.network.PacketType;
 import de.clickism.clicksigns.sign.RoadSign;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 
+/**
+ * Packet for updating a road sign
+ *
+ * @param pos      position of the road sign block entity
+ * @param roadSign new road sign data
+ */
 public record RoadSignUpdatePacket(
         BlockPos pos,
         RoadSign roadSign
@@ -28,12 +35,22 @@ public record RoadSignUpdatePacket(
             },
             // Server Handler
             (packet, player) -> {
-                player.sendSystemMessage(Component.literal("Received road sign:" + packet.toString()));
-                Platform.network().sendToPlayer(player, packet);
+                var level = player.serverLevel();
+                var blockEntity = level.getBlockEntity(packet.pos());
+                if (!(blockEntity instanceof RoadSignBlockEntity roadSignBlockEntity)) return;
+                // Update road sign
+                roadSignBlockEntity.updateRoadSign(packet.roadSign());
+                Platform.network().sendToAllInLevel(level, packet);
             },
             // Client Handler
             (packet) -> {
-                ClickSigns.LOGGER.info("Received road sign update packet: {}", packet);
+                var client = Minecraft.getInstance();
+                var level = client.level;
+                if (level == null) return;
+                var blockEntity = level.getBlockEntity(packet.pos());
+                if (!(blockEntity instanceof RoadSignBlockEntity roadSignBlockEntity)) return;
+                // Update road sign
+                roadSignBlockEntity.updateRoadSign(packet.roadSign());
             }
     );
 

@@ -2,15 +2,20 @@ package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.layout.LinearLayout;
-import de.clickism.clicksigns.gui.widget.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.ElementProvider;
+import de.clickism.clicksigns.gui.widget.SymbolElementWidget;
 import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Road sign screen
@@ -19,6 +24,7 @@ public class RoadSignScreen extends ScreenWithBackground {
     private static final int PADDING = 8;
 
     private final RoadSignBlockEntity entity;
+    private final List<ElementProvider> elementProviders = new ArrayList<>();
 
     /**
      * Creates a new road sign screen.
@@ -40,7 +46,6 @@ public class RoadSignScreen extends ScreenWithBackground {
         textureWidget.center();
         this.addRenderableWidget(textureWidget);
 
-
         // Add confirm button
         var confirmButton = confirmButton();
         this.addRenderableWidget(confirmButton);
@@ -54,29 +59,36 @@ public class RoadSignScreen extends ScreenWithBackground {
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 
-        // Add symbol elements
+        // Calculate anchor for elements
         int anchorX = textureWidget.getX();
         int anchorY = textureWidget.getY() + textureWidget.getHeight();
-        for (var element : roadSign.elements()) {
-            if (!(element instanceof SymbolElement symbol)) continue;
-            var symbolWidget = new SymbolWidget(anchorX, anchorY, symbol);
-            this.addRenderableWidget(symbolWidget);
-        }
-
         // Add elements
+        this.elementProviders.clear();
         for (var element : roadSign.elements()) {
-            if (!(element instanceof TextElement textElement)) continue;
-            var textBox = new TextElementWidget(anchorX, anchorY, textElement);
-            this.addRenderableWidget(textBox);
+            if (element instanceof SymbolElement symbol) {
+                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol);
+                this.elementProviders.add(symbolWidget);
+                this.addRenderableWidget(symbolWidget);
+            } else if (element instanceof TextElement textElement) {
+                var textBox = new TextElementWidget(anchorX, anchorY, textElement);
+                this.elementProviders.add(textBox);
+                this.addRenderableWidget(textBox);
+            }
         }
     }
 
-    protected Button confirmButton() {
+    private Button confirmButton() {
         return Button.builder(Component.translatable("clicksigns.text.confirm"), button -> {
-                    // TODO: Implement
-                    Platform.network().sendToServer(new RoadSignUpdatePacket(entity.getBlockPos(), entity.roadSign()));
+                    var roadSign = readRoadSign();
+                    Platform.network().sendToServer(new RoadSignUpdatePacket(entity.getBlockPos(), roadSign));
                     this.onClose();
                 })
                 .build();
+    }
+
+    private RoadSign readRoadSign() {
+        var roadSign = entity.roadSign();
+        var elements = elementProviders.stream().map(ElementProvider::element).toList();
+        return new RoadSign(roadSign.texture(), roadSign.backTexture(), elements);
     }
 }

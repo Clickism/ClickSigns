@@ -14,13 +14,12 @@ public class TileSetRegistry {
     private static final Map<ResourceLocation, TileSet> TILE_SETS = new HashMap<>();
 
     /**
-     * Registers a tile set with the given resource location as its id.
+     * Registers a tile set with its resource location as its id.
      *
-     * @param id      id of the tile set to register
      * @param tileSet tile set to register
      */
-    public static void register(ResourceLocation id, TileSet tileSet) {
-        TILE_SETS.put(id, tileSet);
+    public static void register(TileSet tileSet) {
+        TILE_SETS.put(tileSet.location(), tileSet);
     }
 
     /**
