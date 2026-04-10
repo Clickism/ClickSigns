@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-import java.awt.Color;
 import java.util.List;
 
 import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
@@ -31,7 +30,7 @@ public class SymbolElementWidget extends TextureWidget implements ElementProvide
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, symbol, this.width, this.height);
         // Need to move up by half a pixel to align for some reason???
         this.setPosition(pos.x, pos.y - TEXTURE_RENDER_SCALE / 2);
-        this.setTooltip(Tooltip.create(Component.literal("§lClick §rto cycle symbol")));
+        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol")));
     }
 
     @Override
