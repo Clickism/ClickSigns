@@ -1,18 +1,17 @@
 package de.clickism.clicksigns.util.texture;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import de.clickism.clicksigns.ClickSigns;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
 
 /**
- * Represents a tileset image
+ * Represents a tileset
+ *
+ * @param name       name of the tileset to display
+ * @param location   resource location of the tileset texture
+ * @param cornerSize size of the corners in pixels
+ * @param centerSize size of the center area in pixels
  */
 public record TileSet(
+        String name,
         ResourceLocation location,
         int cornerSize,
         int centerSize

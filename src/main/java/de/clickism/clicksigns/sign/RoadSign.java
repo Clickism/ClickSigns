@@ -2,6 +2,8 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.util.texture.TileSet;
+import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;

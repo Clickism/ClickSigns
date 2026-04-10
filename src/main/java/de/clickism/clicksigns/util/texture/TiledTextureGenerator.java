@@ -24,14 +24,15 @@ public class TiledTextureGenerator {
     private static final Map<TiledTextureKey, ResourceLocation> GENERATED_CACHE = new HashMap<>();
 
     /**
-     * Generates a tiled texture from the given tileset and block dimensions, registers it with the texture manager, and returns a Texture record containing the resource location and dimensions of the generated texture.
+     * Generates a tiled texture from the given tileset and block dimensions, registers it with the texture manager,
+     * and returns a Texture record containing the resource location and dimensions of the generated texture.
      *
      * @param tileSet     the tileset to generate the texture from
      * @param blockWidth  the width of the generated texture in blocks
      * @param blockHeight the height of the generated texture in blocks
      * @return the generated texture or null if generation failed
      */
-    public static @Nullable TiledTexture generateAndRegister(TileSet tileSet, float blockWidth, float blockHeight) {
+    public static @Nullable TiledTexture generate(TileSet tileSet, float blockWidth, float blockHeight) {
         var location = generateImageAndRegister(tileSet, blockWidth, blockHeight);
         if (location == null) return null;
         return Texture.wrapTiled(location, blockWidth, blockHeight, tileSet.location());

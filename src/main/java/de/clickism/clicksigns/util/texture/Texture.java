@@ -113,7 +113,7 @@ public sealed interface Texture permits StaticTexture, TiledTexture {
                 ClickSigns.LOGGER.error("Failed to load tileset {} for texture", tileSetId);
                 return Texture.load(ERROR_TEXTURE);
             }
-            var generated = TiledTextureGenerator.generateAndRegister(tileSet, blockWidth, blockHeight);
+            var generated = TiledTextureGenerator.generate(tileSet, blockWidth, blockHeight);
             if (generated == null) {
                 ClickSigns.LOGGER.error("Failed to generate tiled texture for tileset {}", tileSetId);
                 return Texture.load(ERROR_TEXTURE);

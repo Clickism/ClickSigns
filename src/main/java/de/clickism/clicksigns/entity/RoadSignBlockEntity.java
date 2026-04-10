@@ -28,35 +28,35 @@ import java.util.List;
  * Road sign block entity
  */
 public class RoadSignBlockEntity extends BlockEntity {
-    // TODO: Remove testing stuff
-    static {
-        TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8));
-        TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8));
-    }
+    @Nullable
+    private RoadSign roadSign;
 
-    private RoadSign roadSign = new RoadSign(
-            TiledTextureGenerator.generateAndRegister(
-                    new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
-                    2f, 1f
-            ),
-            TiledTextureGenerator.generateAndRegister(
-                    new TileSet(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8),
-                    2f, 1f
-            ),
-            List.of(
-                    new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
-                    new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, SignColors.WHITE.getRGB(), SignColors.BLUE.getRGB())
-            )
-    );
-
+    /**
+     * Creates a new road sign block entity.
+     *
+     * @param pos   the position of the block entity
+     * @param state the block state of the block entity
+     */
     public RoadSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.ROAD_SIGN.get(), pos, state);
     }
 
-    public RoadSign roadSign() {
+    // TODO: Save entity data
+
+    /**
+     * Gets the road sign of this block entity.
+     *
+     * @return the road sign of this block entity, or null if none is set
+     */
+    public @Nullable RoadSign roadSign() {
         return roadSign;
     }
 
+    /**
+     * Updates the road sign of this block entity.
+     *
+     * @param roadSign new road sign to set
+     */
     public void updateRoadSign(RoadSign roadSign) {
         this.roadSign = roadSign;
         setChanged();

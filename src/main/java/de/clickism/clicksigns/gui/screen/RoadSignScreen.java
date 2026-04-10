@@ -8,10 +8,12 @@ import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ import java.util.List;
 public class RoadSignScreen extends ScreenWithBackground {
     private static final int PADDING = 8;
 
-    private final RoadSignBlockEntity entity;
+    private final BlockPos blockPos;
+    private final RoadSign roadSign;
+
     private final List<ElementProvider> elementProviders = new ArrayList<>();
 
     /**
@@ -31,18 +35,21 @@ public class RoadSignScreen extends ScreenWithBackground {
      */
     public RoadSignScreen(RoadSignBlockEntity entity) {
         super(Component.translatable("clicksigns.text.road_sign_edit_screen"));
-        this.entity = entity;
+        this.blockPos = entity.getBlockPos();
+        var roadSign = entity.roadSign();
+        if (roadSign == null) {
+            roadSign = RoadSignRenderer.defaultRoadSign();
+        }
+        this.roadSign = roadSign;
     }
 
     @Override
     protected void init() {
-        var roadSign = entity.roadSign();
-
         var halfWidth = width / 2;
         var halfHeight = height / 2;
 
         // Add road sign texture
-        var textureWidget = new TextureWidget(halfWidth, halfHeight, entity.roadSign().texture());
+        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.texture());
         textureWidget.center();
         this.addRenderableWidget(textureWidget);
 
@@ -80,14 +87,13 @@ public class RoadSignScreen extends ScreenWithBackground {
     private Button confirmButton() {
         return Button.builder(Component.translatable("clicksigns.text.confirm"), button -> {
                     var roadSign = readRoadSign();
-                    Platform.network().sendToServer(new RoadSignUpdatePacket(entity.getBlockPos(), roadSign));
+                    Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, roadSign));
                     this.onClose();
                 })
                 .build();
     }
 
     private RoadSign readRoadSign() {
-        var roadSign = entity.roadSign();
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
         return new RoadSign(roadSign.texture(), roadSign.backTexture(), elements);
     }

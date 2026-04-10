@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +31,21 @@ public class TileSetRegistry {
      */
     public static @Nullable TileSet get(ResourceLocation id) {
         return TILE_SETS.get(id);
+    }
+
+    /**
+     * Clears all registered tile sets.
+     */
+    public static void clear() {
+        TILE_SETS.clear();
+    }
+
+    /**
+     * Gets a list of all registered tile sets.
+     *
+     * @return a list of all registered tile sets
+     */
+    public static List<TileSet> all() {
+        return TILE_SETS.values().stream().toList();
     }
 }

@@ -1,0 +1,6 @@
+{
+  "name": "Back",
+  "texture": "clicksigns:roadsigns/tilesets/back.png",
+  "cornerSize": 4,
+  "centerSize": 8
+}
