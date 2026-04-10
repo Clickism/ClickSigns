@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.platform.fabric.FabricNetwork;
 import de.clickism.clicksigns.platform.network.Network;
 import de.clickism.clicksigns.platform.network.Packet;
 import net.minecraft.server.level.ServerLevel;

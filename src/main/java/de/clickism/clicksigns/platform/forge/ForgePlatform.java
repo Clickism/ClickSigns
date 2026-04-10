@@ -2,8 +2,10 @@ package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.platform.fabric.FabricNetwork;import de.clickism.clicksigns.platform.network.Network;
+import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -11,11 +13,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +46,7 @@ public class ForgePlatform implements Platform {
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
 
     private final List<TabEntry> tabEntries = new ArrayList<>();
-
-    private record TabEntry(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {}
+    private final List<ReloadListener> reloadListeners = new ArrayList<>();
 
     private ForgePlatform() {
         // Singleton class
@@ -119,6 +124,18 @@ public class ForgePlatform implements Platform {
         tabEntries.add(new TabEntry(tab, item));
     }
 
+    @Override
+    public void addReloadListener(ReloadListener listener) {
+        reloadListeners.add(listener);
+    }
+
+    @SubscribeEvent
+    public void onReload(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
+            reloadListeners.forEach(listener -> listener.onReload(manager));
+        });
+    }
+
     @SubscribeEvent
     public void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         var tab = event.getTabKey();
@@ -126,4 +143,12 @@ public class ForgePlatform implements Platform {
                 .filter(entry -> entry.tab.equals(tab))
                 .forEach(entry -> event.accept(entry.item.get()));
     }
+
+    /**
+     * A creative tab entry
+     *
+     * @param tab  the creative tab
+     * @param item the item to add
+     */
+    private record TabEntry(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {}
 }

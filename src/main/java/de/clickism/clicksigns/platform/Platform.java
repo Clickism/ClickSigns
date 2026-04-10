@@ -3,6 +3,7 @@ package de.clickism.clicksigns.platform;
 import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -128,5 +129,22 @@ public interface Platform {
          * @return New block entity instance
          */
         T create(BlockPos pos, BlockState state);
+    }
+
+    /**
+     * Adds a reload listener to the resource manager
+     *
+     * @param listener Reload listener to add
+     */
+    void addReloadListener(ReloadListener listener);
+
+    /**
+     * Reload listener interface
+     */
+    interface ReloadListener {
+        /**
+         * Called when the resource manager is reloaded
+         */
+        void onReload(ResourceManager manager);
     }
 }

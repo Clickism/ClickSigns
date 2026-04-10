@@ -6,10 +6,15 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.Network;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -18,6 +23,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -29,8 +36,19 @@ public class FabricPlatform implements Platform {
      */
     public static final FabricPlatform INSTANCE = new FabricPlatform();
 
+    private static final ResourceLocation RELOAD_LISTENER_ID = ClickSigns.identifier("reload_listener");
+
+    private final List<ReloadListener> reloadListeners = new ArrayList<>();
+
     private FabricPlatform() {
         // Singleton class
+    }
+
+    /**
+     * Initializes the platform, registers reload listeners, etc.
+     */
+    public void initialize() {
+        registerReloadListener();
     }
 
     @Override
@@ -96,5 +114,25 @@ public class FabricPlatform implements Platform {
     public void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {
         ItemGroupEvents.modifyEntriesEvent(tab)
                 .register(entries -> entries.accept(item.get()));
+    }
+
+    @Override
+    public void addReloadListener(ReloadListener listener) {
+        reloadListeners.add(listener);
+    }
+
+    private void registerReloadListener() {
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
+                .registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+                    @Override
+                    public ResourceLocation getFabricId() {
+                        return RELOAD_LISTENER_ID;
+                    }
+
+                    @Override
+                    public void onResourceManagerReload(ResourceManager manager) {
+                        reloadListeners.forEach(listener -> listener.onReload(manager));
+                    }
+                });
     }
 }

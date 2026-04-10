@@ -14,6 +14,7 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
     @Override
     public void onInitialize() {
         ClickSigns.initialize();
+        FabricPlatform.INSTANCE.initialize(); // Initialize platform
     }
 
     @Override
