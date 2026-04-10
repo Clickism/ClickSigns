@@ -5,6 +5,7 @@ import de.clickism.clicksigns.util.Alignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -12,7 +13,6 @@ import java.awt.*;
 /**
  * Text renderer utility class
  */
-// TODO: Fix: Text rendering is slightly weird color-wise
 public class TextRenderer extends Renderer {
     /**
      * The scale multiplier used to render text
@@ -27,11 +27,11 @@ public class TextRenderer extends Renderer {
     /**
      * Create a new text renderer with the given rendering context.
      */
-    public TextRenderer(PoseStack stack, MultiBufferSource source, int light) {
+    public TextRenderer(PoseStack stack, MultiBufferSource source, int light, Direction renderDirection) {
         super(stack, source, light);
         // Use client font
         this.font = Minecraft.getInstance().font;
-        this.textureRenderer = new TextureRenderer(stack, source, light);
+        this.textureRenderer = new TextureRenderer(stack, source, light, renderDirection);
     }
 
     /**

@@ -13,6 +13,8 @@ public class SignColors {
     private static final Map<String, Color> COLORS = new HashMap<>();
 
     // Predefined colors
+    public static final Color TEXT_LIGHT = rgb("text_light", 0xD0D0D0);
+    public static final Color TEXT_DARK = rgb("text_dark", 0x292929);
     public static final Color WHITE = rgb("white", 0xFFFFFF);
     public static final Color BLACK = rgb("black", 0x292929);
     public static final Color BLUE = rgb("blue", 0x2739EB);

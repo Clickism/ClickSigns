@@ -56,25 +56,25 @@ public final class RoadSignRenderer extends Renderer {
         // Face the direction of the road sign
         faceDirection();
 
-        var textureRenderer = new TextureRenderer(stack, source, light);
+        var textureRenderer = new TextureRenderer(stack, source, light, direction);
         // Render the road sign texture
-        textureRenderer.renderTexture(roadSign.texture(), 0);
+        textureRenderer.renderTexture(roadSign.texture(), 1);
 
-        var textRenderer = new TextRenderer(stack, source, light);
+        var textRenderer = new TextRenderer(stack, source, light, direction);
         roadSign.elements().forEach(element -> {
             var renderCoords = toRenderCoordinates(roadSign.texture(), element.localX(), element.localY());
             // Render element
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 1, symbol.alignment());
+                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), text.backgroundColor(), text.scale(), renderCoords.x, renderCoords.y, 2, text.alignment());
+                textRenderer.render(text.text(), text.color(), text.backgroundColor(), text.scale(), renderCoords.x, renderCoords.y, 3, text.alignment());
             }
         });
 
         // Render back
         stack.mulPose(FLIP);
-        textureRenderer.renderTexture(roadSign.backTexture(), 0);
+        textureRenderer.renderTexture(roadSign.backTexture(), 1);
 
         // Finish rendering
         stack.popPose();
@@ -112,7 +112,7 @@ public final class RoadSignRenderer extends Renderer {
                 TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f),
                 List.of(
                         new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
-                        new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, SignColors.WHITE.getRGB(), SignColors.BLUE.getRGB())
+                        new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, SignColors.TEXT_LIGHT.getRGB(), SignColors.BROWN.getRGB())
                 )
         );
         return defaultRoadSign;

@@ -7,6 +7,7 @@ import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 
 import java.awt.*;
 
@@ -16,11 +17,14 @@ import java.awt.*;
 public class TextureRenderer extends Renderer {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
+    private final Direction renderDirection;
+
     /**
      * Create a new texture renderer with the given rendering context.
      */
-    public TextureRenderer(PoseStack stack, MultiBufferSource source, int light) {
+    public TextureRenderer(PoseStack stack, MultiBufferSource source, int light, Direction renderDirection) {
         super(stack, source, light);
+        this.renderDirection = renderDirection;
     }
 
     /**
@@ -62,7 +66,7 @@ public class TextureRenderer extends Renderer {
      * @param alignment the alignment to render the quad with
      */
     public void renderColor(int color, float blockWidth, float blockHeight, float x, float y, float zIndex, Alignment alignment) {
-        var buffer = source.getBuffer(RenderType.gui());
+        var buffer = source.getBuffer(RenderType.textBackground());
         render(buffer, x, y, blockWidth, blockHeight, zIndex, alignment, color);
     }
 
@@ -106,12 +110,13 @@ public class TextureRenderer extends Renderer {
      * Creates a vertex with the given positions and UV coordinates
      */
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
+        var isXAxis = renderDirection.getAxis() == Direction.Axis.X;
         buffer.vertex(pose.pose(), x, y, 0)
                 .color(color)
                 .uv(u, v)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(light)
-                .normal(pose.normal(), 0, 0, 1)
+                .normal(pose.normal(), isXAxis ? 1 : 0, 0, isXAxis ? 0 : 1)
                 .endVertex();
     }
 }
