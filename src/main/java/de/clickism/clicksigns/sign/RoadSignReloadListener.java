@@ -64,8 +64,8 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
             var directory = path.substring(0, path.lastIndexOf('/'));
             var category = directoryToCategory.getOrDefault(directory, new SymbolCategory(SymbolRegistry.UNCATEGORIZED, List.of()));
             SymbolRegistry.register(category.name(), location);
-
         });
+        // TODO: Remove or refactor, its a bit ambigous and category info is lost when switching
         // Resolve included categories
         directoryToCategory.values().forEach(category -> {
             category.includedCategories().forEach(included -> {
