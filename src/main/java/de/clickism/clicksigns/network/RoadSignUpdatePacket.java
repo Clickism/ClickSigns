@@ -1,17 +1,12 @@
 package de.clickism.clicksigns.network;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.Packet;
 import de.clickism.clicksigns.platform.network.PacketType;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
-import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.repository.Pack;
-
-import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public record RoadSignUpdatePacket(
         BlockPos pos,
@@ -33,11 +28,12 @@ public record RoadSignUpdatePacket(
             },
             // Server Handler
             (packet, player) -> {
-
+                player.sendSystemMessage(Component.literal("Received road sign:" + packet.toString()));
+                Platform.network().sendToPlayer(player, packet);
             },
             // Client Handler
             (packet) -> {
-
+                ClickSigns.LOGGER.info("Received road sign update packet: {}", packet);
             }
     );
 

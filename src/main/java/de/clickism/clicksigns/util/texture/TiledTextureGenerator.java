@@ -31,10 +31,10 @@ public class TiledTextureGenerator {
      * @param blockHeight the height of the generated texture in blocks
      * @return the generated texture or null if generation failed
      */
-    public static @Nullable Texture generateAndRegister(TileSet tileSet, float blockWidth, float blockHeight) {
+    public static @Nullable TiledTexture generateAndRegister(TileSet tileSet, float blockWidth, float blockHeight) {
         var location = generateImageAndRegister(tileSet, blockWidth, blockHeight);
         if (location == null) return null;
-        return Texture.wrapFromBlocks(location, blockWidth, blockHeight);
+        return Texture.wrapTiled(location, blockWidth, blockHeight, tileSet.location());
     }
 
     /**

@@ -5,6 +5,8 @@ import de.clickism.clicksigns.gui.layout.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SymbolWidget;
 import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
+import de.clickism.clicksigns.network.RoadSignUpdatePacket;
+import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
@@ -72,6 +74,7 @@ public class RoadSignScreen extends ScreenWithBackground {
     protected Button confirmButton() {
         return Button.builder(Component.translatable("clicksigns.text.confirm"), button -> {
                     // TODO: Implement
+                    Platform.network().sendToServer(new RoadSignUpdatePacket(entity.getBlockPos(), entity.roadSign()));
                     this.onClose();
                 })
                 .build();

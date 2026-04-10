@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.platform;
 
+import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -32,6 +33,22 @@ public interface Platform {
         /*throw new UnsupportedOperationException("No platform implementation found");
          *///? }
     }
+
+    /**
+     * Gets the network instance of the current platform
+     *
+     * @return Network instance
+     */
+    static Network network() {
+        return get().getNetwork();
+    }
+
+    /**
+     * Gets the network instance
+     *
+     * @return Network instance
+     */
+    Network getNetwork();
 
     /**
      * Registers a new item

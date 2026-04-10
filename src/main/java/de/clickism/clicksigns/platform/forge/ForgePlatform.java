@@ -2,6 +2,7 @@ package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -41,6 +42,11 @@ public class ForgePlatform implements Platform {
 
     private ForgePlatform() {
         // Singleton class
+    }
+
+    @Override
+    public Network getNetwork() {
+        return null;
     }
 
     @Override

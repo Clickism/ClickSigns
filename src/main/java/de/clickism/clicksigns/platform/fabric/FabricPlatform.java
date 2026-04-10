@@ -3,6 +3,7 @@ package de.clickism.clicksigns.platform.fabric;
 import de.clickism.clicksigns.ClickSigns;
 
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.platform.network.Network;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
@@ -25,9 +26,15 @@ import java.util.function.Supplier;
 public class FabricPlatform implements Platform {
 
     public static final FabricPlatform INSTANCE = new FabricPlatform();
+    public static final FabricNetwork NETWORK = new FabricNetwork();
 
     private FabricPlatform() {
         // Singleton class
+    }
+
+    @Override
+    public Network getNetwork() {
+        return NETWORK;
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.network.FriendlyByteBuf;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -20,15 +21,15 @@ public record RoadSign(
         List<RoadSignElement> elements
 ) {
     public static final FriendlyByteBuf.Writer<RoadSign> WRITER = (buf, element) -> {
-        RoadSignUpdatePacket.TEXTURE_WRITER.accept(buf, element.texture());
-        RoadSignUpdatePacket.TEXTURE_WRITER.accept(buf, element.backTexture());
-        buf.writeCollection(element.elements(), RoadSignUpdatePacket.ELEMENT_WRITER);
+        Texture.WRITER.accept(buf, element.texture());
+        Texture.WRITER.accept(buf, element.backTexture());
+        buf.writeCollection(element.elements(), RoadSignElement.WRITER);
     };
 
     public static final FriendlyByteBuf.Reader<RoadSign> READER = (buf) -> {
-        Texture texture = RoadSignUpdatePacket.TEXTURE_READER.apply(buf);
-        Texture backTexture = RoadSignUpdatePacket.TEXTURE_READER.apply(buf);
-        var elements = buf.readList(RoadSignUpdatePacket.ELEMENT_READER);
+        Texture texture = Texture.READER.apply(buf);
+        Texture backTexture = Texture.READER.apply(buf);
+        var elements = buf.readList(RoadSignElement.READER);
         return new RoadSign(texture, backTexture, elements);
     };
 }

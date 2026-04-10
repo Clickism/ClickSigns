@@ -26,7 +26,7 @@ import java.util.List;
  * Road sign block entity
  */
 public class RoadSignBlockEntity extends BlockEntity {
-    private final RoadSign roadSign = new RoadSign(
+    private RoadSign roadSign = new RoadSign(
             TiledTextureGenerator.generateAndRegister(
                     new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8),
                     2f, 1f
@@ -47,6 +47,11 @@ public class RoadSignBlockEntity extends BlockEntity {
 
     public RoadSign roadSign() {
         return roadSign;
+    }
+
+    public void roadSign(RoadSign roadSign) {
+        this.roadSign = roadSign;
+        setChanged();
     }
 
     @Override
