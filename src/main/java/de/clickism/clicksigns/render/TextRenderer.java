@@ -12,6 +12,7 @@ import java.awt.*;
 /**
  * Text renderer utility class
  */
+// TODO: Fix: Text rendering is slightly weird color-wise
 public class TextRenderer extends Renderer {
     /**
      * The scale multiplier used to render text
