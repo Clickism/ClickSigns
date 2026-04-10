@@ -3,9 +3,14 @@ package de.clickism.clicksigns.gui.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
+
+import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
 
 /**
@@ -29,6 +34,16 @@ public class TextElementWidget extends EditBox implements ElementProvider {
         this.setValue(text.text());
         this.setResponder(this::onChange);
         this.setTextColor(text.backgroundColor());
+
+        this.setTooltip(Tooltip.create(Component.literal("§lClick §rto edit text\n§lShift+Click §rto change color")));
+    }
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        if (this.isHovered) {
+            guiGraphics.renderOutline(this.getX(), this.getY(), this.width, this.height, OUTLINE_COLOR);
+        }
     }
 
     private void onChange(String value) {

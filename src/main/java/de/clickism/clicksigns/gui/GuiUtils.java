@@ -6,12 +6,19 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import org.joml.Vector2i;
 
+import java.awt.*;
+
 import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
 
 /**
  * Utility class for gui logic
  */
 public class GuiUtils {
+    /**
+     * Color for outlining hovered elements
+     */
+    public static final int OUTLINE_COLOR = Color.RED.getRGB();
+
     private GuiUtils() {
         // Utility class
     }

@@ -3,26 +3,44 @@ package de.clickism.clicksigns.gui.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 
 /**
  * Widget for rendering a road sign texture
  */
-public class TextureWidget extends ImageWidget {
+public class TextureWidget extends AbstractWidget {
     /**
      * The scale at which each pixel of the texture is rendered.
      */
     public static final int TEXTURE_RENDER_SCALE = 4;
 
-    private final Texture texture;
+    private Texture texture;
 
     /**
      * Creates a new road sign texture widget.
      */
     public TextureWidget(int x, int y, Texture texture) {
-        super(x, y, texture.width() * TEXTURE_RENDER_SCALE, texture.height() * TEXTURE_RENDER_SCALE, texture.location());
+        super(x, y, 0, 0, Component.empty());
         this.active = false;
+        this.texture(texture);
+    }
+
+    /**
+     * Sets the texture of the widget and updates its size accordingly.
+     *
+     * @param texture the new texture to set
+     */
+    public void texture(Texture texture) {
         this.texture = texture;
+        updateSize();
+    }
+
+    private void updateSize() {
+        this.width = texture.width() * TEXTURE_RENDER_SCALE;
+        this.height = texture.height() * TEXTURE_RENDER_SCALE;
     }
 
     /**
@@ -47,5 +65,10 @@ public class TextureWidget extends ImageWidget {
                 this.width, this.height
         );
         RenderSystem.disableBlend();
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        // No narration
     }
 }

@@ -2,6 +2,7 @@ package de.clickism.clicksigns.gui.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * A widget that can contain other widgets as children.
  */
-public abstract class NestedWiget extends AbstractWidget {
+public abstract class NestedWidget extends AbstractWidget {
     private final List<AbstractWidget> children = new ArrayList<>();
 
     /**
@@ -19,7 +20,7 @@ public abstract class NestedWiget extends AbstractWidget {
      * @param x The x position of the widget.
      * @param y The y position of the widget.
      */
-    public NestedWiget(int x, int y) {
+    public NestedWidget(int x, int y) {
         super(x, y, 0, 0, Component.empty());
     }
 
@@ -30,6 +31,18 @@ public abstract class NestedWiget extends AbstractWidget {
      */
     protected void addChild(AbstractWidget widget) {
         children.add(widget);
+        updateSize();
+    }
+
+    /**
+     * Adds multiple child widgets to this widget.
+     *
+     * @param widgets The widgets to add as children.
+     */
+    protected void addChildren(AbstractWidget... widgets) {
+        for (var widget : widgets) {
+            addChild(widget);
+        }
         updateSize();
     }
 
@@ -74,6 +87,14 @@ public abstract class NestedWiget extends AbstractWidget {
         for (var child : children) {
             if (!child.isMouseOver(mouseX, mouseY)) continue;
             child.onClick(mouseX, mouseY);
+        }
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+        // Narrate all children
+        for (var child : children) {
+            child.updateNarration(narrationElementOutput);
         }
     }
 }
