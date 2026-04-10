@@ -3,6 +3,7 @@ package de.clickism.clicksigns.entity;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.SignColors;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
@@ -27,6 +28,7 @@ import java.util.List;
  * Road sign block entity
  */
 public class RoadSignBlockEntity extends BlockEntity {
+    // TODO: Remove testing stuff
     static {
         TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/white.png"), 4, 8));
         TileSetRegistry.register(new TileSet(ClickSigns.identifier("roadsigns/tileset/back.png"), 4, 8));
@@ -43,7 +45,7 @@ public class RoadSignBlockEntity extends BlockEntity {
             ),
             List.of(
                     new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
-                    new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, Color.WHITE, Color.BLUE)
+                    new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, SignColors.WHITE.getRGB(), SignColors.BLUE.getRGB())
             )
     );
 

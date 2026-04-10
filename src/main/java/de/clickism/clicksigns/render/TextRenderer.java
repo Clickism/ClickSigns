@@ -81,11 +81,11 @@ public class TextRenderer extends Renderer {
                 textX, textY,
                 // Apply color
                 color,
-                false,
+                false, // No shadow
                 stack.last().pose(),
                 source,
                 Font.DisplayMode.NORMAL,
-                0,
+                0, // No background color
                 light
         );
         // Finish rendering

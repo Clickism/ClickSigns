@@ -28,6 +28,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
         this.setPosition(pos.x, pos.y);
         this.setValue(text.text());
         this.setResponder(this::onChange);
+        this.setTextColor(text.backgroundColor());
     }
 
     private void onChange(String value) {
