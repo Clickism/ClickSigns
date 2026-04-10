@@ -27,6 +27,7 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
                 identifier -> identifier.getPath().endsWith(".tileset.json")
         ).forEach((location, resource) -> {
             try {
+                // Important! Image path and tileset path must be the same!
                 var texturePath = location.getPath().replace(".tileset.json", ".png");
                 var textureLocation = ResourceLocation.tryBuild(location.getNamespace(), texturePath);
                 var tileSet = GSON.fromJson(resource.openAsReader(), TileSetJson.class).toTileSet(textureLocation);
