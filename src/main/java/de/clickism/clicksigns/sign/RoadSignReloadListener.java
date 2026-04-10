@@ -25,9 +25,11 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
         manager.listResources(
                 "roadsigns/tilesets",
                 identifier -> identifier.getPath().endsWith(".tileset.json")
-        ).forEach((identifier, resource) -> {
+        ).forEach((location, resource) -> {
             try {
-                var tileSet = GSON.fromJson(resource.openAsReader(), TileSetJson.class).toTileSet();
+                var texturePath = location.getPath().replace(".tileset.json", ".png");
+                var textureLocation = ResourceLocation.tryBuild(location.getNamespace(), texturePath);
+                var tileSet = GSON.fromJson(resource.openAsReader(), TileSetJson.class).toTileSet(textureLocation);
                 TileSetRegistry.register(tileSet);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -37,14 +39,13 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
 
     private record TileSetJson(
             String name,
-            String texture,
             int cornerSize,
             int centerSize
     ) {
-        TileSet toTileSet() {
+        TileSet toTileSet(ResourceLocation location) {
             return new TileSet(
                     name,
-                    ResourceLocation.tryParse(texture),
+                    location,
                     cornerSize,
                     centerSize
             );

@@ -1,6 +1,5 @@
 {
   "name": "White",
-  "texture": "clicksigns:roadsigns/tilesets/white.png",
   "cornerSize": 4,
   "centerSize": 8
 }
