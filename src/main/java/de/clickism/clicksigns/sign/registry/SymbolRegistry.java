@@ -31,6 +31,17 @@ public class SymbolRegistry {
     }
 
     /**
+     * Adds a symbol to the given category without registering it.
+     * (Used for included categories)
+     *
+     * @param category category to add the symbol to
+     * @param symbol   resource location of the symbol to add
+     */
+    public static void addToCategory(String category, ResourceLocation symbol) {
+        BY_CATEGORY.computeIfAbsent(category, k -> new ArrayList<>()).add(symbol);
+    }
+
+    /**
      * Gets the category of the given symbol.
      *
      * @param symbol resource location of the symbol to get the category of

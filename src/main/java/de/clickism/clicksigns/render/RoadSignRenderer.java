@@ -111,7 +111,7 @@ public final class RoadSignRenderer extends Renderer {
                 TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_FRONT), 2f, 1f),
                 TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f),
                 List.of(
-                        new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))),
+                        new SymbolElement(2, 2, Alignment.TOP_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
                         new TextElement(16, 8, Alignment.TOP_CENTER, "Main Street", 1f, SignColors.TEXT_LIGHT.getRGB(), SignColors.BROWN.getRGB())
                 )
         );

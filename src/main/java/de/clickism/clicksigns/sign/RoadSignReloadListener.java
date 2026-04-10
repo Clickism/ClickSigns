@@ -8,9 +8,11 @@ import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import de.clickism.clicksigns.util.texture.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,29 +62,40 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
         ).forEach((location, resource) -> {
             var path = location.getPath();
             var directory = path.substring(0, path.lastIndexOf('/'));
-            var category = directoryToCategory.getOrDefault(directory, SymbolRegistry.UNCATEGORIZED);
-            SymbolRegistry.register(category, location);
+            var category = directoryToCategory.getOrDefault(directory, new SymbolCategory(SymbolRegistry.UNCATEGORIZED, List.of()));
+            SymbolRegistry.register(category.name(), location);
+
+        });
+        // Resolve included categories
+        directoryToCategory.values().forEach(category -> {
+            category.includedCategories().forEach(included -> {
+                var includedSymbols = SymbolRegistry.allInCategory(included);
+                includedSymbols.forEach(symbol -> SymbolRegistry.addToCategory(category.name(), symbol));
+            });
         });
     }
 
     /**
      * Loads all symbol categories from the resource manager and returns a map of directory to category name.
+     *
+     * @return a map of directory to category
      */
-    private Map<String, String> loadCategories(ResourceManager manager) {
-        Map<String, String> map = new HashMap<>();
+    private Map<String, SymbolCategory> loadCategories(ResourceManager manager) {
+        // Map from directory to category name
+        Map<String, SymbolCategory> directoryToCategory = new HashMap<>();
         manager.listResources(
                 "roadsigns/symbols",
                 identifier -> identifier.getPath().endsWith("category.json")
         ).forEach((location, resource) -> {
             try {
                 var directory = location.getPath().replace("/category.json", "");
-                var category = GSON.fromJson(resource.openAsReader(), CategoryJson.class);
-                map.put(directory, category.name);
+                var category = GSON.fromJson(resource.openAsReader(), CategoryJson.class).toSymbolCategory();
+                directoryToCategory.put(directory, category);
             } catch (IOException e) {
                 ClickSigns.LOGGER.error("Error occurred while loading symbol category json {}", location, e);
             }
         });
-        return map;
+        return directoryToCategory;
     }
 
     /**
@@ -111,7 +124,27 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
      * Category JSON format for symbol categories.
      * Important: The category JSON will assign its category to all symbols in the same directory as the JSON file.
      *
-     * @param name name of the category
+     * @param name    name of the category
+     * @param include included list of other categories
      */
-    private record CategoryJson(String name) {}
+    private record CategoryJson(
+            String name,
+            @Nullable List<String> include
+    ) {
+        SymbolCategory toSymbolCategory() {
+            return new SymbolCategory(name, include != null ? include : List.of());
+        }
+    }
+
+    /**
+     * Record to represent a symbol category with its included categories.
+     *
+     * @param name               name of the category
+     * @param includedCategories list of included categories
+     */
+    private record SymbolCategory(
+            String name,
+            List<String> includedCategories
+    ) {
+    }
 }
