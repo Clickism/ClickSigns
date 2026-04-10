@@ -17,14 +17,8 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 public class ForgeEntrypoint {
     public ForgeEntrypoint(FMLJavaModLoadingContext context) {
         ClickSigns.initialize();
-
-        var bus = context.getModEventBus();
-        ForgePlatform.ITEMS_REGISTRY.register(bus);
-        ForgePlatform.BLOCKS_REGISTRY.register(bus);
-        ForgePlatform.BLOCK_ENTITY_TYPE_REGISTRY.register(bus);
-
-        // Register platform instance events
-        bus.register(ForgePlatform.INSTANCE);
+        // Initialize forge platform with event bus
+        ForgePlatform.INSTANCE.initialize(context.getModEventBus());
     }
 
     @SubscribeEvent

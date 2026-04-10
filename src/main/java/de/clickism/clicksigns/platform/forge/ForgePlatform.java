@@ -2,7 +2,7 @@ package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.platform.network.Network;
+import de.clickism.clicksigns.platform.fabric.FabricNetwork;import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,16 +25,18 @@ import java.util.function.Supplier;
  * Forge platform implementation
  */
 public class ForgePlatform implements Platform {
-
+    /**
+     * The fabric platform instance
+     */
     public static final ForgePlatform INSTANCE = new ForgePlatform();
 
-    static final DeferredRegister<Item> ITEMS_REGISTRY =
+    private static final DeferredRegister<Item> ITEMS_REGISTRY =
             DeferredRegister.create(ForgeRegistries.ITEMS, ClickSigns.MOD_ID);
 
-    static final DeferredRegister<Block> BLOCKS_REGISTRY =
+    private static final DeferredRegister<Block> BLOCKS_REGISTRY =
             DeferredRegister.create(ForgeRegistries.BLOCKS, ClickSigns.MOD_ID);
 
-    static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY =
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
 
     private final List<TabEntry> tabEntries = new ArrayList<>();
@@ -44,9 +47,21 @@ public class ForgePlatform implements Platform {
         // Singleton class
     }
 
+    /**
+     * Initializes the forge platform
+     *
+     * @param bus event bus
+     */
+    public void initialize(IEventBus bus) {
+        ITEMS_REGISTRY.register(bus);
+        BLOCKS_REGISTRY.register(bus);
+        BLOCK_ENTITY_TYPE_REGISTRY.register(bus);
+        bus.register(this); // Register events
+    }
+
     @Override
     public Network getNetwork() {
-        return null;
+        return ForgeNetwork.INSTANCE;
     }
 
     @Override

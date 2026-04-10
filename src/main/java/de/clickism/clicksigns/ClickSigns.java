@@ -1,6 +1,7 @@
 package de.clickism.clicksigns;
 
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
+import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.registry.ModBlocks;
@@ -17,6 +18,7 @@ public class ClickSigns {
         ModBlocks.initialize();
         ModBlockEntityTypes.initialize();
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
+        Platform.network().register(); // Register network
     }
 
     public static ResourceLocation identifier(String path) {

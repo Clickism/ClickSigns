@@ -24,9 +24,10 @@ import java.util.function.Supplier;
  * Fabric platform implementation
  */
 public class FabricPlatform implements Platform {
-
+    /**
+     * The fabric platform instance
+     */
     public static final FabricPlatform INSTANCE = new FabricPlatform();
-    public static final FabricNetwork NETWORK = new FabricNetwork();
 
     private FabricPlatform() {
         // Singleton class
@@ -34,7 +35,7 @@ public class FabricPlatform implements Platform {
 
     @Override
     public Network getNetwork() {
-        return NETWORK;
+        return FabricNetwork.INSTANCE;
     }
 
     @Override
