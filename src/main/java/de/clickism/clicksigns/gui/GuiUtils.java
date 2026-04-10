@@ -58,7 +58,7 @@ public class GuiUtils {
         int halfWidth = width / 2;
         int halfHeight = height / 2;
         x -= halfWidth; // Move left by half width to render in center
-        y -= halfHeight / 2; // Move up by half height to render in center-right
+        y -= halfHeight; // Move up by half height to render in center-right
         // Now we can position
         x += element.localX() * TEXTURE_RENDER_SCALE;
         y -= element.localY() * TEXTURE_RENDER_SCALE;

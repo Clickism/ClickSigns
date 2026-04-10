@@ -173,6 +173,19 @@ public class LinearLayout {
     }
 
     /**
+     * Calculates the width of the layout based on the children and the axis.
+     *
+     * @return the width of the layout
+     */
+    public int height() {
+        if (axis == Axis.VERTICAL) {
+            return mainLength();
+        } else {
+            return crossLength();
+        }
+    }
+
+    /**
      * Axis to organize the layout in.
      */
     public enum Axis {

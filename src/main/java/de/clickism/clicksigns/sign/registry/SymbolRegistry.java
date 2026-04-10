@@ -62,6 +62,15 @@ public class SymbolRegistry {
     }
 
     /**
+     * Gets a list of all registered categories.
+     *
+     * @return a list of all registered categories, or an empty list
+     */
+    public static List<String> allCategories() {
+        return new ArrayList<>(BY_CATEGORY.keySet());
+    }
+
+    /**
      * Clears all registered symbols.
      */
     public static void clear() {
