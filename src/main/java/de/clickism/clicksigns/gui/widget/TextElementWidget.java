@@ -33,14 +33,16 @@ public class TextElementWidget extends EditBox implements ElementProvider {
         this.setPosition(pos.x, pos.y);
         this.setValue(text.text());
         this.setResponder(this::onChange);
-        this.setTextColor(text.backgroundColor());
-
+        // Unreadable in some cases, so skip for now:
+        // this.setTextColor(text.backgroundColor());
         this.setTooltip(Tooltip.create(Component.literal("§lClick §rto edit text\n§lShift+Click §rto change color")));
     }
 
+    // TODO: Maybe custom renderer to render like displayed?
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, text.backgroundColor());
         if (this.isHovered) {
             guiGraphics.renderOutline(this.getX(), this.getY(), this.width, this.height, OUTLINE_COLOR);
         }

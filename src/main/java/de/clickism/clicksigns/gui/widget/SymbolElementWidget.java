@@ -4,10 +4,13 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -46,17 +49,15 @@ public class SymbolElementWidget extends TextureWidget implements ElementProvide
         }
     }
 
-    // TODO: Switch to full category registration
-    private final List<Texture> textures = List.of(
-            Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/left.png")),
-            Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows/right.png"))
-    );
-
     @Override
     public void onClick(double mouseX, double mouseY) {
-        int currentIndex = textures.indexOf(symbol.texture());
-        int nextIndex = (currentIndex + 1) % textures.size();
-        this.symbol = this.symbol.withTexture(textures.get(nextIndex));
+        var symbolLocation = symbol.texture().location();
+        var category = SymbolRegistry.categoryOf(symbolLocation);
+        List<ResourceLocation> locations = SymbolRegistry.allInCategory(category);
+        int currentIndex = locations.indexOf(symbolLocation);
+        int nextIndex = (currentIndex + 1) % locations.size();
+        // Update symbol
+        this.symbol = this.symbol.withTexture(Texture.load(locations.get(nextIndex)));
         this.texture(this.symbol.texture());
     }
 }
