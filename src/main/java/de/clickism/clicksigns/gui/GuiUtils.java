@@ -4,6 +4,7 @@ import de.clickism.clicksigns.sign.element.RoadSignElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
 import java.awt.*;
@@ -40,6 +41,28 @@ public class GuiUtils {
     public static void openScreen(Screen screen) {
         var client = Minecraft.getInstance();
         client.execute(() -> client.setScreen(screen));
+    }
+
+    /**
+     * Closes the current screen on the client thread
+     */
+    public static void closeScreen() {
+        var client = Minecraft.getInstance();
+        client.execute(() -> {
+            var screen = currentScreen();
+            if (screen != null) {
+                screen.onClose();
+            }
+        });
+    }
+
+    /**
+     * Gets the current screen
+     *
+     * @return The current screen
+     */
+    public static @Nullable Screen currentScreen() {
+        return Minecraft.getInstance().screen;
     }
 
     /**
