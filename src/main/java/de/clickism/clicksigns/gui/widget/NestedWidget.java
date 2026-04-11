@@ -6,6 +6,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -47,9 +48,21 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     /**
+     * Adds multiple child widgets to this widget.
+     *
+     * @param widgets The widgets to add as children.
+     */
+    protected void addChildren(Collection<? extends AbstractWidget> widgets) {
+        for (var widget : widgets) {
+            addChild(widget);
+        }
+        updateSize();
+    }
+
+    /**
      * Calculates and updates the size of this widget based on its children.
      */
-    private void updateSize() {
+    public void updateSize() {
         int maxX = 0;
         int maxY = 0;
         for (var child : children) {
@@ -76,7 +89,25 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void setX(int i) {
+        int deltaX = i - this.getX();
+        for (var child : children) {
+            child.setX(child.getX() + deltaX);
+        }
+        super.setX(i);
+    }
+
+    @Override
+    public void setY(int i) {
+        int deltaY = i - this.getY();
+        for (var child : children) {
+            child.setY(child.getY() + deltaY);
+        }
+        super.setY(i);
+    }
+
+    @Override
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         // Render all children
         children.forEach(widget -> widget.render(graphics, mouseX, mouseY, delta));
     }

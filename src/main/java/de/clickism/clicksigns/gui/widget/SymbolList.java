@@ -5,98 +5,57 @@ import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.Screen;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.network.chat.Component;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SymbolList extends ContainerObjectSelectionList<SymbolList.Entry> {
+public class SymbolList extends VerticalScrollContainer {
 
-    public SymbolList(Screen screen) {
-        // TODO: Fix item height causing issues
-        super(Minecraft.getInstance(), screen.width + 45, screen.height, 20, screen.height - 32, 60);
+    public SymbolList(int x, int y, int width, int height) {
+        super(x, y, width, height);
         // Add categories
-        SymbolRegistry.allCategories().forEach(category -> {
-            addEntry(new CategoryEntry(category));
-            List<Texture> symbols = SymbolRegistry.allInCategory(category).stream()
-                    .map(Texture::load)
-                    .collect(Collectors.toList());
-            addEntry(new SymbolsEntry(symbols));
-        });
-    }
-
-    /**
-     * Main entry class
-     */
-    public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> {
-        @Override
-        public @NotNull List<? extends NarratableEntry> narratables() {
-            return List.of();
-        }
-
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return List.of();
-        }
-    }
-
-    /**
-     * Category entry
-     */
-    public static class CategoryEntry extends Entry {
-        private final String name;
-        private final int width;
-
-        public CategoryEntry(String name) {
-            this.name = name;
-            this.width = GuiUtils.font().width(this.name);
-        }
-
-        @Override
-        public void render(GuiGraphics guiGraphics, int i, int j, int k, int l, int m, int n, int o, boolean bl, float f) {
-            var minecraft = Minecraft.getInstance();
-            var screen = minecraft.screen;
-            if (screen == null) return;
-
-            // TODO: Check the random values
-            int x = minecraft.screen.width / 2 - width / 2;
-            int y = j + m;
-            guiGraphics.drawString(GuiUtils.font(), name, x, y - 9 - 1, Color.WHITE.getRGB(), false);
+        for (int i = 0; i < 20; i++) {
+            SymbolRegistry.allCategories().forEach(category -> {
+                addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category), GuiUtils.font()));
+                List<Texture> symbols = SymbolRegistry.allInCategory(category).stream()
+                        .map(Texture::load)
+                        .collect(Collectors.toList());
+                addChild(new SymbolGrid(symbols));
+            });
         }
     }
 
     /**
      * Symbols entry
      */
-    public static class SymbolsEntry extends Entry {
+    public static class SymbolGrid extends NestedWidget {
         private static final int SYMBOL_SPACING = 2;
         private static final int MAX_WIDTH = 200;
 
-        private final List<SymbolWidget> symbolWidgets;
-
-        public SymbolsEntry(List<Texture> symbols) {
-            this.symbolWidgets = symbols.stream()
+        public SymbolGrid(List<Texture> symbols) {
+            super(0, 0);
+            addChildren(symbols.stream()
                     .map(texture -> new SymbolWidget(0, 0, texture))
-                    .toList();
+                    .toList());
+            positionWidgets();
+            updateSize(); // Update size after positioning
         }
 
-        private void positionWidgets(int x, int y) {
+        private void positionWidgets() {
             // Position into rows, try to fit as many symbols as possible per row
             var screen = GuiUtils.currentScreen();
             if (screen == null) return;
             var gridWidth = Math.min(MAX_WIDTH, screen.width - 40);
 
             // Position the widgets
-            int startX = x - gridWidth / 2;
+            int startX = gridWidth / 2;
             int currentX = startX;
-            int currentY = y;
+            int currentY = 0;
             int maxHeightInRow = 0;
-            for (var widget : symbolWidgets) {
+            for (var widget : children()) {
                 if (currentX + widget.getWidth() > startX + gridWidth) {
                     // Move to next row
                     currentX = startX;
@@ -110,33 +69,22 @@ public class SymbolList extends ContainerObjectSelectionList<SymbolList.Entry> {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
             var minecraft = Minecraft.getInstance();
             var screen = minecraft.screen;
             if (screen == null) return;
-
-            int widgetX = minecraft.screen.width / 2;
-            int widgetY = y + entryHeight;
-            positionWidgets(widgetX, widgetY);
-            symbolWidgets.forEach(widget -> {
-                widget.render(guiGraphics, mouseX, mouseY, tickDelta);
-            });
+            super.renderWidget(graphics, mouseX, mouseY, delta);
         }
 
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return List.copyOf(symbolWidgets);
-        }
-    }
+        public static class SymbolWidget extends ClickableTextureWidget {
+            public SymbolWidget(int x, int y, Texture texture) {
+                super(x, y, texture, Color.WHITE.getRGB());
+            }
 
-    public static class SymbolWidget extends ClickableTextureWidget {
-        public SymbolWidget(int x, int y, Texture texture) {
-            super(x, y, texture, Color.WHITE.getRGB());
-        }
-
-        @Override
-        public void onClick(double d, double e) {
-            GuiUtils.closeScreen(); // TODO: Implement
+            @Override
+            public void onClick(double d, double e) {
+                GuiUtils.popScreen(); // TODO: Implement
+            }
         }
     }
 }

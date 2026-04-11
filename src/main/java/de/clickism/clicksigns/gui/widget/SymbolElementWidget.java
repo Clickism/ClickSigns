@@ -85,6 +85,6 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     }
 
     private void openSymbolMenu() {
-        GuiUtils.openScreen(new SymbolMenuScreen());
+        GuiUtils.pushScreen(new SymbolMenuScreen());
     }
 }

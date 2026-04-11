@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,6 +24,7 @@ public class VerticalScrollContainer extends AbstractWidget {
 
     private double scrollAmount = 0;
     private boolean scrolling;
+    private boolean dirtyLayout = true;
 
     private final List<AbstractWidget> children = new ArrayList<>();
     private final LinearLayout layout = LinearLayout.vertical();
@@ -49,24 +49,12 @@ public class VerticalScrollContainer extends AbstractWidget {
     public void addChild(AbstractWidget widget) {
         this.children.add(widget);
         this.layout.add(widget);
-        recalculatePositions();
-    }
-
-    /**
-     * Adds multiple child widgets to the container.
-     *
-     * @param widgets the widgets to add
-     */
-    public void addChildren(Collection<? extends AbstractWidget> widgets) {
-        widgets.forEach(child -> {
-            this.children.add(child);
-            this.layout.add(child);
-        });
-        recalculatePositions();
+        this.dirtyLayout = true;
     }
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+        recalculatePositionsIfNeeded();
         // Enable scissor to only render children within the container
         guiGraphics.enableScissor(this.getX() - 1, this.getY() - 1, this.getX() + this.width, this.getY() + this.height);
         // Render children
@@ -105,25 +93,27 @@ public class VerticalScrollContainer extends AbstractWidget {
     @Override
     public boolean mouseScrolled(double d, double e, double f) {
         if (!this.visible) return false;
-        this.updateScroll(this.scrollAmount - f * SCROLL_RATE);
+        this.scroll(this.scrollAmount - f * SCROLL_RATE);
         return true;
     }
 
     /**
-     * Update scroll amount and recalculate child positions.
+     * Set the scroll amount and clamp it.
      *
      * @param amount the new scroll amount
      */
-    private void updateScroll(double amount) {
+    private void scroll(double amount) {
         this.scrollAmount = Mth.clamp(amount, 0, maxScrollAmount());
-        recalculatePositions();
+        dirtyLayout = true;
     }
 
     /**
      * Recalculates the positions of the child widgets based on the current scroll amount.
      */
-    private void recalculatePositions() {
+    private void recalculatePositionsIfNeeded() {
+        if (!dirtyLayout) return;
         layout.layout(this.getX(), this.getY() - (int) scrollAmount);
+        dirtyLayout = false;
     }
 
     /**
@@ -212,13 +202,13 @@ public class VerticalScrollContainer extends AbstractWidget {
         if (!this.visible || !this.isFocused() || !this.scrolling) return false;
         // Scroll
         if (mouseY < this.getY()) {
-            updateScroll(0); // Scroll to top
+            scroll(0); // Scroll to top
         } else if (mouseY > this.getY() + this.height) {
-            updateScroll(maxScrollAmount()); // Scroll to bottom
+            scroll(maxScrollAmount()); // Scroll to bottom
         } else {
             // Scroll proportionally to mouse position
             double scrollRatio = Math.max(1, maxScrollAmount() / (height - scrollbarHeight()));
-            this.updateScroll(scrollAmount + deltaY * scrollRatio);
+            this.scroll(scrollAmount + deltaY * scrollRatio);
         }
         return true;
     }

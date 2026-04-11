@@ -57,6 +57,22 @@ public class GuiUtils {
     }
 
     /**
+     * Pushes a screen onto the screen stack and opens it
+     *
+     * @param screen The screen to open
+     */
+    public static void pushScreen(Screen screen) {
+        ScreenStack.INSTANCE.open(screen);
+    }
+
+    /**
+     * Pops the current screen from the screen stack and opens the previous one
+     */
+    public static void popScreen() {
+        ScreenStack.INSTANCE.back();
+    }
+
+    /**
      * Gets the current screen
      *
      * @return The current screen
