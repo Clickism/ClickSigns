@@ -13,8 +13,10 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
  * Road sign screen
  */
-public class RoadSignScreen extends ScreenWithBackground {
+public class RoadSignScreen extends BaseScreen {
     private static final int PADDING = 8;
 
     private final BlockPos blockPos;
@@ -33,8 +35,8 @@ public class RoadSignScreen extends ScreenWithBackground {
     /**
      * Creates a new road sign screen.
      */
-    public RoadSignScreen(RoadSignBlockEntity entity) {
-        super(Component.translatable("clicksigns.text.road_sign_edit_screen"));
+    public RoadSignScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
+        super(parent);
         this.blockPos = entity.getBlockPos();
         var roadSign = entity.roadSign();
         if (roadSign == null) {
@@ -73,7 +75,7 @@ public class RoadSignScreen extends ScreenWithBackground {
         this.elementProviders.clear();
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol);
+                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, this);
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
@@ -96,5 +98,10 @@ public class RoadSignScreen extends ScreenWithBackground {
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
         return new RoadSign(roadSign.texture(), roadSign.backTexture(), elements);
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        // Widgets are dynamic already, don't call super which calls init again so we keep the current widgets
     }
 }

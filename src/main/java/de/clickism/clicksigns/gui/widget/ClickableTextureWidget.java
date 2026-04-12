@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.widget;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -48,6 +49,6 @@ public class ClickableTextureWidget extends TextureWidget {
      * @param color       the color of the outline
      */
     public void renderOutline(GuiGraphics guiGraphics, int color) {
-        guiGraphics.renderOutline(this.getX(), this.getY(), this.width, this.height, color);
+        GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
     }
 }

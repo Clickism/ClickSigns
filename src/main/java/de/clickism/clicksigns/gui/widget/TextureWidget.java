@@ -17,7 +17,10 @@ public class TextureWidget extends AbstractWidget {
      */
     public static final int TEXTURE_RENDER_SCALE = 4;
 
-    private Texture texture;
+    /**
+     * The texture to render.
+     */
+    protected Texture texture;
 
     /**
      * Creates a new road sign texture widget.

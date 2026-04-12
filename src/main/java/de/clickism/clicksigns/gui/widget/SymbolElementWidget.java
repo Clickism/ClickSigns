@@ -7,6 +7,7 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.util.texture.Texture;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -21,18 +22,25 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     private final int anchorX;
     private final int anchorY;
     private SymbolElement symbol;
+    private final Screen parent;
 
     /**
      * Creates a new symbol widget.
+     *
+     * @param anchorX the x position to anchor the element on the sign
+     * @param anchorY the y position to anchor the element on the sign
+     * @param symbol  the symbol element to display
+     * @param parent  the parent screen, used for going back from the symbol menu
      */
-    public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol) {
+    public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol, Screen parent) {
         super(anchorX, anchorY, symbol.texture(), OUTLINE_COLOR);
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         this.symbol = symbol;
+        this.parent = parent;
         this.updatePosition();
         // TODO: Translate
-        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol")));
+        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu")));
     }
 
     @Override
@@ -85,6 +93,9 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     }
 
     private void openSymbolMenu() {
-        GuiUtils.pushScreen(new SymbolMenuScreen());
+        GuiUtils.openScreen(new SymbolMenuScreen(parent, texture -> {
+            this.symbol(this.symbol.withTexture(texture));
+            GuiUtils.closeScreen();
+        }));
     }
 }

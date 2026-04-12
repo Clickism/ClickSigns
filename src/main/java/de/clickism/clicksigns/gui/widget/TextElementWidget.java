@@ -44,7 +44,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, text.backgroundColor());
         if (this.isHovered) {
-            guiGraphics.renderOutline(this.getX(), this.getY(), this.width, this.height, OUTLINE_COLOR);
+            GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height);
         }
     }
 

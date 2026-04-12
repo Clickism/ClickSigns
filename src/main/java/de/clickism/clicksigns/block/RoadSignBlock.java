@@ -74,7 +74,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RoadSignBlockEntity roadSignEntity) {
-            GuiUtils.openScreen(new RoadSignScreen(roadSignEntity));
+            GuiUtils.openScreen(new RoadSignScreen(null, roadSignEntity));
         }
         return InteractionResult.SUCCESS;
     }

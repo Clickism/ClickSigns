@@ -3,6 +3,7 @@ package de.clickism.clicksigns.gui;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
@@ -38,7 +39,7 @@ public class GuiUtils {
      *
      * @param screen The screen to open
      */
-    public static void openScreen(Screen screen) {
+    public static void openScreen(@Nullable Screen screen) {
         var client = Minecraft.getInstance();
         client.execute(() -> client.setScreen(screen));
     }
@@ -54,22 +55,6 @@ public class GuiUtils {
                 screen.onClose();
             }
         });
-    }
-
-    /**
-     * Pushes a screen onto the screen stack and opens it
-     *
-     * @param screen The screen to open
-     */
-    public static void pushScreen(Screen screen) {
-        ScreenStack.INSTANCE.open(screen);
-    }
-
-    /**
-     * Pops the current screen from the screen stack and opens the previous one
-     */
-    public static void popScreen() {
-        ScreenStack.INSTANCE.back();
     }
 
     /**
@@ -106,5 +91,35 @@ public class GuiUtils {
         y -= (int) (element.alignment().offset().y * halfHeight);
         // Return position as vector
         return new Vector2i(x, y);
+    }
+
+    /**
+     * Renders an outline around a rectangle.
+     *
+     * @param guiGraphics the GuiGraphics to render with
+     * @param x           the x position of the rectangle
+     * @param y           the y position of the rectangle
+     * @param width       the width of the rectangle
+     * @param height      the height of the rectangle
+     */
+    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        renderOutline(guiGraphics, x, y, width, height, OUTLINE_COLOR);
+    }
+
+    /**
+     * Renders an outline around a rectangle with a custom color.
+     *
+     * @param guiGraphics  the GuiGraphics to render with
+     * @param x            the x position of the rectangle
+     * @param y            the y position of the rectangle
+     * @param width        the width of the rectangle
+     * @param height       the height of the rectangle
+     * @param outlineColor the color of the outline
+     */
+    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 100);
+        guiGraphics.renderOutline(x, y, width, height, outlineColor);
+        guiGraphics.pose().popPose();
     }
 }
