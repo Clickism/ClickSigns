@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
+
 /**
  * Text renderer utility class
  */
@@ -19,8 +21,14 @@ public class TextRenderer extends Renderer {
      */
     public static final float TEXT_RENDER_SCALE = .022f;
 
-    private static final float TEXT_PADDING_X = .1f;
-    private static final float TEXT_PADDING_Y = .1f;
+    /**
+     * Text padding in pixels for the x-axis.
+     */
+    private static final float TEXT_PADDING_X = 1f;
+    /**
+     * Text padding in pixels for the y-axis.
+     */
+    private static final float TEXT_PADDING_Y = .25f;
     private final Font font;
     private final TextureRenderer textureRenderer;
 
@@ -57,7 +65,7 @@ public class TextRenderer extends Renderer {
         stack.pushPose();
         // Calculate dimensions
         float textWidth = font.width(text);
-        float textHeight = font.lineHeight;
+        float textHeight = font.lineHeight; // TODO: Check if correct with scaling?
         float blockWidth = textWidth * TEXT_RENDER_SCALE * textScale;
         float blockHeight = textHeight * TEXT_RENDER_SCALE * textScale;
         // Align text
@@ -75,6 +83,9 @@ public class TextRenderer extends Renderer {
         // Offset to center
         float textX = -textWidth / 2f;
         float textY = -textHeight / 2f;
+        // Center withing padded background
+        float paddingX = backgroundColor != 0 ? TEXT_PADDING_X / BLOCK_PIXELS : 0;
+        textX += paddingX / TEXT_RENDER_SCALE;
         // Draw text
         font.drawInBatch(
                 text,
@@ -98,14 +109,17 @@ public class TextRenderer extends Renderer {
      * with padding based on the text size.
      */
     private void renderBackground(int backgroundColor, float blockWidth, float blockHeight) {
-        // Apply padding
-        float paddingX = blockWidth * TEXT_PADDING_X;
-        float paddingY = blockHeight * TEXT_PADDING_Y;
+        float x = 0;
+        float y = 0;
+        // TODO: Maybe multiply with scale?
+        float paddingX = TEXT_PADDING_X / BLOCK_PIXELS;
+        float paddingY = TEXT_PADDING_Y / BLOCK_PIXELS;
+        // Visually center with padding
+        x -= paddingX;
+        y += paddingY;
+        // Add padding
         blockWidth += paddingX * 2;
         blockHeight += paddingY * 2;
-
-        float x = 0;
-        float y = paddingY / 2; // Adjust y to visually center
         // Render background
         textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, Alignment.CENTER);
     }
