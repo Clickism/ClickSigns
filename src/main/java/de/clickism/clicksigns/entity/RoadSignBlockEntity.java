@@ -84,6 +84,7 @@ public class RoadSignBlockEntity extends BlockEntity {
     }
 
     // Just use the byte encoders to save data, because why not
+    // TODO: Maybe actually encode in nbt in case future versions break the byte encoding
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
