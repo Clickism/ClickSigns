@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
+import java.util.List;
 
 import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
@@ -18,6 +19,8 @@ import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCA
  */
 public class TextElementWidget extends EditBox implements ElementProvider {
     private static final int TEXT_BOX_HEIGHT_SCALE = 4;
+    public static final Tooltip TOOLTIP = Tooltip.create(Component.literal("§lClick §rto edit text\n§lShift+Click §rto change color"));
+    public static final int SCALE_BUFFER = 4;
 
     private TextElement text;
 
@@ -35,7 +38,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
         this.setResponder(this::onChange);
         // Unreadable in some cases, so skip for now:
         // this.setTextColor(text.backgroundColor());
-        this.setTooltip(Tooltip.create(Component.literal("§lClick §rto edit text\n§lShift+Click §rto change color")));
+        this.setTooltip(TOOLTIP);
     }
 
     // TODO: Maybe custom renderer to render like displayed?
@@ -43,9 +46,26 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, text.backgroundColor());
-        if (this.isHovered) {
-            GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height);
+        if (this.isMouseOnScaleZone(mouseX, mouseY)) {
+            // Render scale tooltip
+            this.setTooltip(Tooltip.create(Component.literal("§lClick and drag §rto scale text")));
+            guiGraphics.fill(this.getX() + this.width - SCALE_BUFFER, this.getY(), this.getX() + this.width, this.getY() + this.height, Color.GREEN.getRGB());
+        } else {
+            this.setTooltip(TOOLTIP);
+            if (this.isHovered) {
+                GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height);
+            }
         }
+    }
+
+    private boolean isMouseOnScaleZone(int mouseX, int mouseY) {
+        if (mouseY < this.getY() || mouseY > this.getY() + this.height) return false;
+        // Check if the mouse is on the left or right corner of the text box
+        int boxEnd = this.getX() + this.width;
+        int boxStart = this.getX();
+        int rightZoneStart = this.getX() + this.width - SCALE_BUFFER;
+        int leftZoneEnd = this.getX() + SCALE_BUFFER;
+        return (mouseX >= rightZoneStart && mouseX <= boxEnd) || (mouseX >= boxStart && mouseX <= leftZoneEnd);
     }
 
     private void onChange(String value) {
