@@ -11,8 +11,10 @@ import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.texture.Texture;
 import de.clickism.clicksigns.util.texture.TileSet;
 import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -79,5 +81,27 @@ public class RoadSignBlockEntity extends BlockEntity {
         var tag = new CompoundTag();
         this.saveAdditional(tag);
         return tag;
+    }
+
+    // Just use the byte encoders to save data, because why not
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (this.roadSign == null) return;
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
+        RoadSign.WRITER.accept(buf, this.roadSign);
+        var bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+        tag.putByteArray("roadSignBytes", bytes);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (!tag.contains("roadSignBytes")) return;
+        var bytes = tag.getByteArray("roadSignBytes");
+        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+        this.roadSign = RoadSign.READER.apply(buf);
     }
 }
