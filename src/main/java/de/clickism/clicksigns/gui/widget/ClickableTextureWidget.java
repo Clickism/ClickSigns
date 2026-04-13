@@ -49,6 +49,6 @@ public class ClickableTextureWidget extends TextureWidget {
      * @param color       the color of the outline
      */
     public void renderOutline(GuiGraphics guiGraphics, int color) {
-        GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
+        GuiUtils.renderHoverOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
     }
 }

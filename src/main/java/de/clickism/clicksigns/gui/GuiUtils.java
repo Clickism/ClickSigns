@@ -102,8 +102,8 @@ public class GuiUtils {
      * @param width       the width of the rectangle
      * @param height      the height of the rectangle
      */
-    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height) {
-        renderOutline(guiGraphics, x, y, width, height, OUTLINE_COLOR);
+    public static void renderHoverOutline(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        renderHoverOutline(guiGraphics, x, y, width, height, OUTLINE_COLOR);
     }
 
     /**
@@ -116,7 +116,7 @@ public class GuiUtils {
      * @param height       the height of the rectangle
      * @param outlineColor the color of the outline
      */
-    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
+    public static void renderHoverOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 100);
         guiGraphics.renderOutline(x, y, width, height, outlineColor);
