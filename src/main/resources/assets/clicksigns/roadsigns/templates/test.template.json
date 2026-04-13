@@ -1,0 +1,16 @@
+{
+  "name": "Test Template",
+  "description": "A test template for road signs.",
+  "customTexture": "clicksigns:roadsigns/test",
+  "elements": [
+    {
+      "type": "symbol"
+    },
+    {
+      "type": "text",
+      "x": 3,
+      "y": 3,
+      "maxWidth": 22
+    }
+  ],
+}

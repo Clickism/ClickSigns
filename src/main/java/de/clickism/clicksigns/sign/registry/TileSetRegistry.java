@@ -48,4 +48,13 @@ public class TileSetRegistry {
     public static List<TileSet> all() {
         return TILE_SETS.values().stream().toList();
     }
+
+    /**
+     * Gets a list of all registered tile set ids.
+     *
+     * @return a list of all registered tile set ids
+     */
+    public static List<ResourceLocation> allIds() {
+        return TILE_SETS.keySet().stream().toList();
+    }
 }

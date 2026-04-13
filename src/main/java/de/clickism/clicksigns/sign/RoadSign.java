@@ -38,4 +38,28 @@ public record RoadSign(
         var elements = buf.readList(RoadSignElement.READER);
         return new RoadSign(texture, backTexture, elements);
     };
+
+    /**
+     * Creates a new road sign with the given texture.
+     * <p>
+     * Keeps the existing back texture and elements.
+     *
+     * @param texture new texture for the road sign
+     * @return a new road sign with the updated texture
+     */
+    public RoadSign withTexture(Texture texture) {
+        return new RoadSign(texture, this.backTexture, this.elements);
+    }
+
+    /**
+     * Creates a new road sign with the given back texture.
+     * <p>
+     * Keeps the existing front texture and elements.
+     *
+     * @param backTexture new back texture for the road sign
+     * @return a new road sign with the updated back texture
+     */
+    public RoadSign withBackTexture(Texture backTexture) {
+        return new RoadSign(this.texture, backTexture, this.elements);
+    }
 }

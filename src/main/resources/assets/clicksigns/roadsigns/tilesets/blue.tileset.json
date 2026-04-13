@@ -1,0 +1,9 @@
+{
+  "name": "Blue",
+  "cornerSize": 4,
+  "centerSize": 8,
+  "theme": {
+    "textScheme": "dark",
+    "symbolScheme": "dark"
+  }
+}

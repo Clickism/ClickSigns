@@ -12,6 +12,9 @@ import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.util.texture.TiledTexture;
+import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -28,7 +31,7 @@ public class RoadSignScreen extends BaseScreen {
     private static final int PADDING = 8;
 
     private final BlockPos blockPos;
-    private final RoadSign roadSign;
+    private RoadSign roadSign;
 
     private final List<ElementProvider> elementProviders = new ArrayList<>();
 
@@ -59,12 +62,17 @@ public class RoadSignScreen extends BaseScreen {
         var confirmButton = confirmButton();
         this.addRenderableWidget(confirmButton);
 
+        // Add change tileset button
+        var changeTileSetButton = changeTileSetButton();
+        this.addRenderableWidget(changeTileSetButton);
+
         // Layout
         LinearLayout.vertical()
                 .center()
                 .padding(PADDING)
                 .add(textureWidget)
                 .add(confirmButton)
+                .add(changeTileSetButton)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 
@@ -95,6 +103,35 @@ public class RoadSignScreen extends BaseScreen {
                 .build();
     }
 
+    private Button changeTemplateButton() {
+        return Button.builder(Component.translatable("clicksigns.text.change_template"), button -> {
+                    // TODO
+                })
+                .build();
+    }
+
+    // TODO: Make proper screen for selecting templates and tilesets
+    private Button changeTileSetButton() {
+        // TODO: Translate
+        return Button.builder(Component.literal("Change Tileset"), button -> {
+                    var currentTexture = roadSign.texture();
+                    if (currentTexture instanceof TiledTexture tiledTexture) {
+                        var tileSetId = tiledTexture.tileSet();
+                        var allTileSetIds = TileSetRegistry.allIds();
+                        var currentIndex = allTileSetIds.indexOf(tileSetId);
+                        var nextIndex = (currentIndex + 1) % allTileSetIds.size();
+                        var nextTileSetId = allTileSetIds.get(nextIndex);
+                        var nextTileSet = TileSetRegistry.get(nextTileSetId);
+                        if (nextTileSet != null) {
+                            this.roadSign = this.roadSign.withTexture(
+                                    TiledTextureGenerator.generate(nextTileSet, tiledTexture.blockWidth(), tiledTexture.blockHeight()));
+                            this.rebuildWidgets();
+                        }
+                    }
+                })
+                .build();
+    }
+
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
         return new RoadSign(roadSign.texture(), roadSign.backTexture(), elements);
@@ -102,6 +139,8 @@ public class RoadSignScreen extends BaseScreen {
 
     @Override
     protected void rebuildWidgets() {
-        // Widgets are dynamic already, don't call super which calls init again so we keep the current widgets
+        // Save current road sign data
+        this.roadSign = readRoadSign();
+        super.rebuildWidgets();
     }
 }
