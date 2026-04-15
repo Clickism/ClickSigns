@@ -2,9 +2,7 @@
   "name": "White",
   "cornerSize": 4,
   "centerSize": 8,
-  "theme": {
-    "colors": {
-      "foreground": "text_dark"
-    }
+  "colors": {
+    "foreground": "text_dark"
   }
 }

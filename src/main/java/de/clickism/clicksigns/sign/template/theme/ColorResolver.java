@@ -160,6 +160,21 @@ public class ColorResolver {
     }
 
     /**
+     * Parses a color from a string and defines it with the given name.
+     * Fails silently if the color string is invalid or cannot be parsed.
+     *
+     * @param name  the name of the color to define
+     * @param color the color string to parse and define, which can be a hex string or a named color.
+     */
+    public void tryParseAndDefine(String name, String color) {
+        try {
+            define(name, parse(color));
+        } catch (IllegalArgumentException ignored) {
+            // Fail silently
+        }
+    }
+
+    /**
      * Converts a Color to a hex string in the format #AARRGGBB.
      *
      * @param color the color to convert

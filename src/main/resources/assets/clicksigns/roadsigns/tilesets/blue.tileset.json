@@ -2,9 +2,7 @@
   "name": "Blue",
   "cornerSize": 4,
   "centerSize": 8,
-  "theme": {
-    "colors": {
-      "foreground": "text_light"
-    }
+  "colors": {
+    "foreground": "text_light"
   }
 }

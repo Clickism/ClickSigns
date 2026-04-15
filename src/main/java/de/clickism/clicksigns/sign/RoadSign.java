@@ -29,7 +29,7 @@ public record RoadSign(
         if (texture instanceof TiledTexture tiledTexture) {
             var tileSet = tiledTexture.resolveTileSet();
             if (tileSet != null) {
-                return tileSet.theme().colorResolver();
+                return tileSet.colorResolver();
             }
         }
         return ColorResolver.withDefault();

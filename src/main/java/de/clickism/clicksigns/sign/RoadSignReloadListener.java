@@ -6,7 +6,6 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
-import de.clickism.clicksigns.sign.template.theme.Theme;
 import de.clickism.clicksigns.sign.texture.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -111,16 +110,19 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
             String name,
             int cornerSize,
             int centerSize,
-            @Nullable ThemeJson theme
+            @Nullable Map<String, String> colors
     ) {
         TileSet toTileSet(ResourceLocation location) {
-            var themeObject = theme != null ? theme.toTheme() : new Theme(ColorResolver.withDefault());
+            var resolver = ColorResolver.withDefault();
+            if (colors != null) {
+                colors.forEach(resolver::tryParseAndDefine);
+            }
             return new TileSet(
                     name,
                     location,
                     cornerSize,
                     centerSize,
-                    themeObject
+                    resolver
             );
         }
     }
@@ -151,26 +153,5 @@ public class RoadSignReloadListener implements Platform.ReloadListener {
             String name,
             List<String> includedCategories
     ) {
-    }
-
-    /**
-     * Theme JSON format for themes.
-     *
-     * @param colors map of color name to color value, see {@link ColorResolver#parse(String)}
-     */
-    private record ThemeJson(
-            Map<String, String> colors
-    ) {
-        Theme toTheme() {
-            var resolver = ColorResolver.withDefault();
-            colors.forEach((name, value) -> {
-                try {
-                    resolver.define(name, resolver.parse(value));
-                } catch (IllegalArgumentException e) {
-                    ClickSigns.LOGGER.error("Error parsing color '{}' with value '{}' in themeJson JSON", name, value, e);
-                }
-            });
-            return new Theme(resolver);
-        }
     }
 }

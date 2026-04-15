@@ -1,24 +1,23 @@
 package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
-import de.clickism.clicksigns.sign.template.theme.Theme;
 import net.minecraft.resources.ResourceLocation;
 
 /**
  * Represents a tileset
  *
- * @param name       name of the tileset to display
- * @param location   resource location of the tileset texture
- * @param cornerSize size of the corners in pixels
- * @param centerSize size of the center area in pixels
- * @param theme      theme to use for this tileset
+ * @param name          name of the tileset to display
+ * @param location      resource location of the tileset texture
+ * @param cornerSize    size of the corners in pixels
+ * @param centerSize    size of the center area in pixels
+ * @param colorResolver color resolver for this tileset
  */
 public record TileSet(
         String name,
         ResourceLocation location,
         int cornerSize,
         int centerSize,
-        Theme theme
+        ColorResolver colorResolver
 ) {
     /**
      * Tiles a given coordinate:
