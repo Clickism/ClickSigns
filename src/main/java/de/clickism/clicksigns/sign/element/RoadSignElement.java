@@ -42,8 +42,9 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
         buf.writeInt(element.alignment().ordinal());
         if (element instanceof TextElement text) {
             buf.writeFloat(text.scale());
-            buf.writeInt(text.color());
-            buf.writeInt(text.backgroundColor());
+            buf.writeUtf(text.color());
+            var backgroundColor = text.backgroundColor() != null ? text.backgroundColor() : "";
+            buf.writeUtf(backgroundColor);
             buf.writeUtf(text.text());
         } else if (element instanceof SymbolElement symbol) {
             Texture.WRITER.accept(buf, symbol.texture());
@@ -60,8 +61,11 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
         Alignment alignment = Alignment.values()[buf.readInt()];
         if (type == 1) {
             float scale = buf.readFloat();
-            int color = buf.readInt();
-            int backgroundColor = buf.readInt();
+            String color = buf.readUtf();
+            String backgroundColor = buf.readUtf();
+            if (backgroundColor.isEmpty()) {
+                backgroundColor = null;
+            }
             String text = buf.readUtf();
             return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
         } else {

@@ -1,6 +1,8 @@
 package de.clickism.clicksigns.sign.texture;
 
+import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a texture that was generated using a tileset.
@@ -16,5 +18,12 @@ public record TiledTexture(
         int height,
         ResourceLocation tileSet
 ) implements Texture {
-
+    /**
+     * Resolves the tileset used to generate this texture.
+     *
+     * @return the tileset, or null if the tileset could not be found
+     */
+    public @Nullable TileSet resolveTileSet() {
+        return TileSetRegistry.get(tileSet);
+    }
 }

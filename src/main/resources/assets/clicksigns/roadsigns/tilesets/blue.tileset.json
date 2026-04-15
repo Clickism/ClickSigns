@@ -4,11 +4,7 @@
   "centerSize": 8,
   "theme": {
     "colors": {
-      "foreground": "#FFFFFF",
-      "background": "#0000FF",
-      "primary": "#0000FF",
-      "secondary": "#0000FF",
-      "accent": "#0000FF"
+      "foreground": "text_light"
     }
   }
 }

@@ -8,6 +8,7 @@ import de.clickism.clicksigns.sign.SignColors;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.sign.texture.TiledTexture;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.TiledTextureGenerator;
@@ -68,7 +69,13 @@ public final class RoadSignRenderer extends Renderer {
                 // Render each element on top of the road sign
                 textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), text.backgroundColor(), text.scale(), renderCoords.x, renderCoords.y, 3, text.alignment());
+                var colorResolver = roadSign.colorResolver();
+                int color = colorResolver.resolveInt(text.color());
+                int backgroundColor = 0;
+                if (text.backgroundColor() != null) {
+                    backgroundColor = colorResolver.resolveInt(text.backgroundColor());
+                }
+                textRenderer.render(text.text(), color, backgroundColor, text.scale(), renderCoords.x, renderCoords.y, 3, text.alignment());
             }
         });
 
@@ -112,9 +119,9 @@ public final class RoadSignRenderer extends Renderer {
                 TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f),
                 List.of(
                         new SymbolElement(2, 8, Alignment.CENTER_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
-                        new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_DARK.getRGB(), 0),
-                        new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_DARK.getRGB(), 0),
-                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_LIGHT.getRGB(), SignColors.BROWN.getRGB())
+                        new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
+                        new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
+                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
                 )
         );
         return defaultRoadSign;

@@ -1,9 +1,12 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.util.Alignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+
+import static de.clickism.clicksigns.sign.template.theme.ColorResolver.toHexString;
 
 /**
  * Text element on a road sign.
@@ -22,15 +25,15 @@ public record TextElement(
         Alignment alignment,
         String text,
         float scale,
-        int color,
-        int backgroundColor
+        String color,
+        @Nullable String backgroundColor
 ) implements RoadSignElement {
 
     /**
      * Creates a new TextElement with the given parameters.
      */
     public TextElement(int localX, int localY, Alignment alignment, String text, float scale, Color color, @Nullable Color backgroundColor) {
-        this(localX, localY, alignment, text, scale, color.getRGB(), backgroundColor != null ? backgroundColor.getRGB() : 0);
+        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null ? toHexString(backgroundColor) : null);
     }
 
     public TextElement withText(String text) {
@@ -38,7 +41,7 @@ public record TextElement(
     }
 
     public TextElement withColor(Color color) {
-        return new TextElement(localX, localY, alignment, text, scale, color.getRGB(), backgroundColor);
+        return new TextElement(localX, localY, alignment, text, scale, toHexString(color), backgroundColor);
     }
 
     public TextElement withScale(float scale) {

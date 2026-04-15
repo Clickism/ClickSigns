@@ -1,5 +1,10 @@
 {
   "name": "Green",
   "cornerSize": 4,
-  "centerSize": 8
+  "centerSize": 8,
+  "theme": {
+    "colors": {
+      "foreground": "text_light"
+    }
+  }
 }

@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.sign.texture;
 
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.template.theme.Theme;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -9,12 +11,14 @@ import net.minecraft.resources.ResourceLocation;
  * @param location   resource location of the tileset texture
  * @param cornerSize size of the corners in pixels
  * @param centerSize size of the center area in pixels
+ * @param theme      theme to use for this tileset
  */
 public record TileSet(
         String name,
         ResourceLocation location,
         int cornerSize,
-        int centerSize
+        int centerSize,
+        Theme theme
 ) {
     /**
      * Tiles a given coordinate:

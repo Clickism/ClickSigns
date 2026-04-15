@@ -3,14 +3,12 @@ package de.clickism.clicksigns.gui.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
-
-import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
 
 /**
@@ -20,14 +18,16 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     private static final int TEXT_BOX_HEIGHT_SCALE = 4;
 
     private TextElement text;
+    private final ColorResolver colorResolver;
 
     /**
      * Creates a new text element box.
      */
-    public TextElementWidget(int anchorX, int anchorY, TextElement text) {
+    public TextElementWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver) {
         // TODO: Calculate width properly
         super(GuiUtils.font(), anchorX, anchorY, 100, (int) (TEXT_BOX_HEIGHT_SCALE * TEXTURE_RENDER_SCALE * text.scale()), Component.empty());
         this.text = text;
+        this.colorResolver = colorResolver;
         // Calculate position
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
@@ -42,7 +42,10 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, text.backgroundColor());
+        if (text.backgroundColor() != null) {
+            var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
+            guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
+        }
         if (this.isHovered) {
             GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height);
         }

@@ -10,6 +10,7 @@ import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
@@ -21,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class RoadSignScreen extends BaseScreen {
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = new TextElementWidget(anchorX, anchorY, textElement);
+                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver());
                 this.elementProviders.add(textBox);
                 this.addRenderableWidget(textBox);
             }

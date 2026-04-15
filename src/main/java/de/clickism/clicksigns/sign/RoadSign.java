@@ -1,7 +1,9 @@
 package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.sign.texture.TiledTexture;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
@@ -18,6 +20,21 @@ public record RoadSign(
         Texture backTexture,
         List<RoadSignElement> elements
 ) {
+    /**
+     * Gets the color resolver for this road sign.
+     *
+     * @return the color resolver, or a default color resolver if the texture is not a tiled texture or the tileset could not be resolved
+     */
+    public ColorResolver colorResolver() {
+        if (texture instanceof TiledTexture tiledTexture) {
+            var tileSet = tiledTexture.resolveTileSet();
+            if (tileSet != null) {
+                return tileSet.theme().colorResolver();
+            }
+        }
+        return ColorResolver.withDefault();
+    }
+
     /**
      * Writer for packets
      */
@@ -59,5 +76,15 @@ public record RoadSign(
      */
     public RoadSign withBackTexture(Texture backTexture) {
         return new RoadSign(this.texture, backTexture, this.elements);
+    }
+
+    /**
+     * Creates a new road sign with the given elements.
+     *
+     * @param elements new elements for the road sign
+     * @return a new road sign with the updated elements
+     */
+    public RoadSign withElements(List<RoadSignElement> elements) {
+        return new RoadSign(this.texture, this.backTexture, elements);
     }
 }
