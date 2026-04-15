@@ -5,7 +5,7 @@ import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
-import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

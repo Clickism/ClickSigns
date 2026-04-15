@@ -1,0 +1,21 @@
+{
+  "name": "Test Template",
+  "description": "A test template for road signs.",
+  "texture": "clicksigns:roadsigns/test",
+  "textVariants": [
+    "#default"
+  ],
+  "isDynamic": true,
+  "elements": [
+    {
+      "type": "symbol",
+      "category": "Arrows",
+      "default": "clicksigns:symbols/arrows/right.png"
+    },
+    {
+      "type": "text",
+      "x": 3,
+      "y": 3,
+    }
+  ]
+}

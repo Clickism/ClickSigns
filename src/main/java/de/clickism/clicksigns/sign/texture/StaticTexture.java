@@ -1,17 +1,13 @@
-package de.clickism.clicksigns.util.texture;
+package de.clickism.clicksigns.sign.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Texture record to wrap a texture with its dimensions.

@@ -1,10 +1,9 @@
 package de.clickism.clicksigns.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.ImageWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 

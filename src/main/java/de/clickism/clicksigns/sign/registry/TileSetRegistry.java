@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.registry;
 
-import de.clickism.clicksigns.util.texture.TileSet;
+import de.clickism.clicksigns.sign.texture.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 

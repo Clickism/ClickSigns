@@ -1,16 +1,7 @@
 package de.clickism.clicksigns.entity;
 
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.SignColors;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.texture.Texture;
-import de.clickism.clicksigns.util.texture.TileSet;
-import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,9 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.util.List;
 
 /**
  * Road sign block entity

@@ -1,9 +1,8 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.widget.*;
-import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 

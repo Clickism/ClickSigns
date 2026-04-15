@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util.texture;
+package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;

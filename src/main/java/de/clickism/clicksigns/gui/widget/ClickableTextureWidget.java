@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**

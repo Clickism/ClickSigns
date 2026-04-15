@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util.texture;
+package de.clickism.clicksigns.sign.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;

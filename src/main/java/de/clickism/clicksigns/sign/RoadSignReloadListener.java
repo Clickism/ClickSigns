@@ -5,7 +5,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.util.texture.TileSet;
+import de.clickism.clicksigns.sign.texture.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
