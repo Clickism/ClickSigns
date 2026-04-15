@@ -3,7 +3,12 @@
   "cornerSize": 4,
   "centerSize": 8,
   "theme": {
-    "textScheme": "dark",
-    "symbolScheme": "dark"
+    "colors": {
+      "foreground": "#FFFFFF",
+      "background": "#0000FF",
+      "primary": "#0000FF",
+      "secondary": "#0000FF",
+      "accent": "#0000FF"
+    }
   }
 }

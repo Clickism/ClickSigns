@@ -1,0 +1,16 @@
+{
+  "tag": "#default",
+  "variants": [
+    {
+      "name": "Default",
+      "dark": {
+        "color": "#000000",
+        "tileset": "White"
+      },
+      "light": {
+        "color": "#FFFFFF",
+        "tileset": "Green"
+      }
+    },
+  ]
+}

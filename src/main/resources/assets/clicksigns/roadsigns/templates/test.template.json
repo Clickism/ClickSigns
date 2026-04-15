@@ -1,16 +1,20 @@
 {
   "name": "Test Template",
   "description": "A test template for road signs.",
-  "customTexture": "clicksigns:roadsigns/test",
+  "texture": "clicksigns:roadsigns/test",
+  "textVariants": [
+    "#default"
+  ],
   "elements": [
     {
-      "type": "symbol"
+      "type": "symbol",
+      "category": "Arrows",
+      "default": "clicksigns:symbols/arrows/right.png"
     },
     {
       "type": "text",
       "x": 3,
       "y": 3,
-      "maxWidth": 22
     }
-  ],
+  ]
 }
