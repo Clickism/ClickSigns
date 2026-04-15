@@ -121,7 +121,7 @@ public final class RoadSignRenderer extends Renderer {
                         new SymbolElement(2, 8, Alignment.CENTER_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
                         new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
+                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "text_light", "brown")
                 )
         );
         return defaultRoadSign;

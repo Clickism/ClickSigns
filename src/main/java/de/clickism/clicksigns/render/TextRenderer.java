@@ -62,6 +62,7 @@ public class TextRenderer extends Renderer {
             int zIndex,
             Alignment alignment
     ) {
+        if (text.isEmpty()) return;
         stack.pushPose();
         // Calculate dimensions
         float textWidth = font.width(text);
