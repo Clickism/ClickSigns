@@ -87,10 +87,10 @@ public class RoadSignBlockEntity extends BlockEntity {
 
     @Override
     public void load(CompoundTag tag) {
-        super.load(tag);
-        if (!tag.contains("roadSignBytes")) return;
-        var bytes = tag.getByteArray("roadSignBytes");
-        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
-        this.roadSign = RoadSign.READER.apply(buf);
+//        super.load(tag);
+//        if (!tag.contains("roadSignBytes")) return;
+//        var bytes = tag.getByteArray("roadSignBytes");
+//        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+//        this.roadSign = RoadSign.READER.apply(buf);
     }
 }

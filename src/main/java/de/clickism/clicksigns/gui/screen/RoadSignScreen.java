@@ -10,19 +10,18 @@ import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.TiledTexture;
-import de.clickism.clicksigns.sign.texture.TiledTextureGenerator;
+import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,8 +124,8 @@ public class RoadSignScreen extends BaseScreen {
                         var nextTileSetId = allTileSetIds.get(nextIndex);
                         var nextTileSet = TileSetRegistry.get(nextTileSetId);
                         if (nextTileSet != null) {
-                            this.roadSign = this.roadSign.withTexture(
-                                    TiledTextureGenerator.generate(nextTileSet, tiledTexture.blockWidth(), tiledTexture.blockHeight()));
+                            var generated = new TextureTiler(nextTileSet, tiledTexture.blockWidth(), tiledTexture.blockHeight()).getOrGenerate();
+                            this.roadSign = this.roadSign.withTexture(generated);
                             this.rebuildWidgets();
                         }
                     }

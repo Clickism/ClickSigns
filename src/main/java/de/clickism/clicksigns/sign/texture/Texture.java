@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -81,6 +82,18 @@ public sealed interface Texture permits StaticTexture, TiledTexture {
     }
 
     /**
+     * Wraps a static texture with the given resource location and dimensions into a StaticTexture record.
+     *
+     * @param location the resource location of the texture image
+     * @param width    the width of the texture image in pixels
+     * @param height   the height of the texture image in pixels
+     * @return a StaticTexture record containing the resource location and dimensions of the texture
+     */
+    static StaticTexture wrapStatic(ResourceLocation location, int width, int height) {
+        return new StaticTexture(location, width, height);
+    }
+
+    /**
      * Writer for packets
      */
     FriendlyByteBuf.Writer<Texture> WRITER = (buf, texture) -> {
@@ -113,7 +126,7 @@ public sealed interface Texture permits StaticTexture, TiledTexture {
                 ClickSigns.LOGGER.error("Failed to load tileset {} for texture", tileSetId);
                 return Texture.load(ERROR_TEXTURE);
             }
-            var generated = TiledTextureGenerator.generate(tileSet, blockWidth, blockHeight);
+            var generated = new TextureTiler(tileSet, blockWidth, blockHeight).getOrGenerate();
             if (generated == null) {
                 ClickSigns.LOGGER.error("Failed to generate tiled texture for tileset {}", tileSetId);
                 return Texture.load(ERROR_TEXTURE);

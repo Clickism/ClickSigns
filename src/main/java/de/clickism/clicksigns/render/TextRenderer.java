@@ -6,9 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
+import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -88,6 +87,7 @@ public class TextRenderer extends Renderer {
         float paddingX = backgroundColor != 0 ? TEXT_PADDING_X / BLOCK_PIXELS : 0;
         textX += paddingX / TEXT_RENDER_SCALE;
         // Draw text
+        color = multiplyColor(color, 0.8f); // Darken color to match texture colors
         font.drawInBatch(
                 text,
                 // Apply text offset
@@ -123,5 +123,24 @@ public class TextRenderer extends Renderer {
         blockHeight += paddingY * 2;
         // Render background
         textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, Alignment.CENTER);
+    }
+
+    /**
+     * Multiplies the RGB components of the given ARGB color
+     *
+     * @param color  the ARGB color to multiply
+     * @param factor the factor to multiply the RGB components by
+     * @return the resulting ARGB color with the same alpha and multiplied RGB components
+     */
+    private static int multiplyColor(int color, float factor) {
+        int a = FastColor.ARGB32.alpha(color);
+        int r = (int) (FastColor.ARGB32.red(color) * factor);
+        int g = (int) (FastColor.ARGB32.green(color) * factor);
+        int b = (int) (FastColor.ARGB32.blue(color) * factor);
+        // Keep within bounds just in case
+        r = Mth.clamp(r, 0, 0xFF);
+        g = Mth.clamp(g, 0, 0xFF);
+        b = Mth.clamp(b, 0, 0xFF);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 }

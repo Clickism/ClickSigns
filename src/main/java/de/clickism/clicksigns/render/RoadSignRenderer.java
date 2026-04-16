@@ -4,14 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.SignColors;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.texture.TiledTexture;
+import de.clickism.clicksigns.sign.texture.*;
+import de.clickism.clicksigns.sign.texture.generator.ColorReplacer;
+import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.TiledTextureGenerator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -65,11 +64,14 @@ public final class RoadSignRenderer extends Renderer {
         roadSign.elements().forEach(element -> {
             var renderCoords = toRenderCoordinates(roadSign.texture(), element.localX(), element.localY());
             // Render element
+            var colorResolver = roadSign.colorResolver();
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 2, symbol.alignment());
+                var toColor = colorResolver.resolve("foreground");
+                var dynamic = new ColorReplacer(symbol.texture().location(), toColor).getOrGenerate();
+                if (dynamic == null) return;
+                textureRenderer.renderTexture(dynamic, renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
-                var colorResolver = roadSign.colorResolver();
                 int color = colorResolver.resolveInt(text.color());
                 int backgroundColor = 0;
                 if (text.backgroundColor() != null) {
@@ -110,18 +112,19 @@ public final class RoadSignRenderer extends Renderer {
     /**
      * The default road sign to render when no road sign is set.
      */
+    // TODO: Refactor?
     public static RoadSign defaultRoadSign() {
         if (defaultRoadSign != null) {
             return defaultRoadSign;
         }
         defaultRoadSign = new RoadSign(
-                TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_FRONT), 2f, 1f),
-                TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f),
+                new TextureTiler(TileSetRegistry.get(DEFAULT_FRONT), 2f, 1f).getOrGenerate(),
+                new TextureTiler(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f).getOrGenerate(),
                 List.of(
                         new SymbolElement(2, 8, Alignment.CENTER_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
                         new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "text_light", "brown")
+                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
                 )
         );
         return defaultRoadSign;
