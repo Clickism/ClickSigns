@@ -46,6 +46,6 @@ public record TiledTextureSource(
      * @return the resolved tileset, or null if not found
      */
     public @Nullable TileSet resolveTileSet() {
-        return TileSetRegistry.get(tileSetId);
+        return TileSetRegistry.getTileSet(tileSetId);
     }
 }

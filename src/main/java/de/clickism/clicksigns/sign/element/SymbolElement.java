@@ -16,7 +16,7 @@ public record SymbolElement(
         int localY,
         Alignment alignment,
         Symbol symbol
-) implements RoadSignElement {
+) implements SignElement {
     /**
      * Type key
      */

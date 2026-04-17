@@ -21,7 +21,7 @@ public record Symbol(
      *
      * @return the category of this symbol, or null if it has no category
      */
-    public @Nullable SymbolCategory resolveCategory() {
+    public @Nullable Category<Symbol> resolveCategory() {
         if (categoryId == null) return null;
         return SymbolRegistry.getCategory(categoryId);
     }

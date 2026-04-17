@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.template;
 
-import de.clickism.clicksigns.sign.element.RoadSignElement;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.template.texture.TextureOption;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -13,11 +13,11 @@ public interface Template {
 
     String description();
 
-    TextureSource frontTextures();
+    List<TextureOption> frontOptions();
 
-    TextureSource backTextures();
+    List<TextureOption> backOptions();
 
-    List<RoadSignElement> elements();
+    List<SignElement> elements();
 
     /**
      * Template type

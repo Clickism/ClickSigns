@@ -25,7 +25,7 @@ public class TileSetListener implements RoadSignReloadListener {
             var textureLocation = ResourceLocation.tryBuild(location.getNamespace(), texturePath);
             var tileSetJson = fromJsonOrNull(resource, TileSetJson.class);
             if (tileSetJson == null) return;
-            TileSetRegistry.register(tileSetJson.toTileSet(textureLocation));
+            TileSetRegistry.registerTileSet(tileSetJson.toTileSet(textureLocation));
         });
     }
 

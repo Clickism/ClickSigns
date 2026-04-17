@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
@@ -23,13 +23,13 @@ import java.util.List;
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
  */
-public record RoadSign(TextureSource frontSource, TextureSource backSource, List<RoadSignElement> elements) {
+public record RoadSign(TextureSource frontSource, TextureSource backSource, List<SignElement> elements) {
     /**
      * The default road sign to use when no road sign is set.
      */
     public static RoadSign DEFAULT = new RoadSign(
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/white.png"), 32, 16),
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/back.png"), 32, 16),
+            new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
+            new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
             List.of(
                     new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SymbolRegistry.getSymbol(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))),
                     new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
@@ -102,7 +102,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
      * @param elements new elements for the road sign
      * @return a new road sign with the updated elements
      */
-    public RoadSign withElements(List<RoadSignElement> elements) {
+    public RoadSign withElements(List<SignElement> elements) {
         return new RoadSign(this.frontSource, this.backSource, elements);
     }
 
@@ -112,7 +112,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
     public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
         TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
         TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
-        buf.writeCollection(sign.elements(), RoadSignElement.PACKET_WRITER);
+        buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
     };
 
     /**
@@ -121,7 +121,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
     public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
         var front = TextureSource.PACKET_READER.apply(buf);
         var back = TextureSource.PACKET_READER.apply(buf);
-        var elements = buf.readList(RoadSignElement.PACKET_READER);
+        var elements = buf.readList(SignElement.PACKET_READER);
         return new RoadSign(front, back, elements);
     };
 
@@ -135,7 +135,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         TextureSource.NBT_WRITER.write(back, sign.backSource());
         tag.putCompound("front", front.asCompoundTag());
         tag.putCompound("back", back.asCompoundTag());
-        tag.putCollection("elements", sign.elements, RoadSignElement.NBT_WRITER);
+        tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
     };
 
     /**
@@ -146,7 +146,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         var backCompound = tag.getCompound("back").orElseThrow();
         var front = TextureSource.NBT_READER.read(frontCompound);
         var back = TextureSource.NBT_READER.read(backCompound);
-        var elements = tag.getCollection("elements", RoadSignElement.NBT_READER).orElse(List.of());
+        var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
         return new RoadSign(front, back, new ArrayList<>(elements));
     };
 }

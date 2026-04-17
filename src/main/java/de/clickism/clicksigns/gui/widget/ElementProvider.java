@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.gui.widget;
 
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 
 /**
  * Interface for widgets that provide an element of a road sign.
@@ -11,5 +11,5 @@ public interface ElementProvider {
      *
      * @return the current element.
      */
-    RoadSignElement element();
+    SignElement element();
 }

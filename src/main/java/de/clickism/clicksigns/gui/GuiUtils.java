@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.gui;
 
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -73,7 +73,7 @@ public class GuiUtils {
      */
     public static Vector2i calculateElementPosition(
             int anchorX, int anchorY,
-            RoadSignElement element,
+            SignElement element,
             int width, int height
     ) {
         // Calculate position, by default renders bottom-right aligned

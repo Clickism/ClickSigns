@@ -8,7 +8,6 @@ import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -116,11 +115,11 @@ public class RoadSignScreen extends BaseScreen {
                     var front = roadSign.frontSource();
                     if (front instanceof TiledTextureSource tiled) {
                         var tileSetId = tiled.tileSetId();
-                        var allTileSetIds = TileSetRegistry.allIds();
+                        var allTileSetIds = TileSetRegistry.allTileSetIds();
                         var currentIndex = allTileSetIds.indexOf(tileSetId);
                         var nextIndex = (currentIndex + 1) % allTileSetIds.size();
                         var nextTileSetId = allTileSetIds.get(nextIndex);
-                        var nextTileSet = TileSetRegistry.get(nextTileSetId);
+                        var nextTileSet = TileSetRegistry.getTileSet(nextTileSetId);
                         if (nextTileSet != null) {
                             var newSource = new TiledTextureSource(nextTileSetId, tiled.width(), tiled.height());
                             this.roadSign = this.roadSign.withFront(newSource);

@@ -41,7 +41,7 @@ public class SymbolList extends VerticalScrollContainer {
         for (int i = 0; i < 20; i++) {
             SymbolRegistry.allCategories().forEach(category -> {
                 addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category.name()), GuiUtils.font()));
-                List<Symbol> symbols = category.resolveSymbols();
+                List<Symbol> symbols = category.resolveEntries();
                 addChild(new SymbolGrid(symbols, width));
             });
         }

@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.Category;
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.sign.SymbolCategory;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
@@ -60,7 +60,7 @@ public class SymbolListener implements RoadSignReloadListener {
                 var category = GSON.fromJson(resource.openAsReader(), CategoryJson.class);
                 // Category id is based on the directory
                 var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
-                SymbolRegistry.registerCategory(new SymbolCategory(categoryId, category.name()));
+                SymbolRegistry.registerCategory(Category.forSymbol(categoryId, category.name()));
                 directoryToCategory.put(categoryId, category);
             } catch (IOException e) {
                 ClickSigns.LOGGER.error("Error occurred while loading symbol category json {}", location, e);
@@ -81,7 +81,7 @@ public class SymbolListener implements RoadSignReloadListener {
             category.includeCategories.forEach(includedId -> {
                 var included = SymbolRegistry.getCategory(ResourceLocation.tryParse(includedId));
                 if (included == null) return;
-                included.resolveSymbols().forEach(symbol -> {
+                included.resolveEntries().forEach(symbol -> {
                     // Create symbol with modified id to avoid conflicts
                     var newSymbol = new Symbol(
                             symbol.identifierForCategory(symbol.identifier(), identifier),

@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 /**
  * An element that can be placed on a road sign.
  */
-public sealed interface RoadSignElement extends TypeKeyed permits TextElement, SymbolElement {
+public sealed interface SignElement extends TypeKeyed permits TextElement, SymbolElement {
     /**
      * Gets the local X coordinate of this element.
      * Local coordinates are relative to the bottom-left corner of the road sign, with (0, 0) being the bottom-left corner.
@@ -38,7 +38,7 @@ public sealed interface RoadSignElement extends TypeKeyed permits TextElement, S
     /**
      * Writer for packets
      */
-    FriendlyByteBuf.Writer<RoadSignElement> PACKET_WRITER = (buf, element) -> {
+    FriendlyByteBuf.Writer<SignElement> PACKET_WRITER = (buf, element) -> {
         var type = element.typeKey();
         buf.writeUtf(type);
         buf.writeInt(element.localX());
@@ -58,7 +58,7 @@ public sealed interface RoadSignElement extends TypeKeyed permits TextElement, S
     /**
      * Reader for packets
      */
-    FriendlyByteBuf.Reader<RoadSignElement> PACKET_READER = (buf) -> {
+    FriendlyByteBuf.Reader<SignElement> PACKET_READER = (buf) -> {
         var type = buf.readUtf();
         int localX = buf.readInt();
         int localY = buf.readInt();
@@ -86,7 +86,7 @@ public sealed interface RoadSignElement extends TypeKeyed permits TextElement, S
     /**
      * Nbt writer
      */
-    NbtWriter.Writer<RoadSignElement> NBT_WRITER = (tag, element) -> {
+    NbtWriter.Writer<SignElement> NBT_WRITER = (tag, element) -> {
         var type = element.typeKey();
         tag.putString("type", type);
         tag.putInt("localX", element.localX());
@@ -107,7 +107,7 @@ public sealed interface RoadSignElement extends TypeKeyed permits TextElement, S
     /**
      * Nbt reader
      */
-    NbtReader.Reader<RoadSignElement> NBT_READER = (tag) -> {
+    NbtReader.Reader<SignElement> NBT_READER = (tag) -> {
         var type = tag.getString("type");
         int localX = tag.getInt("localX").orElseThrow();
         int localY = tag.getInt("localY").orElseThrow();

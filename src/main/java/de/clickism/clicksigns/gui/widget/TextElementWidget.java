@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.GuiGraphics;
@@ -56,7 +56,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     }
 
     @Override
-    public RoadSignElement element() {
+    public SignElement element() {
         return text;
     }
 }

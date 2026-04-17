@@ -26,7 +26,7 @@ public record TextElement(
         float scale,
         String color,
         @Nullable String backgroundColor
-) implements RoadSignElement {
+) implements SignElement {
     /**
      * Type key
      */

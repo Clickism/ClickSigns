@@ -2,7 +2,7 @@ package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
@@ -47,7 +47,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     }
 
     @Override
-    public RoadSignElement element() {
+    public SignElement element() {
         return symbol;
     }
 
@@ -87,7 +87,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     private void cycleSymbol() {
         var category = symbol.symbol().resolveCategory();
         if (category == null) return;
-        List<ResourceLocation> ids = new ArrayList<>(category.symbols());
+        List<ResourceLocation> ids = new ArrayList<>(category.entries());
         int currentIndex = ids.indexOf(symbol.symbol().identifier());
         int nextIndex = (currentIndex + 1) % ids.size();
         // Update symbol
