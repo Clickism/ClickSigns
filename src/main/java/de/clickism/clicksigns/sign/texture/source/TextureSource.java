@@ -4,6 +4,10 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.network.FriendlyByteBuf;
 
+/**
+ * Represents a source for a texture, which can be resolved to obtain the actual texture.
+ * This allows for lazy loading and generation of textures as needed.
+ */
 public interface TextureSource {
     /**
      * The error texture to use when loading or generating a texture fails.

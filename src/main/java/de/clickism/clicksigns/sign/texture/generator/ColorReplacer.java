@@ -1,12 +1,14 @@
 package de.clickism.clicksigns.sign.texture.generator;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
+/**
+ * Texture generator that replaces colors in a base texture with another color, while preserving alpha values.
+ */
 public class ColorReplacer extends CachedTextureGenerator {
     private final ResourceLocation texture;
     private final @Nullable Integer fromColor;

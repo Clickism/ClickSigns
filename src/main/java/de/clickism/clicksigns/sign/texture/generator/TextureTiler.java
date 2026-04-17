@@ -4,11 +4,21 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.sign.texture.TileSet;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
+/**
+ * Texture generator that creates a new texture by tiling it with the given tile set.
+ */
 public class TextureTiler extends CachedTextureGenerator {
     private final TileSet tileSet;
     private final int width;
     private final int height;
 
+    /**
+     * Creates a new TextureTiler with the given tile set and dimensions for the output texture.
+     *
+     * @param tileSet tile set
+     * @param width   width of the output texture in pixels
+     * @param height  height of the output texture in pixels
+     */
     public TextureTiler(TileSet tileSet, int width, int height) {
         this.tileSet = tileSet;
         this.width = width;

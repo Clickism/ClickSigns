@@ -11,7 +11,7 @@ import java.awt.*;
  * Texture source that generates a colorized texture by replacing a specified color in a base texture with another color.
  *
  * @param baseTexture the base texture to colorize
- * @param fromColor   the color to replace (nullable, if null all colors will be replaced)
+ * @param fromColor   the color to replace (or null to replace all colors)
  * @param toColor     the color to replace with
  */
 public record ColorizedTextureSource(
@@ -23,7 +23,7 @@ public record ColorizedTextureSource(
      * Creates a colorized text source from integer RGB color values.
      *
      * @param baseTexture the base texture to colorize
-     * @param fromColor   the color to replace (nullable, if null all colors will be replaced)
+     * @param fromColor   the color to replace (or null to replace all colors)
      * @param toColor     the color to replace with
      */
     public ColorizedTextureSource(ResourceLocation baseTexture, @Nullable Integer fromColor, Integer toColor) {
