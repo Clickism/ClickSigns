@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.texture;
+package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import net.minecraft.resources.ResourceLocation;

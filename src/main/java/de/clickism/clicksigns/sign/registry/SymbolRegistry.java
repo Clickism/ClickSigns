@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.sign.registry;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.texture.Symbol;
-import de.clickism.clicksigns.sign.texture.SymbolCategory;
+import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.SymbolCategory;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;

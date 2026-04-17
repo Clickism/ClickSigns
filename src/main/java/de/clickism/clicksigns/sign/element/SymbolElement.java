@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.sign.texture.Symbol;
+import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.util.Alignment;
 
 /**

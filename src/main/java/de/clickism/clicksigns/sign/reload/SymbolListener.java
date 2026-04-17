@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.texture.Symbol;
+import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
