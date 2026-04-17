@@ -6,7 +6,7 @@ import de.clickism.clicksigns.platform.ReloadListener;
  * Reload listener for road sign related data.
  * Provides a common root path.
  */
-public interface SignReloadListener extends ReloadListener {
+public interface RoadSignReloadListener extends ReloadListener {
     /**
      * Root path for all road sign related textures/data.
      */

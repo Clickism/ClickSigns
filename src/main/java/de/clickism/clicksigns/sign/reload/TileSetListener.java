@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Tile set reload listener.
  */
-public class TileSetListener implements SignReloadListener {
+public class TileSetListener implements RoadSignReloadListener {
     @Override
     public void onReload(ResourceManager manager) {
         TileSetRegistry.clear();

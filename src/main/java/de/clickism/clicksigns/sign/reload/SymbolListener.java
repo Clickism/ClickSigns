@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Symbol reload listener.
  */
-public class SymbolListener implements SignReloadListener {
+public class SymbolListener implements RoadSignReloadListener {
     @Override
     public void onReload(ResourceManager manager) {
         SymbolRegistry.clear();
