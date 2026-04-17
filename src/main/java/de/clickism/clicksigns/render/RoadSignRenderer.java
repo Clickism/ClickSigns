@@ -6,6 +6,7 @@ import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.*;
 import de.clickism.clicksigns.sign.texture.generator.ColorReplacer;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
@@ -68,8 +69,9 @@ public final class RoadSignRenderer extends Renderer {
             var colorResolver = roadSign.colorResolver();
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
+                // TODO: Fix color
                 var toColor = colorResolver.resolve("foreground");
-                var location = symbol.texture().resolve().location();
+                var location = symbol.symbol().texture().resolve().location();
                 var dynamic = new ColorReplacer(location, toColor).getOrGenerate();
                 if (dynamic == null) return;
                 textureRenderer.renderTexture(dynamic, renderCoords.x, renderCoords.y, 2, symbol.alignment());
@@ -123,7 +125,7 @@ public final class RoadSignRenderer extends Renderer {
                 new TiledTextureSource(DEFAULT_FRONT, 32, 16),
                 new TiledTextureSource(DEFAULT_BACK, 32, 16),
                 List.of(
-                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, new StaticTextureSource(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
+                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SymbolRegistry.getSymbol(ClickSigns.identifier("roadsigns/symbols/arrows/right_curvy.png"))),
                         new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")

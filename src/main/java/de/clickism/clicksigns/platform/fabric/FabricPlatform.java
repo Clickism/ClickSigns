@@ -3,6 +3,7 @@ package de.clickism.clicksigns.platform.fabric;
 import de.clickism.clicksigns.ClickSigns;
 
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;

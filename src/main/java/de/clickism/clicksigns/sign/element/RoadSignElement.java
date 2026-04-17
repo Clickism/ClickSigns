@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
@@ -48,7 +49,7 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
             buf.writeUtf(backgroundColor);
             buf.writeUtf(text.text());
         } else if (element instanceof SymbolElement symbol) {
-            TextureSource.WRITER.accept(buf, symbol.texture());
+            buf.writeResourceLocation(symbol.symbol().identifier());
         }
     };
 
@@ -70,8 +71,9 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
             var text = buf.readUtf();
             return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
         } else {
-            var texture = TextureSource.READER.apply(buf);
-            return new SymbolElement(localX, localY, alignment, texture);
+            var id = buf.readResourceLocation();
+            var symbol = SymbolRegistry.getSymbol(id);
+            return new SymbolElement(localX, localY, alignment, symbol);
         }
     };
 }

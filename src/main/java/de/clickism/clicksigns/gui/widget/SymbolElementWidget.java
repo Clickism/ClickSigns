@@ -2,16 +2,17 @@ package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
+import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
-import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
@@ -34,7 +35,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
      * @param parent  the parent screen, used for going back from the symbol menu
      */
     public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol, Screen parent) {
-        super(anchorX, anchorY, symbol.texture().resolve(), OUTLINE_COLOR);
+        super(anchorX, anchorY, symbol.symbol().texture().resolve(), OUTLINE_COLOR);
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         this.symbol = symbol;
@@ -51,7 +52,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
 
     private void symbol(SymbolElement symbol) {
         this.symbol = symbol;
-        this.texture(symbol.texture().resolve());
+        this.texture(symbol.symbol().texture().resolve());
         updatePosition();
     }
 
@@ -83,19 +84,19 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     }
 
     private void cycleSymbol() {
-        var symbolLocation = symbol.texture().resolve().location();
-        var category = SymbolRegistry.categoryOf(symbolLocation);
-        List<ResourceLocation> locations = SymbolRegistry.allInCategory(category);
-        int currentIndex = locations.indexOf(symbolLocation);
-        int nextIndex = (currentIndex + 1) % locations.size();
+        var category = symbol.symbol().resolveCategory();
+        if (category == null) return;
+        List<ResourceLocation> ids = new ArrayList<>(category.symbols());
+        int currentIndex = ids.indexOf(symbol.symbol().identifier());
+        int nextIndex = (currentIndex + 1) % ids.size();
         // Update symbol
-        this.symbol = this.symbol.withTexture(new StaticTextureSource(locations.get(nextIndex)));
+        this.symbol = this.symbol.withSymbol(SymbolRegistry.getSymbol(ids.get(nextIndex)));
         this.symbol(this.symbol);
     }
 
     private void openSymbolMenu() {
-        GuiUtils.openScreen(new SymbolMenuScreen(parent, texture -> {
-            this.symbol(this.symbol.withTexture(new StaticTextureSource(texture.location())));
+        GuiUtils.openScreen(new SymbolMenuScreen(parent, symbol -> {
+            this.symbol(this.symbol.withSymbol(symbol));
             GuiUtils.closeScreen();
         }));
     }

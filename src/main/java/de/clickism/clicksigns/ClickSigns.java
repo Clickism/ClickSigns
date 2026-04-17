@@ -5,7 +5,8 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.registry.ModBlocks;
-import de.clickism.clicksigns.sign.RoadSignReloadListener;
+import de.clickism.clicksigns.sign.reload.SymbolListener;
+import de.clickism.clicksigns.sign.reload.TileSetListener;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,8 @@ public class ClickSigns {
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
         Platform.network().register(); // Register network
         // Add reload listener
-        Platform.get().addReloadListener(new RoadSignReloadListener());
+        Platform.get().addReloadListener(new TileSetListener());
+        Platform.get().addReloadListener(new SymbolListener());
     }
 
     /**

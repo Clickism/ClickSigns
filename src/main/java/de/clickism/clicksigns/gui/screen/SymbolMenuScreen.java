@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.widget.*;
+import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -15,14 +16,14 @@ public class SymbolMenuScreen extends BaseScreen {
     private static final int MARGIN_TOP = 20;
     private static final int MARGIN_BOTTOM = 20;
 
-    private final Consumer<Texture> onSymbolSelected;
+    private final Consumer<Symbol> onSymbolSelected;
 
     /**
      * Creates a new symbol menu screen.
      *
      * @param onSymbolSelected callback for when a symbol is selected, receives the selected symbol's texture
      */
-    public SymbolMenuScreen(Screen parent, Consumer<Texture> onSymbolSelected) {
+    public SymbolMenuScreen(Screen parent, Consumer<Symbol> onSymbolSelected) {
         super(parent);
         this.onSymbolSelected = onSymbolSelected;
     }

@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class SymbolList extends VerticalScrollContainer {
 
-    private final Consumer<Texture> onSymbolSelected;
+    private final Consumer<Symbol> onSymbolSelected;
 
     /**
      * Creates a new symbol list.
@@ -30,16 +31,14 @@ public class SymbolList extends VerticalScrollContainer {
      * @param height           the height of the list
      * @param onSymbolSelected callback for when a symbol is selected
      */
-    public SymbolList(int x, int y, int width, int height, Consumer<Texture> onSymbolSelected) {
+    public SymbolList(int x, int y, int width, int height, Consumer<Symbol> onSymbolSelected) {
         super(x, y, width, height);
         this.onSymbolSelected = onSymbolSelected;
         // Add categories
         for (int i = 0; i < 20; i++) {
             SymbolRegistry.allCategories().forEach(category -> {
-                addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category), GuiUtils.font()));
-                List<Texture> symbols = SymbolRegistry.allInCategory(category).stream()
-                        .map(symbol -> new StaticTextureSource(symbol).resolve())
-                        .collect(Collectors.toList());
+                addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category.name()), GuiUtils.font()));
+                List<Symbol> symbols = category.resolveSymbols();
                 addChild(new SymbolGrid(symbols, width));
             });
         }
@@ -59,11 +58,11 @@ public class SymbolList extends VerticalScrollContainer {
          * @param symbols   the symbols to display in the grid
          * @param gridWidth the maximum width of the grid, used to determine when to wrap to the next row
          */
-        public SymbolGrid(List<Texture> symbols, int gridWidth) {
+        public SymbolGrid(List<Symbol> symbols, int gridWidth) {
             super(0, 0);
             this.gridWidth = gridWidth;
             addChildren(symbols.stream()
-                    .map(texture -> new SymbolWidget(0, 0, texture))
+                    .map(symbol -> new SymbolWidget(0, 0, symbol))
                     .toList());
             positionWidgets();
             updateSize(); // Update size after positioning
@@ -104,20 +103,23 @@ public class SymbolList extends VerticalScrollContainer {
          * Widget for a single symbol.
          */
         public class SymbolWidget extends ClickableTextureWidget {
+            private final Symbol symbol;
+
             /**
              * Creates a new symbol widget.
              *
              * @param x       the x position of the widget
              * @param y       the y position of the widget
-             * @param texture the texture to render for the symbol
+             * @param symbol the texture to render for the symbol
              */
-            public SymbolWidget(int x, int y, Texture texture) {
-                super(x, y, texture, Color.WHITE.getRGB());
+            public SymbolWidget(int x, int y, Symbol symbol) {
+                super(x, y, symbol.texture().resolve(), Color.WHITE.getRGB());
+                this.symbol = symbol;
             }
 
             @Override
             public void onClick(double mouseX, double mouseY) {
-                SymbolList.this.onSymbolSelected.accept(this.texture);
+                SymbolList.this.onSymbolSelected.accept(this.symbol);
             }
         }
     }

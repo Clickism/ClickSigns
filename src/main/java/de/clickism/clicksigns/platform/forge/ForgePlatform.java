@@ -2,9 +2,9 @@ package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -21,7 +21,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
