@@ -25,4 +25,16 @@ public record Symbol(
         if (category == null) return null;
         return SymbolRegistry.getCategory(category);
     }
+
+    /**
+     * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
+     *
+     * @param location     original symbol identifier
+     * @param categoryName name of the category to include the symbol in
+     * @return a new resource location for the included symbol, based on the original location and the category name
+     */
+    public ResourceLocation identifierForCategory(ResourceLocation location, String categoryName) {
+        var normalized = categoryName.toLowerCase().replaceAll("[^a-z0-9_.-]+", "_").toLowerCase();
+        return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
+    }
 }

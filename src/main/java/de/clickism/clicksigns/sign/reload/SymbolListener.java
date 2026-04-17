@@ -35,18 +35,6 @@ public class SymbolListener implements ReloadListener {
     }
 
     /**
-     * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
-     *
-     * @param location     original symbol identifier
-     * @param categoryName name of the category to include the symbol in
-     * @return a new resource location for the included symbol, based on the original location and the category name
-     */
-    private ResourceLocation idForCategory(ResourceLocation location, String categoryName) {
-        var normalized = categoryName.toLowerCase().replaceAll("[^a-z0-9_.-]+", "_").toLowerCase();
-        return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
-    }
-
-    /**
      * Loads all symbol categories from the resource manager and returns a map of directory to category name.
      *
      * @return a map of directory to category
@@ -84,7 +72,7 @@ public class SymbolListener implements ReloadListener {
                 included.resolveSymbols().forEach(symbol -> {
                     // Create symbol with modified id to avoid conflicts
                     var newSymbol = new Symbol(
-                            idForCategory(symbol.identifier(), category.name()),
+                            symbol.identifierForCategory(symbol.identifier(), category.name()),
                             symbol.texture(),
                             category.name()
                     );
