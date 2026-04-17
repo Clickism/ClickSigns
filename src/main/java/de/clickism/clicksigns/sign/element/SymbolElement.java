@@ -28,14 +28,33 @@ public record SymbolElement(
         return TYPE;
     }
 
+    /**
+     * Creates a new symbol element with the given symbol, keeping the other properties the same.
+     *
+     * @param symbol symbol to display
+     * @return a new symbol element with the given symbol, keeping the other properties the same
+     */
     public SymbolElement withSymbol(Symbol symbol) {
         return new SymbolElement(localX(), localY(), alignment(), symbol);
     }
 
+    /**
+     * Creates a new symbol element with the given position, keeping the other properties the same.
+     *
+     * @param localX local X coordinate
+     * @param localY local Y coordinate
+     * @return a new symbol element with the given position, keeping the other properties the same
+     */
     public SymbolElement withPosition(int localX, int localY) {
         return new SymbolElement(localX, localY, alignment(), symbol);
     }
 
+    /**
+     * Creates a new symbol element with the given alignment, keeping the other properties the same.
+     *
+     * @param alignment alignment of the symbol
+     * @return a new symbol element with the given alignment, keeping the other properties the same
+     */
     public SymbolElement withAlignment(Alignment alignment) {
         return new SymbolElement(localX(), localY(), alignment, symbol);
     }
