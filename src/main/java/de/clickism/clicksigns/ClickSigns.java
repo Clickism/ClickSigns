@@ -7,6 +7,7 @@ import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.registry.ModBlocks;
 import de.clickism.clicksigns.sign.reload.RoadSignReloadListener;
 import de.clickism.clicksigns.sign.reload.SymbolListener;
+import de.clickism.clicksigns.sign.reload.TemplateListener;
 import de.clickism.clicksigns.sign.reload.TileSetListener;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class ClickSigns {
         // Add reload listener
         Platform.get().addReloadListener(new TileSetListener());
         Platform.get().addReloadListener(new SymbolListener());
+        Platform.get().addReloadListener(new TemplateListener());
     }
 
     /**

@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.sign.reload;
 
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.Category;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
@@ -11,25 +10,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
  * Symbol reload listener.
  */
 public class SymbolListener implements RoadSignReloadListener {
+    private static final String SYMBOLS_DIR = "symbols";
+
     @Override
     public void onReload(ResourceManager manager) {
         SymbolRegistry.clear();
-        var identifierToCategory = loadAndRegisterCategories(manager);
+        var categories = loadAndRegisterCategories(manager, SYMBOLS_DIR, CategoryJson.class, (identifier, json) -> {
+            var category = Category.forSymbol(identifier, json.name());
+            SymbolRegistry.registerCategory(category);
+        });
         manager.listResources(
-                fromRoot("symbols"),
+                fromRoot(SYMBOLS_DIR),
                 identifier -> identifier.getPath().endsWith(".png")
         ).forEach((location, resource) -> {
             var path = location.getPath();
-            var directory = path.substring(0, path.lastIndexOf('/'));
+            var directory = stripFileName(path);
             var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
-            var category = identifierToCategory.get(categoryId);
+            var category = categories.get(categoryId);
+            if (category == null) {
+                categoryId = null; // No category
+            }
             TextureSource source;
             if (category != null && category.replaceColor != null) {
                 var replaceColor = category.replaceColor;
@@ -37,36 +43,10 @@ public class SymbolListener implements RoadSignReloadListener {
             } else {
                 source = new StaticTextureSource(location);
             }
-            var symbol = new Symbol(location, source, category != null ? categoryId : null);
+            var symbol = new Symbol(location, source, categoryId);
             SymbolRegistry.registerSymbol(symbol);
         });
-        resolveIncludedSymbols(identifierToCategory);
-    }
-
-    /**
-     * Loads all symbol categories from the resource manager and returns a map of directory to category name.
-     *
-     * @return a map of namespace:directory to category
-     */
-    private Map<ResourceLocation, CategoryJson> loadAndRegisterCategories(ResourceManager manager) {
-        // Map from directory (identifier) to category name
-        Map<ResourceLocation, CategoryJson> directoryToCategory = new HashMap<>();
-        manager.listResources(
-                fromRoot("symbols"),
-                identifier -> identifier.getPath().endsWith("category.json")
-        ).forEach((location, resource) -> {
-            try {
-                var directory = location.getPath().replace("/category.json", "");
-                var category = GSON.fromJson(resource.openAsReader(), CategoryJson.class);
-                // Category id is based on the directory
-                var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
-                SymbolRegistry.registerCategory(Category.forSymbol(categoryId, category.name()));
-                directoryToCategory.put(categoryId, category);
-            } catch (IOException e) {
-                ClickSigns.LOGGER.error("Error occurred while loading symbol category json {}", location, e);
-            }
-        });
-        return directoryToCategory;
+        resolveIncludedSymbols(categories);
     }
 
     /**
