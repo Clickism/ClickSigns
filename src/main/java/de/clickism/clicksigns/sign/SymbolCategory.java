@@ -9,15 +9,18 @@ import java.util.*;
  * Represents a category of symbols.
  */
 public class SymbolCategory {
+    private final ResourceLocation identifier;
     private final String name;
     private final Set<ResourceLocation> symbols = new HashSet<>();
 
     /**
      * Creates a new symbol category with the given name.
      *
-     * @param name the name of the category
+     * @param identifier the unique identifier for this category
+     * @param name       the name of the category
      */
-    public SymbolCategory(String name) {
+    public SymbolCategory(ResourceLocation identifier, String name) {
+        this.identifier = identifier;
         this.name = name;
     }
 
@@ -28,6 +31,15 @@ public class SymbolCategory {
      */
     public void addSymbol(Symbol symbol) {
         symbols.add(symbol.identifier());
+    }
+
+    /**
+     * Gets the unique identifier of this category.
+     *
+     * @return the unique identifier of this category
+     */
+    public ResourceLocation identifier() {
+        return identifier;
     }
 
     /**

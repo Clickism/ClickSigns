@@ -13,7 +13,7 @@ import java.util.*;
  * Registry for symbols.
  */
 public class SymbolRegistry {
-    public static final String UNCATEGORIZED = "uncategorized";
+    public static final SymbolCategory UNCATEGORIZED = new SymbolCategory(ClickSigns.identifier("uncategorized"), "Uncategorized");
     public static final Symbol ERROR_SYMBOL = new Symbol(
             ClickSigns.identifier("error"),
             new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
@@ -21,7 +21,7 @@ public class SymbolRegistry {
     );
 
     private static final Map<ResourceLocation, Symbol> SYMBOLS = new HashMap<>();
-    private static final Map<String, SymbolCategory> CATEGORIES = new HashMap<>();
+    private static final Map<ResourceLocation, SymbolCategory> CATEGORIES = new HashMap<>();
 
     /**
      * Registers a symbol and adds it to its category.
@@ -30,15 +30,29 @@ public class SymbolRegistry {
      */
     public static void registerSymbol(Symbol symbol) {
         SYMBOLS.put(symbol.identifier(), symbol);
-        CATEGORIES.computeIfAbsent(symbol.category(), SymbolCategory::new).addSymbol(symbol);
+        if (symbol.categoryId() == null) {
+            // Register and add to uncategorized category if the symbol has no category
+            CATEGORIES.computeIfAbsent(UNCATEGORIZED.identifier(), id -> UNCATEGORIZED)
+                    .addSymbol(symbol);
+            return;
+        }
+        var category = getCategory(symbol.categoryId());
+        if (category == null) {
+            throw new IllegalStateException("Cannot register symbol " + symbol.identifier() + " with unknown category " + symbol.categoryId());
+        }
+        category.addSymbol(symbol);
     }
 
     public static Symbol getSymbol(ResourceLocation identifier) {
         return SYMBOLS.getOrDefault(identifier, ERROR_SYMBOL);
     }
 
-    public static @Nullable SymbolCategory getCategory(String name) {
-        return CATEGORIES.get(name);
+    public static void registerCategory(SymbolCategory category) {
+        CATEGORIES.put(category.identifier(), category);
+    }
+
+    public static @Nullable SymbolCategory getCategory(ResourceLocation identifier) {
+        return CATEGORIES.get(identifier);
     }
 
     public static Collection<SymbolCategory> allCategories() {

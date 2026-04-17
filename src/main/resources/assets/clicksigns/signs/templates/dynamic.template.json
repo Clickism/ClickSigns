@@ -5,7 +5,6 @@
   "textVariants": [
     "#default"
   ],
-  "isDynamic": true,
   "elements": [
     {
       "type": "symbol",
@@ -15,7 +14,19 @@
     {
       "type": "text",
       "x": 3,
-      "y": 3,
+      "y": 3
+    }
+  ],
+  "elementGenerator": [
+    {
+      "fit": {
+        "toX": 15,
+        "toY": {
+          "operation": "subtract",
+          "value": 3,
+          "from": "templateHeight"
+        }
+      }
     }
   ]
 }

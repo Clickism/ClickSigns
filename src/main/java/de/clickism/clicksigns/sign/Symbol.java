@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public record Symbol(
         ResourceLocation identifier,
         TextureSource texture,
-        @Nullable String category
+        @Nullable ResourceLocation categoryId
 ) {
     /**
      * Resolves the category of this symbol, if it has one.
@@ -22,19 +22,19 @@ public record Symbol(
      * @return the category of this symbol, or null if it has no category
      */
     public @Nullable SymbolCategory resolveCategory() {
-        if (category == null) return null;
-        return SymbolRegistry.getCategory(category);
+        if (categoryId == null) return null;
+        return SymbolRegistry.getCategory(categoryId);
     }
 
     /**
      * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
      *
-     * @param location     original symbol identifier
-     * @param categoryName name of the category to include the symbol in
+     * @param location   original symbol identifier
+     * @param categoryId id of the category to include the symbol in
      * @return a new resource location for the included symbol, based on the original location and the category name
      */
-    public ResourceLocation identifierForCategory(ResourceLocation location, String categoryName) {
-        var normalized = categoryName.toLowerCase().replaceAll("[^a-z0-9_.-]+", "_").toLowerCase();
+    public ResourceLocation identifierForCategory(ResourceLocation location, ResourceLocation categoryId) {
+        var normalized = categoryId.getNamespace() + "__" + categoryId.getPath();
         return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
     }
 

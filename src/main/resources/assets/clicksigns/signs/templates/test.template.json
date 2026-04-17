@@ -1,7 +1,18 @@
 {
+  "type": "fixed",
   "name": "Test Template",
   "description": "A test template for road signs.",
   "texture": "clicksigns:roadsigns/test",
+  "front": [
+    {
+      "type": "tileset_category",
+      "category": "Arrows"
+    },
+    {
+      "type": "custom",
+      "texture": "clicksigns:roadsigns/test_front.png"
+    }
+  ],
   "textVariants": [
     "#default"
   ],
@@ -15,6 +26,9 @@
       "type": "text",
       "x": 3,
       "y": 3,
+      "variants": [
+        "#default"
+      ]
     }
   ]
 }

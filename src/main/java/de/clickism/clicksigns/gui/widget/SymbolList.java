@@ -6,10 +6,12 @@ import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.network.chat.Component;
 
 import java.awt.Color;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -64,6 +66,8 @@ public class SymbolList extends VerticalScrollContainer {
             this.gridWidth = gridWidth;
             addChildren(symbols.stream()
                     .map(symbol -> new SymbolWidget(0, 0, symbol))
+                    // Sort by identifier for consistent order
+                    .sorted(Comparator.comparing(widget -> widget.symbol.identifier().toString()))
                     .toList());
             positionWidgets();
             updateSize(); // Update size after positioning
