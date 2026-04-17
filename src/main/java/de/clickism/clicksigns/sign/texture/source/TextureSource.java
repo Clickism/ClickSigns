@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -17,9 +18,10 @@ public interface TextureSource {
     /**
      * Resolves the texture from this source, loading or generating it as necessary.
      *
+     * @param colorResolver the color resolver to use for resolving colors in colorized textures, if needed
      * @return the resolved texture
      */
-    Texture resolve();
+    Texture resolve(ColorResolver colorResolver);
 
     // TODO: Refactor / make type safe by using a registry?
     /**
@@ -39,9 +41,8 @@ public interface TextureSource {
         } else if (texture instanceof ColorizedTextureSource colorized) {
             // Colorized texture
             buf.writeResourceLocation(colorized.baseTexture());
-            var fromColor = colorized.fromColor() != null ? colorized.fromColor().getRGB() : null;
-            buf.writeNullable(fromColor, FriendlyByteBuf::writeInt);
-            buf.writeInt(colorized.toColor().getRGB());
+            buf.writeNullable(colorized.fromColor(), FriendlyByteBuf::writeUtf);
+            buf.writeUtf(colorized.toColor());
         } else {
             throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
         }
@@ -61,8 +62,8 @@ public interface TextureSource {
         } else if (type == 2) {
             // Colorized texture
             var baseTexture = buf.readResourceLocation();
-            var fromColor = buf.readNullable(FriendlyByteBuf::readInt);
-            var toColor = buf.readInt();
+            var fromColor = buf.readNullable(FriendlyByteBuf::readUtf);
+            var toColor = buf.readUtf();
             return new ColorizedTextureSource(baseTexture, fromColor, toColor);
         } else {
             // Static texture

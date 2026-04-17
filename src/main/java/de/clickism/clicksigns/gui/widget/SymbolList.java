@@ -3,6 +3,7 @@ package de.clickism.clicksigns.gui.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.client.Minecraft;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  */
 public class SymbolList extends VerticalScrollContainer {
 
+    private final ColorResolver colorResolver;
     private final Consumer<Symbol> onSymbolSelected;
 
     /**
@@ -29,10 +31,12 @@ public class SymbolList extends VerticalScrollContainer {
      * @param y                the y position of the list
      * @param width            the width of the list
      * @param height           the height of the list
+     * @param colorResolver    the color resolver to use for resolving symbol textures
      * @param onSymbolSelected callback for when a symbol is selected
      */
-    public SymbolList(int x, int y, int width, int height, Consumer<Symbol> onSymbolSelected) {
+    public SymbolList(int x, int y, int width, int height, ColorResolver colorResolver, Consumer<Symbol> onSymbolSelected) {
         super(x, y, width, height);
+        this.colorResolver = colorResolver;
         this.onSymbolSelected = onSymbolSelected;
         // Add categories
         for (int i = 0; i < 20; i++) {
@@ -108,12 +112,12 @@ public class SymbolList extends VerticalScrollContainer {
             /**
              * Creates a new symbol widget.
              *
-             * @param x       the x position of the widget
-             * @param y       the y position of the widget
+             * @param x      the x position of the widget
+             * @param y      the y position of the widget
              * @param symbol the texture to render for the symbol
              */
             public SymbolWidget(int x, int y, Symbol symbol) {
-                super(x, y, symbol.texture().resolve(), Color.WHITE.getRGB());
+                super(x, y, symbol.texture().resolve(colorResolver), Color.WHITE.getRGB());
                 this.symbol = symbol;
             }
 

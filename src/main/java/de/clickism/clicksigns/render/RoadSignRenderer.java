@@ -59,7 +59,7 @@ public final class RoadSignRenderer extends Renderer {
 
         var textureRenderer = new TextureRenderer(stack, source, light, direction);
         // Render the road sign texture
-        var frontTexture = roadSign.front().resolve();
+        var frontTexture = roadSign.frontTexture();
         textureRenderer.renderTexture(frontTexture, 1);
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
@@ -69,12 +69,8 @@ public final class RoadSignRenderer extends Renderer {
             var colorResolver = roadSign.colorResolver();
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                // TODO: Fix color
-                var toColor = colorResolver.resolve("foreground");
-                var location = symbol.symbol().texture().resolve().location();
-                var dynamic = new ColorReplacer(location, toColor).getOrGenerate();
-                if (dynamic == null) return;
-                textureRenderer.renderTexture(dynamic, renderCoords.x, renderCoords.y, 2, symbol.alignment());
+                var texture = symbol.symbol().texture().resolve(roadSign.colorResolver());
+                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
                 int color = colorResolver.resolveInt(text.color());
                 int backgroundColor = 0;
@@ -87,7 +83,7 @@ public final class RoadSignRenderer extends Renderer {
 
         // Render back
         stack.mulPose(FLIP);
-        textureRenderer.renderTexture(roadSign.back().resolve(), 1);
+        textureRenderer.renderTexture(roadSign.backTexture(), 1);
 
         // Finish rendering
         stack.popPose();

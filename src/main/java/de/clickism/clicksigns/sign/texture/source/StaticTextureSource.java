@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.texture.source;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ public record StaticTextureSource(
     private static final Map<ResourceLocation, TextureSize> SIZE_CACHE = new HashMap<>();
 
     @Override
-    public Texture resolve() {
+    public Texture resolve(ColorResolver colorResolver) {
         try {
             var size = loadSize(location);
             return new Texture(location, size.width(), size.height());

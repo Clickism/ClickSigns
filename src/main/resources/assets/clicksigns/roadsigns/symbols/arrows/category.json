@@ -1,4 +1,6 @@
 {
   "name": "Arrows",
-  "color": "foreground"
+  "replaceColor": {
+    "to": "foreground"
+  }
 }

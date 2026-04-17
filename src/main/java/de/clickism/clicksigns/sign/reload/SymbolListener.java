@@ -4,8 +4,9 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
-import net.minecraft.resources.ResourceLocation;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,14 @@ public class SymbolListener implements ReloadListener {
             var directory = path.substring(0, path.lastIndexOf('/'));
             var category = directoryToCategory.get(directory);
             var categoryName = category != null ? category.name() : SymbolRegistry.UNCATEGORIZED;
-            var symbol = new Symbol(location, new StaticTextureSource(location), categoryName);
+            TextureSource source;
+            if (category != null && category.replaceColor != null) {
+                var replaceColor = category.replaceColor;
+                source = new ColorizedTextureSource(location, replaceColor.from(), replaceColor.to());
+            } else {
+                source = new StaticTextureSource(location);
+            }
+            var symbol = new Symbol(location, source, categoryName);
             SymbolRegistry.registerSymbol(symbol);
         });
         resolveIncludedSymbols(directoryToCategory.values());
@@ -92,7 +100,20 @@ public class SymbolListener implements ReloadListener {
      */
     private record CategoryJson(
             String name,
-            @Nullable List<String> includeCategories
+            @Nullable List<String> includeCategories,
+            @Nullable SymbolListener.ReplaceColorJson replaceColor
+    ) {
+    }
+
+    /**
+     * Color replacement JSON format for symbol categories.
+     *
+     * @param from color to replace.
+     * @param to   color to replace with.
+     */
+    private record ReplaceColorJson(
+            @Nullable String from,
+            String to
     ) {
     }
 }

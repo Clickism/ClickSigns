@@ -13,7 +13,6 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -54,7 +53,7 @@ public class RoadSignScreen extends BaseScreen {
         var halfHeight = height / 2;
 
         // Add road sign texture
-        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.front().resolve());
+        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.frontTexture());
         textureWidget.center();
         this.addRenderableWidget(textureWidget);
 
@@ -83,7 +82,7 @@ public class RoadSignScreen extends BaseScreen {
         this.elementProviders.clear();
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, this);
+                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
@@ -114,7 +113,7 @@ public class RoadSignScreen extends BaseScreen {
     private Button changeTileSetButton() {
         // TODO: Translate
         return Button.builder(Component.literal("Change Tileset"), button -> {
-                    var front = roadSign.front();
+                    var front = roadSign.frontSource();
                     if (front instanceof TiledTextureSource tiled) {
                         var tileSetId = tiled.tileSetId();
                         var allTileSetIds = TileSetRegistry.allIds();
@@ -134,7 +133,7 @@ public class RoadSignScreen extends BaseScreen {
 
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
-        return new RoadSign(roadSign.front(), roadSign.back(), elements);
+        return new RoadSign(roadSign.frontSource(), roadSign.backSource(), elements);
     }
 
     @Override

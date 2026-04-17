@@ -6,6 +6,7 @@ import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,6 +25,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     private final int anchorX;
     private final int anchorY;
     private SymbolElement symbol;
+    private final ColorResolver colorResolver;
     private final Screen parent;
 
     /**
@@ -34,8 +36,9 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
      * @param symbol  the symbol element to display
      * @param parent  the parent screen, used for going back from the symbol menu
      */
-    public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol, Screen parent) {
-        super(anchorX, anchorY, symbol.symbol().texture().resolve(), OUTLINE_COLOR);
+    public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
+        super(anchorX, anchorY, symbol.symbol().texture().resolve(colorResolver), OUTLINE_COLOR);
+        this.colorResolver = colorResolver;
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         this.symbol = symbol;
@@ -52,7 +55,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
 
     private void symbol(SymbolElement symbol) {
         this.symbol = symbol;
-        this.texture(symbol.symbol().texture().resolve());
+        this.texture(symbol.symbol().texture().resolve(colorResolver));
         updatePosition();
     }
 
@@ -95,7 +98,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
     }
 
     private void openSymbolMenu() {
-        GuiUtils.openScreen(new SymbolMenuScreen(parent, symbol -> {
+        GuiUtils.openScreen(new SymbolMenuScreen(parent, colorResolver, symbol -> {
             this.symbol(this.symbol.withSymbol(symbol));
             GuiUtils.closeScreen();
         }));
