@@ -2,8 +2,8 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
-import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.TiledTexture;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * Road sign class.
  *
- * @param texture     texture of the road sign
- * @param backTexture texture of the back of the road sign
+ * @param front     texture of the road sign
+ * @param back texture of the back of the road sign
  * @param elements    elements of the road sign
  */
 public record RoadSign(
-        Texture texture,
-        Texture backTexture,
+        TextureSource front,
+        TextureSource back,
         List<RoadSignElement> elements
 ) {
     /**
@@ -26,7 +26,7 @@ public record RoadSign(
      * @return the color resolver, or a default color resolver if the texture is not a tiled texture or the tileset could not be resolved
      */
     public ColorResolver colorResolver() {
-        if (texture instanceof TiledTexture tiledTexture) {
+        if (front instanceof TiledTextureSource tiledTexture) {
             var tileSet = tiledTexture.resolveTileSet();
             if (tileSet != null) {
                 return tileSet.colorResolver();
@@ -39,8 +39,8 @@ public record RoadSign(
      * Writer for packets
      */
     public static final FriendlyByteBuf.Writer<RoadSign> WRITER = (buf, element) -> {
-        Texture.WRITER.accept(buf, element.texture());
-        Texture.WRITER.accept(buf, element.backTexture());
+        TextureSource.WRITER.accept(buf, element.front());
+        TextureSource.WRITER.accept(buf, element.back());
         buf.writeCollection(element.elements(), RoadSignElement.WRITER);
     };
 
@@ -48,10 +48,10 @@ public record RoadSign(
      * Reader for packets
      */
     public static final FriendlyByteBuf.Reader<RoadSign> READER = (buf) -> {
-        Texture texture = Texture.READER.apply(buf);
-        Texture backTexture = Texture.READER.apply(buf);
+        var front = TextureSource.READER.apply(buf);
+        var back = TextureSource.READER.apply(buf);
         var elements = buf.readList(RoadSignElement.READER);
-        return new RoadSign(texture, backTexture, elements);
+        return new RoadSign(front, back, elements);
     };
 
     /**
@@ -62,8 +62,8 @@ public record RoadSign(
      * @param texture new texture for the road sign
      * @return a new road sign with the updated texture
      */
-    public RoadSign withTexture(Texture texture) {
-        return new RoadSign(texture, this.backTexture, this.elements);
+    public RoadSign withFront(TextureSource texture) {
+        return new RoadSign(texture, this.back, this.elements);
     }
 
     /**
@@ -71,11 +71,11 @@ public record RoadSign(
      * <p>
      * Keeps the existing front texture and elements.
      *
-     * @param backTexture new back texture for the road sign
+     * @param back new back texture for the road sign
      * @return a new road sign with the updated back texture
      */
-    public RoadSign withBackTexture(Texture backTexture) {
-        return new RoadSign(this.texture, backTexture, this.elements);
+    public RoadSign withBack(TextureSource back) {
+        return new RoadSign(this.front, back, this.elements);
     }
 
     /**
@@ -85,6 +85,6 @@ public record RoadSign(
      * @return a new road sign with the updated elements
      */
     public RoadSign withElements(List<RoadSignElement> elements) {
-        return new RoadSign(this.texture, this.backTexture, elements);
+        return new RoadSign(this.front, this.back, elements);
     }
 }

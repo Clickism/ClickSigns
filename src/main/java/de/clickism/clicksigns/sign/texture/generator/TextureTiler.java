@@ -4,17 +4,15 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.sign.texture.TileSet;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
-
 public class TextureTiler extends CachedTextureGenerator {
     private final TileSet tileSet;
-    private final float blockWidth;
-    private final float blockHeight;
+    private final int width;
+    private final int height;
 
-    public TextureTiler(TileSet tileSet, float blockWidth, float blockHeight) {
+    public TextureTiler(TileSet tileSet, int width, int height) {
         this.tileSet = tileSet;
-        this.blockWidth = blockWidth;
-        this.blockHeight = blockHeight;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -22,16 +20,14 @@ public class TextureTiler extends CachedTextureGenerator {
         var image = openImage(tileSet.location());
         assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
 
-        int tiledWidth = (int) (blockWidth * BLOCK_PIXELS);
-        int tiledHeight = (int) (blockHeight * BLOCK_PIXELS);
-        var tiledImage = new NativeImage(tiledWidth, tiledHeight, false);
+        var tiledImage = new NativeImage(width, height, false);
 
-        for (int y = 0; y < tiledHeight; y++) {
-            for (int x = 0; x < tiledWidth; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 // Get tiled pixel
                 int pixel = image.getPixelRGBA(
-                        tileSet.tileCoordinate(x, tiledWidth),
-                        tileSet.tileCoordinate(y, tiledHeight)
+                        tileSet.tileCoordinate(x, width),
+                        tileSet.tileCoordinate(y, height)
                 );
                 tiledImage.setPixelRGBA(x, y, pixel);
             }
@@ -42,7 +38,7 @@ public class TextureTiler extends CachedTextureGenerator {
 
     @Override
     public String key() {
-        return keySafe(tileSet.location()) + "_" + blockWidth + "x" + blockHeight;
+        return keySafe(tileSet.location()) + "_" + width + "x" + height;
     }
 
     /**

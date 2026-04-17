@@ -5,6 +5,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +27,7 @@ public abstract class CachedTextureGenerator {
                 ClickSigns.LOGGER.error("Failed to get pixels for generated texture with key {}", k);
                 return null;
             }
-            return Texture.wrapStatic(location, pixels.getWidth(), pixels.getHeight());
+            return new Texture(location, pixels.getWidth(), pixels.getHeight());
         });
     }
 
@@ -43,7 +44,16 @@ public abstract class CachedTextureGenerator {
 
     protected abstract String key();
 
-    protected NativeImage openImage(ResourceLocation location) throws Exception {
+    protected static NativeImage openImage(ResourceLocation location) throws Exception {
+        var minecraft = Minecraft.getInstance();
+        try {
+            return NativeImage.read(minecraft.getResourceManager().open(location));
+        } catch (Exception ignored) {
+        }
+        var texture = minecraft.getTextureManager().getTexture(location);
+        if (texture instanceof DynamicTexture dynamic) {
+            return dynamic.getPixels();
+        }
         return NativeImage.read(Minecraft.getInstance().getResourceManager().open(location));
     }
 

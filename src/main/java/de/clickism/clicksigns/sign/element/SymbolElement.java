@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
 
@@ -15,9 +16,9 @@ public record SymbolElement(
         int localX,
         int localY,
         Alignment alignment,
-        Texture texture
+        TextureSource texture
 ) implements RoadSignElement {
-    public SymbolElement withTexture(Texture texture) {
+    public SymbolElement withTexture(TextureSource texture) {
         return new SymbolElement(localX(), localY(), alignment(), texture);
     }
 

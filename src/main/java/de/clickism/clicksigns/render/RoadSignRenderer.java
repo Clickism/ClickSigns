@@ -6,10 +6,10 @@ import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import de.clickism.clicksigns.sign.texture.*;
 import de.clickism.clicksigns.sign.texture.generator.ColorReplacer;
-import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.Alignment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
@@ -58,17 +58,19 @@ public final class RoadSignRenderer extends Renderer {
 
         var textureRenderer = new TextureRenderer(stack, source, light, direction);
         // Render the road sign texture
-        textureRenderer.renderTexture(roadSign.texture(), 1);
+        var frontTexture = roadSign.front().resolve();
+        textureRenderer.renderTexture(frontTexture, 1);
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
         roadSign.elements().forEach(element -> {
-            var renderCoords = toRenderCoordinates(roadSign.texture(), element.localX(), element.localY());
+            var renderCoords = toRenderCoordinates(frontTexture, element.localX(), element.localY());
             // Render element
             var colorResolver = roadSign.colorResolver();
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
                 var toColor = colorResolver.resolve("foreground");
-                var dynamic = new ColorReplacer(symbol.texture().location(), toColor).getOrGenerate();
+                var location = symbol.texture().resolve().location();
+                var dynamic = new ColorReplacer(location, toColor).getOrGenerate();
                 if (dynamic == null) return;
                 textureRenderer.renderTexture(dynamic, renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
@@ -83,7 +85,7 @@ public final class RoadSignRenderer extends Renderer {
 
         // Render back
         stack.mulPose(FLIP);
-        textureRenderer.renderTexture(roadSign.backTexture(), 1);
+        textureRenderer.renderTexture(roadSign.back().resolve(), 1);
 
         // Finish rendering
         stack.popPose();
@@ -118,10 +120,10 @@ public final class RoadSignRenderer extends Renderer {
             return defaultRoadSign;
         }
         defaultRoadSign = new RoadSign(
-                new TextureTiler(TileSetRegistry.get(DEFAULT_FRONT), 2f, 1f).getOrGenerate(),
-                new TextureTiler(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f).getOrGenerate(),
+                new TiledTextureSource(DEFAULT_FRONT, 32, 16),
+                new TiledTextureSource(DEFAULT_BACK, 32, 16),
                 List.of(
-                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
+                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, new StaticTextureSource(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
                         new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                         new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")

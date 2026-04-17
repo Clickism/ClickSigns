@@ -13,9 +13,8 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.TiledTexture;
 import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -55,7 +54,7 @@ public class RoadSignScreen extends BaseScreen {
         var halfHeight = height / 2;
 
         // Add road sign texture
-        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.texture());
+        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.front().resolve());
         textureWidget.center();
         this.addRenderableWidget(textureWidget);
 
@@ -115,17 +114,17 @@ public class RoadSignScreen extends BaseScreen {
     private Button changeTileSetButton() {
         // TODO: Translate
         return Button.builder(Component.literal("Change Tileset"), button -> {
-                    var currentTexture = roadSign.texture();
-                    if (currentTexture instanceof TiledTexture tiledTexture) {
-                        var tileSetId = tiledTexture.tileSet();
+                    var front = roadSign.front();
+                    if (front instanceof TiledTextureSource tiled) {
+                        var tileSetId = tiled.tileSetId();
                         var allTileSetIds = TileSetRegistry.allIds();
                         var currentIndex = allTileSetIds.indexOf(tileSetId);
                         var nextIndex = (currentIndex + 1) % allTileSetIds.size();
                         var nextTileSetId = allTileSetIds.get(nextIndex);
                         var nextTileSet = TileSetRegistry.get(nextTileSetId);
                         if (nextTileSet != null) {
-                            var generated = new TextureTiler(nextTileSet, tiledTexture.blockWidth(), tiledTexture.blockHeight()).getOrGenerate();
-                            this.roadSign = this.roadSign.withTexture(generated);
+                            var newSource = new TiledTextureSource(nextTileSetId, tiled.width(), tiled.height());
+                            this.roadSign = this.roadSign.withFront(newSource);
                             this.rebuildWidgets();
                         }
                     }
@@ -135,7 +134,7 @@ public class RoadSignScreen extends BaseScreen {
 
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
-        return new RoadSign(roadSign.texture(), roadSign.backTexture(), elements);
+        return new RoadSign(roadSign.front(), roadSign.back(), elements);
     }
 
     @Override

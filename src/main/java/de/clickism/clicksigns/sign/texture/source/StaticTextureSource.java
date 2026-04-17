@@ -1,7 +1,8 @@
-package de.clickism.clicksigns.sign.texture;
+package de.clickism.clicksigns.sign.texture.source;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -10,24 +11,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Texture record to wrap a texture with its dimensions.
+ * Static texture source that loads a texture from a given resource location and caches its dimensions for future use.
+ *
+ * @param location resource location of the texture image
  */
-public record StaticTexture(ResourceLocation location, int width, int height) implements Texture {
+public record StaticTextureSource(
+        ResourceLocation location
+) implements TextureSource {
     /**
      * Cache for texture sizes
      */
     private static final Map<ResourceLocation, TextureSize> SIZE_CACHE = new HashMap<>();
 
-    /**
-     * Loads a texture and its dimensions from the given resource location.
-     * Will cache the dimensions of the texture.
-     *
-     * @param location the resource location of the texture image
-     * @return the Texture
-     */
-    public static StaticTexture load(ResourceLocation location) {
-        var size = loadSize(location);
-        return new StaticTexture(location, size.width(), size.height());
+    @Override
+    public Texture resolve() {
+        try {
+            var size = loadSize(location);
+            return new Texture(location, size.width(), size.height());
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to resolve static texture for {}", location, e);
+            return ERROR_TEXTURE;
+        }
     }
 
     /**
@@ -36,19 +40,18 @@ public record StaticTexture(ResourceLocation location, int width, int height) im
      * @param location the resource location of the texture image
      * @return the size of the image
      */
-    private static TextureSize loadSize(ResourceLocation location) {
+    private static TextureSize loadSize(ResourceLocation location) throws IOException {
         // Check cache first
         if (SIZE_CACHE.containsKey(location)) {
             return SIZE_CACHE.get(location);
         }
         // Load image and get dimensions
-        try (var stream = Minecraft.getInstance().getResourceManager().open(location); var image = NativeImage.read(stream)) {
+        var minecraft = Minecraft.getInstance();
+        var resourceManager = minecraft.getResourceManager();
+        try (var stream = resourceManager.open(location); var image = NativeImage.read(stream)) {
             var size = new TextureSize(image.getWidth(), image.getHeight());
             SIZE_CACHE.put(location, size); // Update cache
             return size;
-        } catch (IOException e) {
-            ClickSigns.LOGGER.error("Failed to load texture size for {}", location, e);
-            return new TextureSize(0, 0);
         }
     }
 
@@ -58,7 +61,5 @@ public record StaticTexture(ResourceLocation location, int width, int height) im
      * @param width  width of the texture in pixels
      * @param height height of the texture in pixels
      */
-    private record TextureSize(int width, int height) {
-
-    }
+    private record TextureSize(int width, int height) {}
 }

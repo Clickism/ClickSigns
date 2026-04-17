@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.network.FriendlyByteBuf;
@@ -47,7 +48,7 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
             buf.writeUtf(backgroundColor);
             buf.writeUtf(text.text());
         } else if (element instanceof SymbolElement symbol) {
-            Texture.WRITER.accept(buf, symbol.texture());
+            TextureSource.WRITER.accept(buf, symbol.texture());
         }
     };
 
@@ -60,16 +61,16 @@ public sealed interface RoadSignElement permits TextElement, SymbolElement {
         int localY = buf.readInt();
         Alignment alignment = Alignment.values()[buf.readInt()];
         if (type == 1) {
-            float scale = buf.readFloat();
-            String color = buf.readUtf();
-            String backgroundColor = buf.readUtf();
+            var scale = buf.readFloat();
+            var color = buf.readUtf();
+            var backgroundColor = buf.readUtf();
             if (backgroundColor.isEmpty()) {
                 backgroundColor = null;
             }
-            String text = buf.readUtf();
+            var text = buf.readUtf();
             return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
         } else {
-            Texture texture = Texture.READER.apply(buf);
+            var texture = TextureSource.READER.apply(buf);
             return new SymbolElement(localX, localY, alignment, texture);
         }
     };

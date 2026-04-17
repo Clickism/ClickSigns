@@ -1,141 +1,27 @@
 package de.clickism.clicksigns.sign.texture;
 
-import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
-import net.minecraft.network.FriendlyByteBuf;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.resources.ResourceLocation;
-
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Texture interface to represent a texture with its resource location and dimensions.
+ *
+ * @param location resource location of the texture image
+ * @param width    width of the texture image in pixels
+ * @param height   height of the texture image in pixels
  */
-public sealed interface Texture permits StaticTexture, TiledTexture {
+public record Texture(
+        ResourceLocation location,
+        int width,
+        int height
+) implements PixelSized {
     /**
-     * The error texture to use when loading or generating a texture fails.
-     */
-    ResourceLocation ERROR_TEXTURE = ClickSigns.identifier("error.png");
-
-    /**
-     * Resource location of the texture's image
+     * Loads a static texture from the given resource location and returns it as a Texture object.
      *
-     * @return resource location
+     * @param location the resource location of the texture image to load
+     * @return the loaded Texture object
      */
-    ResourceLocation location();
-
-    /**
-     * Width of the image in pixels
-     *
-     * @return width in pixels
-     */
-    int width();
-
-    /**
-     * Height of the image in pixels
-     *
-     * @return height in pixels
-     */
-    int height();
-
-    /**
-     * Width of the image in blocks
-     *
-     * @return width in blocks
-     */
-    default float blockWidth() {
-        return (float) width() / BLOCK_PIXELS;
+    public static Texture loadStatic(ResourceLocation location) {
+        return new StaticTextureSource(location).resolve();
     }
-
-    /**
-     * Height of the image in blocks
-     *
-     * @return height in blocks
-     */
-    default float blockHeight() {
-        return (float) height() / BLOCK_PIXELS;
-    }
-
-    /**
-     * Loads a texture from the given resource location, including its dimensions.
-     *
-     * @param location the resource location of the texture image
-     * @return the loaded texture
-     */
-    static StaticTexture load(ResourceLocation location) {
-        return StaticTexture.load(location);
-    }
-
-    /**
-     * Wraps a generated texture with the given dimensions and tileset information into a TiledTexture record.
-     *
-     * @param generated   the resource location of the generated texture
-     * @param blockWidth  the width of the generated texture in blocks
-     * @param blockHeight the height of the generated texture in blocks
-     * @param tileSet     the resource location of the tileset used to generate the texture (for reference)
-     * @return a TiledTexture record containing the resource location and dimensions of the generated texture
-     */
-    static TiledTexture wrapTiled(ResourceLocation generated, float blockWidth, float blockHeight, ResourceLocation tileSet) {
-        int pixelWidth = (int) (blockWidth * BLOCK_PIXELS);
-        int pixelHeight = (int) (blockHeight * BLOCK_PIXELS);
-        return new TiledTexture(generated, pixelWidth, pixelHeight, tileSet);
-    }
-
-    /**
-     * Wraps a static texture with the given resource location and dimensions into a StaticTexture record.
-     *
-     * @param location the resource location of the texture image
-     * @param width    the width of the texture image in pixels
-     * @param height   the height of the texture image in pixels
-     * @return a StaticTexture record containing the resource location and dimensions of the texture
-     */
-    static StaticTexture wrapStatic(ResourceLocation location, int width, int height) {
-        return new StaticTexture(location, width, height);
-    }
-
-    /**
-     * Writer for packets
-     */
-    FriendlyByteBuf.Writer<Texture> WRITER = (buf, texture) -> {
-        int type = texture instanceof TiledTexture ? 1 : 0;
-        buf.writeInt(type);
-        if (texture instanceof TiledTexture tiled) {
-            // Tiled texture
-            buf.writeResourceLocation(tiled.tileSet());
-            buf.writeFloat(tiled.blockWidth());
-            buf.writeFloat(tiled.blockHeight());
-        } else {
-            // Static texture
-            buf.writeResourceLocation(texture.location());
-        }
-    };
-
-    /**
-     * Reader for packets
-     */
-    FriendlyByteBuf.Reader<Texture> READER = (buf) -> {
-        int type = buf.readInt();
-        if (type == 1) {
-            // Tiled texture
-            var tileSetId = buf.readResourceLocation();
-            var blockWidth = buf.readFloat();
-            var blockHeight = buf.readFloat();
-            // Generate the tiled texture
-            var tileSet = TileSetRegistry.get(tileSetId);
-            if (tileSet == null) {
-                ClickSigns.LOGGER.error("Failed to load tileset {} for texture", tileSetId);
-                return Texture.load(ERROR_TEXTURE);
-            }
-            var generated = new TextureTiler(tileSet, blockWidth, blockHeight).getOrGenerate();
-            if (generated == null) {
-                ClickSigns.LOGGER.error("Failed to generate tiled texture for tileset {}", tileSetId);
-                return Texture.load(ERROR_TEXTURE);
-            }
-            return Texture.wrapTiled(generated.location(), blockWidth, blockHeight, tileSetId);
-        } else {
-            // Static texture
-            var location = buf.readResourceLocation();
-            return Texture.load(location);
-        }
-    };
 }

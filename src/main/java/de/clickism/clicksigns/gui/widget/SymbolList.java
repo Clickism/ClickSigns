@@ -3,6 +3,7 @@ package de.clickism.clicksigns.gui.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StringWidget;
@@ -37,7 +38,7 @@ public class SymbolList extends VerticalScrollContainer {
             SymbolRegistry.allCategories().forEach(category -> {
                 addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category), GuiUtils.font()));
                 List<Texture> symbols = SymbolRegistry.allInCategory(category).stream()
-                        .map(Texture::load)
+                        .map(symbol -> new StaticTextureSource(symbol).resolve())
                         .collect(Collectors.toList());
                 addChild(new SymbolGrid(symbols, width));
             });
