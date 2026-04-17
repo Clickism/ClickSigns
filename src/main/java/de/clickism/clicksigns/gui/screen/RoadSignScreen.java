@@ -42,7 +42,7 @@ public class RoadSignScreen extends BaseScreen {
         this.blockPos = entity.getBlockPos();
         var roadSign = entity.roadSign();
         if (roadSign == null) {
-            roadSign = RoadSignRenderer.defaultRoadSign();
+            roadSign = RoadSign.DEFAULT;
         }
         this.roadSign = roadSign;
     }

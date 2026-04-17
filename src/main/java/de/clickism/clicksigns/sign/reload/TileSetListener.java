@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.sign.reload;
 
-import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.TileSet;
@@ -13,12 +12,12 @@ import java.util.Map;
 /**
  * Tile set reload listener.
  */
-public class TileSetListener implements ReloadListener {
+public class TileSetListener implements SignReloadListener {
     @Override
     public void onReload(ResourceManager manager) {
         TileSetRegistry.clear();
         manager.listResources(
-                "roadsigns/tilesets",
+                fromRoot("tilesets"),
                 identifier -> identifier.getPath().endsWith(".tileset.json")
         ).forEach((location, resource) -> {
             // Important! Image path and tileset path must be the same!

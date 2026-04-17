@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign;
+package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +56,6 @@ public class SymbolCategory {
     public List<Symbol> resolveSymbols() {
         return symbols.stream()
                 .map(SymbolRegistry::getSymbol)
-                .filter(Objects::nonNull)
                 .toList();
     }
 }

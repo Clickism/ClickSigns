@@ -123,6 +123,9 @@ public sealed interface RoadSignElement extends TypeKeyed permits TextElement, S
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
                 var symbol = SymbolRegistry.getSymbol(id);
+                if (symbol == null) {
+                    throw new IllegalArgumentException("Symbol with id " + id + " not found");
+                }
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);

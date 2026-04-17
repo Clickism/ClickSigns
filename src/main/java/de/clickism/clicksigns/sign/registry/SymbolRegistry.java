@@ -1,7 +1,9 @@
 package de.clickism.clicksigns.sign.registry;
 
-import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.sign.SymbolCategory;
+import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.texture.Symbol;
+import de.clickism.clicksigns.sign.texture.SymbolCategory;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +14,11 @@ import java.util.*;
  */
 public class SymbolRegistry {
     public static final String UNCATEGORIZED = "uncategorized";
+    public static final Symbol ERROR_SYMBOL = new Symbol(
+            ClickSigns.identifier("error"),
+            new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
+            null
+    );
 
     private static final Map<ResourceLocation, Symbol> SYMBOLS = new HashMap<>();
     private static final Map<String, SymbolCategory> CATEGORIES = new HashMap<>();
@@ -26,8 +33,8 @@ public class SymbolRegistry {
         CATEGORIES.computeIfAbsent(symbol.category(), SymbolCategory::new).addSymbol(symbol);
     }
 
-    public static @Nullable Symbol getSymbol(ResourceLocation identifier) {
-        return SYMBOLS.get(identifier);
+    public static Symbol getSymbol(ResourceLocation identifier) {
+        return SYMBOLS.getOrDefault(identifier, ERROR_SYMBOL);
     }
 
     public static @Nullable SymbolCategory getCategory(String name) {

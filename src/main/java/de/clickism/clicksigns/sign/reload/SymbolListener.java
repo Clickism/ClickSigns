@@ -1,8 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.platform.ReloadListener;
-import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.texture.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
@@ -16,13 +15,13 @@ import java.util.*;
 /**
  * Symbol reload listener.
  */
-public class SymbolListener implements ReloadListener {
+public class SymbolListener implements SignReloadListener {
     @Override
     public void onReload(ResourceManager manager) {
         SymbolRegistry.clear();
         var directoryToCategory = loadCategories(manager);
         manager.listResources(
-                "roadsigns/symbols",
+                fromRoot("symbols"),
                 identifier -> identifier.getPath().endsWith(".png")
         ).forEach((location, resource) -> {
             var path = location.getPath();
@@ -51,7 +50,7 @@ public class SymbolListener implements ReloadListener {
         // Map from directory to category name
         Map<String, CategoryJson> directoryToCategory = new HashMap<>();
         manager.listResources(
-                "roadsigns/symbols",
+                fromRoot("symbols"),
                 identifier -> identifier.getPath().endsWith("category.json")
         ).forEach((location, resource) -> {
             try {

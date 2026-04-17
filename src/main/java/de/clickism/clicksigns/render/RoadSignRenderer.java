@@ -27,15 +27,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  * Road sign renderer
  */
 public final class RoadSignRenderer extends Renderer {
-    private static final ResourceLocation DEFAULT_FRONT = ClickSigns.identifier("roadsigns/tilesets/white.png");
-    private static final ResourceLocation DEFAULT_BACK = ClickSigns.identifier("roadsigns/tilesets/back.png");
-
-    /**
-     * Cache for the default road sign, not sure if making it static is safe in case
-     * the tile sets aren't registered when this class is loaded.
-     */
-    private static RoadSign defaultRoadSign = null;
-
     private final Direction direction;
     private final RoadSign roadSign;
 
@@ -48,7 +39,7 @@ public final class RoadSignRenderer extends Renderer {
         if (entity.roadSign() != null) {
             this.roadSign = entity.roadSign();
         } else {
-            this.roadSign = defaultRoadSign();
+            this.roadSign = RoadSign.DEFAULT;
         }
     }
 
@@ -107,26 +98,5 @@ public final class RoadSignRenderer extends Renderer {
         float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
         float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
         return new Vector2f(-renderX, renderY);
-    }
-
-    /**
-     * The default road sign to render when no road sign is set.
-     */
-    // TODO: Refactor?
-    public static RoadSign defaultRoadSign() {
-        if (defaultRoadSign != null) {
-            return defaultRoadSign;
-        }
-        defaultRoadSign = new RoadSign(
-                new TiledTextureSource(DEFAULT_FRONT, 32, 16),
-                new TiledTextureSource(DEFAULT_BACK, 32, 16),
-                List.of(
-                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SymbolRegistry.getSymbol(ClickSigns.identifier("roadsigns/symbols/arrows/right_curvy.png"))),
-                        new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                        new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
-                )
-        );
-        return defaultRoadSign;
     }
 }

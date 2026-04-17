@@ -1,10 +1,15 @@
 package de.clickism.clicksigns.sign;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +26,20 @@ import java.util.List;
  * @param elements    elements of the road sign
  */
 public record RoadSign(TextureSource frontSource, TextureSource backSource, List<RoadSignElement> elements) {
+    /**
+     * The default road sign to use when no road sign is set.
+     */
+    public static RoadSign DEFAULT = new RoadSign(
+            new TiledTextureSource(ClickSigns.signAsset("tilesets/white.png"), 32, 16),
+            new TiledTextureSource(ClickSigns.signAsset("tilesets/back.png"), 32, 16),
+            List.of(
+                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SymbolRegistry.getSymbol(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))),
+                    new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
+                    new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
+                    new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
+            )
+    );
+
     /**
      * Gets the color resolver for this road sign.
      *

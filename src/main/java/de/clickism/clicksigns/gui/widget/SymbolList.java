@@ -1,11 +1,9 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.texture.Symbol;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.template.theme.ColorResolver;
-import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StringWidget;
@@ -14,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * A scrollable list of symbols, organized by category.

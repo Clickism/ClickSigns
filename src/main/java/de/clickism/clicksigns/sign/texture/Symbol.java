@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign;
+package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -36,5 +36,14 @@ public record Symbol(
     public ResourceLocation identifierForCategory(ResourceLocation location, String categoryName) {
         var normalized = categoryName.toLowerCase().replaceAll("[^a-z0-9_.-]+", "_").toLowerCase();
         return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
+    }
+
+    /**
+     * Checks if this symbol is the error symbol.
+     *
+     * @return true if this symbol is the error symbol, false otherwise
+     */
+    public boolean isError() {
+        return this.identifier.equals(SymbolRegistry.ERROR_SYMBOL.identifier);
     }
 }
