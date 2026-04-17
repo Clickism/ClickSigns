@@ -5,8 +5,12 @@ import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.util.nbt.NbtReader;
+import de.clickism.clicksigns.util.nbt.NbtWriter;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,11 +20,7 @@ import java.util.List;
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
  */
-public record RoadSign(
-        TextureSource frontSource,
-        TextureSource backSource,
-        List<RoadSignElement> elements
-) {
+public record RoadSign(TextureSource frontSource, TextureSource backSource, List<RoadSignElement> elements) {
     /**
      * Gets the color resolver for this road sign.
      *
@@ -56,25 +56,6 @@ public record RoadSign(
     }
 
     /**
-     * Writer for packets
-     */
-    public static final FriendlyByteBuf.Writer<RoadSign> WRITER = (buf, sign) -> {
-        TextureSource.WRITER.accept(buf, sign.frontSource());
-        TextureSource.WRITER.accept(buf, sign.backSource());
-        buf.writeCollection(sign.elements(), RoadSignElement.WRITER);
-    };
-
-    /**
-     * Reader for packets
-     */
-    public static final FriendlyByteBuf.Reader<RoadSign> READER = (buf) -> {
-        var front = TextureSource.READER.apply(buf);
-        var back = TextureSource.READER.apply(buf);
-        var elements = buf.readList(RoadSignElement.READER);
-        return new RoadSign(front, back, elements);
-    };
-
-    /**
      * Creates a new road sign with the given texture.
      * <p>
      * Keeps the existing back texture and elements.
@@ -107,4 +88,48 @@ public record RoadSign(
     public RoadSign withElements(List<RoadSignElement> elements) {
         return new RoadSign(this.frontSource, this.backSource, elements);
     }
+
+    /**
+     * Writer for packets
+     */
+    public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
+        TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
+        TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
+        buf.writeCollection(sign.elements(), RoadSignElement.PACKET_WRITER);
+    };
+
+    /**
+     * Reader for packets
+     */
+    public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
+        var front = TextureSource.PACKET_READER.apply(buf);
+        var back = TextureSource.PACKET_READER.apply(buf);
+        var elements = buf.readList(RoadSignElement.PACKET_READER);
+        return new RoadSign(front, back, elements);
+    };
+
+    /**
+     * Writer for NBT
+     */
+    public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
+        var front = tag.createWriter();
+        var back = tag.createWriter();
+        TextureSource.NBT_WRITER.write(front, sign.frontSource());
+        TextureSource.NBT_WRITER.write(back, sign.backSource());
+        tag.putCompound("front", front.asCompoundTag());
+        tag.putCompound("back", back.asCompoundTag());
+        tag.putCollection("elements", sign.elements, RoadSignElement.NBT_WRITER);
+    };
+
+    /**
+     * Reader for NBT
+     */
+    public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
+        var frontCompound = tag.getCompound("front").orElseThrow();
+        var backCompound = tag.getCompound("back").orElseThrow();
+        var front = TextureSource.NBT_READER.read(frontCompound);
+        var back = TextureSource.NBT_READER.read(backCompound);
+        var elements = tag.getCollection("elements", RoadSignElement.NBT_READER).orElse(List.of());
+        return new RoadSign(front, back, new ArrayList<>(elements));
+    };
 }

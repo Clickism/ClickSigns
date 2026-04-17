@@ -28,6 +28,15 @@ public record TextElement(
         String color,
         @Nullable String backgroundColor
 ) implements RoadSignElement {
+    /**
+     * Type key
+     */
+    public static final String TYPE = "text";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
 
     /**
      * Creates a new TextElement with the given parameters.

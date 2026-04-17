@@ -1,11 +1,11 @@
 package de.clickism.clicksigns.entity;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.ModBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
-import io.netty.buffer.Unpooled;
+import de.clickism.clicksigns.util.nbt.NbtReaderWriterImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -30,8 +30,6 @@ public class RoadSignBlockEntity extends BlockEntity {
     public RoadSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.ROAD_SIGN.get(), pos, state);
     }
-
-    // TODO: Save entity data
 
     /**
      * Gets the road sign of this block entity.
@@ -71,26 +69,22 @@ public class RoadSignBlockEntity extends BlockEntity {
         return tag;
     }
 
-    // Just use the byte encoders to save data, because why not
-    // TODO: Maybe actually encode in nbt in case future versions break the byte encoding
-
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         if (this.roadSign == null) return;
-        var buf = new FriendlyByteBuf(Unpooled.buffer());
-        RoadSign.WRITER.accept(buf, this.roadSign);
-        var bytes = new byte[buf.readableBytes()];
-        buf.readBytes(bytes);
-        tag.putByteArray("roadSignBytes", bytes);
+        var writer = new NbtReaderWriterImpl(tag);
+        RoadSign.NBT_WRITER.write(writer, this.roadSign);
     }
 
     @Override
     public void load(CompoundTag tag) {
-//        super.load(tag);
-//        if (!tag.contains("roadSignBytes")) return;
-//        var bytes = tag.getByteArray("roadSignBytes");
-//        var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
-//        this.roadSign = RoadSign.READER.apply(buf);
+        super.load(tag);
+        var reader = new NbtReaderWriterImpl(tag);
+        try {
+            this.roadSign = RoadSign.NBT_READER.read(reader);
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
+        }
     }
 }

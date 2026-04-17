@@ -23,6 +23,15 @@ public record StaticTextureSource(
      * Cache for texture sizes
      */
     private static final Map<ResourceLocation, TextureSize> SIZE_CACHE = new HashMap<>();
+    /**
+     * Type key
+     */
+    public static final String TYPE = "static";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
 
     @Override
     public Texture resolve(ColorResolver colorResolver) {

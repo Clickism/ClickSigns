@@ -18,6 +18,16 @@ public record SymbolElement(
         Alignment alignment,
         Symbol symbol
 ) implements RoadSignElement {
+    /**
+     * Type key
+     */
+    public static final String TYPE = "symbol";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
+
     public SymbolElement withSymbol(Symbol symbol) {
         return new SymbolElement(localX(), localY(), alignment(), symbol);
     }

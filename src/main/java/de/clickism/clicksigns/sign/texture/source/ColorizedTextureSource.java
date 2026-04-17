@@ -20,6 +20,16 @@ public record ColorizedTextureSource(
         @Nullable String fromColor,
         String toColor
 ) implements TextureSource {
+    /**
+     * Type key
+     */
+    public static final String TYPE = "colorized";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
+
     @Override
     public Texture resolve(ColorResolver colorResolver) {
         var from = fromColor != null ? colorResolver.resolve(fromColor) : null;

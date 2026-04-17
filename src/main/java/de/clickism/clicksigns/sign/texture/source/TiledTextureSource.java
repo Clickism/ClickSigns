@@ -21,6 +21,16 @@ public record TiledTextureSource(
         int width,
         int height
 ) implements TextureSource, PixelSized {
+    /**
+     * Type key
+     */
+    public static final String TYPE = "tiled";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
+
     @Override
     public Texture resolve(ColorResolver colorResolver) {
         var tileSet = resolveTileSet();

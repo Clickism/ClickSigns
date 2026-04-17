@@ -3,5 +3,7 @@
   "includeCategories": [
     "Arrows"
   ],
-  "color": "foreground"
+  "replaceColor": {
+    "to": "foreground"
+  }
 }
