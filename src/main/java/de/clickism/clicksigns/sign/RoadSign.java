@@ -5,14 +5,12 @@ import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.registry.SymbolRegistry;
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.Alignment;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;

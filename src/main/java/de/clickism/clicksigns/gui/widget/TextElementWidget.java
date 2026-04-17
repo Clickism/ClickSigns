@@ -3,7 +3,7 @@ package de.clickism.clicksigns.gui.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.element.RoadSignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;

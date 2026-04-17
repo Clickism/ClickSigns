@@ -1,12 +1,10 @@
 package de.clickism.clicksigns.sign.texture.source;
 
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.generator.ColorReplacer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 /**
  * Texture source that generates a colorized texture by replacing a specified color in a base texture with another color.

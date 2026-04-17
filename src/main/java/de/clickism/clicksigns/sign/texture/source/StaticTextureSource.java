@@ -2,7 +2,7 @@ package de.clickism.clicksigns.sign.texture.source;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

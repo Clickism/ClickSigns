@@ -1,12 +1,11 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
 import de.clickism.clicksigns.util.Alignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-import static de.clickism.clicksigns.sign.template.theme.ColorResolver.toHexString;
+import static de.clickism.clicksigns.sign.ColorResolver.toHexString;
 
 /**
  * Text element on a road sign.

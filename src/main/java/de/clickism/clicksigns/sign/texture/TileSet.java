@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.texture;
 
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.resources.ResourceLocation;
 
 /**

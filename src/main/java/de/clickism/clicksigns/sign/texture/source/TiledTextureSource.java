@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.template.theme.ColorResolver;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.TileSet;
 import de.clickism.clicksigns.sign.texture.generator.TextureTiler;

@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.template.theme;
+package de.clickism.clicksigns.sign;
 
 import org.jetbrains.annotations.Nullable;
 
