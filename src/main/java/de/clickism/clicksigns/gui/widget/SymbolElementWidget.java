@@ -2,9 +2,9 @@ package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -91,7 +91,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
         int currentIndex = ids.indexOf(symbol.symbol().identifier());
         int nextIndex = (currentIndex + 1) % ids.size();
         // Update symbol
-        this.symbol = this.symbol.withSymbol(SymbolRegistry.getSymbol(ids.get(nextIndex)));
+        this.symbol = this.symbol.withSymbol(SignRegistries.SYMBOLS.get(ids.get(nextIndex)));
         this.symbol(this.symbol);
     }
 

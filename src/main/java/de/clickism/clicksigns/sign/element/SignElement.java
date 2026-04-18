@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.registry.SymbolRegistry;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import de.clickism.clicksigns.util.nbt.NbtReader;
@@ -76,7 +76,7 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             }
             case SymbolElement.TYPE -> {
                 var id = buf.readResourceLocation();
-                var symbol = SymbolRegistry.getSymbol(id);
+                var symbol = SignRegistries.SYMBOLS.get(id);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
@@ -122,10 +122,7 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             }
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
-                var symbol = SymbolRegistry.getSymbol(id);
-                if (symbol == null) {
-                    throw new IllegalArgumentException("Symbol with id " + id + " not found");
-                }
+                var symbol = SignRegistries.SYMBOLS.get(id);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);

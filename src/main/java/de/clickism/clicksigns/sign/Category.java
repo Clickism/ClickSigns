@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Represents a category of symbols.
  */
-public class Category<T extends Identifiable> {
+public class Category<T extends Categorized<T>> {
     private final ResourceLocation identifier;
     private final String name;
     private final Set<ResourceLocation> entries = new HashSet<>();
@@ -27,28 +27,6 @@ public class Category<T extends Identifiable> {
         this.identifier = identifier;
         this.name = name;
         this.registry = registry;
-    }
-
-    /**
-     * Creates a new category for symbols with the given name and identifier.
-     *
-     * @param identifier the unique identifier for this category
-     * @param name       the name of the category
-     * @return a new category for symbols with the given name and identifier
-     */
-    public static Category<Symbol> forSymbol(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, SignRegistries.SYMBOLS);
-    }
-
-    /**
-     * Creates a new category for tile sets with the given name and identifier.
-     *
-     * @param identifier the unique identifier for this category
-     * @param name       the name of the category
-     * @return a new category for tile sets with the given name and identifier
-     */
-    public static Category<TileSet> forTileSet(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, SignRegistries.TILE_SETS);
     }
 
     /**

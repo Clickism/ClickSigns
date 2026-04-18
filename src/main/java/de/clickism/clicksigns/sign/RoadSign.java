@@ -1,10 +1,10 @@
 package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
@@ -30,7 +30,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
             new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
             new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
             List.of(
-                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SymbolRegistry.getSymbol(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))),
+                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))),
                     new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                     new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                     new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")

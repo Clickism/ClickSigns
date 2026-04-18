@@ -1,11 +1,11 @@
 package de.clickism.clicksigns.sign;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.registry.SymbolRegistry;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.registry.Categorized;
-import de.clickism.clicksigns.registry.Identifiable;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,16 @@ public record Symbol(
         ResourceLocation identifier,
         TextureSource texture,
         @Nullable ResourceLocation categoryId
-) implements Identifiable, Categorized<Symbol> {
+) implements Categorized<Symbol> {
+    /**
+     * Error symbol to be used as fallback
+     */
+    public static final Symbol ERROR_SYMBOL = new Symbol(
+            ClickSigns.identifier("error_symbol"),
+            new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
+            null
+    );
+
     /**
      * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
      *
@@ -38,7 +47,7 @@ public record Symbol(
      * @return true if this symbol is the error symbol, false otherwise
      */
     public boolean isError() {
-        return this.identifier.equals(SymbolRegistry.ERROR_SYMBOL.identifier);
+        return this.identifier.equals(ERROR_SYMBOL.identifier);
     }
 
     @Override

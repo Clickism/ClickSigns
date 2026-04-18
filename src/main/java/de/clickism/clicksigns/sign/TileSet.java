@@ -26,7 +26,7 @@ public record TileSet(
         int centerSize,
         ColorResolver colorResolver,
         boolean isBack
-) implements Identifiable, Categorized<TileSet> {
+) implements Categorized<TileSet> {
     /**
      * Tiles a given coordinate:
      * - If coordinate is within the first edge, do nothing

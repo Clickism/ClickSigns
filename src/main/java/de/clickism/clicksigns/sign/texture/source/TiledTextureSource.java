@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.texture.source;
 
-import de.clickism.clicksigns.registry.TileSetRegistry;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.TileSet;
@@ -46,6 +46,6 @@ public record TiledTextureSource(
      * @return the resolved tileset, or null if not found
      */
     public @Nullable TileSet resolveTileSet() {
-        return TileSetRegistry.getTileSet(tileSetId);
+        return SignRegistries.TILE_SETS.get(tileSetId);
     }
 }

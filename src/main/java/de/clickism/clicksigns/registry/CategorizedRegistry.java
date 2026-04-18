@@ -9,8 +9,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CategorizedRegistry<T extends Identifiable> extends Registry<T> {
+public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
     protected final Map<ResourceLocation, Category<T>> categories = new HashMap<>();
+
+    public CategorizedRegistry() {
+        super();
+    }
+
+    public CategorizedRegistry(T defaultEntry) {
+        super(defaultEntry);
+    }
+
+    @Override
+    public void register(T entry) {
+        super.register(entry);
+        // Add to category if it has one when registering
+        var categoryId = entry.categoryId();
+        if (categoryId == null) return;
+        var category = categories.get(categoryId);
+        if (category == null) return;
+        category.add(entry.identifier());
+    }
 
     public void registerCategory(Category<T> category) {
         categories.put(category.identifier(), category);

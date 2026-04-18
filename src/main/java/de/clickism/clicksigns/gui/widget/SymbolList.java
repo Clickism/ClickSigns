@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -38,7 +38,7 @@ public class SymbolList extends VerticalScrollContainer {
         this.onSymbolSelected = onSymbolSelected;
         // Add categories
         for (int i = 0; i < 20; i++) {
-            SymbolRegistry.allCategories().forEach(category -> {
+            SignRegistries.SYMBOLS.allCategories().forEach(category -> {
                 addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category.name()), GuiUtils.font()));
                 List<Symbol> symbols = category.resolveEntries();
                 addChild(new SymbolGrid(symbols, width));

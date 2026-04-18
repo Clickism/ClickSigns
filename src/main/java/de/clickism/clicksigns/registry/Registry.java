@@ -10,13 +10,30 @@ import java.util.Map;
 
 public class Registry<T extends Identifiable> {
     protected final Map<ResourceLocation, T> entries = new HashMap<>();
+    protected final T defaultEntry;
+
+    public Registry() {
+        this(null);
+    }
+
+    public Registry(T defaultEntry) {
+        this.defaultEntry = defaultEntry;
+    }
 
     public void register(T entry) {
         entries.put(entry.identifier(), entry);
     }
 
-    public @Nullable T get(ResourceLocation id) {
-        return entries.get(id);
+    public T get(ResourceLocation id) {
+        return entries.getOrDefault(id, defaultEntry);
+    }
+
+    public T getOrThrow(ResourceLocation id) {
+        T entry = entries.get(id);
+        if (entry == null) {
+            throw new IllegalArgumentException("No entry found for id: " + id);
+        }
+        return entry;
     }
 
     public Collection<T> all() {

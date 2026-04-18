@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.sign.reload;
 
-import de.clickism.clicksigns.sign.Category;
-import de.clickism.clicksigns.registry.TileSetRegistry;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.resources.ResourceLocation;
@@ -16,10 +15,9 @@ import java.util.Map;
 public class TileSetListener implements RoadSignReloadListener {
     @Override
     public void onReload(ResourceManager manager) {
-        TileSetRegistry.clear();
+        SignRegistries.TILE_SETS.clear();
         var categories = loadAndRegisterCategories(manager, "tilesets", CategoryJson.class, (identifier, json) -> {
-            var category = Category.forTileSet(identifier, json.name());
-            TileSetRegistry.registerCategory(category);
+            SignRegistries.TILE_SETS.createAndRegisterCategory(identifier, json.name());
         });
         manager.listResources(
                 fromRoot("tilesets"),
@@ -39,7 +37,7 @@ public class TileSetListener implements RoadSignReloadListener {
             if (tileSetJson == null) return;
             // Check if category has isBack set to true
             var isBack = category != null && category.isBack != null && category.isBack;
-            TileSetRegistry.registerTileSet(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
+            SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
         });
     }
 

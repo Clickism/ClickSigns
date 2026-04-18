@@ -1,8 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
-import de.clickism.clicksigns.sign.Category;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -20,10 +19,9 @@ public class SymbolListener implements RoadSignReloadListener {
 
     @Override
     public void onReload(ResourceManager manager) {
-        SymbolRegistry.clear();
+        SignRegistries.SYMBOLS.clear();
         var categories = loadAndRegisterCategories(manager, SYMBOLS_DIR, CategoryJson.class, (identifier, json) -> {
-            var category = Category.forSymbol(identifier, json.name());
-            SymbolRegistry.registerCategory(category);
+            SignRegistries.SYMBOLS.createAndRegisterCategory(identifier, json.name());
         });
         manager.listResources(
                 fromRoot(SYMBOLS_DIR),
@@ -44,7 +42,7 @@ public class SymbolListener implements RoadSignReloadListener {
                 source = new StaticTextureSource(location);
             }
             var symbol = new Symbol(location, source, categoryId);
-            SymbolRegistry.registerSymbol(symbol);
+            SignRegistries.SYMBOLS.register(symbol);
         });
         resolveIncludedSymbols(categories);
     }
@@ -59,7 +57,7 @@ public class SymbolListener implements RoadSignReloadListener {
         categories.forEach((identifier, category) -> {
             if (category.includeCategories == null) return;
             category.includeCategories.forEach(includedId -> {
-                var included = SymbolRegistry.getCategory(includedId);
+                var included = SignRegistries.SYMBOLS.getCategory(includedId);
                 if (included == null) return;
                 included.resolveEntries().forEach(symbol -> {
                     // Create symbol with modified id to avoid conflicts
@@ -69,7 +67,7 @@ public class SymbolListener implements RoadSignReloadListener {
                             identifier
                     );
                     // Register new symbol
-                    SymbolRegistry.registerSymbol(newSymbol);
+                    SignRegistries.SYMBOLS.register(newSymbol);
                 });
             });
         });
