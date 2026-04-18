@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util;
+package de.clickism.clicksigns.sign;
 
 import org.joml.Vector2f;
 

@@ -4,7 +4,7 @@ import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;

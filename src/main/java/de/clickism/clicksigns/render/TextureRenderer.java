@@ -2,7 +2,7 @@ package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.clickism.clicksigns.util.Alignment;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

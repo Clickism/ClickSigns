@@ -1,7 +1,11 @@
 package de.clickism.clicksigns.sign;
 
-import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.registry.CategorizedRegistry;
+import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.registry.Categorized;
+import de.clickism.clicksigns.registry.Identifiable;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +19,7 @@ public record Symbol(
         ResourceLocation identifier,
         TextureSource texture,
         @Nullable ResourceLocation categoryId
-) {
-    /**
-     * Resolves the category of this symbol, if it has one.
-     *
-     * @return the category of this symbol, or null if it has no category
-     */
-    public @Nullable Category<Symbol> resolveCategory() {
-        if (categoryId == null) return null;
-        return SymbolRegistry.getCategory(categoryId);
-    }
-
+) implements Identifiable, Categorized<Symbol> {
     /**
      * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
      *
@@ -45,5 +39,10 @@ public record Symbol(
      */
     public boolean isError() {
         return this.identifier.equals(SymbolRegistry.ERROR_SYMBOL.identifier);
+    }
+
+    @Override
+    public CategorizedRegistry<Symbol> registry() {
+        return SignRegistries.SYMBOLS;
     }
 }

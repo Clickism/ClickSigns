@@ -11,7 +11,8 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.registry.TileSetRegistry;
+import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Road sign screen
@@ -64,6 +67,14 @@ public class RoadSignScreen extends BaseScreen {
         var changeTileSetButton = changeTileSetButton();
         this.addRenderableWidget(changeTileSetButton);
 
+        var sizeButton = new Button.Builder(Component.literal("Size"), button -> {
+            if (roadSign.frontSource() instanceof TiledTextureSource src) {
+                Texture tex = roadSign.frontTexture();
+                roadSign.withFront(new TiledTextureSource(src.tileSetId(), (int) (tex.width() + BLOCK_PIXELS), (int) (tex.height() + BLOCK_PIXELS)));
+            }
+        }).build();
+        this.addRenderableWidget(sizeButton);
+
         // Layout
         LinearLayout.vertical()
                 .center()
@@ -71,6 +82,7 @@ public class RoadSignScreen extends BaseScreen {
                 .add(textureWidget)
                 .add(confirmButton)
                 .add(changeTileSetButton)
+                .add(sizeButton)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 

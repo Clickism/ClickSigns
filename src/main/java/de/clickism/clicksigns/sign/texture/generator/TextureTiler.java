@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.texture.generator;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import de.clickism.clicksigns.sign.texture.TileSet;
+import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
 /**
@@ -27,7 +27,7 @@ public class TextureTiler extends CachedTextureGenerator {
 
     @Override
     public DynamicTexture generate() throws Exception {
-        var image = openImage(tileSet.location());
+        var image = openImage(tileSet.identifier());
         assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
 
         var tiledImage = new NativeImage(width, height, false);
@@ -48,7 +48,7 @@ public class TextureTiler extends CachedTextureGenerator {
 
     @Override
     public String key() {
-        return keySafe(tileSet.location()) + "_" + width + "x" + height;
+        return keySafe(tileSet.identifier()) + "_" + width + "x" + height;
     }
 
     /**

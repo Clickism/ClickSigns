@@ -1,24 +1,21 @@
 package de.clickism.clicksigns.sign;
 
-import de.clickism.clicksigns.sign.registry.SymbolRegistry;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.sign.texture.TileSet;
+import de.clickism.clicksigns.registry.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Represents a category of symbols.
  */
-public class Category<T> {
+public class Category<T extends Identifiable> {
     private final ResourceLocation identifier;
     private final String name;
     private final Set<ResourceLocation> entries = new HashSet<>();
-    private final Function<ResourceLocation, T> resolver;
+    private final CategorizedRegistry<T> registry;
 
     /**
      * Creates a new category with the given name.
@@ -26,18 +23,32 @@ public class Category<T> {
      * @param identifier the unique identifier for this category
      * @param name       the name of the category
      */
-    public Category(ResourceLocation identifier, String name, Function<ResourceLocation, T> resolver) {
+    public Category(ResourceLocation identifier, String name, CategorizedRegistry<T> registry) {
         this.identifier = identifier;
         this.name = name;
-        this.resolver = resolver;
+        this.registry = registry;
     }
 
+    /**
+     * Creates a new category for symbols with the given name and identifier.
+     *
+     * @param identifier the unique identifier for this category
+     * @param name       the name of the category
+     * @return a new category for symbols with the given name and identifier
+     */
     public static Category<Symbol> forSymbol(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, SymbolRegistry::getSymbol);
+        return new Category<>(identifier, name, SignRegistries.SYMBOLS);
     }
 
+    /**
+     * Creates a new category for tile sets with the given name and identifier.
+     *
+     * @param identifier the unique identifier for this category
+     * @param name       the name of the category
+     * @return a new category for tile sets with the given name and identifier
+     */
     public static Category<TileSet> forTileSet(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, TileSetRegistry::getTileSet);
+        return new Category<>(identifier, name, SignRegistries.TILE_SETS);
     }
 
     /**
@@ -83,7 +94,7 @@ public class Category<T> {
      */
     public List<T> resolveEntries() {
         return entries.stream()
-                .map(resolver)
+                .map(registry::get)
                 .toList();
     }
 }

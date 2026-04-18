@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.entity;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.registry.ModBlockEntityTypes;
+import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.nbt.NbtReaderWriterImpl;
 import net.minecraft.core.BlockPos;
@@ -28,7 +28,7 @@ public class RoadSignBlockEntity extends BlockEntity {
      * @param state the block state of the block entity
      */
     public RoadSignBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntityTypes.ROAD_SIGN.get(), pos, state);
+        super(ClickSignsBlockEntityTypes.ROAD_SIGN.get(), pos, state);
     }
 
     /**

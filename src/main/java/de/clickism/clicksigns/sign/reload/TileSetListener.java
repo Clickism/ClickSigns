@@ -1,9 +1,9 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.sign.Category;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.registry.TileSetRegistry;
 import de.clickism.clicksigns.sign.ColorResolver;
-import de.clickism.clicksigns.sign.texture.TileSet;
+import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -64,11 +64,10 @@ public class TileSetListener implements RoadSignReloadListener {
             return new TileSet(
                     name,
                     location,
-                    cornerSize,
+                    categoryId, cornerSize,
                     centerSize,
                     resolver,
-                    isBack,
-                    categoryId
+                    isBack
             );
         }
     }

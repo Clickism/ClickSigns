@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.util.Alignment;
+import de.clickism.clicksigns.sign.Alignment;
 
 /**
  * Symbol element on a road sign.

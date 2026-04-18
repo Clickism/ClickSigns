@@ -25,5 +25,4 @@ public interface Template {
     enum Type {
         FIXED,
     }
-
 }

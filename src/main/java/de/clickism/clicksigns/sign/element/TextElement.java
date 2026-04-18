@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.util.Alignment;
+import de.clickism.clicksigns.sign.Alignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;

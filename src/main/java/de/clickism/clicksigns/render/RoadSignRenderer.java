@@ -1,24 +1,16 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.registry.SymbolRegistry;
+import de.clickism.clicksigns.registry.SymbolRegistry;
 import de.clickism.clicksigns.sign.texture.*;
-import de.clickism.clicksigns.sign.texture.generator.ColorReplacer;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
-import de.clickism.clicksigns.util.Alignment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
-
-import java.util.List;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;

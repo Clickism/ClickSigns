@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.fabric.datagen;
 
-import de.clickism.clicksigns.registry.ModBlocks;
+import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 
@@ -15,6 +15,6 @@ class ModLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        dropSelf(ModBlocks.ROAD_SIGN.get());
+        dropSelf(ClickSignsBlocks.ROAD_SIGN.get());
     }
 }

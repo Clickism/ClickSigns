@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.util.Alignment;
+import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.joml.Quaternionf;
 

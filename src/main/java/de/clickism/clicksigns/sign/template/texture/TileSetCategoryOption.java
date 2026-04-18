@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.template.texture;
 
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
+import de.clickism.clicksigns.registry.TileSetRegistry;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.resources.ResourceLocation;

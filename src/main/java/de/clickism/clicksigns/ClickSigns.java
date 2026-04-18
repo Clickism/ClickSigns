@@ -3,8 +3,6 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.registry.ModBlockEntityTypes;
-import de.clickism.clicksigns.registry.ModBlocks;
 import de.clickism.clicksigns.sign.reload.RoadSignReloadListener;
 import de.clickism.clicksigns.sign.reload.SymbolListener;
 import de.clickism.clicksigns.sign.reload.TemplateListener;
@@ -30,8 +28,8 @@ public class ClickSigns {
      * Initializes the mod, registers block, block entity types, packets and reload listeners
      */
     public static void initialize() {
-        ModBlocks.initialize();
-        ModBlockEntityTypes.initialize();
+        ClickSignsBlocks.initialize();
+        ClickSignsBlockEntityTypes.initialize();
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
         Platform.network().register(); // Register network
         // Add reload listener

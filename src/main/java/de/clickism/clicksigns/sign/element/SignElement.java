@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.sign.registry.SymbolRegistry;
-import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.TypeKeyed;
+import de.clickism.clicksigns.registry.SymbolRegistry;
+import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;

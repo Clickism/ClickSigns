@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.platform.fabric.datagen;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.registry.ModBlocks;
+import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -26,7 +26,7 @@ class ModRecipeProvider extends FabricRecipeProvider {
     public void buildRecipes(Consumer<FinishedRecipe> exporter) {
         // Generate road sign recipe
         ShapedRecipeBuilder
-                .shaped(RecipeCategory.DECORATIONS, ModBlocks.ROAD_SIGN.get(), 4)
+                .shaped(RecipeCategory.DECORATIONS, ClickSignsBlocks.ROAD_SIGN.get(), 4)
                 .pattern("###")
                 .pattern("#*#")
                 .pattern("###")

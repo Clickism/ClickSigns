@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.fabric.datagen;
 
-import de.clickism.clicksigns.registry.ModBlocks;
+import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -18,13 +18,13 @@ class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generator) {
-        generator.createTrivialCube(ModBlocks.ROAD_SIGN.get());
+        generator.createTrivialCube(ClickSignsBlocks.ROAD_SIGN.get());
     }
 
     @Override
     public void generateItemModels(ItemModelGenerators generator) {
         generator.generateFlatItem(
-                ModBlocks.ROAD_SIGN.get().asItem(),
+                ClickSignsBlocks.ROAD_SIGN.get().asItem(),
                 ModelTemplates.FLAT_ITEM
         );
     }

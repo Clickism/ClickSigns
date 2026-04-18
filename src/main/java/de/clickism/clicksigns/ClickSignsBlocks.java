@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.registry;
+package de.clickism.clicksigns;
 
 import de.clickism.clicksigns.block.RoadSignBlock;
 import de.clickism.clicksigns.platform.Platform;
@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * Mod blocks registry
  */
-public class ModBlocks {
+public class ClickSignsBlocks {
     /**
      * Road sign block
      */

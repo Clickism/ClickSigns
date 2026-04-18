@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util;
+package de.clickism.clicksigns.util.nbt;
 
 /**
  * Interface for objects that have a unique type key for serialization and deserialization.

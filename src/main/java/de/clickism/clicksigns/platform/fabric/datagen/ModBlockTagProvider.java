@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.fabric.datagen;
 
-import de.clickism.clicksigns.registry.ModBlocks;
+import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -23,6 +23,6 @@ class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.ROAD_SIGN.get());
+                .add(ClickSignsBlocks.ROAD_SIGN.get());
     }
 }
