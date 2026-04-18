@@ -59,7 +59,7 @@ public class SymbolListener implements RoadSignReloadListener {
         categories.forEach((identifier, category) -> {
             if (category.includeCategories == null) return;
             category.includeCategories.forEach(includedId -> {
-                var included = SymbolRegistry.getCategory(ResourceLocation.tryParse(includedId));
+                var included = SymbolRegistry.getCategory(includedId);
                 if (included == null) return;
                 included.resolveEntries().forEach(symbol -> {
                     // Create symbol with modified id to avoid conflicts
@@ -84,7 +84,7 @@ public class SymbolListener implements RoadSignReloadListener {
      */
     private record CategoryJson(
             String name,
-            @Nullable List<String> includeCategories,
+            @Nullable List<ResourceLocation> includeCategories,
             @Nullable SymbolListener.ReplaceColorJson replaceColor
     ) {
     }

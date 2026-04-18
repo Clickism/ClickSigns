@@ -1,7 +1,9 @@
 package de.clickism.clicksigns.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.clickism.clicksigns.ClickSigns;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +14,9 @@ public interface ResourceJsonHandler {
     /**
      * Gson instance for JSON parsing in reload listeners
      */
-    Gson GSON = new Gson();
+    Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .create();
 
     /**
      * Parses a JSON resource into an instance of the specified class.
