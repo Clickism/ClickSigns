@@ -9,11 +9,13 @@ import de.clickism.clicksigns.gui.widget.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -70,10 +72,20 @@ public class RoadSignScreen extends BaseScreen {
         var sizeButton = new Button.Builder(Component.literal("Size"), button -> {
             if (roadSign.frontSource() instanceof TiledTextureSource src) {
                 Texture tex = roadSign.frontTexture();
-                roadSign.withFront(new TiledTextureSource(src.tileSetId(), (int) (tex.width() + BLOCK_PIXELS), (int) (tex.height() + BLOCK_PIXELS)));
+                this.roadSign = roadSign.withFront(new TiledTextureSource(src.tileSetId(), (int) (tex.width() + BLOCK_PIXELS), (int) (tex.height() + BLOCK_PIXELS)));
+                this.rebuildWidgets();
             }
         }).build();
         this.addRenderableWidget(sizeButton);
+
+        var alignmentButton = new Button.Builder(Component.literal("Alignment"), button -> {
+            var currentAlignment = roadSign.alignment().ordinal();
+            var nextAlignment = (currentAlignment + 1) % Alignment.values().length;
+            this.roadSign = roadSign.withAlignment(Alignment.values()[nextAlignment]);
+            Minecraft.getInstance().player.displayClientMessage(Component.literal("Alignment: " + roadSign.alignment().name()), false);
+            this.rebuildWidgets();
+        }).build();
+        this.addRenderableWidget(alignmentButton);
 
         // Layout
         LinearLayout.vertical()
@@ -83,6 +95,7 @@ public class RoadSignScreen extends BaseScreen {
                 .add(confirmButton)
                 .add(changeTileSetButton)
                 .add(sizeButton)
+                .add(alignmentButton)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 
@@ -144,7 +157,7 @@ public class RoadSignScreen extends BaseScreen {
 
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
-        return new RoadSign(roadSign.frontSource(), roadSign.backSource(), elements);
+        return new RoadSign(roadSign.frontSource(), roadSign.backSource(), elements, roadSign.alignment());
     }
 
     @Override

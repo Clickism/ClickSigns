@@ -22,7 +22,16 @@ import java.util.List;
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
  */
-public record RoadSign(TextureSource frontSource, TextureSource backSource, List<SignElement> elements) {
+public record RoadSign(
+        TextureSource frontSource,
+        TextureSource backSource,
+        List<SignElement> elements,
+        Alignment alignment
+) {
+    /**
+     * The default alignment for road signs when no alignment is set.
+     */
+    public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
     /**
      * The default road sign to use when no road sign is set.
      */
@@ -34,7 +43,8 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
                     new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                     new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                     new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
-            )
+            ),
+            DEFAULT_ALIGNMENT
     );
 
     /**
@@ -76,11 +86,11 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
      * <p>
      * Keeps the existing back texture and elements.
      *
-     * @param texture new texture for the road sign
+     * @param frontSource new texture for the road sign
      * @return a new road sign with the updated texture
      */
-    public RoadSign withFront(TextureSource texture) {
-        return new RoadSign(texture, this.backSource, this.elements);
+    public RoadSign withFront(TextureSource frontSource) {
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -88,11 +98,11 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
      * <p>
      * Keeps the existing front texture and elements.
      *
-     * @param back new back texture for the road sign
+     * @param backSource new back texture for the road sign
      * @return a new road sign with the updated back texture
      */
-    public RoadSign withBack(TextureSource back) {
-        return new RoadSign(this.frontSource, back, this.elements);
+    public RoadSign withBack(TextureSource backSource) {
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -102,7 +112,17 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
      * @return a new road sign with the updated elements
      */
     public RoadSign withElements(List<SignElement> elements) {
-        return new RoadSign(this.frontSource, this.backSource, elements);
+        return new RoadSign(frontSource, backSource, elements, alignment);
+    }
+
+    /**
+     * Creates a new road sign with the given alignment.
+     *
+     * @param alignment new alignment for the road sign
+     * @return a new road sign with the updated alignment
+     */
+    public RoadSign withAlignment(Alignment alignment) {
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -112,6 +132,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
         TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
         buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
+        buf.writeInt(sign.alignment().ordinal());
     };
 
     /**
@@ -121,7 +142,8 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         var front = TextureSource.PACKET_READER.apply(buf);
         var back = TextureSource.PACKET_READER.apply(buf);
         var elements = buf.readList(SignElement.PACKET_READER);
-        return new RoadSign(front, back, elements);
+        var alignment = Alignment.values()[buf.readInt()];
+        return new RoadSign(front, back, elements, alignment);
     };
 
     /**
@@ -135,6 +157,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         tag.putCompound("front", front.asCompoundTag());
         tag.putCompound("back", back.asCompoundTag());
         tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
+        tag.putString("alignment", sign.alignment().name());
     };
 
     /**
@@ -146,6 +169,7 @@ public record RoadSign(TextureSource frontSource, TextureSource backSource, List
         var front = TextureSource.NBT_READER.read(frontCompound);
         var back = TextureSource.NBT_READER.read(backCompound);
         var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
-        return new RoadSign(front, back, new ArrayList<>(elements));
+        var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
+        return new RoadSign(front, back, new ArrayList<>(elements), alignment);
     };
 }

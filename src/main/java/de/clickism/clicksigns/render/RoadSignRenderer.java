@@ -2,6 +2,7 @@ package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -40,8 +41,10 @@ public final class RoadSignRenderer extends Renderer {
         faceDirection();
 
         var textureRenderer = new TextureRenderer(stack, source, light, direction);
-        // Render the road sign texture
         var frontTexture = roadSign.frontTexture();
+        // Align according to the road sign's alignment
+        alignFromBlockCenter(0, 0, frontTexture.blockWidth(), frontTexture.blockHeight(), 0, roadSign.alignment());
+        // Render the road sign texture
         textureRenderer.renderTexture(frontTexture, 1);
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
