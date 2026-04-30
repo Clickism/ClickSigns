@@ -1,6 +1,4 @@
-package de.clickism.clicksigns.sign.texture;
-
-import de.clickism.clicksigns.util.Constants;
+package de.clickism.clicksigns.util;
 
 /**
  * Interface for objects that have dimensions in pixels and blocks.

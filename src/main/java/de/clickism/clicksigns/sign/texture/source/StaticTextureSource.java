@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -22,7 +23,7 @@ public record StaticTextureSource(
     /**
      * Cache for texture sizes
      */
-    private static final Map<ResourceLocation, TextureSize> SIZE_CACHE = new HashMap<>();
+    private static final Map<ResourceLocation, Size> SIZE_CACHE = new HashMap<>();
     /**
      * Type key
      */
@@ -50,7 +51,7 @@ public record StaticTextureSource(
      * @param location the resource location of the texture image
      * @return the size of the image
      */
-    private static TextureSize loadSize(ResourceLocation location) throws IOException {
+    private static Size loadSize(ResourceLocation location) throws IOException {
         // Check cache first
         if (SIZE_CACHE.containsKey(location)) {
             return SIZE_CACHE.get(location);
@@ -59,17 +60,9 @@ public record StaticTextureSource(
         var minecraft = Minecraft.getInstance();
         var resourceManager = minecraft.getResourceManager();
         try (var stream = resourceManager.open(location); var image = NativeImage.read(stream)) {
-            var size = new TextureSize(image.getWidth(), image.getHeight());
+            var size = new Size(image.getWidth(), image.getHeight());
             SIZE_CACHE.put(location, size); // Update cache
             return size;
         }
     }
-
-    /**
-     * Represents the size of a texture
-     *
-     * @param width  width of the texture in pixels
-     * @param height height of the texture in pixels
-     */
-    private record TextureSize(int width, int height) {}
 }

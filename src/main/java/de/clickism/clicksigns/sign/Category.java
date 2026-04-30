@@ -75,4 +75,17 @@ public class Category<T extends Categorized<T>> {
                 .map(registry::get)
                 .toList();
     }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Category<?> other = (Category<?>) obj;
+        return identifier.equals(other.identifier);
+    }
 }

@@ -5,7 +5,7 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
-import de.clickism.clicksigns.sign.texture.PixelSized;
+import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +38,25 @@ public record TiledTextureSource(
         var texture = new TextureTiler(tileSet, width, height).getOrGenerate();
         if (texture == null) return ERROR_TEXTURE;
         return texture;
+    }
+
+    @Override
+    public TextureSource resize(int width, int height) throws UnsupportedOperationException {
+        if (this.width == width && this.height == height) {
+            return this; // No resizing needed
+        }
+        return new TiledTextureSource(tileSetId, width, height);
+    }
+
+    /**
+     * Creates a new tiled texture source that has unknown size.
+     * Meant to be used as a placeholder until {@link #resize(int, int)} is called.
+     *
+     * @param tileSetId the resource location of the tileset to use for tiling
+     * @return a new TiledTextureSource with the specified tileset and unknown size
+     */
+    public static TiledTextureSource unsized(ResourceLocation tileSetId) {
+        return new TiledTextureSource(tileSetId, 0, 0);
     }
 
     /**

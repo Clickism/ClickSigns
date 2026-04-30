@@ -27,6 +27,18 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
     Texture resolve(ColorResolver colorResolver);
 
     /**
+     * If the texture source supports resizing, returns a resized version of this texture source.
+     * Otherwise, returns the same texture source.
+     *
+     * @param width  the new width of the texture in pixels
+     * @param height the new height of the texture in pixels
+     * @return a new TextureSource that will produce a texture of the specified dimensions when resolved
+     */
+    default TextureSource resize(int width, int height) {
+        return this; // By default, don't support resizing
+    }
+
+    /**
      * Writer for packets
      */
     FriendlyByteBuf.Writer<TextureSource> PACKET_WRITER = (buf, texture) -> {

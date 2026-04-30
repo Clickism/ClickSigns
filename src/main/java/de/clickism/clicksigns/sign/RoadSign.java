@@ -5,12 +5,15 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,8 @@ public record RoadSign(
         TextureSource frontSource,
         TextureSource backSource,
         List<SignElement> elements,
-        Alignment alignment
+        Alignment alignment,
+        @Nullable ResourceLocation templateId
 ) {
     /**
      * The default alignment for road signs when no alignment is set.
@@ -44,7 +48,8 @@ public record RoadSign(
                     new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
                     new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
             ),
-            DEFAULT_ALIGNMENT
+            DEFAULT_ALIGNMENT,
+            ClickSigns.identifier("test")
     );
 
     /**
@@ -90,7 +95,7 @@ public record RoadSign(
      * @return a new road sign with the updated texture
      */
     public RoadSign withFront(TextureSource frontSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment);
+        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
 
     /**
@@ -102,7 +107,7 @@ public record RoadSign(
      * @return a new road sign with the updated back texture
      */
     public RoadSign withBack(TextureSource backSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment);
+        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
 
     /**
@@ -112,7 +117,7 @@ public record RoadSign(
      * @return a new road sign with the updated elements
      */
     public RoadSign withElements(List<SignElement> elements) {
-        return new RoadSign(frontSource, backSource, elements, alignment);
+        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
 
     /**
@@ -122,7 +127,7 @@ public record RoadSign(
      * @return a new road sign with the updated alignment
      */
     public RoadSign withAlignment(Alignment alignment) {
-        return new RoadSign(frontSource, backSource, elements, alignment);
+        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
 
     /**
@@ -133,6 +138,7 @@ public record RoadSign(
         TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
         buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
         buf.writeInt(sign.alignment().ordinal());
+        buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
     };
 
     /**
@@ -143,7 +149,8 @@ public record RoadSign(
         var back = TextureSource.PACKET_READER.apply(buf);
         var elements = buf.readList(SignElement.PACKET_READER);
         var alignment = Alignment.values()[buf.readInt()];
-        return new RoadSign(front, back, elements, alignment);
+        var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
+        return new RoadSign(front, back, elements, alignment, templateId);
     };
 
     /**
@@ -158,6 +165,9 @@ public record RoadSign(
         tag.putCompound("back", back.asCompoundTag());
         tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
         tag.putString("alignment", sign.alignment().name());
+        if (sign.templateId != null) {
+            tag.putResourceLocation("template", sign.templateId);
+        }
     };
 
     /**
@@ -170,6 +180,7 @@ public record RoadSign(
         var back = TextureSource.NBT_READER.read(backCompound);
         var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
         var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
-        return new RoadSign(front, back, new ArrayList<>(elements), alignment);
+        var templateId = tag.getResourceLocation("template").orElse(null);
+        return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
     };
 }

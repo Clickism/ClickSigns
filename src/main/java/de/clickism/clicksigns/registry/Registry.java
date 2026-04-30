@@ -28,6 +28,10 @@ public class Registry<T extends Identifiable> {
         return entries.getOrDefault(id, defaultEntry);
     }
 
+    public boolean has(ResourceLocation id) {
+        return entries.containsKey(id);
+    }
+
     public T getOrThrow(ResourceLocation id) {
         T entry = entries.get(id);
         if (entry == null) {

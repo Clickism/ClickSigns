@@ -82,4 +82,30 @@ public interface RoadSignReloadListener extends ReloadListener {
         if (lastSlash == -1) return path;
         return path.substring(0, lastSlash);
     }
+
+    /**
+     * Strips the given extension from the path if it ends with it, otherwise returns the original path.
+     *
+     * @param path      the path to strip the extension from
+     * @param extension the extension to strip, including the dot (e.g. ".json")
+     * @return the path without the extension if it ends with it, otherwise the original path
+     */
+    default String stripExtension(String path, String extension) {
+        if (path.endsWith(extension)) {
+            return path.substring(0, path.length() - extension.length());
+        }
+        return path;
+    }
+
+    /**
+     * Strips the given extension from the path of the given ResourceLocation if it ends with it.
+     *
+     * @param location  the ResourceLocation to strip the extension from
+     * @param extension the extension to strip, including the dot (e.g. ".json")
+     * @return resource location with stripped extension
+     */
+    default ResourceLocation stripExtension(ResourceLocation location, String extension) {
+        var path = stripExtension(location.getPath(), extension);
+        return new ResourceLocation(location.getNamespace(), path);
+    }
 }

@@ -157,7 +157,7 @@ public class RoadSignScreen extends BaseScreen {
 
     private RoadSign readRoadSign() {
         var elements = elementProviders.stream().map(ElementProvider::element).toList();
-        return new RoadSign(roadSign.frontSource(), roadSign.backSource(), elements, roadSign.alignment());
+        return roadSign.withElements(elements);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.texture;
 
+import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;
 
 /**
