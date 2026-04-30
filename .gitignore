@@ -28,6 +28,7 @@ out/
 .settings
 .springBeans
 .sts4-cache
+.eclipse
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
