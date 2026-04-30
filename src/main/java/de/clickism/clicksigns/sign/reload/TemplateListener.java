@@ -1,6 +1,8 @@
 package de.clickism.clicksigns.sign.reload;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.layout.FixedLayout;
@@ -23,53 +25,69 @@ public class TemplateListener implements RoadSignReloadListener {
                 fromRoot("templates"),
                 identifier -> identifier.getPath().endsWith(TEMPLATE_EXTENSION)
         ).forEach((location, resource) -> {
-            var base = fromJsonOrNull(resource, BaseTemplateJson.class);
-            if (base == null) return;
-            switch (base.type()) {
+            // Parse json
+            var json = fromJsonOrNull(resource, JsonObject.class);
+            if (json == null) {
+                ClickSigns.LOGGER.error("Failed to parse template json {}.", location.toString());
+                return;
+            }
+            // Get type
+            var typeObj = json.get("type");
+            if (typeObj == null) {
+                ClickSigns.LOGGER.error("Template json {} is missing \"type\" field.", location.toString());
+                return;
+            }
+            var type = typeObj.getAsString();
+            // Parse based on type
+            switch (type) {
                 case "fixed" -> {
-                    var fixed = fromJsonOrNull(resource, FixedTemplateJson.class);
-                    if (fixed == null) return;
-                    var templateId = stripExtension(location, TEMPLATE_EXTENSION);
-                    var template = new Template(
-                            templateId,
-                            base.name,
-                            base.description,
-                            null, // TODO: category
-                            fixed.front.toTextureDefinition(),
-                            fixed.back.toTextureDefinition(),
-                            List.of(), // TODO: text variants
-                            new FixedLayout(List.of()) // TODO: elements
-                    );
+                    try {
+                        var templateJson = GSON.fromJson(json, FixedTemplateJson.class);
+                        var template = templateJson.toTemplate(location);
+                        SignRegistries.TEMPLATES.register(template);
+                    } catch (Exception e) {
+                        ClickSigns.LOGGER.error("Failed to parse fixed template json {}.", location.toString(), e);
+                    }
+                }
+                case "layout" -> {
+
                 }
                 default -> {
                     // Unknown template type
+                    ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
                 }
             }
 
         });
     }
 
-    private record BaseTemplateJson(
-            String type,
+    private record TemplateMetaJson(
             String name,
-            String description
+            String description,
+            String author
     ) {
     }
 
     private record FixedTemplateJson(
+            TemplateMetaJson meta,
             int width,
             int height,
             TextureDefinitionJson front,
             TextureDefinitionJson back,
-            List<BaseElementJson> elements
+            List<JsonObject> elements
     ) {
-    }
-
-    private record BaseElementJson(
-            String type,
-            int x,
-            int y
-    ) {
+        Template toTemplate(ResourceLocation id) {
+            return new Template(
+                    id,
+                    meta.name,
+                    meta.description,
+                    null, // TODO: category
+                    front.toTextureDefinition(),
+                    back.toTextureDefinition(),
+                    List.of(), // TODO: text variants
+                    new FixedLayout(List.of()) // TODO: elements
+            );
+        }
     }
 
     private record TextureDefinitionJson(

@@ -1,5 +1,10 @@
 {
   "type": "fixed",
+  "meta": {
+    "name": "Test Template",
+    "description": "A test template for road signs.",
+    "author": "Clickism",
+  },
   "name": "Test Template",
   "description": "A test template for road signs.",
   "width": 2,
