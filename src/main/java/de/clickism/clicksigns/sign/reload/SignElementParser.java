@@ -37,13 +37,29 @@ public class SignElementParser implements JsonHandler {
         }
     }
 
+    /**
+     * Position of a sign element.
+     *
+     * @param x the x coordinate of the element
+     * @param y the y coordinate of the element
+     */
     private record Position(int x, int y) {}
 
+    /**
+     * Json format for a symbol element.
+     *
+     * @param symbol    the symbol to display
+     * @param alignment the alignment of the symbol
+     * @param position  the local position of the symbol
+     */
     private record SymbolElementJson(
             ResourceLocation symbol,
             @Nullable Alignment alignment,
             @Nullable Position position
     ) {
+        /**
+         * Converts the JSON object to a symbol element object
+         */
         SymbolElement toSymbolElement() {
             var pos = position != null ? position : new Position(0, 0);
             return new SymbolElement(
@@ -55,6 +71,16 @@ public class SignElementParser implements JsonHandler {
         }
     }
 
+    /**
+     * Json format for a text element.
+     *
+     * @param alignment the alignment of the text
+     * @param position the local position of the text
+     * @param text the placeholder text to display
+     * @param scale the scale of the text
+     * @param color the color of the text, as a hex string or a color name
+     * @param backgroundColor the color of the text background, as a hex string or a color name, or null for no background
+     */
     private record TextElementJson(
             @Nullable Alignment alignment,
             @Nullable Position position,
@@ -63,7 +89,10 @@ public class SignElementParser implements JsonHandler {
             @Nullable String color,
             @Nullable String backgroundColor
     ) {
-        TextElement toTextElement() {
+        /**
+         * Converts the JSON object to a text element object
+         */
+        private TextElement toTextElement() {
             var pos = position != null ? position : new Position(0, 0);
             return new TextElement(
                     pos.x,

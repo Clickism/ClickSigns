@@ -23,7 +23,6 @@ import java.util.stream.Stream;
  * Template reload listener.
  */
 public class TemplateListener extends CategorizedReloadListener<TemplateListener.CategoryJson> {
-
     private static final String TEMPLATE_EXTENSION = ".template.json";
     private static final String TEMPLATE_DIRECTORY = "templates";
 
@@ -64,6 +63,16 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
         }
     }
 
+    /**
+     * Json format for fixed templates.
+     *
+     * @param meta     metadata for the template
+     * @param width    the width of the sign in pixels
+     * @param height   the height of the sign in pixels
+     * @param front    the texture definition for the front of the sign
+     * @param back     the texture definition for the back of the sign
+     * @param elements the list of sign elements for the template
+     */
     private record FixedTemplateJson(
             Template.Meta meta,
             int width,
@@ -74,7 +83,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
     ) {
         private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
 
-        Template toTemplate(ResourceLocation id, ResourceLocation categoryId) {
+        private Template toTemplate(ResourceLocation id, ResourceLocation categoryId) {
             var parsedElements = elements.stream()
                     .map(ELEMENT_PARSER::parse)
                     .toList();
