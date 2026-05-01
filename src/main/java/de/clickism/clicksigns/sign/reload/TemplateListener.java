@@ -11,38 +11,53 @@ import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TemplateListener implements RoadSignReloadListener {
+/**
+ * Template reload listener.
+ */
+public class TemplateListener extends CategorizedReloadListener<TemplateListener.CategoryJson> {
 
     private static final String TEMPLATE_EXTENSION = ".template.json";
     private static final String TEMPLATE_DIRECTORY = "templates";
 
-    // TODO: Categories
+    /**
+     * Creates a new template listener.
+     */
+    public TemplateListener() {
+        super(SignRegistries.TEMPLATES, TEMPLATE_DIRECTORY, TEMPLATE_EXTENSION, CategoryJson.class);
+    }
+
     @Override
-    public void onReload(ResourceManager manager) {
-        var categories = loadAndRegisterCategories(manager, TEMPLATE_DIRECTORY, CategoryJson.class, (identifier, json) -> {
-            SignRegistries.TEMPLATES.createAndRegisterCategory(identifier, json.name());
-        });
-        forEachResource(manager, fromRoot(TEMPLATE_DIRECTORY), TEMPLATE_EXTENSION, (location, resource) -> {
-            var json = fromJsonOrThrow(resource, JsonObject.class);
-            var type = getTypeOrThrow(json);
-            switch (type) {
-                case "fixed" -> {
-                    var templateJson = fromJsonOrThrow(json, FixedTemplateJson.class);
-                    var template = templateJson.toTemplate(location);
-                    SignRegistries.TEMPLATES.register(template);
-                }
-                default -> {
-                    // Unknown template type
-                    ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
-                }
+    protected String categoryName(CategoryJson category) {
+        return category.name();
+    }
+
+    @Override
+    protected void processResource(
+            ResourceLocation location,
+            Resource resource,
+            @Nullable ResourceLocation categoryId,
+            @Nullable CategoryJson category
+    ) {
+        var json = fromJsonOrThrow(resource, JsonObject.class);
+        var type = getTypeOrThrow(json);
+        switch (type) {
+            case "fixed" -> {
+                var templateJson = fromJsonOrThrow(json, FixedTemplateJson.class);
+                var template = templateJson.toTemplate(location, categoryId);
+                SignRegistries.TEMPLATES.register(template);
             }
-        });
+            default -> {
+                // Unknown template type
+                ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
+            }
+        }
     }
 
     private record FixedTemplateJson(
@@ -55,14 +70,14 @@ public class TemplateListener implements RoadSignReloadListener {
     ) {
         private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
 
-        Template toTemplate(ResourceLocation id) {
+        Template toTemplate(ResourceLocation id, ResourceLocation categoryId) {
             var parsedElements = elements.stream()
                     .map(ELEMENT_PARSER::parse)
                     .toList();
             return new Template(
                     id,
                     meta,
-                    null, // TODO: category
+                    categoryId,
                     front.toTextureDefinition(),
                     back.toTextureDefinition(),
                     List.of(), // TODO: text variants
@@ -126,7 +141,7 @@ public class TemplateListener implements RoadSignReloadListener {
      *
      * @param name name of the category
      */
-    private record CategoryJson(
+    protected record CategoryJson(
             String name
     ) {
     }

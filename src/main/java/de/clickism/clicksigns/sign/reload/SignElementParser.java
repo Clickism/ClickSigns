@@ -37,8 +37,7 @@ public class SignElementParser implements JsonHandler {
         }
     }
 
-    private record Position(int x, int y) {
-    }
+    private record Position(int x, int y) {}
 
     private record SymbolElementJson(
             ResourceLocation symbol,

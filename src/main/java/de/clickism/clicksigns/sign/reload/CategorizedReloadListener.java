@@ -55,6 +55,8 @@ public abstract class CategorizedReloadListener<C> implements RoadSignReloadList
             }
             processResource(location, resource, categoryId, category);
         });
+        // Process categories after all resources have been processed
+        categories.forEach(this::processCategory);
     }
 
     /**
@@ -73,10 +75,21 @@ public abstract class CategorizedReloadListener<C> implements RoadSignReloadList
      * @param categoryId the category id of the resource, or null if the resource does not belong to a category
      * @param category   the category of the resource, or null if the resource does not belong to a category
      */
-    public abstract void processResource(
+    protected abstract void processResource(
             ResourceLocation location,
             Resource resource,
             @Nullable ResourceLocation categoryId,
             @Nullable C category
     );
+
+    /**
+     * Processes a category after all resources have been processed.
+     * Can be used to add additional processing after all categories have been loaded
+     *
+     * @param categoryId the category id of the category to process
+     * @param category   the category to process
+     */
+    protected void processCategory(ResourceLocation categoryId, C category) {
+        // Nothing by default
+    }
 }

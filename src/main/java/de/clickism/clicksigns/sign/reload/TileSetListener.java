@@ -4,7 +4,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -12,28 +12,34 @@ import java.util.Map;
 /**
  * Tile set reload listener.
  */
-public class TileSetListener implements RoadSignReloadListener {
+public class TileSetListener extends CategorizedReloadListener<TileSetListener.CategoryJson> {
 
     private static final String TILESET_EXTENSION = ".tileset.json";
+    private static final String TILESET_DIRECTORY = "tilesets";
+
+    /**
+     * Creates a new tile set listener.
+     */
+    public TileSetListener() {
+        super(SignRegistries.TILE_SETS, TILESET_DIRECTORY, TILESET_EXTENSION, CategoryJson.class);
+    }
 
     @Override
-    public void onReload(ResourceManager manager) {
-        SignRegistries.TILE_SETS.clear();
-        var categories = loadAndRegisterCategories(manager, "tilesets", CategoryJson.class, (identifier, json) -> {
-            SignRegistries.TILE_SETS.createAndRegisterCategory(identifier, json.name());
-        });
-        forEachResource(manager, fromRoot("tilesets"), TILESET_EXTENSION, (location, resource) -> {
-            // Important! Image path and tileset path must be the same!
-            var categoryId = categoryIdOf(location);
-            var category = categories.get(categoryId);
-            if (category == null) {
-                categoryId = null; // No category
-            }
-            var textureLocation = replaceExtension(location, TILESET_EXTENSION, ".png");
-            var tileSetJson = fromJsonOrThrow(resource, TileSetJson.class);
-            var isBack = category != null && category.isBack != null && category.isBack;
-            SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
-        });
+    protected String categoryName(CategoryJson category) {
+        return category.name();
+    }
+
+    @Override
+    protected void processResource(
+            ResourceLocation location,
+            Resource resource,
+            @Nullable ResourceLocation categoryId,
+            @Nullable CategoryJson category
+    ) {
+        var textureLocation = replaceExtension(location, TILESET_EXTENSION, ".png");
+        var tileSetJson = fromJsonOrThrow(resource, TileSetJson.class);
+        var isBack = category != null && category.isBack != null && category.isBack;
+        SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
     }
 
     /**
@@ -70,7 +76,7 @@ public class TileSetListener implements RoadSignReloadListener {
      *
      * @param name name of the category
      */
-    private record CategoryJson(
+    protected record CategoryJson(
             String name,
             @Nullable Boolean isBack
     ) {

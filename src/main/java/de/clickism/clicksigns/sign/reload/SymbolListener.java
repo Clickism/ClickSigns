@@ -6,67 +6,64 @@ import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Symbol reload listener.
  */
-public class SymbolListener implements RoadSignReloadListener {
-    private static final String SYMBOLS_DIR = "symbols";
-
-    @Override
-    public void onReload(ResourceManager manager) {
-        SignRegistries.SYMBOLS.clear();
-        var categories = loadAndRegisterCategories(manager, SYMBOLS_DIR, CategoryJson.class, (identifier, json) -> {
-            SignRegistries.SYMBOLS.createAndRegisterCategory(identifier, json.name());
-        });
-        manager.listResources(
-                fromRoot(SYMBOLS_DIR),
-                identifier -> identifier.getPath().endsWith(".png")
-        ).forEach((location, resource) -> {
-            var categoryId = categoryIdOf(location);
-            var category = categories.get(categoryId);
-            if (category == null) {
-                categoryId = null; // No category
-            }
-            TextureSource source;
-            if (category != null && category.replaceColor != null) {
-                var replaceColor = category.replaceColor;
-                source = new ColorizedTextureSource(location, replaceColor.from(), replaceColor.to());
-            } else {
-                source = new StaticTextureSource(location);
-            }
-            var symbol = new Symbol(location, source, categoryId);
-            SignRegistries.SYMBOLS.register(symbol);
-        });
-        resolveIncludedSymbols(categories);
-    }
+public class SymbolListener extends CategorizedReloadListener<SymbolListener.CategoryJson> {
+    private static final String SYMBOL_DIRECTORY = "symbols";
+    private static final String SYMBOL_EXTENSION = ".png";
 
     /**
-     * Resolves included symbols for all categories and registers them with modified identifiers to avoid conflicts.
-     *
-     * @param categories map of categories to resolve included symbols for
+     * Creates a new symbol listener.
      */
-    private void resolveIncludedSymbols(Map<ResourceLocation, CategoryJson> categories) {
-        // Resolve included categories
-        categories.forEach((identifier, category) -> {
-            if (category.includeCategories == null) return;
-            category.includeCategories.forEach(includedId -> {
-                var included = SignRegistries.SYMBOLS.getCategory(includedId);
-                if (included == null) return;
-                included.resolveEntries().forEach(symbol -> {
-                    // Create symbol with modified id to avoid conflicts
-                    var newSymbol = new Symbol(
-                            symbol.identifierForCategory(symbol.identifier(), identifier),
-                            symbol.texture(),
-                            identifier
-                    );
-                    // Register new symbol
-                    SignRegistries.SYMBOLS.register(newSymbol);
-                });
+    public SymbolListener() {
+        super(SignRegistries.SYMBOLS, SYMBOL_DIRECTORY, SYMBOL_EXTENSION, CategoryJson.class);
+    }
+
+    @Override
+    protected String categoryName(CategoryJson category) {
+        return category.name();
+    }
+
+    @Override
+    protected void processResource(
+            ResourceLocation location,
+            Resource resource,
+            @Nullable ResourceLocation categoryId,
+            @Nullable CategoryJson category
+    ) {
+        TextureSource source;
+        if (category != null && category.replaceColor != null) {
+            var replaceColor = category.replaceColor;
+            source = new ColorizedTextureSource(location, replaceColor.from(), replaceColor.to());
+        } else {
+            source = new StaticTextureSource(location);
+        }
+        var symbol = new Symbol(location, source, categoryId);
+        SignRegistries.SYMBOLS.register(symbol);
+    }
+
+    @Override
+    protected void processCategory(ResourceLocation categoryId, CategoryJson category) {
+        // Resolves included symbols for all categories and registers them with modified identifiers to avoid conflicts.
+        if (category.includeCategories == null) return;
+        category.includeCategories.forEach(includedId -> {
+            var included = SignRegistries.SYMBOLS.getCategory(includedId);
+            if (included == null) return;
+            included.resolveEntries().forEach(symbol -> {
+                // Create symbol with modified id to avoid conflicts
+                var newSymbol = new Symbol(
+                        symbol.identifierForCategory(symbol.identifier(), categoryId),
+                        symbol.texture(),
+                        categoryId
+                );
+                // Register new symbol
+                SignRegistries.SYMBOLS.register(newSymbol);
             });
         });
     }
@@ -78,7 +75,7 @@ public class SymbolListener implements RoadSignReloadListener {
      * @param name              name of the category
      * @param includeCategories included list of other categories
      */
-    private record CategoryJson(
+    protected record CategoryJson(
             String name,
             @Nullable List<ResourceLocation> includeCategories,
             @Nullable SymbolListener.ReplaceColorJson replaceColor
@@ -91,7 +88,7 @@ public class SymbolListener implements RoadSignReloadListener {
      * @param from color to replace.
      * @param to   color to replace with.
      */
-    private record ReplaceColorJson(
+    protected record ReplaceColorJson(
             @Nullable String from,
             String to
     ) {

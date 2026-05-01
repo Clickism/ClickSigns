@@ -1,13 +1,10 @@
 package de.clickism.clicksigns.sign.reload;
 
-import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.ReloadListener;
-import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
