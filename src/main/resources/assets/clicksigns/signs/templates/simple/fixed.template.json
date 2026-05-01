@@ -12,13 +12,13 @@
   "front": {
     "default": "clicksigns:signs/tilesets/default/default.png",
     "supported": [
-      "clicksigns:signs/tilesets/default"
+      "#clicksigns:signs/tilesets/default"
     ]
   },
   "back": {
     "default": "clicksigns:signs/tilesets/backs/back.png",
     "supported": [
-      "clicksigns:signs/tilesets/backs",
+      "#clicksigns:signs/tilesets/backs",
       "clicksigns:signs/textures/custom.png"
     ]
   },
@@ -28,18 +28,17 @@
   "elements": [
     {
       "type": "symbol",
-      "category": "clicksigns:symbols/arrows",
-      "default": "clicksigns:symbols/arrows/right.png",
+      "symbol": "clicksigns:symbols/arrows/right.png",
       "position": {
-        "x": 0,
-        "y": 0
+        "x": 2,
+        "y": 6
       }
     },
     {
       "type": "text",
       "position": {
-        "x": 0,
-        "y": 0
+        "x": 4,
+        "y": 6
       }
     }
   ]

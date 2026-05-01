@@ -53,6 +53,9 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                 var template = templateJson.toTemplate(location, categoryId);
                 SignRegistries.TEMPLATES.register(template);
             }
+            case "layout" -> {
+                // TODO: Implement layout templates
+            }
             default -> {
                 // Unknown template type
                 ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
@@ -92,7 +95,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
      * Supported textures can hold one of the following:
      * - A single custom texture (e.g. "clicksigns:custom/my_texture.png")
      * - A single tile set (e.g. "clicksigns:tilesets/cool/blue.png")
-     * - A category of tile sets (e.g. "clicksigns:tilesets/cool")
+     * - A category of tile sets, with a # before it (e.g. "#clicksigns:tilesets/cool")
      *
      * @param defaultTexture the default texture to use for the template
      * @param supported      set of supported textures for the template
@@ -100,7 +103,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
     private record TextureDefinitionJson(
             @SerializedName("default")
             ResourceLocation defaultTexture,
-            List<ResourceLocation> supported
+            List<String> supported
     ) {
         TextureDefinition toTextureDefinition() {
             var parsedSupported = parseSupportedTextures();
@@ -117,15 +120,17 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
          */
         List<TextureSource> parseSupportedTextures() {
             return supported.stream()
-                    .flatMap(location -> {
+                    .flatMap(idOrCategory -> {
                         // Check if category
-                        var category = SignRegistries.TILE_SETS.getCategory(location);
+                        var categoryId = getCategoryId(idOrCategory);
+                        var category = SignRegistries.TILE_SETS.getCategory(categoryId);
                         if (category != null) {
                             // Add all tilesets in category
                             return category.resolveEntries().stream()
-                                    .map(t -> TiledTextureSource.unsized(t.identifier()));
+                                    .map(tileSet -> TiledTextureSource.unsized(tileSet.identifier()));
                         }
                         // Not a category, check if tile set
+                        var location = ResourceLocation.tryParse(idOrCategory);
                         if (SignRegistries.TILE_SETS.has(location)) {
                             return Stream.of(TiledTextureSource.unsized(location));
                         }
@@ -133,6 +138,13 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                         return Stream.of(new StaticTextureSource(location));
                     })
                     .collect(Collectors.toList());
+        }
+
+        @Nullable ResourceLocation getCategoryId(String id) {
+            if (id.startsWith("#")) {
+                return ResourceLocation.tryParse(id.substring(1));
+            }
+            return null;
         }
     }
 

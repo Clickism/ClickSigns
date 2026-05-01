@@ -70,7 +70,7 @@ public class SignElementParser implements JsonHandler {
                     pos.y,
                     alignment != null ? alignment : Alignment.TOP_LEFT,
                     text,
-                    scale != null ? scale : 1.0f,
+                    scale != null ? scale : 1f,
                     color,
                     backgroundColor
             );
