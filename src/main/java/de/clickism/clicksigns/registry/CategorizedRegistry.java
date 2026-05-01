@@ -39,6 +39,10 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
         return categories.get(id);
     }
 
+    public boolean hasCategory(ResourceLocation id) {
+        return categories.containsKey(id);
+    }
+
     public Collection<Category<T>> allCategories() {
         return Collections.unmodifiableCollection(categories.values());
     }

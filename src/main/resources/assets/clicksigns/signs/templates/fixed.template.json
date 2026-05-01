@@ -3,7 +3,7 @@
   "meta": {
     "name": "Test Template",
     "description": "A test template for road signs.",
-    "author": "Clickism",
+    "author": "Clickism"
   },
   "name": "Test Template",
   "description": "A test template for road signs.",
@@ -19,7 +19,6 @@
     "default": "clicksigns:signs/tilesets/backs/back.png",
     "supported": [
       "clicksigns:signs/tilesets/backs",
-      "clicksigns:signs/tilesets/backs/back.png",
       "clicksigns:signs/textures/custom.png"
     ]
   },
@@ -30,12 +29,18 @@
     {
       "type": "symbol",
       "category": "clicksigns:symbols/arrows",
-      "default": "clicksigns:symbols/arrows/right.png"
+      "default": "clicksigns:symbols/arrows/right.png",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "type": "text",
-      "x": 3,
-      "y": 3
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     }
   ]
 }

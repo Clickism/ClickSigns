@@ -27,9 +27,7 @@ public class SymbolListener implements RoadSignReloadListener {
                 fromRoot(SYMBOLS_DIR),
                 identifier -> identifier.getPath().endsWith(".png")
         ).forEach((location, resource) -> {
-            var path = location.getPath();
-            var directory = stripFileName(path);
-            var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
+            var categoryId = categoryIdOf(location);
             var category = categories.get(categoryId);
             if (category == null) {
                 categoryId = null; // No category

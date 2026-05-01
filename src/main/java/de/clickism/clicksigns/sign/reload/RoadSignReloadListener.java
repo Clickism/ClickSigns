@@ -1,8 +1,13 @@
 package de.clickism.clicksigns.sign.reload;
 
+import com.google.gson.JsonObject;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.ReloadListener;
+import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,5 +112,60 @@ public interface RoadSignReloadListener extends ReloadListener {
     default ResourceLocation stripExtension(ResourceLocation location, String extension) {
         var path = stripExtension(location.getPath(), extension);
         return new ResourceLocation(location.getNamespace(), path);
+    }
+
+    /**
+     * Replaces the old extension with the new extension in the path of the given ResourceLocation if it ends with the old extension.
+     *
+     * @param location     the ResourceLocation to replace the extension in
+     * @param oldExtension the extension to replace, including the dot (e.g. ".json")
+     * @param newExtension the extension to replace with, including the dot (e.g. ".png")
+     * @return resource location with replaced extension
+     */
+    default ResourceLocation replaceExtension(ResourceLocation location, String oldExtension, String newExtension) {
+        var path = location.getPath();
+        if (path.endsWith(oldExtension)) {
+            path = path.substring(0, path.length() - oldExtension.length()) + newExtension;
+        }
+        return new ResourceLocation(location.getNamespace(), path);
+    }
+
+    /**
+     * Gets the category id for the given resource location by its directory.
+     *
+     * @param resourceLocation the resource location to get the category id for
+     * @return the category id for the given resource location
+     */
+    default ResourceLocation categoryIdOf(ResourceLocation resourceLocation) {
+        var directory = stripFileName(resourceLocation.getPath());
+        return ResourceLocation.tryBuild(resourceLocation.getNamespace(), directory);
+    }
+
+    /**
+     * Helper method to iterate over all resources in the specified directory that end with the specified suffix,
+     * and apply the given consumer to each of them.
+     * <p>
+     * Catches and logs all exceptions thrown by the consumer, so that one faulty resource does not prevent the others from being loaded.
+     *
+     * @param manager   resource manager to use
+     * @param directory directory to look for resources in, relative to the root directory
+     * @param suffix    suffix that the resource path must end with to be included (e.g. ".json")
+     * @param consumer  consumer to apply to each resource
+     */
+    default void forEachResource(
+            ResourceManager manager,
+            String directory,
+            String suffix,
+            BiConsumer<ResourceLocation, Resource> consumer) {
+        manager.listResources(
+                directory,
+                identifier -> identifier.getPath().endsWith(suffix)
+        ).forEach((location, resource) -> {
+            try {
+                consumer.accept(location, resource);
+            } catch (Exception exception) {
+                ClickSigns.LOGGER.error("Error occurred while processing resource {}: {}", location.toString(), exception.getMessage(), exception);
+            }
+        });
     }
 }

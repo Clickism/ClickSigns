@@ -13,29 +13,24 @@ import java.util.Map;
  * Tile set reload listener.
  */
 public class TileSetListener implements RoadSignReloadListener {
+
+    private static final String TILESET_EXTENSION = ".tileset.json";
+
     @Override
     public void onReload(ResourceManager manager) {
         SignRegistries.TILE_SETS.clear();
         var categories = loadAndRegisterCategories(manager, "tilesets", CategoryJson.class, (identifier, json) -> {
             SignRegistries.TILE_SETS.createAndRegisterCategory(identifier, json.name());
         });
-        manager.listResources(
-                fromRoot("tilesets"),
-                identifier -> identifier.getPath().endsWith(".tileset.json")
-        ).forEach((location, resource) -> {
+        forEachResource(manager, fromRoot("tilesets"), TILESET_EXTENSION, (location, resource) -> {
             // Important! Image path and tileset path must be the same!
-            var path = location.getPath();
-            var directory = stripFileName(path);
-            var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
+            var categoryId = categoryIdOf(location);
             var category = categories.get(categoryId);
             if (category == null) {
                 categoryId = null; // No category
             }
-            var texturePath = path.replace(".tileset.json", ".png");
-            var textureLocation = ResourceLocation.tryBuild(location.getNamespace(), texturePath);
-            var tileSetJson = fromJsonOrNull(resource, TileSetJson.class);
-            if (tileSetJson == null) return;
-            // Check if category has isBack set to true
+            var textureLocation = replaceExtension(location, TILESET_EXTENSION, ".png");
+            var tileSetJson = fromJsonOrThrow(resource, TileSetJson.class);
             var isBack = category != null && category.isBack != null && category.isBack;
             SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
         });

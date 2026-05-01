@@ -18,8 +18,7 @@ import java.util.List;
 public record Template(
         // Metadata
         ResourceLocation identifier,
-        String name,
-        String description,
+        Meta meta,
         @Nullable ResourceLocation categoryId,
         // Sign data
         TextureDefinition front,
@@ -27,10 +26,27 @@ public record Template(
         List<TextVariant> textVariants,
         Layout layout
 ) implements Categorized<Template> {
+    /**
+     * Metadata for a sign template.
+     *
+     * @param name        the display name of the template
+     * @param description a brief description of the template
+     * @param author      the author of the template
+     */
+    public record Meta(
+            String name,
+            String description,
+            @Nullable String author
+    ) {
+    }
+
     public static final Template TEST = new Template(
             ClickSigns.identifier("test"),
-            "Test Sign",
-            "A test sign template for demonstration purposes.",
+            new Template.Meta(
+                    "Test Sign",
+                    "A test sign template for demonstration purposes.",
+                    "Clickimsm"
+            ),
             null,
             new TextureDefinition(TiledTextureSource.unsized(ClickSigns.signAsset("tilesets/default/white.png")), List.of()),
             new TextureDefinition(TiledTextureSource.unsized(ClickSigns.signAsset("tilesets/backs/back.png")), List.of()),

@@ -2,7 +2,7 @@ package de.clickism.clicksigns.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
+import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Utility interface for handling JSON resources in reload listeners.
  */
-public interface ResourceJsonHandler {
+public interface JsonHandler {
     /**
      * Gson instance for JSON parsing in reload listeners
      */
@@ -51,5 +51,37 @@ public interface ResourceJsonHandler {
             ClickSigns.LOGGER.error("Failed to parse JSON resource from pack: " + resource.sourcePackId(), e);
             return null;
         }
+    }
+
+    default <T> T fromJsonOrThrow(JsonObject json, Class<T> clazz) throws RuntimeException {
+        try {
+            return GSON.fromJson(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JSON object: " + json.toString(), e);
+        }
+    }
+
+    default <T> T fromJsonOrNull(JsonObject json, Class<T> clazz) {
+        try {
+            return GSON.fromJson(json, clazz);
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to parse JSON object: " + json.toString(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Gets the "type" field from a JSON object.
+     *
+     * @param json the JSON object to get the "type" field from
+     * @return the value of the "type" field as a string
+     * @throws RuntimeException if the "type" field is missing from the JSON object
+     */
+    default String getTypeOrThrow(JsonObject json) throws RuntimeException {
+        var typeObj = json.get("type");
+        if (typeObj == null) {
+            throw new RuntimeException("JSON object is missing \"type\" field: " + json);
+        }
+        return typeObj.getAsString();
     }
 }

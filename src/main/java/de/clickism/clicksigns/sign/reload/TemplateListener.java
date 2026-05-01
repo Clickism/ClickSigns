@@ -8,99 +8,126 @@ import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.layout.FixedLayout;
 import de.clickism.clicksigns.sign.template.texture.TextureDefinition;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TemplateListener implements RoadSignReloadListener {
 
     private static final String TEMPLATE_EXTENSION = ".template.json";
+    private static final String TEMPLATE_DIRECTORY = "templates";
 
     // TODO: Categories
     @Override
     public void onReload(ResourceManager manager) {
-        manager.listResources(
-                fromRoot("templates"),
-                identifier -> identifier.getPath().endsWith(TEMPLATE_EXTENSION)
-        ).forEach((location, resource) -> {
-            // Parse json
-            var json = fromJsonOrNull(resource, JsonObject.class);
-            if (json == null) {
-                ClickSigns.LOGGER.error("Failed to parse template json {}.", location.toString());
-                return;
-            }
-            // Get type
-            var typeObj = json.get("type");
-            if (typeObj == null) {
-                ClickSigns.LOGGER.error("Template json {} is missing \"type\" field.", location.toString());
-                return;
-            }
-            var type = typeObj.getAsString();
-            // Parse based on type
+        var categories = loadAndRegisterCategories(manager, TEMPLATE_DIRECTORY, CategoryJson.class, (identifier, json) -> {
+            SignRegistries.TEMPLATES.createAndRegisterCategory(identifier, json.name());
+        });
+        forEachResource(manager, fromRoot(TEMPLATE_DIRECTORY), TEMPLATE_EXTENSION, (location, resource) -> {
+            var json = fromJsonOrThrow(resource, JsonObject.class);
+            var type = getTypeOrThrow(json);
             switch (type) {
                 case "fixed" -> {
-                    try {
-                        var templateJson = GSON.fromJson(json, FixedTemplateJson.class);
-                        var template = templateJson.toTemplate(location);
-                        SignRegistries.TEMPLATES.register(template);
-                    } catch (Exception e) {
-                        ClickSigns.LOGGER.error("Failed to parse fixed template json {}.", location.toString(), e);
-                    }
-                }
-                case "layout" -> {
-
+                    var templateJson = fromJsonOrThrow(json, FixedTemplateJson.class);
+                    var template = templateJson.toTemplate(location);
+                    SignRegistries.TEMPLATES.register(template);
                 }
                 default -> {
                     // Unknown template type
                     ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
                 }
             }
-
         });
     }
 
-    private record TemplateMetaJson(
-            String name,
-            String description,
-            String author
-    ) {
-    }
-
     private record FixedTemplateJson(
-            TemplateMetaJson meta,
+            Template.Meta meta,
             int width,
             int height,
             TextureDefinitionJson front,
             TextureDefinitionJson back,
             List<JsonObject> elements
     ) {
+        private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
+
         Template toTemplate(ResourceLocation id) {
+            var parsedElements = elements.stream()
+                    .map(ELEMENT_PARSER::parse)
+                    .toList();
             return new Template(
                     id,
-                    meta.name,
-                    meta.description,
+                    meta,
                     null, // TODO: category
                     front.toTextureDefinition(),
                     back.toTextureDefinition(),
                     List.of(), // TODO: text variants
-                    new FixedLayout(List.of()) // TODO: elements
+                    new FixedLayout(parsedElements)
             );
         }
     }
 
+    /**
+     * Texture definition json format for template texture definitions.
+     * <p>
+     * Supported textures can hold one of the following:
+     * - A single custom texture (e.g. "clicksigns:custom/my_texture.png")
+     * - A single tile set (e.g. "clicksigns:tilesets/cool/blue.png")
+     * - A category of tile sets (e.g. "clicksigns:tilesets/cool")
+     *
+     * @param defaultTexture the default texture to use for the template
+     * @param supported      set of supported textures for the template
+     */
     private record TextureDefinitionJson(
             @SerializedName("default")
             ResourceLocation defaultTexture,
             List<ResourceLocation> supported
     ) {
         TextureDefinition toTextureDefinition() {
-            // TODO: Supported textures
+            var parsedSupported = parseSupportedTextures();
             if (SignRegistries.TILE_SETS.has(defaultTexture)) {
-                return new TextureDefinition(new TiledTextureSource(defaultTexture, 16, 16), List.of());
+                return new TextureDefinition(TiledTextureSource.unsized(defaultTexture), parsedSupported);
             }
-            return new TextureDefinition(new StaticTextureSource(defaultTexture), List.of());
+            return new TextureDefinition(new StaticTextureSource(defaultTexture), parsedSupported);
         }
+
+        /**
+         * Parses the supported textures for the template.
+         *
+         * @return a list of supported texture sources
+         */
+        List<TextureSource> parseSupportedTextures() {
+            return supported.stream()
+                    .flatMap(location -> {
+                        // Check if category
+                        var category = SignRegistries.TILE_SETS.getCategory(location);
+                        if (category != null) {
+                            // Add all tilesets in category
+                            return category.resolveEntries().stream()
+                                    .map(t -> TiledTextureSource.unsized(t.identifier()));
+                        }
+                        // Not a category, check if tile set
+                        if (SignRegistries.TILE_SETS.has(location)) {
+                            return Stream.of(TiledTextureSource.unsized(location));
+                        }
+                        // Not a tile set, treat as static texture
+                        return Stream.of(new StaticTextureSource(location));
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Category JSON format for template categories.
+     *
+     * @param name name of the category
+     */
+    private record CategoryJson(
+            String name
+    ) {
     }
 }
