@@ -18,7 +18,16 @@
   "textVariants": [
     "clicksigns:signs/texts/default"
   ],
+  "layout": [
+    {
+      "rule": "grid",
+      "rows": 2,
+        "columns": 2
+    }
+  ],
   "elementLayout": [
+    {
+    },
     {
       "type": "list",
       "gap": 0,

@@ -1,14 +1,12 @@
 {
   "type": "fixed",
   "meta": {
-    "name": "Test Template",
-    "description": "A test template for road signs.",
+    "name": "Half Street",
+    "description": "A small street sign",
     "author": "Clickism"
   },
-  "name": "Test Template",
-  "description": "A test template for road signs.",
   "width": 32,
-  "height": 32,
+  "height": 10,
   "front": {
     "default": "clicksigns:signs/tilesets/default/white.png",
     "supported": [
@@ -27,17 +25,17 @@
   "elements": [
     {
       "type": "symbol",
-      "symbol": "clicksigns:signs/symbols/arrows/right.png",
+      "symbol": "clicksigns:signs/symbols/arrows/right_curvy.png",
       "position": {
-        "x": 4,
-        "y": 6
+        "x": 5,
+        "y": 5
       }
     },
     {
       "type": "text",
       "position": {
-        "x": 6,
-        "y": 6
+        "x": 10,
+        "y": 3
       }
     }
   ]
