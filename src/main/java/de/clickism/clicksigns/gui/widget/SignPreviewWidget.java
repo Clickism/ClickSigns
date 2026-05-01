@@ -26,7 +26,7 @@ public class SignPreviewWidget extends NestedWidget {
                 symbolWidget.makeUneditable();
                 this.addChildNoUpdate(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver());
+                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
                 textBox.makeUneditable();
                 this.addChildNoUpdate(textBox);
             }

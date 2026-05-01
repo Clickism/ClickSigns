@@ -117,7 +117,7 @@ public class RoadSignScreen extends BaseScreen {
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver());
+                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
                 this.elementProviders.add(textBox);
                 this.addRenderableWidget(textBox);
             }

@@ -23,7 +23,7 @@ public class TextRenderer extends Renderer {
     /**
      * Text padding in pixels for the x-axis.
      */
-    private static final float TEXT_PADDING_X = 1f;
+    public static final float TEXT_PADDING_X = 1f;
     /**
      * Text padding in pixels for the y-axis.
      */

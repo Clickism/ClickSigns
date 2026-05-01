@@ -1,31 +1,49 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
+import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Widget for a text element of a road sign
  */
 public class TextElementWidget extends EditBox implements ElementProvider {
+    private static final int UNEDITABLE_COLOR = 0xFF5555;
     private static final int TEXT_BOX_HEIGHT_SCALE = 4;
+    /**
+     * Padding between the text and the edge of the sign, in pixels.
+     * Used to calculate max width of text fields.
+     */
+    private static final int SIGN_PADDING = 1;
 
     private TextElement text;
     private final ColorResolver colorResolver;
+    /**
+     * Max text width in sign pixels
+     */
+    private final int maxWidth;
 
     /**
      * Creates a new text element box.
      */
-    public TextElementWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver) {
-        // TODO: Calculate width properly
-        super(GuiUtils.font(), anchorX, anchorY, 100, (int) (TEXT_BOX_HEIGHT_SCALE * TEXTURE_RENDER_SCALE * text.scale()), Component.empty());
+    public TextElementWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
+        // TODO: Maybe check other text fields to determine max width
+        super(GuiUtils.font(), anchorX, anchorY,
+                maxTextWidth(text, signWidth) * TEXTURE_RENDER_SCALE,
+                (int) (TEXT_BOX_HEIGHT_SCALE * TEXTURE_RENDER_SCALE * text.scale()),
+                Component.empty());
+        // Calculate max width
+        this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
         this.colorResolver = colorResolver;
         // Calculate position
@@ -52,6 +70,15 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     }
 
     private void onChange(String value) {
+        if (renderWidthOf(value) > this.maxWidth) {
+            // Text too big, trim it and set text color to red
+            value = value.substring(0, value.length() - 1);
+            this.setValue(value);
+            this.setTextColor(UNEDITABLE_COLOR);
+        } else {
+            this.setTextColor(DEFAULT_TEXT_COLOR);
+        }
+        // Update text element with new text
         this.text = this.text.withText(value);
     }
 
@@ -66,5 +93,26 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     public void makeUneditable() {
         this.setTooltip(null);
         this.active = false;
+    }
+
+    /**
+     * Get the width of the text when rendered on a sign.
+     *
+     * @param string the text to measure.
+     * @return the rendered width of the text.
+     */
+    private float renderWidthOf(String string) {
+        return GuiUtils.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.text.scale();
+    }
+
+    /**
+     * Calculates the max text width in sign pixels
+     */
+    private static int maxTextWidth(TextElement text, int signWidth) {
+        if (text.backgroundColor() != null) {
+            // If there is a background color, we need to account for the outline, which is 1 pixel wide
+            return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
+        }
+        return signWidth - text.localX() - SIGN_PADDING;
     }
 }
