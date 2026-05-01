@@ -1,6 +1,10 @@
 package de.clickism.clicksigns.gui.layout;
 
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,9 +190,45 @@ public class LinearLayout {
     }
 
     /**
+     * Creates a new spacer element with the given width and height.
+     *
+     * @param width  the width of the spacer in pixels
+     * @param height the height of the spacer in pixels
+     * @return a new spacer element with the given width and height
+     */
+    public static LayoutElement spacer(int width, int height) {
+        return new Spacer(width, height);
+    }
+
+    /**
      * Axis to organize the layout in.
      */
     public enum Axis {
         HORIZONTAL, VERTICAL
+    }
+
+    /**
+     * A simple spacer element that can be used to add space between elements in the layout.
+     */
+    private static class Spacer extends AbstractWidget {
+        /**
+         * Creates a new spacer with the given width and height.
+         *
+         * @param width  width of the spacer in pixels
+         * @param height height of the spacer in pixels
+         */
+        private Spacer(int width, int height) {
+            super(0, 0, width, height, Component.empty());
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+            // Not rendered
+        }
+
+        @Override
+        protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+            // Nothing
+        }
     }
 }

@@ -3,20 +3,14 @@ package de.clickism.clicksigns.gui.screen;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.layout.LinearLayout;
-import de.clickism.clicksigns.gui.widget.ElementProvider;
-import de.clickism.clicksigns.gui.widget.SymbolElementWidget;
-import de.clickism.clicksigns.gui.widget.TextElementWidget;
-import de.clickism.clicksigns.gui.widget.TextureWidget;
+import de.clickism.clicksigns.gui.widget.*;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -25,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Road sign screen
@@ -66,45 +58,36 @@ public class RoadSignScreen extends BaseScreen {
         var confirmButton = confirmButton();
         this.addRenderableWidget(confirmButton);
 
-        // Add change tileset button
-        var changeTileSetButton = changeTileSetButton();
-        this.addRenderableWidget(changeTileSetButton);
-
         // Add template button
         var templateButton = changeTemplateButton();
         this.addRenderableWidget(templateButton);
 
-        // TODO: Remove temporary buttons
-        var sizeButton = new Button.Builder(Component.literal("Size"), button -> {
-            if (roadSign.frontSource() instanceof TiledTextureSource src) {
-                Texture tex = roadSign.frontTexture();
-                this.roadSign = roadSign.withFront(new TiledTextureSource(src.tileSetId(), (int) (tex.width() + BLOCK_PIXELS), (int) (tex.height() + BLOCK_PIXELS)));
-                this.rebuildWidgets();
-            }
-        }).build();
-        this.addRenderableWidget(sizeButton);
-
-        var alignmentButton = new Button.Builder(Component.literal("Alignment"), button -> {
-            var currentAlignment = roadSign.alignment().ordinal();
-            var nextAlignment = (currentAlignment + 1) % Alignment.values().length;
-            this.roadSign = roadSign.withAlignment(Alignment.values()[nextAlignment]);
-            Minecraft.getInstance().player.displayClientMessage(Component.literal("Alignment: " + roadSign.alignment().name()), false);
-            this.rebuildWidgets();
-        }).build();
-        this.addRenderableWidget(alignmentButton);
+        var editButton = editButton();
+        this.addRenderableWidget(editButton);
 
         // Layout
         LinearLayout.vertical()
                 .center()
                 .padding(PADDING)
                 .add(textureWidget)
+                .add(LinearLayout.spacer(0, 10))
                 .add(confirmButton)
-                .add(changeTileSetButton)
                 .add(templateButton)
-                .add(sizeButton)
-                .add(alignmentButton)
+                .add(editButton)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
+
+        var alignmentX = confirmButton.getX() + confirmButton.getWidth() + 10;
+        var alignmentWidget = new AlignmentWidget(alignmentX, confirmButton.getY(), roadSign.alignment(), alignment -> {
+            this.roadSign = roadSign.withAlignment(alignment);
+            this.rebuildWidgets();
+        });
+        this.addRenderableWidget(alignmentWidget);
+
+        var alignmentHeader = new CategoryHeaderWidget(alignmentWidget.getWidth(), Component.translatable("clicksigns.text.alignment"));
+        alignmentHeader.setX(alignmentWidget.getX());
+        alignmentHeader.setY(alignmentWidget.getY() - alignmentHeader.getHeight());
+        this.addRenderableWidget(alignmentHeader);
 
         // Calculate anchor for elements
         int anchorX = textureWidget.getX();
@@ -125,7 +108,9 @@ public class RoadSignScreen extends BaseScreen {
     }
 
     private Button confirmButton() {
-        return Button.builder(Component.translatable("clicksigns.text.confirm"), button -> {
+        var title = Component.literal("✔ ")
+                .append(Component.translatable("clicksigns.text.confirm"));
+        return Button.builder(title, button -> {
                     var roadSign = readRoadSign();
                     Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, roadSign));
                     this.onClose();
@@ -133,8 +118,18 @@ public class RoadSignScreen extends BaseScreen {
                 .build();
     }
 
+    private Button editButton() {
+        var title = Component.literal("✎ ")
+                .append(Component.translatable("clicksigns.text.edit"));
+        return Button.builder(title, button -> {
+            GuiUtils.openScreen(new RoadSignEditScreen(roadSign, this));
+        }).build();
+    }
+
     private Button changeTemplateButton() {
-        return Button.builder(Component.translatable("clicksigns.text.change_template"), button -> {
+        var title = Component.literal("📝 ")
+                .append(Component.translatable("clicksigns.text.change_template"));
+        return Button.builder(title, button -> {
                     GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                         // Change template
                         this.roadSign = template.buildDefault();
@@ -142,28 +137,6 @@ public class RoadSignScreen extends BaseScreen {
                         this.clearWidgets();
                         this.init();
                     }));
-                })
-                .build();
-    }
-
-    // TODO: Make proper screen for selecting templates and tilesets
-    private Button changeTileSetButton() {
-        // TODO: Translate
-        return Button.builder(Component.literal("Change Tileset"), button -> {
-                    var front = roadSign.frontSource();
-                    if (front instanceof TiledTextureSource tiled) {
-                        var tileSetId = tiled.tileSetId();
-                        var allTileSetIds = new ArrayList<>(SignRegistries.TILE_SETS.allIds());
-                        var currentIndex = allTileSetIds.indexOf(tileSetId);
-                        var nextIndex = (currentIndex + 1) % allTileSetIds.size();
-                        var nextTileSetId = allTileSetIds.get(nextIndex);
-                        var nextTileSet = SignRegistries.TILE_SETS.get(nextTileSetId);
-                        if (nextTileSet != null) {
-                            var newSource = new TiledTextureSource(nextTileSetId, tiled.width(), tiled.height());
-                            this.roadSign = this.roadSign.withFront(newSource);
-                            this.rebuildWidgets();
-                        }
-                    }
                 })
                 .build();
     }

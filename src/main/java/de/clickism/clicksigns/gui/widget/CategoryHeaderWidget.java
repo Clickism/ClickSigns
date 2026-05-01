@@ -12,6 +12,10 @@ public class CategoryHeaderWidget extends StringWidget {
         super(0, 0, width, 24, Component.literal(text).withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE), GuiUtils.font());
     }
 
+    public CategoryHeaderWidget(int width, Component text) {
+        super(0, 0, width, 24, text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE), GuiUtils.font());
+    }
+
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.renderWidget(guiGraphics, mouseX, mouseY, delta);

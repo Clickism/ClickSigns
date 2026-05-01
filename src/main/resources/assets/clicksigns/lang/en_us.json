@@ -1,9 +1,8 @@
 {
   "clicksigns.text.road_sign_edit_screen": "Road Sign Editor",
-
   "clicksigns.text.road_signs": "Road Signs",
   "clicksigns.text.road_sign_template_selection": "Road Sign Template Selection",
-  "clicksigns.text.alignment": "Alignment: %s",
+  "clicksigns.text.alignment": "Alignment",
   "clicksigns.text.left": "Left",
   "clicksigns.text.right": "Right",
   "clicksigns.text.forward": "Forward",
@@ -17,6 +16,7 @@
   "clicksigns.text.author": "👤 Author: %s",
   "clicksigns.text.confirm": "Confirm",
   "clicksigns.text.change_template": "Change Template",
+  "clicksigns.text.edit": "Edit",
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"
