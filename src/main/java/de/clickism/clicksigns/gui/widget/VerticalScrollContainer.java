@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class VerticalScrollContainer extends AbstractWidget {
     private static final double SCROLL_RATE = 9;
-    private static final int SCROLLBAR_WIDTH = 6;
+    protected static final int SCROLLBAR_WIDTH = 6;
 
     private static final int SCROLLBAR_BACKGROUND = -16777216;
     public static final int SCROLLBAR_COLOR = -8355712;
@@ -62,11 +62,29 @@ public class VerticalScrollContainer extends AbstractWidget {
             child.render(guiGraphics, mouseX, mouseY, tickDelta);
         }
         // Render scrollbar
-        if (maxScrollAmount() > 0) {
+        if (isScrollbarVisible()) {
             renderScrollbar(guiGraphics);
         }
         // Disable scissor
         guiGraphics.disableScissor();
+    }
+
+    /**
+     * Checks if the scrollbar should be visible based on the content height and container height.
+     *
+     * @return true if the scrollbar should be visible, false otherwise
+     */
+    protected boolean isScrollbarVisible() {
+        return maxScrollAmount() > 0;
+    }
+
+    /**
+     * Calculates the width of the scrollbar, which is SCROLLBAR_WIDTH or 0 if the scrollbar is not visible.
+     *
+     * @return the width of the scrollbar
+     */
+    protected int scrollbarWidth() {
+        return isScrollbarVisible() ? SCROLLBAR_WIDTH : 0;
     }
 
     /**
@@ -128,7 +146,7 @@ public class VerticalScrollContainer extends AbstractWidget {
     /**
      * Calculates the x position of the scrollbar.
      */
-    private int scrollbarX() {
+    protected int scrollbarX() {
         return this.getX() + this.width - SCROLLBAR_WIDTH;
     }
 

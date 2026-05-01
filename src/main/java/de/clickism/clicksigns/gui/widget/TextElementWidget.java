@@ -46,7 +46,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
             var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
             guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
         }
-        if (this.isHovered) {
+        if (this.isHovered && this.active) {
             GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height);
         }
     }
@@ -58,5 +58,13 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     @Override
     public SignElement element() {
         return text;
+    }
+
+    /**
+     * Makes the widget uneditable, disabling interaction and removing the tooltip.
+     */
+    public void makeUneditable() {
+        this.setTooltip(null);
+        this.active = false;
     }
 }

@@ -36,6 +36,15 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     /**
+     * Adds a child widget without updating the size of this widget.
+     *
+     * @param widget The widget to add as a child.
+     */
+    protected void addChildNoUpdate(AbstractWidget widget) {
+        children.add(widget);
+    }
+
+    /**
      * Adds multiple child widgets to this widget.
      *
      * @param widgets The widgets to add as children.

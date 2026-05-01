@@ -40,7 +40,7 @@ public record StaticTextureSource(
             var size = loadSize(location);
             return new Texture(location, size.width(), size.height());
         } catch (Exception e) {
-            ClickSigns.LOGGER.error("Failed to resolve static texture for {}", location, e);
+            // Error silently since called quite often
             return ERROR_TEXTURE;
         }
     }

@@ -28,7 +28,7 @@ public class ClickableTextureWidget extends TextureWidget {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered) {
+        if (this.isHovered && this.active) {
             renderOutline(guiGraphics);
         }
     }
@@ -49,6 +49,6 @@ public class ClickableTextureWidget extends TextureWidget {
      * @param color       the color of the outline
      */
     public void renderOutline(GuiGraphics guiGraphics, int color) {
-        GuiUtils.renderOutline(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
+        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
     }
 }

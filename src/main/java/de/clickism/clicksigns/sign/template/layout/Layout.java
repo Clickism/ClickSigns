@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface Layout {
     List<SignElement> build(Size size);
+
+    Size defaultSize();
 }

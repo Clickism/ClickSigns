@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.layout.LinearLayout;
 import de.clickism.clicksigns.gui.widget.ElementProvider;
 import de.clickism.clicksigns.gui.widget.SymbolElementWidget;
@@ -69,6 +70,11 @@ public class RoadSignScreen extends BaseScreen {
         var changeTileSetButton = changeTileSetButton();
         this.addRenderableWidget(changeTileSetButton);
 
+        // Add template button
+        var templateButton = changeTemplateButton();
+        this.addRenderableWidget(templateButton);
+
+        // TODO: Remove temporary buttons
         var sizeButton = new Button.Builder(Component.literal("Size"), button -> {
             if (roadSign.frontSource() instanceof TiledTextureSource src) {
                 Texture tex = roadSign.frontTexture();
@@ -94,6 +100,7 @@ public class RoadSignScreen extends BaseScreen {
                 .add(textureWidget)
                 .add(confirmButton)
                 .add(changeTileSetButton)
+                .add(templateButton)
                 .add(sizeButton)
                 .add(alignmentButton)
                 // Layout from center
@@ -128,7 +135,13 @@ public class RoadSignScreen extends BaseScreen {
 
     private Button changeTemplateButton() {
         return Button.builder(Component.translatable("clicksigns.text.change_template"), button -> {
-                    // TODO
+                    GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
+                        // Change template
+                        this.roadSign = template.buildDefault();
+                        // Rebuild widgets
+                        this.clearWidgets();
+                        this.init();
+                    }));
                 })
                 .build();
     }

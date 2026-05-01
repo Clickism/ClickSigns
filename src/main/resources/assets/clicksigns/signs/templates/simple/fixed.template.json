@@ -7,10 +7,10 @@
   },
   "name": "Test Template",
   "description": "A test template for road signs.",
-  "width": 2,
-  "height": 2,
+  "width": 32,
+  "height": 32,
   "front": {
-    "default": "clicksigns:signs/tilesets/default/default.png",
+    "default": "clicksigns:signs/tilesets/default/white.png",
     "supported": [
       "#clicksigns:signs/tilesets/default"
     ]
@@ -18,8 +18,7 @@
   "back": {
     "default": "clicksigns:signs/tilesets/backs/back.png",
     "supported": [
-      "#clicksigns:signs/tilesets/backs",
-      "clicksigns:signs/textures/custom.png"
+      "#clicksigns:signs/tilesets/backs"
     ]
   },
   "textVariants": [
@@ -28,16 +27,16 @@
   "elements": [
     {
       "type": "symbol",
-      "symbol": "clicksigns:symbols/arrows/right.png",
+      "symbol": "clicksigns:signs/symbols/arrows/right.png",
       "position": {
-        "x": 2,
+        "x": 4,
         "y": 6
       }
     },
     {
       "type": "text",
       "position": {
-        "x": 4,
+        "x": 6,
         "y": 6
       }
     }

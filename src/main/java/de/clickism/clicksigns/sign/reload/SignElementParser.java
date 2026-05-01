@@ -49,7 +49,7 @@ public class SignElementParser implements JsonHandler {
             return new SymbolElement(
                     pos.x,
                     pos.y,
-                    alignment != null ? alignment : Alignment.TOP_LEFT,
+                    alignment != null ? alignment : Alignment.CENTER,
                     SignRegistries.SYMBOLS.get(symbol)
             );
         }
@@ -68,8 +68,8 @@ public class SignElementParser implements JsonHandler {
             return new TextElement(
                     pos.x,
                     pos.y,
-                    alignment != null ? alignment : Alignment.TOP_LEFT,
-                    text,
+                    alignment != null ? alignment : Alignment.TOP_RIGHT,
+                    text != null ? text : "",
                     scale != null ? scale : 1f,
                     color != null ? color : "foreground",
                     backgroundColor

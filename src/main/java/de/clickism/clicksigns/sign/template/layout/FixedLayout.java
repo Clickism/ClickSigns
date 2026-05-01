@@ -6,7 +6,8 @@ import de.clickism.clicksigns.util.Size;
 import java.util.List;
 
 public record FixedLayout(
-        List<SignElement> elements
+        List<SignElement> elements,
+        Size defaultSize
 ) implements Layout {
     @Override
     public List<SignElement> build(Size size) {

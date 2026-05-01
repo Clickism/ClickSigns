@@ -117,9 +117,24 @@ public class GuiUtils {
      * @param outlineColor the color of the outline
      */
     public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
+        guiGraphics.renderOutline(x, y, width, height, outlineColor);
+    }
+
+    /**
+     * Renders an outline around a rectangle with a custom color.
+     * Renders on top of other graphics.
+     *
+     * @param guiGraphics  the GuiGraphics to render with
+     * @param x            the x position of the rectangle
+     * @param y            the y position of the rectangle
+     * @param width        the width of the rectangle
+     * @param height       the height of the rectangle
+     * @param outlineColor the color of the outline
+     */
+    public static void renderOutlineOnTop(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 100);
-        guiGraphics.renderOutline(x, y, width, height, outlineColor);
+        renderOutline(guiGraphics, x, y, width, height, outlineColor);
         guiGraphics.pose().popPose();
     }
 }

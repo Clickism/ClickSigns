@@ -37,13 +37,13 @@ public class SymbolList extends VerticalScrollContainer {
         this.colorResolver = colorResolver;
         this.onSymbolSelected = onSymbolSelected;
         // Add categories
-        for (int i = 0; i < 20; i++) {
-            SignRegistries.SYMBOLS.allCategories().forEach(category -> {
-                addChild(new StringWidget(0, 0, this.width - 20, 20, Component.literal(category.name()), GuiUtils.font()));
-                List<Symbol> symbols = category.resolveEntries();
-                addChild(new SymbolGrid(symbols, width));
-            });
-        }
+        // TODO: Use real categories instead of repeating the same ones, used currently for testing
+        // TODO: Add uncategorized symbols at the end
+        SignRegistries.SYMBOLS.allCategories().forEach(category -> {
+            addChild(new CategoryHeaderWidget(this.width, category.name()));
+            List<Symbol> symbols = category.resolveEntries();
+            addChild(new SymbolGrid(symbols, width));
+        });
     }
 
     /**

@@ -46,6 +46,14 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
         this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu")));
     }
 
+    /**
+     * Makes the widget uneditable, disabling interaction and removing the tooltip.
+     */
+    public void makeUneditable() {
+        this.setTooltip(null);
+        this.active = false;
+    }
+
     @Override
     public SignElement element() {
         return symbol;

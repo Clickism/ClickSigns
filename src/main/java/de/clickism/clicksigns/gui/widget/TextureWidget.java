@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Widget for rendering a road sign texture
@@ -19,12 +20,12 @@ public class TextureWidget extends AbstractWidget {
     /**
      * The texture to render.
      */
-    protected Texture texture;
+    protected @Nullable Texture texture;
 
     /**
      * Creates a new road sign texture widget.
      */
-    public TextureWidget(int x, int y, Texture texture) {
+    public TextureWidget(int x, int y, @Nullable Texture texture) {
         super(x, y, 0, 0, Component.empty());
         this.active = false;
         this.texture(texture);
@@ -41,6 +42,11 @@ public class TextureWidget extends AbstractWidget {
     }
 
     private void updateSize() {
+        if (this.texture == null) {
+            this.width = 0;
+            this.height = 0;
+            return;
+        }
         this.width = texture.width() * TEXTURE_RENDER_SCALE;
         this.height = texture.height() * TEXTURE_RENDER_SCALE;
     }
@@ -55,6 +61,7 @@ public class TextureWidget extends AbstractWidget {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (this.texture == null) return;
         // Override render to enable blending for semi-transparent textures (i.E: for arrows)
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

@@ -10,6 +10,7 @@ import de.clickism.clicksigns.sign.template.texture.TextureDefinition;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.util.Size;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
@@ -81,10 +82,10 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                     id,
                     meta,
                     categoryId,
-                    front.toTextureDefinition(),
-                    back.toTextureDefinition(),
+                    front.toTextureDefinition(width, height),
+                    back.toTextureDefinition(width, height),
                     List.of(), // TODO: text variants
-                    new FixedLayout(parsedElements)
+                    new FixedLayout(parsedElements, new Size(width, height))
             );
         }
     }
@@ -105,10 +106,10 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
             ResourceLocation defaultTexture,
             List<String> supported
     ) {
-        TextureDefinition toTextureDefinition() {
-            var parsedSupported = parseSupportedTextures();
+        TextureDefinition toTextureDefinition(int width, int height) {
+            var parsedSupported = parseSupportedTextures(width, height);
             if (SignRegistries.TILE_SETS.has(defaultTexture)) {
-                return new TextureDefinition(TiledTextureSource.unsized(defaultTexture), parsedSupported);
+                return new TextureDefinition(new TiledTextureSource(defaultTexture, width, height), parsedSupported);
             }
             return new TextureDefinition(new StaticTextureSource(defaultTexture), parsedSupported);
         }
@@ -116,9 +117,11 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
         /**
          * Parses the supported textures for the template.
          *
+         * @param width  the width of the sign in pixels
+         * @param height the height of the sign in pixels
          * @return a list of supported texture sources
          */
-        List<TextureSource> parseSupportedTextures() {
+        List<TextureSource> parseSupportedTextures(int width, int height) {
             return supported.stream()
                     .flatMap(idOrCategory -> {
                         // Check if category
@@ -127,12 +130,12 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                         if (category != null) {
                             // Add all tilesets in category
                             return category.resolveEntries().stream()
-                                    .map(tileSet -> TiledTextureSource.unsized(tileSet.identifier()));
+                                    .map(tileSet -> new TiledTextureSource(tileSet.identifier(), width, height));
                         }
                         // Not a category, check if tile set
                         var location = ResourceLocation.tryParse(idOrCategory);
                         if (SignRegistries.TILE_SETS.has(location)) {
-                            return Stream.of(TiledTextureSource.unsized(location));
+                            return Stream.of(new TiledTextureSource(location, width, height));
                         }
                         // Not a tile set, treat as static texture
                         return Stream.of(new StaticTextureSource(location));

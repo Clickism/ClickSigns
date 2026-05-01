@@ -1,14 +1,11 @@
 package de.clickism.clicksigns.sign.template;
 
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.template.layout.FixedLayout;
 import de.clickism.clicksigns.sign.template.layout.Layout;
 import de.clickism.clicksigns.sign.template.texture.TextureDefinition;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -40,20 +37,6 @@ public record Template(
     ) {
     }
 
-    public static final Template TEST = new Template(
-            ClickSigns.identifier("test"),
-            new Template.Meta(
-                    "Test Sign",
-                    "A test sign template for demonstration purposes.",
-                    "Clickimsm"
-            ),
-            null,
-            new TextureDefinition(TiledTextureSource.unsized(ClickSigns.signAsset("tilesets/default/white.png")), List.of()),
-            new TextureDefinition(TiledTextureSource.unsized(ClickSigns.signAsset("tilesets/backs/back.png")), List.of()),
-            List.of(new TextVariant("Default", "#FFFFFF", null)),
-            new FixedLayout(RoadSign.DEFAULT.elements())
-    );
-
     /**
      * Builds a road sign based on this template with the given dimensions.
      *
@@ -61,7 +44,7 @@ public record Template(
      * @param height the height of the sign in pixels
      * @return a new RoadSign instance based on this template and the specified dimensions
      */
-    RoadSign build(int width, int height) {
+    public RoadSign build(int width, int height) {
         var elements = layout.build(new Size(width, height));
         return new RoadSign(
                 front.defaultTexture().resize(width, height),
@@ -70,6 +53,10 @@ public record Template(
                 RoadSign.DEFAULT_ALIGNMENT,
                 this.identifier
         );
+    }
+
+    public RoadSign buildDefault() {
+        return build(layout.defaultSize().width(), layout.defaultSize().height());
     }
 
     @Override
