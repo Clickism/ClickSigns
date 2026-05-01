@@ -60,7 +60,7 @@ public class SignElementParser implements JsonHandler {
             @Nullable Position position,
             String text,
             @Nullable Float scale,
-            String color,
+            @Nullable String color,
             @Nullable String backgroundColor
     ) {
         TextElement toTextElement() {
@@ -71,7 +71,7 @@ public class SignElementParser implements JsonHandler {
                     alignment != null ? alignment : Alignment.TOP_LEFT,
                     text,
                     scale != null ? scale : 1f,
-                    color,
+                    color != null ? color : "foreground",
                     backgroundColor
             );
         }
