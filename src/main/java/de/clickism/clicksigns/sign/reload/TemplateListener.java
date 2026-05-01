@@ -106,7 +106,14 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
             ResourceLocation defaultTexture,
             List<String> supported
     ) {
-        TextureDefinition toTextureDefinition(int width, int height) {
+        /**
+         * Converts the json object to a texture definition object
+         *
+         * @param width  the width of the sign in pixels
+         * @param height the height of the sign in pixels
+         * @return texture definition object
+         */
+        private TextureDefinition toTextureDefinition(int width, int height) {
             var parsedSupported = parseSupportedTextures(width, height);
             if (SignRegistries.TILE_SETS.has(defaultTexture)) {
                 return new TextureDefinition(new TiledTextureSource(defaultTexture, width, height), parsedSupported);
@@ -121,7 +128,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
          * @param height the height of the sign in pixels
          * @return a list of supported texture sources
          */
-        List<TextureSource> parseSupportedTextures(int width, int height) {
+        private List<TextureSource> parseSupportedTextures(int width, int height) {
             return supported.stream()
                     .flatMap(idOrCategory -> {
                         // Check if category
@@ -143,7 +150,13 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                     .collect(Collectors.toList());
         }
 
-        @Nullable ResourceLocation getCategoryId(String id) {
+        /**
+         * Gets the category id from the given string, if it is a category reference (starts with #), otherwise returns null.
+         *
+         * @param id the string to get the category id from
+         * @return the category id if the string is a category reference, otherwise null
+         */
+        private @Nullable ResourceLocation getCategoryId(String id) {
             if (id.startsWith("#")) {
                 return ResourceLocation.tryParse(id.substring(1));
             }

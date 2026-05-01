@@ -4,36 +4,30 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class RoadSignWidget extends NestedWidget {
-    private final List<ElementProvider> elementProviders = new ArrayList<>();
-
-    public RoadSignWidget(int x, int y, RoadSign roadSign, boolean editable) {
+public class SignPreviewWidget extends NestedWidget {
+    public SignPreviewWidget(int x, int y, RoadSign roadSign) {
         super(x, y);
+        if (roadSign == null) return;
+        roadSign(roadSign);
+    }
+
+    public void roadSign(RoadSign roadSign) {
+        this.children().clear();
         // Add road sign texture
-        var textureWidget = new TextureWidget(x, y, roadSign.frontTexture());
+        var textureWidget = new TextureWidget(this.getX(), this.getY(), roadSign.frontTexture());
         this.addChildNoUpdate(textureWidget);
         // Calculate anchor for elements
         int anchorX = textureWidget.getX();
         int anchorY = textureWidget.getY() + textureWidget.getHeight();
         // Add elements
-        this.elementProviders.clear();
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
                 var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), null);
-                if (!editable) {
-                    symbolWidget.makeUneditable();
-                }
-                this.elementProviders.add(symbolWidget);
+                symbolWidget.makeUneditable();
                 this.addChildNoUpdate(symbolWidget);
             } else if (element instanceof TextElement textElement) {
                 var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver());
-                if (!editable) {
-                    textBox.makeUneditable();
-                }
-                this.elementProviders.add(textBox);
+                textBox.makeUneditable();
                 this.addChildNoUpdate(textBox);
             }
         }

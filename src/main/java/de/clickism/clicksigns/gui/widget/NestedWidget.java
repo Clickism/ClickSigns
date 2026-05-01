@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A widget that can contain other widgets as children.
@@ -122,12 +123,76 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public boolean mouseClicked(double d, double e, int i) {
         // Click all children
         for (var child : children) {
-            if (!child.isMouseOver(mouseX, mouseY)) continue;
-            child.onClick(mouseX, mouseY);
+            if (!child.isMouseOver(d, e)) continue;
+            if (child.mouseClicked(d, e, i)) {
+                return true;
+            }
         }
+        return super.mouseClicked(d, e, i);
+    }
+
+    @Override
+    public boolean mouseReleased(double d, double e, int i) {
+        // Release all children
+        for (var child : children) {
+            if (child.mouseReleased(d, e, i)) {
+                return true;
+            }
+        }
+        return super.mouseReleased(d, e, i);
+    }
+
+    @Override
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {
+        super.visitWidgets(consumer);
+        children.forEach(consumer);
+    }
+
+    @Override
+    public boolean mouseDragged(double d, double e, int i, double f, double g) {
+        // Drag all children
+        for (var child : children) {
+            if (child.mouseDragged(d, e, i, f, g)) {
+                return true;
+            }
+        }
+        return super.mouseDragged(d, e, i, f, g);
+    }
+
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
+        // Press all children
+        for (var child : children) {
+            if (child.keyPressed(i, j, k)) {
+                return true;
+            }
+        }
+        return super.keyPressed(i, j, k);
+    }
+
+    @Override
+    public boolean keyReleased(int i, int j, int k) {
+        // Release all children
+        for (var child : children) {
+            if (child.keyReleased(i, j, k)) {
+                return true;
+            }
+        }
+        return super.keyReleased(i, j, k);
+    }
+
+    @Override
+    public boolean charTyped(char c, int i) {
+        // Type all children
+        for (var child : children) {
+            if (child.charTyped(c, i)) {
+                return true;
+            }
+        }
+        return super.charTyped(c, i);
     }
 
     @Override

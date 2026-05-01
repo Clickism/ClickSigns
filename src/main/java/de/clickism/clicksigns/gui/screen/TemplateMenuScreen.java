@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.layout.LinearLayout;
-import de.clickism.clicksigns.gui.widget.RoadSignWidget;
+import de.clickism.clicksigns.gui.widget.SignPreviewWidget;
 import de.clickism.clicksigns.gui.widget.TemplateList;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.gui.components.Button;
@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 public class TemplateMenuScreen extends BaseScreen {
     private final Consumer<Template> onTemplateChanged;
     private @Nullable Template selectedTemplate;
-    private @Nullable RoadSignWidget preview;
 
     public TemplateMenuScreen(@Nullable Screen parent, Consumer<Template> onTemplateChanged) {
         super(parent);
@@ -27,18 +26,24 @@ public class TemplateMenuScreen extends BaseScreen {
         int marginTop = 40;
         var listHeight = this.height - marginTop;
 
+        // Preview
+        var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
+        var preview = new SignPreviewWidget(0, 0, roadSign);
+        addRenderableWidget(preview);
+
+        var layoutX = listWidth + 10;
+        var layoutY = marginTop;
+
+        var layout = LinearLayout.vertical()
+                .padding(8)
+                .add(preview);
+        layout.layout(layoutX, layoutY);
         // List
         var list = new TemplateList(0, marginTop, listWidth, listHeight, (template) -> {
             this.selectedTemplate = template;
-            if (this.preview != null) {
-                removeWidget(preview);
-            }
-            this.preview = new RoadSignWidget(0, 0, template.buildDefault(), false);
-            addRenderableWidget(preview);
-            LinearLayout.vertical()
-                    .padding(8)
-                    .add(preview)
-                    .layout(listWidth + 10, marginTop);
+            // Update preview
+            preview.roadSign(template.buildDefault());
+            layout.layout(layoutX, layoutY);
         });
         addRenderableWidget(list);
 
