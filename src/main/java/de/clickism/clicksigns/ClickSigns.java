@@ -3,7 +3,7 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.sign.reload.RoadSignReloadListener;
+import de.clickism.clicksigns.sign.reload.SignReloadListener;
 import de.clickism.clicksigns.sign.reload.SymbolListener;
 import de.clickism.clicksigns.sign.reload.TemplateListener;
 import de.clickism.clicksigns.sign.reload.TileSetListener;
@@ -55,6 +55,6 @@ public class ClickSigns {
      * @return the resource location for the sign asset
      */
     public static ResourceLocation signAsset(String path) {
-        return identifier(RoadSignReloadListener.ROOT_DIR + "/" + path);
+        return identifier(SignReloadListener.ROOT_DIR + "/" + path);
     }
 }

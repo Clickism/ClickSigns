@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param <C> they type of the category JSON.
  */
-public abstract class CategorizedReloadListener<C> implements RoadSignReloadListener {
+public abstract class CategorizedReloadListener<C> implements SignReloadListener {
     private final CategorizedRegistry<?> registry;
     private final String subDirectory;
     private final String fileSuffix;
@@ -47,7 +47,7 @@ public abstract class CategorizedReloadListener<C> implements RoadSignReloadList
             registry.createAndRegisterCategory(identifier, name);
         });
         // Process resources
-        forEachResource(manager, fromRoot(subDirectory), fileSuffix, (location, resource) -> {
+        forEachResource(manager, subDirectory, fileSuffix, (location, resource) -> {
             var categoryId = categoryIdOf(location);
             var category = categories.get(categoryId);
             if (category == null) {

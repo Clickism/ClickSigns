@@ -12,9 +12,9 @@ import java.util.function.BiConsumer;
 
 /**
  * Reload listener for road sign related data.
- * Provides a common root path.
+ * Provides a common root path and category logic.
  */
-public interface RoadSignReloadListener extends ReloadListener {
+public interface SignReloadListener extends ReloadListener {
     /**
      * Root path for all road sign related textures/data.
      */
@@ -144,18 +144,18 @@ public interface RoadSignReloadListener extends ReloadListener {
      * <p>
      * Catches and logs all exceptions thrown by the consumer, so that one faulty resource does not prevent the others from being loaded.
      *
-     * @param manager   resource manager to use
-     * @param directory directory to look for resources in, relative to the root directory
-     * @param suffix    suffix that the resource path must end with to be included (e.g. ".json")
-     * @param consumer  consumer to apply to each resource
+     * @param manager      resource manager to use
+     * @param subDirectory subdirectory to look for resources in, relative to the root directory
+     * @param suffix       suffix that the resource path must end with to be included (e.g. ".json")
+     * @param consumer     consumer to apply to each resource
      */
     default void forEachResource(
             ResourceManager manager,
-            String directory,
+            String subDirectory,
             String suffix,
             BiConsumer<ResourceLocation, Resource> consumer) {
         manager.listResources(
-                directory,
+                fromRoot(subDirectory),
                 identifier -> identifier.getPath().endsWith(suffix)
         ).forEach((location, resource) -> {
             try {
