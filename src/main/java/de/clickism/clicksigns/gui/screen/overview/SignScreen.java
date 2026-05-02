@@ -8,8 +8,8 @@ import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
 import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.gui.widget.*;
-import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
-import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
+import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
@@ -101,11 +101,11 @@ public class SignScreen extends BaseScreen {
         this.elementProviders.clear();
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
+                var symbolWidget = new SymbolWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
+                var textBox = new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
                 this.elementProviders.add(textBox);
                 this.addRenderableWidget(textBox);
             }

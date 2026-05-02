@@ -21,7 +21,7 @@ import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 /**
  * Widget for a symbol element of a road sign
  */
-public class SymbolElementWidget extends ClickableTextureWidget implements ElementProvider {
+public class SymbolWidget extends ClickableTextureWidget implements ElementProvider {
     private final int anchorX;
     private final int anchorY;
     private SymbolElement symbol;
@@ -36,7 +36,7 @@ public class SymbolElementWidget extends ClickableTextureWidget implements Eleme
      * @param symbol  the symbol element to display
      * @param parent  the parent screen, used for going back from the symbol menu
      */
-    public SymbolElementWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
+    public SymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
         super(anchorX, anchorY, symbol.symbol().texture().resolve(colorResolver), OUTLINE_COLOR);
         this.colorResolver = colorResolver;
         this.anchorX = anchorX;

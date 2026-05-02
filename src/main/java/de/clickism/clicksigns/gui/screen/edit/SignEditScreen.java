@@ -3,12 +3,7 @@ package de.clickism.clicksigns.gui.screen.edit;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
-import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
-import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
-import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 

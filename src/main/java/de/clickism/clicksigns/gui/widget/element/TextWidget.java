@@ -18,7 +18,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * Widget for a text element of a road sign
  */
-public class TextElementWidget extends EditBox implements ElementProvider {
+public class TextWidget extends EditBox implements ElementProvider {
     private static final int UNEDITABLE_COLOR = 0xFF5555;
     private static final int TEXT_BOX_HEIGHT_SCALE = 4;
     /**
@@ -37,7 +37,7 @@ public class TextElementWidget extends EditBox implements ElementProvider {
     /**
      * Creates a new text element box.
      */
-    public TextElementWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
+    public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         // TODO: Maybe check other text fields to determine max width
         super(GuiUtils.font(), anchorX, anchorY,
                 maxTextWidth(text, signWidth) * TEXTURE_RENDER_SCALE,

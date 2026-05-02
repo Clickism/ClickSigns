@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.util.NestedWidget;
-import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
-import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
+import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
@@ -60,8 +60,8 @@ public class SignWidget extends NestedWidget {
     /**
      * Creates a widget for the given text element and road sign.
      */
-    protected TextElementWidget createTextElementWidget(int anchorX, int anchorY, TextElement textElement, RoadSign roadSign) {
-        var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
+    protected TextWidget createTextElementWidget(int anchorX, int anchorY, TextElement textElement, RoadSign roadSign) {
+        var textBox = new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
         textBox.makeUneditable();
         return textBox;
     }
@@ -69,8 +69,8 @@ public class SignWidget extends NestedWidget {
     /**
      * Creates a widget for the given symbol element and road sign.
      */
-    protected SymbolElementWidget createSymbolElementWidget(int anchorX, int anchorY, SymbolElement symbolElement, RoadSign roadSign) {
-        var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbolElement, roadSign.colorResolver(), parent);
+    protected SymbolWidget createSymbolElementWidget(int anchorX, int anchorY, SymbolElement symbolElement, RoadSign roadSign) {
+        var symbolWidget = new SymbolWidget(anchorX, anchorY, symbolElement, roadSign.colorResolver(), parent);
         symbolWidget.makeUneditable();
         return symbolWidget;
     }
