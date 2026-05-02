@@ -10,12 +10,12 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
-public class RoadSignEditScreen extends BaseScreen {
+public class SignEditScreen extends BaseScreen {
     private static final int PANEL_WIDTH = 200;
     private static final int PANEL_PADDING = 10;
     private final RoadSign roadSign;
 
-    protected RoadSignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
+    protected SignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
         super(parent);
         this.roadSign = roadSign;
     }

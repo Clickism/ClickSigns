@@ -128,6 +128,10 @@ public abstract class NestedWidget extends AbstractWidget {
         for (var child : children) {
             if (!child.isMouseOver(d, e)) continue;
             if (child.mouseClicked(d, e, i)) {
+                // Unfocus all children except the clicked one
+                children.forEach(c -> c.setFocused(c == child));
+                // Need to set the clicked child as focused, otherwise EditBox doesn't work
+                child.setFocused(true);
                 return true;
             }
         }

@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.layout.LinearLayout;
-import de.clickism.clicksigns.gui.widget.SignPreviewWidget;
+import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.gui.widget.TemplateList;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.gui.components.Button;
@@ -28,7 +28,7 @@ public class TemplateMenuScreen extends BaseScreen {
 
         // Preview
         var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
-        var preview = new SignPreviewWidget(0, 0, roadSign);
+        var preview = new SignWidget(0, 0, roadSign, null);
         addRenderableWidget(preview);
 
         var layoutX = listWidth + 10;

@@ -6,11 +6,9 @@ import de.clickism.clicksigns.gui.layout.LinearLayout;
 import de.clickism.clicksigns.gui.widget.*;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -23,7 +21,7 @@ import java.util.List;
 /**
  * Road sign screen
  */
-public class RoadSignScreen extends BaseScreen {
+public class SignScreen extends BaseScreen {
     private static final int PADDING = 8;
 
     private final BlockPos blockPos;
@@ -34,7 +32,7 @@ public class RoadSignScreen extends BaseScreen {
     /**
      * Creates a new road sign screen.
      */
-    public RoadSignScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
+    public SignScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
         super(parent);
         this.blockPos = entity.getBlockPos();
         var roadSign = entity.roadSign();
@@ -122,7 +120,7 @@ public class RoadSignScreen extends BaseScreen {
         var title = Component.literal("✎ ")
                 .append(Component.translatable("clicksigns.text.edit"));
         return Button.builder(title, button -> {
-            GuiUtils.openScreen(new RoadSignEditScreen(roadSign, this));
+            GuiUtils.openScreen(new SignEditScreen(roadSign, this));
         }).build();
     }
 
