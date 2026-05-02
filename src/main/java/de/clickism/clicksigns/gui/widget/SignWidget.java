@@ -1,5 +1,9 @@
 package de.clickism.clicksigns.gui.widget;
 
+import de.clickism.clicksigns.gui.util.NestedWidget;
+import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
+import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
+import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;

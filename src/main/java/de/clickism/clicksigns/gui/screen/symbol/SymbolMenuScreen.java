@@ -1,6 +1,6 @@
-package de.clickism.clicksigns.gui.screen;
+package de.clickism.clicksigns.gui.screen.symbol;
 
-import de.clickism.clicksigns.gui.widget.*;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.gui.screens.Screen;

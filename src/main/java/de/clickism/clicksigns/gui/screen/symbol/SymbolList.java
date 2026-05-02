@@ -1,13 +1,15 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.screen.symbol;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
+import de.clickism.clicksigns.gui.widget.texture.ClickableTextureWidget;
+import de.clickism.clicksigns.gui.util.NestedWidget;
+import de.clickism.clicksigns.gui.util.VerticalScrollContainer;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.StringWidget;
-import net.minecraft.network.chat.Component;
 
 import java.awt.Color;
 import java.util.Comparator;

@@ -1,6 +1,5 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.util;
 
-import de.clickism.clicksigns.gui.layout.LinearLayout;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

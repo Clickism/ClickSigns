@@ -1,8 +1,8 @@
-package de.clickism.clicksigns.gui.screen;
+package de.clickism.clicksigns.gui.screen.template;
 
-import de.clickism.clicksigns.gui.layout.LinearLayout;
+import de.clickism.clicksigns.gui.util.LinearLayout;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.widget.SignWidget;
-import de.clickism.clicksigns.gui.widget.TemplateList;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;

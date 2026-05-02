@@ -1,9 +1,16 @@
-package de.clickism.clicksigns.gui.screen;
+package de.clickism.clicksigns.gui.screen.overview;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.layout.LinearLayout;
+import de.clickism.clicksigns.gui.util.LinearLayout;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
+import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
+import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.gui.widget.*;
+import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
+import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
+import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;

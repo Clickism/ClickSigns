@@ -1,9 +1,9 @@
-package de.clickism.clicksigns.gui.screen;
+package de.clickism.clicksigns.gui.screen.edit;
 
-import de.clickism.clicksigns.gui.widget.PanelWidget;
-import de.clickism.clicksigns.gui.widget.SymbolElementWidget;
-import de.clickism.clicksigns.gui.widget.TextElementWidget;
-import de.clickism.clicksigns.gui.widget.TextureWidget;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
+import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
+import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;

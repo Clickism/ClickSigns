@@ -1,6 +1,9 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.screen.template;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
+import de.clickism.clicksigns.gui.util.NestedWidget;
+import de.clickism.clicksigns.gui.util.VerticalScrollContainer;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.gui.GuiGraphics;

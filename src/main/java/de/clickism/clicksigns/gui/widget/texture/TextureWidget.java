@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.widget.texture;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.clickism.clicksigns.sign.texture.Texture;

@@ -1,6 +1,7 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -9,7 +10,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;

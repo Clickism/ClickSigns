@@ -2,7 +2,7 @@ package de.clickism.clicksigns.block;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.SignScreen;
+import de.clickism.clicksigns.gui.screen.overview.SignScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

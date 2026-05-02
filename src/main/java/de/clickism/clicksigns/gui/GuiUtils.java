@@ -10,7 +10,7 @@ import org.joml.Vector2i;
 
 import java.awt.*;
 
-import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.TEXTURE_RENDER_SCALE;
 
 /**
  * Utility class for gui logic

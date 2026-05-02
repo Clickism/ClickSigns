@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.widget;
 
+import de.clickism.clicksigns.gui.util.NestedWidget;
 import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;

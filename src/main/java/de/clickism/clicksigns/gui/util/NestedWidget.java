@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.util;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;

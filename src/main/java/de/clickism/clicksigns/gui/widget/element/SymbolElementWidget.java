@@ -1,7 +1,9 @@
-package de.clickism.clicksigns.gui.widget;
+package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.SymbolMenuScreen;
+import de.clickism.clicksigns.gui.screen.symbol.SymbolMenuScreen;
+import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.gui.widget.texture.ClickableTextureWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
