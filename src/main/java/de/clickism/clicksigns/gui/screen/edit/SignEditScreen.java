@@ -1,6 +1,8 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
 import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.util.LinearLayout;
+import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.gui.widget.element.SymbolElementWidget;
 import de.clickism.clicksigns.gui.widget.element.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
@@ -22,25 +24,13 @@ public class SignEditScreen extends BaseScreen {
 
     @Override
     protected void init() {
-        var halfWidth = width / 2;
-        var halfHeight = height / 2;
         // Add road sign texture
-        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.frontTexture());
-        textureWidget.center();
-        this.addRenderableWidget(textureWidget);
-        // Calculate anchor for elements
-        int anchorX = textureWidget.getX();
-        int anchorY = textureWidget.getY() + textureWidget.getHeight();
-        // Add elements
-        for (var element : roadSign.elements()) {
-            if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new SymbolElementWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
-                this.addRenderableWidget(symbolWidget);
-            } else if (element instanceof TextElement textElement) {
-                var textBox = new TextElementWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
-                this.addRenderableWidget(textBox);
-            }
-        }
+        var signWidget = new SignWidget(0, 0, roadSign, this);
+        this.addRenderableWidget(signWidget);
+        LinearLayout.vertical()
+                .add(signWidget)
+                .center()
+                .layout(halfWidth(), halfHeight());
 
         // Add panels
         var leftPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);

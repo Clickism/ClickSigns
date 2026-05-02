@@ -50,4 +50,22 @@ public abstract class BaseScreen extends Screen {
     public void onClose() {
         GuiUtils.openScreen(parent);
     }
+
+    /**
+     * Gets the half width of the screen, used for centering widgets.
+     *
+     * @return the half width of the screen
+     */
+    public int halfWidth() {
+        return width / 2;
+    }
+
+    /**
+     * Gets the half height of the screen, used for centering widgets.
+     *
+     * @return the half height of the screen
+     */
+    public int halfHeight() {
+        return height / 2;
+    }
 }
