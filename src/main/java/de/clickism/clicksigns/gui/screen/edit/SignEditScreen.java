@@ -15,7 +15,7 @@ public class SignEditScreen extends BaseScreen {
     private static final int PANEL_PADDING = 10;
     private final RoadSign roadSign;
 
-    protected SignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
+    public SignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
         super(parent);
         this.roadSign = roadSign;
     }
