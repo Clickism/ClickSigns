@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.screen;
 
+import de.clickism.clicksigns.gui.widget.PanelWidget;
 import de.clickism.clicksigns.gui.widget.SymbolElementWidget;
 import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.gui.widget.TextureWidget;
@@ -10,6 +11,8 @@ import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
 public class RoadSignEditScreen extends BaseScreen {
+    private static final int PANEL_WIDTH = 200;
+    private static final int PANEL_PADDING = 10;
     private final RoadSign roadSign;
 
     protected RoadSignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
@@ -38,5 +41,12 @@ public class RoadSignEditScreen extends BaseScreen {
                 this.addRenderableWidget(textBox);
             }
         }
+
+        // Add panels
+        var leftPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
+        addRenderableWidget(leftPanel);
+
+        var rightPanel = new PanelWidget(width - PANEL_WIDTH + PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
+        addRenderableWidget(rightPanel);
     }
 }
