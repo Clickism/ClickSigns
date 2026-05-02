@@ -40,7 +40,7 @@ public class SignWidget extends NestedWidget {
         this.children().clear();
         // Add road sign texture
         var textureWidget = new TextureWidget(this.getX(), this.getY(), roadSign.frontTexture());
-        this.addChildNoUpdate(textureWidget);
+        this.addChild(textureWidget);
         // Calculate anchor for elements
         int anchorX = textureWidget.getX();
         int anchorY = textureWidget.getY() + textureWidget.getHeight();
@@ -48,10 +48,10 @@ public class SignWidget extends NestedWidget {
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
                 var symbolWidget = createSymbolElementWidget(anchorX, anchorY, symbol, roadSign);
-                this.addChildNoUpdate(symbolWidget);
+                this.addChild(symbolWidget);
             } else if (element instanceof TextElement textElement) {
                 var textBox = createTextElementWidget(anchorX, anchorY, textElement, roadSign);
-                this.addChildNoUpdate(textBox);
+                this.addChild(textBox);
             }
         }
         this.updateSize();
@@ -61,17 +61,13 @@ public class SignWidget extends NestedWidget {
      * Creates a widget for the given text element and road sign.
      */
     protected TextWidget createTextElementWidget(int anchorX, int anchorY, TextElement textElement, RoadSign roadSign) {
-        var textBox = new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
-        textBox.makeUneditable();
-        return textBox;
+        return new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
     }
 
     /**
      * Creates a widget for the given symbol element and road sign.
      */
     protected SymbolWidget createSymbolElementWidget(int anchorX, int anchorY, SymbolElement symbolElement, RoadSign roadSign) {
-        var symbolWidget = new SymbolWidget(anchorX, anchorY, symbolElement, roadSign.colorResolver(), parent);
-        symbolWidget.makeUneditable();
-        return symbolWidget;
+        return new SymbolWidget(anchorX, anchorY, symbolElement, roadSign.colorResolver(), parent);
     }
 }

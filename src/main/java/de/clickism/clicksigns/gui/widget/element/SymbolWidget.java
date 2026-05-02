@@ -1,20 +1,12 @@
 package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.symbol.SymbolMenuScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.gui.widget.texture.ClickableTextureWidget;
-import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.ColorResolver;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 
@@ -22,11 +14,11 @@ import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
  * Widget for a symbol element of a road sign
  */
 public class SymbolWidget extends ClickableTextureWidget implements ElementProvider {
-    private final int anchorX;
-    private final int anchorY;
-    private SymbolElement symbol;
-    private final ColorResolver colorResolver;
-    private final Screen parent;
+    protected final int anchorX;
+    protected final int anchorY;
+    protected SymbolElement symbol;
+    protected final ColorResolver colorResolver;
+    protected final Screen parent;
 
     /**
      * Creates a new symbol widget.
@@ -37,23 +29,27 @@ public class SymbolWidget extends ClickableTextureWidget implements ElementProvi
      * @param parent  the parent screen, used for going back from the symbol menu
      */
     public SymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
-        super(anchorX, anchorY, symbol.symbol().texture().resolve(colorResolver), OUTLINE_COLOR);
+        this(anchorX, anchorY, symbol, colorResolver, OUTLINE_COLOR, parent);
+    }
+
+    /**
+     * Creates a new symbol widget with a custom outline color.
+     *
+     * @param anchorX       the x position to anchor the element on the sign
+     * @param anchorY       the y position to anchor the element on the sign
+     * @param symbol        the symbol element to display
+     * @param colorResolver the color resolver to use for resolving the symbol texture
+     * @param outlineColor  the color of the outline to render on hover
+     * @param parent        the parent screen, used for going back from the symbol menu
+     */
+    public SymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, int outlineColor, Screen parent) {
+        super(anchorX, anchorY, symbol.symbol().texture().resolve(colorResolver), outlineColor);
         this.colorResolver = colorResolver;
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         this.symbol = symbol;
         this.parent = parent;
         this.updatePosition();
-        // TODO: Translate
-        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu")));
-    }
-
-    /**
-     * Makes the widget uneditable, disabling interaction and removing the tooltip.
-     */
-    public void makeUneditable() {
-        this.setTooltip(null);
-        this.active = false;
     }
 
     @Override
@@ -61,54 +57,22 @@ public class SymbolWidget extends ClickableTextureWidget implements ElementProvi
         return symbol;
     }
 
-    private void symbol(SymbolElement symbol) {
+    /**
+     * Changes the displayed symbol of this widget.
+     *
+     * @param symbol the new symbol to display
+     */
+    protected void symbol(SymbolElement symbol) {
         this.symbol = symbol;
         this.texture(symbol.symbol().texture().resolve(colorResolver));
         updatePosition();
     }
 
-    private void updatePosition() {
+    /**
+     * Updates the position of the widget based on the anchor and the size of the symbol.
+     */
+    protected void updatePosition() {
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, symbol, this.width, this.height);
         this.setPosition(pos.x, pos.y);
-    }
-
-    @Override
-    protected boolean isValidClickButton(int i) {
-        // Left or right click
-        return i == 0 || i == 1;
-    }
-
-    @Override
-    public boolean mouseClicked(double d, double e, int i) {
-        if (!super.mouseClicked(d, e, i)) return false;
-        // Left click
-        if (i == 0) {
-            cycleSymbol();
-            return true;
-        }
-        // Right click
-        if (i == 1) {
-            openSymbolMenu();
-            return true;
-        }
-        return false;
-    }
-
-    private void cycleSymbol() {
-        var category = symbol.symbol().resolveCategory();
-        if (category == null) return;
-        List<ResourceLocation> ids = new ArrayList<>(category.entries());
-        int currentIndex = ids.indexOf(symbol.symbol().identifier());
-        int nextIndex = (currentIndex + 1) % ids.size();
-        // Update symbol
-        this.symbol = this.symbol.withSymbol(SignRegistries.SYMBOLS.get(ids.get(nextIndex)));
-        this.symbol(this.symbol);
-    }
-
-    private void openSymbolMenu() {
-        GuiUtils.openScreen(new SymbolMenuScreen(parent, colorResolver, symbol -> {
-            this.symbol(this.symbol.withSymbol(symbol));
-            GuiUtils.closeScreen();
-        }));
     }
 }

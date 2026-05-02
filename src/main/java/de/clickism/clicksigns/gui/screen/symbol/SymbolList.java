@@ -11,7 +11,7 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -65,7 +65,7 @@ public class SymbolList extends VerticalScrollContainer {
         public SymbolGrid(List<Symbol> symbols, int gridWidth) {
             super(0, 0);
             this.gridWidth = gridWidth;
-            addChildren(symbols.stream()
+            addChildrenAndUpdate(symbols.stream()
                     .map(symbol -> new SymbolWidget(0, 0, symbol))
                     // Sort by identifier for consistent order
                     .sorted(Comparator.comparing(widget -> widget.symbol.identifier().toString()))
@@ -108,7 +108,7 @@ public class SymbolList extends VerticalScrollContainer {
         /**
          * Widget for a single symbol.
          */
-        public class SymbolWidget extends ClickableTextureWidget {
+        private class SymbolWidget extends ClickableTextureWidget {
             private final Symbol symbol;
 
             /**

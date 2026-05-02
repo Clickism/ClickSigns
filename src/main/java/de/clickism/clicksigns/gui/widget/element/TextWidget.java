@@ -19,20 +19,20 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * Widget for a text element of a road sign
  */
 public class TextWidget extends EditBox implements ElementProvider {
-    private static final int UNEDITABLE_COLOR = 0xFF5555;
-    private static final int TEXT_BOX_HEIGHT_SCALE = 4;
+    protected static final int UNEDITABLE_COLOR = 0xFF5555;
+    protected static final int TEXT_BOX_HEIGHT_SCALE = 4;
     /**
      * Padding between the text and the edge of the sign, in pixels.
      * Used to calculate max width of text fields.
      */
-    private static final int SIGN_PADDING = 1;
+    protected static final int SIGN_PADDING = 1;
 
-    private TextElement text;
-    private final ColorResolver colorResolver;
+    protected TextElement text;
+    protected final ColorResolver colorResolver;
     /**
      * Max text width in sign pixels
      */
-    private final int maxWidth;
+    protected final int maxWidth;
 
     /**
      * Creates a new text element box.
@@ -54,7 +54,6 @@ public class TextWidget extends EditBox implements ElementProvider {
         this.setResponder(this::onChange);
         // Unreadable in some cases, so skip for now:
         // this.setTextColor(text.backgroundColor());
-        this.setTooltip(Tooltip.create(Component.literal("§lClick §rto edit text\n§lShift+Click §rto change color")));
     }
 
     // TODO: Maybe custom renderer to render like displayed?
@@ -65,12 +64,9 @@ public class TextWidget extends EditBox implements ElementProvider {
             var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
             guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
         }
-        if (this.isHovered && this.active) {
-            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, GuiUtils.OUTLINE_COLOR);
-        }
     }
 
-    private void onChange(String value) {
+    protected void onChange(String value) {
         if (renderWidthOf(value) > this.maxWidth) {
             // Text too big, trim it and set text color to red
             value = value.substring(0, value.length() - 1);
@@ -86,14 +82,6 @@ public class TextWidget extends EditBox implements ElementProvider {
     @Override
     public SignElement element() {
         return text;
-    }
-
-    /**
-     * Makes the widget uneditable, disabling interaction and removing the tooltip.
-     */
-    public void makeUneditable() {
-        this.setTooltip(null);
-        this.active = false;
     }
 
     /**

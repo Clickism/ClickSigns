@@ -1,7 +1,9 @@
 package de.clickism.clicksigns.gui.util;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
@@ -31,8 +33,8 @@ public abstract class NestedWidget extends AbstractWidget {
      *
      * @param widget The widget to add as a child.
      */
-    protected void addChild(AbstractWidget widget) {
-        children.add(widget);
+    protected void addChildAndUpdate(AbstractWidget widget) {
+        addChild(widget);
         updateSize();
     }
 
@@ -41,8 +43,10 @@ public abstract class NestedWidget extends AbstractWidget {
      *
      * @param widget The widget to add as a child.
      */
-    protected void addChildNoUpdate(AbstractWidget widget) {
+    protected void addChild(AbstractWidget widget) {
         children.add(widget);
+        // Sync up active state
+        widget.active = this.active;
     }
 
     /**
@@ -50,19 +54,7 @@ public abstract class NestedWidget extends AbstractWidget {
      *
      * @param widgets The widgets to add as children.
      */
-    protected void addChildren(AbstractWidget... widgets) {
-        for (var widget : widgets) {
-            addChild(widget);
-        }
-        updateSize();
-    }
-
-    /**
-     * Adds multiple child widgets to this widget.
-     *
-     * @param widgets The widgets to add as children.
-     */
-    protected void addChildren(Collection<? extends AbstractWidget> widgets) {
+    protected void addChildrenAndUpdate(Collection<? extends AbstractWidget> widgets) {
         for (var widget : widgets) {
             addChild(widget);
         }
@@ -123,19 +115,26 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Click this widget
+        if (this.isMouseOver(mouseX, mouseY)) {
+            playDownSound(Minecraft.getInstance().getSoundManager());
+            this.onClick(mouseX, mouseY);
+        }
         // Click all children
         for (var child : children) {
-            if (!child.isMouseOver(d, e)) continue;
-            if (child.mouseClicked(d, e, i)) {
+            if (!child.isMouseOver(mouseX, mouseY)) continue;
+            if (child.mouseClicked(mouseX, mouseY, button)) {
                 // Unfocus all children except the clicked one
                 children.forEach(c -> c.setFocused(c == child));
                 // Need to set the clicked child as focused, otherwise EditBox doesn't work
-                child.setFocused(true);
+                if (child instanceof EditBox) {
+                    child.setFocused(true);
+                }
                 return true;
             }
         }
-        return super.mouseClicked(d, e, i);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -204,6 +203,18 @@ public abstract class NestedWidget extends AbstractWidget {
         // Narrate all children
         for (var child : children) {
             child.updateNarration(narrationElementOutput);
+        }
+    }
+
+    /**
+     * Sets the active state of this widget and all its children.
+     *
+     * @param active the new active state to set
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+        for (var child : children()) {
+            child.active = active;
         }
     }
 }

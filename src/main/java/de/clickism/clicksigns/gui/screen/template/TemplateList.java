@@ -61,7 +61,7 @@ public class TemplateList extends VerticalScrollContainer {
             int offsetX = 20;
             var stringWidget = new StringWidget(offsetX, 2, TemplateList.this.width - offsetX, 18, Component.literal(displayName), GuiUtils.font());
             stringWidget.alignLeft();
-            addChild(stringWidget);
+            addChildAndUpdate(stringWidget);
             this.template = template;
 
         }

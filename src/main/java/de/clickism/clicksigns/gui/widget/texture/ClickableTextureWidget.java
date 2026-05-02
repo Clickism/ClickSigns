@@ -29,26 +29,7 @@ public class ClickableTextureWidget extends TextureWidget {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         if (this.isHovered && this.active) {
-            renderOutline(guiGraphics);
+            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
-    }
-
-    /**
-     * Renders an outline around the widget.
-     *
-     * @param guiGraphics the graphics context to render with
-     */
-    public void renderOutline(GuiGraphics guiGraphics) {
-        renderOutline(guiGraphics, outlineColor);
-    }
-
-    /**
-     * Renders an outline around the widget with the specified color.
-     *
-     * @param guiGraphics the graphics context to render with
-     * @param color       the color of the outline
-     */
-    public void renderOutline(GuiGraphics guiGraphics, int color) {
-        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, color);
     }
 }

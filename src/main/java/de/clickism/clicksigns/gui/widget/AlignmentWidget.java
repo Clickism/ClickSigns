@@ -38,7 +38,7 @@ public class AlignmentWidget extends NestedWidget {
             if (alignment != currentAlignment) {
                 button.setAlpha(NOT_SELECTED_ALPHA);
             }
-            addChild(button);
+            addChildAndUpdate(button);
         }
     }
 }
