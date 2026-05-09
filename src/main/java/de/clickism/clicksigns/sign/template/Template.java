@@ -5,7 +5,7 @@ import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.template.layout.Layout;
-import de.clickism.clicksigns.sign.template.texture.TextureDefinition;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +18,8 @@ public record Template(
         Meta meta,
         @Nullable ResourceLocation categoryId,
         // Sign data
-        TextureDefinition front,
-        TextureDefinition back,
+        TextureSource front,
+        TextureSource back,
         List<TextVariant> textVariants,
         Layout layout
 ) implements Categorized<Template> {
@@ -47,8 +47,8 @@ public record Template(
     public RoadSign build(int width, int height) {
         var elements = layout.build(new Size(width, height));
         return new RoadSign(
-                front.defaultTexture().resize(width, height),
-                back.defaultTexture().resize(width, height),
+                front.resize(width, height),
+                back.resize(width, height),
                 elements,
                 RoadSign.DEFAULT_ALIGNMENT,
                 this.identifier

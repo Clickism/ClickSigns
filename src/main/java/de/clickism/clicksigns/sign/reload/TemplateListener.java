@@ -1,12 +1,10 @@
 package de.clickism.clicksigns.sign.reload;
 
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.layout.FixedLayout;
-import de.clickism.clicksigns.sign.template.texture.TextureDefinition;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
@@ -16,8 +14,6 @@ import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Template reload listener.
@@ -77,12 +73,15 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
             Template.Meta meta,
             int width,
             int height,
-            TextureDefinitionJson front,
-            TextureDefinitionJson back,
+            ResourceLocation front,
+            ResourceLocation back,
             List<JsonObject> elements
     ) {
         private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
 
+        /**
+         * Converts the json into a template object
+         */
         private Template toTemplate(ResourceLocation id, ResourceLocation categoryId) {
             var parsedElements = elements.stream()
                     .map(ELEMENT_PARSER::parse)
@@ -91,85 +90,24 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
                     id,
                     meta,
                     categoryId,
-                    front.toTextureDefinition(width, height),
-                    back.toTextureDefinition(width, height),
+                    parseTexture(front),
+                    parseTexture(back),
                     List.of(), // TODO: text variants
                     new FixedLayout(parsedElements, new Size(width, height))
             );
         }
-    }
 
-    /**
-     * Texture definition json format for template texture definitions.
-     * <p>
-     * Supported textures can hold one of the following:
-     * - A single custom texture (e.g. "clicksigns:custom/my_texture.png")
-     * - A single tile set (e.g. "clicksigns:tilesets/cool/blue.png")
-     * - A category of tile sets, with a # before it (e.g. "#clicksigns:tilesets/cool")
-     *
-     * @param defaultTexture the default texture to use for the template
-     * @param supported      set of supported textures for the template
-     */
-    private record TextureDefinitionJson(
-            @SerializedName("default")
-            ResourceLocation defaultTexture,
-            List<String> supported
-    ) {
         /**
-         * Converts the json object to a texture definition object
+         * Parses the given texture identifier as tileset or static texture.
          *
-         * @param width  the width of the sign in pixels
-         * @param height the height of the sign in pixels
-         * @return texture definition object
+         * @param location the texture identifier to parse
+         * @return texture source
          */
-        private TextureDefinition toTextureDefinition(int width, int height) {
-            var parsedSupported = parseSupportedTextures(width, height);
-            if (SignRegistries.TILE_SETS.has(defaultTexture)) {
-                return new TextureDefinition(new TiledTextureSource(defaultTexture, width, height), parsedSupported);
+        private TextureSource parseTexture(ResourceLocation location) {
+            if (SignRegistries.TILE_SETS.has(location)) {
+                return new TiledTextureSource(location, width, height);
             }
-            return new TextureDefinition(new StaticTextureSource(defaultTexture), parsedSupported);
-        }
-
-        /**
-         * Parses the supported textures for the template.
-         *
-         * @param width  the width of the sign in pixels
-         * @param height the height of the sign in pixels
-         * @return a list of supported texture sources
-         */
-        private List<TextureSource> parseSupportedTextures(int width, int height) {
-            return supported.stream()
-                    .flatMap(idOrCategory -> {
-                        // Check if category
-                        var categoryId = getCategoryId(idOrCategory);
-                        var category = SignRegistries.TILE_SETS.getCategory(categoryId);
-                        if (category != null) {
-                            // Add all tilesets in category
-                            return category.resolveEntries().stream()
-                                    .map(tileSet -> new TiledTextureSource(tileSet.identifier(), width, height));
-                        }
-                        // Not a category, check if tile set
-                        var location = ResourceLocation.tryParse(idOrCategory);
-                        if (SignRegistries.TILE_SETS.has(location)) {
-                            return Stream.of(new TiledTextureSource(location, width, height));
-                        }
-                        // Not a tile set, treat as static texture
-                        return Stream.of(new StaticTextureSource(location));
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        /**
-         * Gets the category id from the given string, if it is a category reference (starts with #), otherwise returns null.
-         *
-         * @param id the string to get the category id from
-         * @return the category id if the string is a category reference, otherwise null
-         */
-        private @Nullable ResourceLocation getCategoryId(String id) {
-            if (id.startsWith("#")) {
-                return ResourceLocation.tryParse(id.substring(1));
-            }
-            return null;
+            return new StaticTextureSource(location);
         }
     }
 

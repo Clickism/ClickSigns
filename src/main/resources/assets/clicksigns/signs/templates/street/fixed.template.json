@@ -7,18 +7,8 @@
   },
   "width": 32,
   "height": 32,
-  "front": {
-    "default": "clicksigns:signs/tilesets/default/white.png",
-    "supported": [
-      "#clicksigns:signs/tilesets/default"
-    ]
-  },
-  "back": {
-    "default": "clicksigns:signs/tilesets/backs/back.png",
-    "supported": [
-      "#clicksigns:signs/tilesets/backs"
-    ]
-  },
+  "front": "clicksigns:signs/tilesets/default/white.png",
+  "back": "clicksigns:signs/tilesets/backs/back.png",
   "textVariants": [
     "#default"
   ],
@@ -33,6 +23,7 @@
     },
     {
       "type": "text",
+      "variant": "clicksigns:signs/texts/default/black",
       "position": {
         "x": 6,
         "y": 6
