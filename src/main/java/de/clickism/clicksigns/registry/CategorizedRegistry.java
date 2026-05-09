@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A registry for categorized entries. Extends the basic {@link Registry} with support for categories.
@@ -21,6 +23,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * Map from category id to category
      */
     protected final Map<ResourceLocation, Category<T>> categories = new HashMap<>();
+    // TODO: Handle uncategorized
 
     /**
      * Creates a new categorized registry with no default entry.
@@ -86,6 +89,36 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      */
     public Collection<Category<T>> allCategories() {
         return Collections.unmodifiableCollection(categories.values());
+    }
+
+    /**
+     * Gets a map of all categories and their resolved entries.
+     *
+     * @return a map from category to entries
+     */
+    public Map<Category<T>, Collection<T>> categoryToEntries() {
+        return categories.values().stream()
+                .collect(Collectors.toMap(
+                        category -> category,
+                        Category::resolveEntries
+                ));
+    }
+
+    /**
+     * Gets a map of all categories and their resolved entries, mapped to another type using the given entry mapper function.
+     *
+     * @param entryMapper a function that maps entries of type T to another type K
+     * @param <K>         the type to map entries to
+     * @return a map from category to mapped entries
+     */
+    public <K> Map<Category<T>, Collection<K>> categoryToEntriesAndThen(Function<T, K> entryMapper) {
+        return categories.values().stream()
+                .collect(Collectors.toMap(
+                        category -> category,
+                        category -> category.resolveEntries().stream()
+                                .map(entryMapper)
+                                .toList()
+                ));
     }
 
     /**

@@ -59,6 +59,16 @@ public class LinearLayout {
     }
 
     /**
+     * Adds spacing between the elements in the layout.
+     *
+     * @param spacing the space in pixels to add between elements in the layout
+     * @return this
+     */
+    public LinearLayout addSpacing(int spacing) {
+        return add(spacer(spacing));
+    }
+
+    /**
      * Sets the padding between the elements in the layout.
      *
      * @param padding the padding in pixels

@@ -3,6 +3,7 @@ package de.clickism.clicksigns.sign.texture.source;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
@@ -45,6 +46,16 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
      */
     default boolean canResize() {
         return false; // By default, don't support resizing
+    }
+
+    /**
+     * Resizes this texture source to fit the dimensions of the given PixelSized object, if supported.
+     *
+     * @param sized the PixelSized object to fit the texture to
+     * @return a new TextureSource that will produce a texture of the specified dimensions when resolved
+     */
+    default TextureSource resizeToFit(PixelSized sized) {
+        return resize(sized.width(), sized.height());
     }
 
     /**

@@ -1,7 +1,8 @@
 package de.clickism.clicksigns.gui.screen.overview;
 
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.symbol.SymbolMenuScreen;
+import de.clickism.clicksigns.gui.screen.TextureMenuScreen;
+import de.clickism.clicksigns.gui.widget.TextureList;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
@@ -61,9 +62,17 @@ public class OverviewSymbolWidget extends SymbolWidget {
     }
 
     private void openSymbolMenu() {
-        GuiUtils.openScreen(new SymbolMenuScreen(parent, colorResolver, symbol -> {
+        // TODO: Add uncategorized symbols at the end
+        var categoryToTextures = SignRegistries.SYMBOLS.categoryToEntriesAndThen(symbol -> new TextureList.IdentifiableTexture(
+                symbol.identifier(),
+                symbol.texture().resolve(colorResolver)));
+        // Open symbol selector screen
+        var screen = new TextureMenuScreen<>(parent, categoryToTextures, identifier -> {
+            var symbol = SignRegistries.SYMBOLS.get(identifier);
+            if (symbol == null) return;
             this.symbol(this.symbol.withSymbol(symbol));
             GuiUtils.closeScreen();
-        }));
+        });
+        GuiUtils.openScreen(screen);
     }
 }

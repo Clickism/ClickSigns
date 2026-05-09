@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
@@ -7,13 +8,13 @@ import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.Size;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
-
-import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 
 /**
  * Screen for editing a road sign in an advanced way.
@@ -47,8 +48,18 @@ public class SignEditScreen extends BaseScreen {
         // TODO: Use custom text and symbol widgets
         var signWidget = new SignWidget(0, 0, roadSign, TextWidget::new, SymbolWidget::new, this);
         this.addRenderableWidget(signWidget);
+
+        var sizeWidget = new StringWidget(0, 0, 100, 20, Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()), GuiUtils.font());
+        this.addRenderableWidget(sizeWidget);
+
+        var confirmButton = Button.builder(Component.translatable("clicksigns.text.confirm"), b -> GuiUtils.closeScreen()).build();
+        this.addRenderableWidget(confirmButton);
+
         LinearLayout.vertical()
                 .add(signWidget)
+                .addSpacing(48)
+                .add(sizeWidget)
+                .add(confirmButton)
                 .center()
                 .layout(halfWidth(), halfHeight());
 
@@ -67,12 +78,17 @@ public class SignEditScreen extends BaseScreen {
                 .centerHorizontal()
                 .composer(PANEL_WIDTH - PANEL_PADDING * 2)
                 // Add sections
-                .bigHeader(Component.literal("Road Sign Properties"))
-                .text(Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()))
-                .header(Component.literal("Front Texture"))
-                .widget(new EditableTextureWidget(0, 0, roadSign.frontSource().resize(16, 16).resolve(roadSign.colorResolver()), OUTLINE_COLOR))
-                .header(Component.literal("Back Texture"))
-                .widget(new EditableTextureWidget(0, 0, roadSign.backSource().resize(16, 16).resolve(roadSign.colorResolver()), OUTLINE_COLOR))
+                .bigHeader(Component.literal("Sign Properties"))
+                .header(Component.literal("Textures"))
+                .widget(new TextureProperties(0, 0, this, roadSign, this::roadSign))
+//                .header(Component.literal("Front Texture"))
+//                .widget(new EditableTextureWidget(this, 0, 0, roadSign.frontSource().resize(16, 16).resolve(roadSign.colorResolver()), source -> {
+//                    roadSign(roadSign.withFront(source.resizeToFit(roadSign)));
+//                }))
+//                .header(Component.literal("Back Texture"))
+//                .widget(new EditableTextureWidget(this, 0, 0, roadSign.backSource().resize(16, 16).resolve(roadSign.colorResolver()), source -> {
+//                    roadSign(roadSign.withBack(source.resizeToFit(roadSign)));
+//                }))
                 .header(Component.literal("Elements"))
                 .button(Component.literal("Add Symbol"), b -> {})
                 .button(Component.literal("Add Text"), b -> {})
@@ -90,6 +106,7 @@ public class SignEditScreen extends BaseScreen {
                 .composer(PANEL_WIDTH - PANEL_PADDING * 2)
                 // Add sections
                 .bigHeader(Component.literal("Element Properties"))
+                .text(Component.literal("No element selected"))
                 // Lay out in the center of the panel
                 .layout(width - PANEL_WIDTH / 2, PANEL_PADDING)
                 .compose(this::addRenderableWidget);
