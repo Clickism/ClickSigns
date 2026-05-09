@@ -29,7 +29,7 @@ public class SymbolWidget extends ClickableTextureWidget implements ElementProvi
      * @param parent  the parent screen, used for going back from the symbol menu
      */
     public SymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
-        this(anchorX, anchorY, symbol, colorResolver, OUTLINE_COLOR, parent);
+        this(anchorX, anchorY, symbol, colorResolver, 0, parent);
     }
 
     /**

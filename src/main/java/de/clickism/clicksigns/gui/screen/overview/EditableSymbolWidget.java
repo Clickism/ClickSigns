@@ -22,7 +22,7 @@ public class EditableSymbolWidget extends SymbolWidget {
      * Creates a new editable symbol widget.
      */
     public EditableSymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
-        super(anchorX, anchorY, symbol, colorResolver, parent);
+        super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
         // TODO: Translate
         this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu")));
     }

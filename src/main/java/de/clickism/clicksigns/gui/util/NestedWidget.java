@@ -116,14 +116,10 @@ public abstract class NestedWidget extends AbstractWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Click this widget
-        if (this.isMouseOver(mouseX, mouseY)) {
-            playDownSound(Minecraft.getInstance().getSoundManager());
-            this.onClick(mouseX, mouseY);
-        }
         // Click all children
         for (var child : children) {
             if (!child.isMouseOver(mouseX, mouseY)) continue;
+            if (!child.active || !child.visible) continue;
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 // Unfocus all children except the clicked one
                 children.forEach(c -> c.setFocused(c == child));
@@ -131,7 +127,7 @@ public abstract class NestedWidget extends AbstractWidget {
                 if (child instanceof EditBox) {
                     child.setFocused(true);
                 }
-                return true;
+                break;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);

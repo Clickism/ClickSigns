@@ -5,10 +5,10 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,7 +31,7 @@ public record RoadSign(
         List<SignElement> elements,
         Alignment alignment,
         @Nullable ResourceLocation templateId
-) {
+) implements PixelSized {
     /**
      * The default alignment for road signs when no alignment is set.
      */
@@ -84,6 +84,16 @@ public record RoadSign(
      */
     public Texture backTexture() {
         return backSource.resolve(colorResolver());
+    }
+
+    @Override
+    public int width() {
+        return frontTexture().width();
+    }
+
+    @Override
+    public int height() {
+        return frontTexture().height();
     }
 
     /**

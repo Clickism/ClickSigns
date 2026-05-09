@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SignWidget extends NestedWidget {
     protected final Screen parent;
+    protected final TextWidgetProvider textWidgetProvider;
+    protected final SymbolWidgetProvider symbolWidgetProvider;
 
     /**
      * Creates a new sign widget at the given position, displaying the given road sign.
@@ -25,8 +27,26 @@ public class SignWidget extends NestedWidget {
      * @param parent   the parent screen for symbol menus
      */
     public SignWidget(int x, int y, RoadSign roadSign, @Nullable Screen parent) {
+        this(x, y, roadSign,
+                (anchorX, anchorY, textElement, sign) ->
+                        new TextWidget(anchorX, anchorY, textElement, sign.colorResolver(), sign.width()),
+                (anchorX, anchorY, symbolElement, sign) ->
+                        new SymbolWidget(anchorX, anchorY, symbolElement, sign.colorResolver(), parent),
+                parent
+        );
+    }
+
+    public SignWidget(
+            int x, int y,
+            @Nullable RoadSign roadSign,
+            TextWidgetProvider textWidgetProvider,
+            SymbolWidgetProvider symbolWidgetProvider,
+            @Nullable Screen parent
+    ) {
         super(x, y);
         this.parent = parent;
+        this.textWidgetProvider = textWidgetProvider;
+        this.symbolWidgetProvider = symbolWidgetProvider;
         if (roadSign == null) return;
         roadSign(roadSign);
     }
@@ -47,10 +67,10 @@ public class SignWidget extends NestedWidget {
         // Add elements
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = createSymbolElementWidget(anchorX, anchorY, symbol, roadSign);
+                var symbolWidget = symbolWidgetProvider.create(anchorX, anchorY, symbol, roadSign);
                 this.addChild(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = createTextElementWidget(anchorX, anchorY, textElement, roadSign);
+                var textBox = textWidgetProvider.create(anchorX, anchorY, textElement, roadSign);
                 this.addChild(textBox);
             }
         }
@@ -58,16 +78,22 @@ public class SignWidget extends NestedWidget {
     }
 
     /**
-     * Creates a widget for the given text element and road sign.
+     * Factory interface for text widgets
      */
-    protected TextWidget createTextElementWidget(int anchorX, int anchorY, TextElement textElement, RoadSign roadSign) {
-        return new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
+    public interface TextWidgetProvider {
+        /**
+         * Creates a new text widget
+         */
+        TextWidget create(int anchorX, int anchorY, TextElement textElement, RoadSign roadSign);
     }
 
     /**
-     * Creates a widget for the given symbol element and road sign.
+     * Factory interface for symbol widgets
      */
-    protected SymbolWidget createSymbolElementWidget(int anchorX, int anchorY, SymbolElement symbolElement, RoadSign roadSign) {
-        return new SymbolWidget(anchorX, anchorY, symbolElement, roadSign.colorResolver(), parent);
+    public interface SymbolWidgetProvider {
+        /**
+         * Creates a new symbol widget
+         */
+        SymbolWidget create(int anchorX, int anchorY, SymbolElement symbolElement, RoadSign roadSign);
     }
 }

@@ -101,11 +101,11 @@ public class SignScreen extends BaseScreen {
         this.elementProviders.clear();
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new SymbolWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
+                var symbolWidget = new EditableSymbolWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
                 this.elementProviders.add(symbolWidget);
                 this.addRenderableWidget(symbolWidget);
             } else if (element instanceof TextElement textElement) {
-                var textBox = new TextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
+                var textBox = new EditableTextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
                 this.elementProviders.add(textBox);
                 this.addRenderableWidget(textBox);
             }
