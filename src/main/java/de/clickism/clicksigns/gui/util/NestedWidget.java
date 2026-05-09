@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.gui.util;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -59,6 +58,13 @@ public abstract class NestedWidget extends AbstractWidget {
             addChild(widget);
         }
         updateSize();
+    }
+
+    /**
+     * Removes all child widgets from this widget.
+     */
+    protected void clearChildren() {
+        children.clear();
     }
 
     /**

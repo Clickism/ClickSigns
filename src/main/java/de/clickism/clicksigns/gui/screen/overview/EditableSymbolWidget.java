@@ -34,15 +34,15 @@ public class EditableSymbolWidget extends SymbolWidget {
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
-        if (!super.mouseClicked(d, e, i)) return false;
+    public boolean mouseClicked(double mouseX, double mouseY, int mouse) {
+        if (!super.mouseClicked(mouseX, mouseY, mouse)) return false;
         // Left click
-        if (i == 0) {
+        if (mouse == 0) {
             cycleSymbol();
             return true;
         }
         // Right click
-        if (i == 1) {
+        if (mouse == 1) {
             openSymbolMenu();
             return true;
         }
@@ -56,8 +56,8 @@ public class EditableSymbolWidget extends SymbolWidget {
         int currentIndex = ids.indexOf(symbol.symbol().identifier());
         int nextIndex = (currentIndex + 1) % ids.size();
         // Update symbol
-        this.symbol = this.symbol.withSymbol(SignRegistries.SYMBOLS.get(ids.get(nextIndex)));
-        this.symbol(this.symbol);
+        var newSymbol = SignRegistries.SYMBOLS.get(ids.get(nextIndex));
+        this.symbol(this.symbol.withSymbol(newSymbol));
     }
 
     private void openSymbolMenu() {

@@ -21,6 +21,7 @@ public class TextureWidget extends AbstractWidget {
      * The texture to render.
      */
     protected @Nullable Texture texture;
+    protected boolean clickable = false;
 
     /**
      * Creates a new road sign texture widget.
@@ -79,5 +80,14 @@ public class TextureWidget extends AbstractWidget {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         // No narration
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouse) {
+        if (!this.clickable) {
+            // Don't consume click
+            return false;
+        }
+        return super.mouseClicked(mouseX, mouseY, mouse);
     }
 }

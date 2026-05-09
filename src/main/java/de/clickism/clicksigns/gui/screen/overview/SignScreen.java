@@ -2,28 +2,22 @@ package de.clickism.clicksigns.gui.screen.overview;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
-import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
 import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
+import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
-import de.clickism.clicksigns.gui.widget.*;
-import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
-import de.clickism.clicksigns.gui.widget.element.TextWidget;
-import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
+import de.clickism.clicksigns.gui.util.LinearLayout;
+import de.clickism.clicksigns.gui.widget.AlignmentWidget;
+import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
+import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Road sign screen
@@ -33,8 +27,7 @@ public class SignScreen extends BaseScreen {
 
     private final BlockPos blockPos;
     private RoadSign roadSign;
-
-    private final List<ElementProvider> elementProviders = new ArrayList<>();
+    private SignWidget signWidget;
 
     /**
      * Creates a new road sign screen.
@@ -55,9 +48,8 @@ public class SignScreen extends BaseScreen {
         var halfHeight = height / 2;
 
         // Add road sign texture
-        var textureWidget = new TextureWidget(halfWidth, halfHeight, roadSign.frontTexture());
-        textureWidget.center();
-        this.addRenderableWidget(textureWidget);
+        this.signWidget = new SignWidget(0, 0, roadSign, EditableTextWidget::new, EditableSymbolWidget::new, this);
+        this.addRenderableWidget(signWidget);
 
         // Add confirm button
         var confirmButton = confirmButton();
@@ -74,7 +66,7 @@ public class SignScreen extends BaseScreen {
         LinearLayout.vertical()
                 .center()
                 .padding(PADDING)
-                .add(textureWidget)
+                .add(signWidget)
                 .add(LinearLayout.spacer(0, 10))
                 .add(confirmButton)
                 .add(templateButton)
@@ -93,23 +85,6 @@ public class SignScreen extends BaseScreen {
         alignmentHeader.setX(alignmentWidget.getX());
         alignmentHeader.setY(alignmentWidget.getY() - alignmentHeader.getHeight());
         this.addRenderableWidget(alignmentHeader);
-
-        // Calculate anchor for elements
-        int anchorX = textureWidget.getX();
-        int anchorY = textureWidget.getY() + textureWidget.getHeight();
-        // Add elements
-        this.elementProviders.clear();
-        for (var element : roadSign.elements()) {
-            if (element instanceof SymbolElement symbol) {
-                var symbolWidget = new EditableSymbolWidget(anchorX, anchorY, symbol, roadSign.colorResolver(), this);
-                this.elementProviders.add(symbolWidget);
-                this.addRenderableWidget(symbolWidget);
-            } else if (element instanceof TextElement textElement) {
-                var textBox = new EditableTextWidget(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.frontTexture().width());
-                this.elementProviders.add(textBox);
-                this.addRenderableWidget(textBox);
-            }
-        }
     }
 
     private Button confirmButton() {
@@ -147,7 +122,9 @@ public class SignScreen extends BaseScreen {
     }
 
     private RoadSign readRoadSign() {
-        var elements = elementProviders.stream().map(ElementProvider::element).toList();
+        var elements = this.signWidget.elementProviders().stream()
+                .map(ElementProvider::element)
+                .toList();
         return roadSign.withElements(elements);
     }
 

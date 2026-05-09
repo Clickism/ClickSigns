@@ -3,6 +3,8 @@ package de.clickism.clicksigns.gui.screen.edit;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,8 @@ public class SignEditScreen extends BaseScreen {
     @Override
     protected void init() {
         // Add road sign texture
-        var signWidget = new SignWidget(0, 0, roadSign, this);
+        // TODO: Use custom text and symbol widgets
+        var signWidget = new SignWidget(0, 0, roadSign, TextWidget::new, SymbolWidget::new, this);
         this.addRenderableWidget(signWidget);
         LinearLayout.vertical()
                 .add(signWidget)

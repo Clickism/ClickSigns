@@ -3,6 +3,7 @@ package de.clickism.clicksigns.gui.widget.texture;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 
 /**
  * A clickable texture widget.
@@ -23,6 +24,7 @@ public class ClickableTextureWidget extends TextureWidget {
         super(x, y, texture);
         this.outlineColor = outlineColor;
         this.active = true;
+        this.clickable = true;
     }
 
     @Override

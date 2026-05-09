@@ -8,8 +8,6 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import net.minecraft.client.gui.screens.Screen;
 
-import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
-
 /**
  * Widget for a symbol element of a road sign
  */
