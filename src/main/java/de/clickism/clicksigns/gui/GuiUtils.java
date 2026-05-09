@@ -141,4 +141,24 @@ public class GuiUtils {
         renderOutline(guiGraphics, x, y, width, height, outlineColor);
         guiGraphics.pose().popPose();
     }
+
+    /**
+     * Checks if the given mouse button is a left click.
+     *
+     * @param button the mouse button to check
+     * @return true if the button is a left click, false otherwise
+     */
+    public static boolean isLeftClick(int button) {
+        return button == 0;
+    }
+
+    /**
+     * Checks if the given mouse button is a right click.
+     *
+     * @param button the mouse button to check
+     * @return true if the button is a right click, false otherwise
+     */
+    public static boolean isRightClick(int button) {
+        return button == 1;
+    }
 }

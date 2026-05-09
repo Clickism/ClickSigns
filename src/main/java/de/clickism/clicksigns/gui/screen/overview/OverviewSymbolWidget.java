@@ -30,49 +30,35 @@ public class OverviewSymbolWidget extends SymbolWidget {
 
     @Override
     protected boolean isValidClickButton(int i) {
-        // Left or right click
-        return i == 0 || i == 1;
+        return GuiUtils.isLeftClick(i) || GuiUtils.isRightClick(i);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouse) {
-        if (!super.mouseClicked(mouseX, mouseY, mouse)) return false;
-        // Left click
-        if (mouse == 0) {
-            cycleSymbol();
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!super.mouseClicked(mouseX, mouseY, button)) return false;
+        if (GuiUtils.isLeftClick(button)) {
+            // Cycle to next symbol in the same category
+            var nextSymbol = symbol.symbol().nextInCategory();
+            this.symbol(this.symbol.withSymbol(nextSymbol));
             return true;
         }
         // Right click
-        if (mouse == 1) {
-            openSymbolMenu();
+        if (GuiUtils.isRightClick(button)) {
+            // Open symbol menu
+            // TODO: Add uncategorized symbols at the end
+            var categoryToTextures = SignRegistries.SYMBOLS.categoryToEntriesAndThen(symbol -> new TextureList.IdentifiableTexture(
+                    symbol.identifier(),
+                    symbol.texture().resolve(colorResolver)));
+            // Open symbol selector screen
+            var screen = new TextureMenuScreen<>(parent, categoryToTextures, identifier -> {
+                var symbol = SignRegistries.SYMBOLS.get(identifier);
+                if (symbol == null) return;
+                this.symbol(this.symbol.withSymbol(symbol));
+                GuiUtils.closeScreen();
+            });
+            GuiUtils.openScreen(screen);
             return true;
         }
         return false;
-    }
-
-    private void cycleSymbol() {
-        var category = symbol.symbol().resolveCategory();
-        if (category == null) return;
-        List<ResourceLocation> ids = new ArrayList<>(category.entries());
-        int currentIndex = ids.indexOf(symbol.symbol().identifier());
-        int nextIndex = (currentIndex + 1) % ids.size();
-        // Update symbol
-        var newSymbol = SignRegistries.SYMBOLS.get(ids.get(nextIndex));
-        this.symbol(this.symbol.withSymbol(newSymbol));
-    }
-
-    private void openSymbolMenu() {
-        // TODO: Add uncategorized symbols at the end
-        var categoryToTextures = SignRegistries.SYMBOLS.categoryToEntriesAndThen(symbol -> new TextureList.IdentifiableTexture(
-                symbol.identifier(),
-                symbol.texture().resolve(colorResolver)));
-        // Open symbol selector screen
-        var screen = new TextureMenuScreen<>(parent, categoryToTextures, identifier -> {
-            var symbol = SignRegistries.SYMBOLS.get(identifier);
-            if (symbol == null) return;
-            this.symbol(this.symbol.withSymbol(symbol));
-            GuiUtils.closeScreen();
-        });
-        GuiUtils.openScreen(screen);
     }
 }

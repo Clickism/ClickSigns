@@ -34,7 +34,10 @@ public class TextureList<T extends Categorized<T>> extends VerticalScrollContain
      * @param height            the height of the list
      * @param onTextureSelected callback for when a texture is selected
      */
-    public TextureList(int x, int y, int width, int height, Map<Category<T>, Collection<IdentifiableTexture>> categoryToTextures, Consumer<ResourceLocation> onTextureSelected) {
+    public TextureList(int x, int y, int width, int height,
+                       Map<Category<T>, Collection<IdentifiableTexture>> categoryToTextures,
+                       Consumer<ResourceLocation> onTextureSelected
+    ) {
         super(x, y, width, height);
         this.onTextureSelected = onTextureSelected;
         // Add categories
@@ -125,7 +128,7 @@ public class TextureList<T extends Categorized<T>> extends VerticalScrollContain
              * @param texture the texture to render for the texture
              */
             public SingleTextureWidget(int x, int y, IdentifiableTexture texture) {
-                super(x, y, texture.texture, Color.WHITE.getRGB());
+                super(x, y, texture.texture, GuiUtils.OUTLINE_COLOR);
                 this.identifier = texture.identifier;
             }
 
