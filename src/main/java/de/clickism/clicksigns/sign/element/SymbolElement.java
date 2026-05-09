@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.texture.Texture;
+import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.Alignment;
 
 /**
  * Symbol element on a road sign.
@@ -9,23 +9,52 @@ import de.clickism.clicksigns.util.texture.Texture;
  * @param localX    local X coordinate
  * @param localY    local Y coordinate
  * @param alignment alignment of the symbol
- * @param texture   texture to display
+ * @param symbol    symbol to display
  */
 public record SymbolElement(
         int localX,
         int localY,
         Alignment alignment,
-        Texture texture
-) implements RoadSignElement {
-    public SymbolElement withTexture(Texture texture) {
-        return new SymbolElement(localX(), localY(), alignment(), texture);
+        Symbol symbol
+) implements SignElement {
+    /**
+     * Type key
+     */
+    public static final String TYPE = "symbol";
+
+    @Override
+    public String typeKey() {
+        return TYPE;
     }
 
+    /**
+     * Creates a new symbol element with the given symbol, keeping the other properties the same.
+     *
+     * @param symbol symbol to display
+     * @return a new symbol element with the given symbol, keeping the other properties the same
+     */
+    public SymbolElement withSymbol(Symbol symbol) {
+        return new SymbolElement(localX(), localY(), alignment(), symbol);
+    }
+
+    /**
+     * Creates a new symbol element with the given position, keeping the other properties the same.
+     *
+     * @param localX local X coordinate
+     * @param localY local Y coordinate
+     * @return a new symbol element with the given position, keeping the other properties the same
+     */
     public SymbolElement withPosition(int localX, int localY) {
-        return new SymbolElement(localX, localY, alignment(), texture);
+        return new SymbolElement(localX, localY, alignment(), symbol);
     }
 
+    /**
+     * Creates a new symbol element with the given alignment, keeping the other properties the same.
+     *
+     * @param alignment alignment of the symbol
+     * @return a new symbol element with the given alignment, keeping the other properties the same
+     */
     public SymbolElement withAlignment(Alignment alignment) {
-        return new SymbolElement(localX(), localY(), alignment, texture);
+        return new SymbolElement(localX(), localY(), alignment, symbol);
     }
 }

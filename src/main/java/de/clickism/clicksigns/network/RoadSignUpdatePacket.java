@@ -25,12 +25,12 @@ public record RoadSignUpdatePacket(
             // Writer
             (buf, packet) -> {
                 buf.writeBlockPos(packet.pos());
-                RoadSign.WRITER.accept(buf, packet.roadSign());
+                RoadSign.PACKET_WRITER.accept(buf, packet.roadSign());
             },
             // Reader
             (buf) -> {
                 BlockPos pos = buf.readBlockPos();
-                RoadSign roadSign = RoadSign.READER.apply(buf);
+                RoadSign roadSign = RoadSign.PACKET_READER.apply(buf);
                 return new RoadSignUpdatePacket(pos, roadSign);
             },
             // Server Handler

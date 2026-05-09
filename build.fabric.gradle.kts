@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
+    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()

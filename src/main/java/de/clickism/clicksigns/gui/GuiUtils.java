@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.gui;
 
-import de.clickism.clicksigns.sign.element.RoadSignElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,7 +10,7 @@ import org.joml.Vector2i;
 
 import java.awt.*;
 
-import static de.clickism.clicksigns.gui.widget.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * Utility class for gui logic
@@ -20,6 +20,10 @@ public class GuiUtils {
      * Color for outlining hovered elements
      */
     public static final int OUTLINE_COLOR = Color.RED.getRGB();
+    /**
+     * Alpha value for inactive elements
+     */
+    public static final float INACTIVE_ALPHA = .3f;
 
     private GuiUtils() {
         // Utility class
@@ -73,7 +77,7 @@ public class GuiUtils {
      */
     public static Vector2i calculateElementPosition(
             int anchorX, int anchorY,
-            RoadSignElement element,
+            SignElement element,
             int width, int height
     ) {
         // Calculate position, by default renders bottom-right aligned
@@ -84,8 +88,8 @@ public class GuiUtils {
         x -= halfWidth; // Move left by half width to render in center
         y -= halfHeight; // Move up by half height to render in center-right
         // Now we can position
-        x += element.localX() * TEXTURE_RENDER_SCALE;
-        y -= element.localY() * TEXTURE_RENDER_SCALE;
+        x += element.localX() * DEFAULT_TEXTURE_RENDER_SCALE;
+        y -= element.localY() * DEFAULT_TEXTURE_RENDER_SCALE;
         // Apply alignment offset
         x += (int) (element.alignment().offset().x * halfWidth);
         y -= (int) (element.alignment().offset().y * halfHeight);
@@ -102,8 +106,8 @@ public class GuiUtils {
      * @param width       the width of the rectangle
      * @param height      the height of the rectangle
      */
-    public static void renderHoverOutline(GuiGraphics guiGraphics, int x, int y, int width, int height) {
-        renderHoverOutline(guiGraphics, x, y, width, height, OUTLINE_COLOR);
+    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        renderOutline(guiGraphics, x, y, width, height, OUTLINE_COLOR);
     }
 
     /**
@@ -116,10 +120,45 @@ public class GuiUtils {
      * @param height       the height of the rectangle
      * @param outlineColor the color of the outline
      */
-    public static void renderHoverOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
+    public static void renderOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
+        guiGraphics.renderOutline(x, y, width, height, outlineColor);
+    }
+
+    /**
+     * Renders an outline around a rectangle with a custom color.
+     * Renders on top of other graphics.
+     *
+     * @param guiGraphics  the GuiGraphics to render with
+     * @param x            the x position of the rectangle
+     * @param y            the y position of the rectangle
+     * @param width        the width of the rectangle
+     * @param height       the height of the rectangle
+     * @param outlineColor the color of the outline
+     */
+    public static void renderOutlineOnTop(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 100);
-        guiGraphics.renderOutline(x, y, width, height, outlineColor);
+        renderOutline(guiGraphics, x, y, width, height, outlineColor);
         guiGraphics.pose().popPose();
+    }
+
+    /**
+     * Checks if the given mouse button is a left click.
+     *
+     * @param button the mouse button to check
+     * @return true if the button is a left click, false otherwise
+     */
+    public static boolean isLeftClick(int button) {
+        return button == 0;
+    }
+
+    /**
+     * Checks if the given mouse button is a right click.
+     *
+     * @param button the mouse button to check
+     * @return true if the button is a right click, false otherwise
+     */
+    public static boolean isRightClick(int button) {
+        return button == 1;
     }
 }

@@ -1,23 +1,16 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.SignColors;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.registry.TileSetRegistry;
-import de.clickism.clicksigns.util.Alignment;
-import de.clickism.clicksigns.util.texture.Texture;
-import de.clickism.clicksigns.util.texture.TiledTextureGenerator;
+import de.clickism.clicksigns.sign.texture.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
-
-import java.util.List;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -26,15 +19,6 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  * Road sign renderer
  */
 public final class RoadSignRenderer extends Renderer {
-    private static final ResourceLocation DEFAULT_FRONT = ClickSigns.identifier("roadsigns/tilesets/white.png");
-    private static final ResourceLocation DEFAULT_BACK = ClickSigns.identifier("roadsigns/tilesets/back.png");
-
-    /**
-     * Cache for the default road sign, not sure if making it static is safe in case
-     * the tile sets aren't registered when this class is loaded.
-     */
-    private static RoadSign defaultRoadSign = null;
-
     private final Direction direction;
     private final RoadSign roadSign;
 
@@ -47,7 +31,7 @@ public final class RoadSignRenderer extends Renderer {
         if (entity.roadSign() != null) {
             this.roadSign = entity.roadSign();
         } else {
-            this.roadSign = defaultRoadSign();
+            this.roadSign = RoadSign.DEFAULT;
         }
     }
 
@@ -57,18 +41,28 @@ public final class RoadSignRenderer extends Renderer {
         faceDirection();
 
         var textureRenderer = new TextureRenderer(stack, source, light, direction);
+        var frontTexture = roadSign.frontTexture();
+        // Align according to the road sign's alignment
+        alignFromBlockCenter(0, 0, frontTexture.blockWidth(), frontTexture.blockHeight(), 0, roadSign.alignment());
         // Render the road sign texture
-        textureRenderer.renderTexture(roadSign.texture(), 1);
+        textureRenderer.renderTexture(frontTexture, 1);
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
         roadSign.elements().forEach(element -> {
-            var renderCoords = toRenderCoordinates(roadSign.texture(), element.localX(), element.localY());
+            var renderCoords = toRenderCoordinates(frontTexture, element.localX(), element.localY());
             // Render element
+            var colorResolver = roadSign.colorResolver();
             if (element instanceof SymbolElement symbol) {
                 // Render each element on top of the road sign
-                textureRenderer.renderTexture(symbol.texture(), renderCoords.x, renderCoords.y, 2, symbol.alignment());
+                var texture = symbol.symbol().texture().resolve(roadSign.colorResolver());
+                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 2, symbol.alignment());
             } else if (element instanceof TextElement text) {
-                textRenderer.render(text.text(), text.color(), text.backgroundColor(), text.scale(), renderCoords.x, renderCoords.y, 3, text.alignment());
+                int color = colorResolver.resolveInt(text.color());
+                int backgroundColor = 0;
+                if (text.backgroundColor() != null) {
+                    backgroundColor = colorResolver.resolveInt(text.backgroundColor());
+                }
+                textRenderer.render(text.text(), color, backgroundColor, text.scale(), renderCoords.x, renderCoords.y, 3, text.alignment());
             }
         });
 
@@ -98,25 +92,5 @@ public final class RoadSignRenderer extends Renderer {
         float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
         float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
         return new Vector2f(-renderX, renderY);
-    }
-
-    /**
-     * The default road sign to render when no road sign is set.
-     */
-    public static RoadSign defaultRoadSign() {
-        if (defaultRoadSign != null) {
-            return defaultRoadSign;
-        }
-        defaultRoadSign = new RoadSign(
-                TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_FRONT), 2f, 1f),
-                TiledTextureGenerator.generate(TileSetRegistry.get(DEFAULT_BACK), 2f, 1f),
-                List.of(
-                        new SymbolElement(2, 8, Alignment.CENTER_RIGHT, Texture.load(ClickSigns.identifier("roadsigns/symbols/arrows_dark/right_curvy.png"))),
-                        new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_DARK.getRGB(), 0),
-                        new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_DARK.getRGB(), 0),
-                        new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, SignColors.TEXT_LIGHT.getRGB(), SignColors.BROWN.getRGB())
-                )
-        );
-        return defaultRoadSign;
     }
 }

@@ -1,0 +1,10 @@
+{
+  "tag": "#default",
+  "variants": [
+    {
+      "name": "Default",
+      "color": "foreground",
+      "backgroundColor": null
+    }
+  ]
+}

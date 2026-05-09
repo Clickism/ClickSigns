@@ -3,9 +3,10 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.registry.ModBlockEntityTypes;
-import de.clickism.clicksigns.registry.ModBlocks;
-import de.clickism.clicksigns.sign.RoadSignReloadListener;
+import de.clickism.clicksigns.sign.reload.SignReloadListener;
+import de.clickism.clicksigns.sign.reload.SymbolListener;
+import de.clickism.clicksigns.sign.reload.TemplateListener;
+import de.clickism.clicksigns.sign.reload.TileSetListener;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +28,14 @@ public class ClickSigns {
      * Initializes the mod, registers block, block entity types, packets and reload listeners
      */
     public static void initialize() {
-        ModBlocks.initialize();
-        ModBlockEntityTypes.initialize();
+        ClickSignsBlocks.initialize();
+        ClickSignsBlockEntityTypes.initialize();
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
         Platform.network().register(); // Register network
         // Add reload listener
-        Platform.get().addReloadListener(new RoadSignReloadListener());
+        Platform.get().addReloadListener(new TileSetListener());
+        Platform.get().addReloadListener(new SymbolListener());
+        Platform.get().addReloadListener(new TemplateListener());
     }
 
     /**
@@ -43,5 +46,15 @@ public class ClickSigns {
      */
     public static ResourceLocation identifier(String path) {
         return ResourceLocation.tryBuild(MOD_ID, path);
+    }
+
+    /**
+     * Create a resource location for a sign asset, with the signs root directory as prefix
+     *
+     * @param path the path of the sign asset, relative to the signs root directory
+     * @return the resource location for the sign asset
+     */
+    public static ResourceLocation signAsset(String path) {
+        return identifier(SignReloadListener.ROOT_DIR + "/" + path);
     }
 }
