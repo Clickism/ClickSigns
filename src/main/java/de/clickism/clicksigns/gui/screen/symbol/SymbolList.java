@@ -39,7 +39,6 @@ public class SymbolList extends VerticalScrollContainer {
         this.colorResolver = colorResolver;
         this.onSymbolSelected = onSymbolSelected;
         // Add categories
-        // TODO: Use real categories instead of repeating the same ones, used currently for testing
         // TODO: Add uncategorized symbols at the end
         SignRegistries.SYMBOLS.allCategories().forEach(category -> {
             addChild(new CategoryHeaderWidget(this.width, category.name()));

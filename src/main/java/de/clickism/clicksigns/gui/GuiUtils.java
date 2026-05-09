@@ -10,7 +10,7 @@ import org.joml.Vector2i;
 
 import java.awt.*;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * Utility class for gui logic
@@ -88,8 +88,8 @@ public class GuiUtils {
         x -= halfWidth; // Move left by half width to render in center
         y -= halfHeight; // Move up by half height to render in center-right
         // Now we can position
-        x += element.localX() * TEXTURE_RENDER_SCALE;
-        y -= element.localY() * TEXTURE_RENDER_SCALE;
+        x += element.localX() * DEFAULT_TEXTURE_RENDER_SCALE;
+        y -= element.localY() * DEFAULT_TEXTURE_RENDER_SCALE;
         // Apply alignment offset
         x += (int) (element.alignment().offset().x * halfWidth);
         y -= (int) (element.alignment().offset().y * halfHeight);

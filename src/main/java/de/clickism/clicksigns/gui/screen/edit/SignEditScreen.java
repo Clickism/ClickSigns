@@ -8,29 +8,37 @@ import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
+
+import static de.clickism.clicksigns.gui.GuiUtils.OUTLINE_COLOR;
 
 /**
  * Screen for editing a road sign in an advanced way.
  * Supports resizing, adding/removing/editing elements, and changing textures.
  */
 public class SignEditScreen extends BaseScreen {
-    private static final int PANEL_WIDTH = 150;
-    private static final int PANEL_PADDING = 10;
+    private static final int PANEL_WIDTH = 120;
+    private static final int PANEL_PADDING = 8;
     private static final int MIN_SIGN_SIZE = 8;
 
     private RoadSign roadSign;
+    private final Consumer<RoadSign> onUpdate;
     private boolean dirty = false;
 
     /**
      * Creates a new road sign edit screen
      *
      * @param roadSign the road sign to edit
+     * @param onUpdate the callback to call when the road sign is updated
      * @param parent   the parent screen, can be null
      */
-    public SignEditScreen(RoadSign roadSign, @Nullable Screen parent) {
+    public SignEditScreen(RoadSign roadSign, Consumer<RoadSign> onUpdate, @Nullable Screen parent) {
         super(parent);
         this.roadSign = roadSign;
+        this.onUpdate = onUpdate;
     }
 
     @Override
@@ -49,12 +57,42 @@ public class SignEditScreen extends BaseScreen {
             addRenderableWidget(resizeControls);
         }
 
-        // Add panels
-        var leftPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
-        addRenderableWidget(leftPanel);
+        // Sign panel
+        var signPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
+        addRenderableWidget(signPanel);
 
-        var rightPanel = new PanelWidget(width - PANEL_WIDTH + PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
-        addRenderableWidget(rightPanel);
+        var padding = 4;
+        LinearLayout.vertical()
+                .padding(padding)
+                .centerHorizontal()
+                .composer(PANEL_WIDTH - PANEL_PADDING * 2)
+                // Add sections
+                .bigHeader(Component.literal("Road Sign Properties"))
+                .text(Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()))
+                .header(Component.literal("Front Texture"))
+                .widget(new EditableTextureWidget(0, 0, roadSign.frontSource().resize(16, 16).resolve(roadSign.colorResolver()), OUTLINE_COLOR))
+                .header(Component.literal("Back Texture"))
+                .widget(new EditableTextureWidget(0, 0, roadSign.backSource().resize(16, 16).resolve(roadSign.colorResolver()), OUTLINE_COLOR))
+                .header(Component.literal("Elements"))
+                .button(Component.literal("Add Symbol"), b -> {})
+                .button(Component.literal("Add Text"), b -> {})
+                // Lay out in the center of the panel
+                .layout(PANEL_WIDTH / 2, PANEL_PADDING)
+                .compose(this::addRenderableWidget);
+
+        // Element panel
+        var elementPanel = new PanelWidget(width - PANEL_WIDTH, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
+        addRenderableWidget(elementPanel);
+
+        LinearLayout.vertical()
+                .padding(padding)
+                .centerHorizontal()
+                .composer(PANEL_WIDTH - PANEL_PADDING * 2)
+                // Add sections
+                .bigHeader(Component.literal("Element Properties"))
+                // Lay out in the center of the panel
+                .layout(width - PANEL_WIDTH / 2, PANEL_PADDING)
+                .compose(this::addRenderableWidget);
     }
 
     /**
@@ -110,6 +148,7 @@ public class SignEditScreen extends BaseScreen {
      */
     private void roadSign(RoadSign roadSign) {
         this.roadSign = roadSign;
+        this.onUpdate.accept(roadSign);
         this.dirty = true;
     }
 
@@ -121,4 +160,6 @@ public class SignEditScreen extends BaseScreen {
         }
         super.tick();
     }
+
+
 }

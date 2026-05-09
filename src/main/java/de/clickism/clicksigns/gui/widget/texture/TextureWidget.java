@@ -15,20 +15,38 @@ public class TextureWidget extends AbstractWidget {
     /**
      * The scale at which each pixel of the texture is rendered.
      */
-    public static final int TEXTURE_RENDER_SCALE = 4;
+    public static final int DEFAULT_TEXTURE_RENDER_SCALE = 4;
 
     /**
      * The texture to render.
      */
     protected @Nullable Texture texture;
     protected boolean clickable = false;
+    protected int renderScale;
 
     /**
-     * Creates a new road sign texture widget.
+     * Creates a new texture widget.
+     *
+     * @param x       the x position of the widget
+     * @param y       the y position of the widget
+     * @param texture the texture to render, can be null for an empty widget
      */
     public TextureWidget(int x, int y, @Nullable Texture texture) {
+        this(x, y, texture, DEFAULT_TEXTURE_RENDER_SCALE);
+    }
+
+    /**
+     * Creates a new texture widget with a custom render scale.
+     *
+     * @param x           the x position of the widget
+     * @param y           the y position of the widget
+     * @param texture     the texture to render, can be null for an empty widget
+     * @param renderScale the scale at which each pixel of the texture is rendered
+     */
+    public TextureWidget(int x, int y, @Nullable Texture texture, int renderScale) {
         super(x, y, 0, 0, Component.empty());
         this.active = false;
+        this.renderScale = renderScale;
         this.texture(texture);
     }
 
@@ -48,8 +66,8 @@ public class TextureWidget extends AbstractWidget {
             this.height = 0;
             return;
         }
-        this.width = texture.width() * TEXTURE_RENDER_SCALE;
-        this.height = texture.height() * TEXTURE_RENDER_SCALE;
+        this.width = texture.width() * renderScale;
+        this.height = texture.height() * renderScale;
     }
 
     /**

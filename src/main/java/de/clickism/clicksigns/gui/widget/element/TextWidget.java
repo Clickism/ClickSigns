@@ -7,10 +7,9 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
@@ -40,8 +39,8 @@ public class TextWidget extends EditBox implements ElementProvider {
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         // TODO: Maybe check other text fields to determine max width
         super(GuiUtils.font(), anchorX, anchorY,
-                maxTextWidth(text, signWidth) * TEXTURE_RENDER_SCALE,
-                (int) (TEXT_BOX_HEIGHT_SCALE * TEXTURE_RENDER_SCALE * text.scale()),
+                maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
+                (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale()),
                 Component.empty());
         // Calculate max width
         this.maxWidth = maxTextWidth(text, signWidth);

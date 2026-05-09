@@ -190,14 +190,32 @@ public class LinearLayout {
     }
 
     /**
+     * Gets the children of the layout.
+     *
+     * @return the children of the layout
+     */
+    public List<LayoutElement> children() {
+        return children;
+    }
+
+    /**
+     * Creates a new composer for this layout with the given width.
+     *
+     * @param width the width of the composer
+     * @return a new composer for this layout with the given width
+     */
+    public LinearComposer composer(int width) {
+        return new LinearComposer(this, width);
+    }
+
+    /**
      * Creates a new spacer element with the given width and height.
      *
-     * @param width  the width of the spacer in pixels
-     * @param height the height of the spacer in pixels
+     * @param spacing the space in pixels to add between elements in the layout
      * @return a new spacer element with the given width and height
      */
-    public static LayoutElement spacer(int width, int height) {
-        return new Spacer(width, height);
+    public static LayoutElement spacer(int spacing) {
+        return new Spacer(spacing, spacing);
     }
 
     /**

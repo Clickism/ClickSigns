@@ -62,12 +62,13 @@ public class SignOverviewScreen extends BaseScreen {
         var editButton = editButton();
         this.addRenderableWidget(editButton);
 
+
         // Layout
         LinearLayout.vertical()
                 .center()
                 .padding(PADDING)
                 .add(signWidget)
-                .add(LinearLayout.spacer(0, 10))
+                .add(LinearLayout.spacer(10))
                 .add(confirmButton)
                 .add(templateButton)
                 .add(editButton)
@@ -102,7 +103,10 @@ public class SignOverviewScreen extends BaseScreen {
         var title = Component.literal("✎ ")
                 .append(Component.translatable("clicksigns.text.edit"));
         return Button.builder(title, button -> {
-            GuiUtils.openScreen(new SignEditScreen(roadSign, this));
+            GuiUtils.openScreen(new SignEditScreen(roadSign, sign -> {
+                this.roadSign = sign;
+                this.rebuildWithoutReading();
+            },this));
         }).build();
     }
 
@@ -113,9 +117,7 @@ public class SignOverviewScreen extends BaseScreen {
                     GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                         // Change template
                         this.roadSign = template.buildDefault();
-                        // Rebuild widgets
-                        this.clearWidgets();
-                        this.init();
+                        this.rebuildWithoutReading();
                     }));
                 })
                 .build();
@@ -126,6 +128,11 @@ public class SignOverviewScreen extends BaseScreen {
                 .map(ElementProvider::element)
                 .toList();
         return roadSign.withElements(elements);
+    }
+
+    private void rebuildWithoutReading() {
+        this.clearWidgets();
+        this.init();
     }
 
     @Override
