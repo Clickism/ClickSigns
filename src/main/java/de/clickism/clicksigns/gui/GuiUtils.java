@@ -20,6 +20,10 @@ public class GuiUtils {
      * Color for outlining hovered elements
      */
     public static final int OUTLINE_COLOR = Color.RED.getRGB();
+    /**
+     * Alpha value for inactive elements
+     */
+    public static final float INACTIVE_ALPHA = .3f;
 
     private GuiUtils() {
         // Utility class

@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.widget;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.NestedWidget;
 import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.gui.components.Button;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class AlignmentWidget extends NestedWidget {
-    private static float NOT_SELECTED_ALPHA = .3f;
     private static final int BUTTON_SIZE = 20;
     private static final Map<Alignment, String> ALIGNMENT_ICONS = Map.of(
             Alignment.TOP_LEFT, "↖",
@@ -36,7 +36,7 @@ public class AlignmentWidget extends NestedWidget {
                     .bounds(buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE)
                     .build();
             if (alignment != currentAlignment) {
-                button.setAlpha(NOT_SELECTED_ALPHA);
+                button.setAlpha(GuiUtils.INACTIVE_ALPHA);
             }
             addChildAndUpdate(button);
         }

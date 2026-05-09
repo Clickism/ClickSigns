@@ -97,6 +97,10 @@ public record RoadSign(
     }
 
     public RoadSign resized(int width, int height) {
+        if (width == width() && height == height()) {
+            // No need to resize
+            return this;
+        }
         var front = frontSource.resize(width, height);
         var back = backSource.resize(width, height);
         return this.withFront(front).withBack(back);

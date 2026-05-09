@@ -6,6 +6,7 @@ import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class SignEditScreen extends BaseScreen {
     private static final int PANEL_WIDTH = 150;
     private static final int PANEL_PADDING = 10;
+    private static final int MIN_SIGN_SIZE = 8;
 
     private RoadSign roadSign;
     private boolean dirty = false;
@@ -42,8 +44,10 @@ public class SignEditScreen extends BaseScreen {
                 .center()
                 .layout(halfWidth(), halfHeight());
 
-        var resizeControls = new ResizeControls(signWidget, this::handleResize);
-        addRenderableWidget(resizeControls);
+        if (roadSign.frontSource().canResize()) {
+            var resizeControls = new ResizeControls(signWidget, this::handleResize, this::canResize);
+            addRenderableWidget(resizeControls);
+        }
 
         // Add panels
         var leftPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
@@ -57,13 +61,28 @@ public class SignEditScreen extends BaseScreen {
      * Handle resizing the sign when the resize controls are clicked
      */
     private void handleResize(ResizeControls.Direction direction) {
+        var size = calculateNewSize(direction);
+        this.roadSign(roadSign.resized(size.width(), size.height()));
+    }
+
+    /**
+     * Check if we can resize in the given direction
+     *
+     * @param direction the direction to check
+     * @return true if resizing in the given direction would change the size of the sign, false otherwise
+     */
+    private boolean canResize(ResizeControls.Direction direction) {
+        var size = calculateNewSize(direction);
+        return size.width() != roadSign.width() || size.height() != roadSign.height();
+    }
+
+    private Size calculateNewSize(ResizeControls.Direction direction) {
         var width = roadSign.width();
         var height = roadSign.height();
         var step = 16;
         // If the sign is less than the cutoff, resize by half the step
         var halfStepCutoff = step * 2;
         // Min size of a sign
-        var minSize = 8;
         var stepVertical = height < halfStepCutoff ? step / 2 : step;
         var stepHorizontal = width < halfStepCutoff ? step / 2 : step;
         switch (direction) {
@@ -72,9 +91,16 @@ public class SignEditScreen extends BaseScreen {
             case DOWN -> height -= stepVertical;
             case LEFT -> width -= stepHorizontal;
         }
-        width = Math.max(width, minSize);
-        height = Math.max(height, minSize);
-        this.roadSign(roadSign.resized(width, height));
+        // Don't allow resizing below the minimum size
+        // We don't clamp here as to not break the size scale, in case the starting size is not a multiple of the step
+        if (width < MIN_SIGN_SIZE) {
+            width = roadSign.width();
+        }
+        if (height < MIN_SIGN_SIZE) {
+            height = roadSign.height();
+        }
+        // Return resized dimensions
+        return new Size(width, height);
     }
 
     /**
