@@ -11,11 +11,11 @@ import net.minecraft.network.chat.Component;
 /**
  * Text widget that can be edited by clicking
  */
-public class EditableTextWidget extends TextWidget {
+public class OverviewTextWidget extends TextWidget {
     /**
      * Creates a new editable text widget.
      */
-    public EditableTextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
+    public OverviewTextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         super(anchorX, anchorY, text, colorResolver, signWidth);
         // TODO: Translate
         // Add tooltip

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Road sign screen
  */
-public class SignScreen extends BaseScreen {
+public class SignOverviewScreen extends BaseScreen {
     private static final int PADDING = 8;
 
     private final BlockPos blockPos;
@@ -32,7 +32,7 @@ public class SignScreen extends BaseScreen {
     /**
      * Creates a new road sign screen.
      */
-    public SignScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
+    public SignOverviewScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
         super(parent);
         this.blockPos = entity.getBlockPos();
         var roadSign = entity.roadSign();
@@ -48,7 +48,7 @@ public class SignScreen extends BaseScreen {
         var halfHeight = height / 2;
 
         // Add road sign texture
-        this.signWidget = new SignWidget(0, 0, roadSign, EditableTextWidget::new, EditableSymbolWidget::new, this);
+        this.signWidget = new SignWidget(0, 0, roadSign, OverviewTextWidget::new, OverviewSymbolWidget::new, this);
         this.addRenderableWidget(signWidget);
 
         // Add confirm button
