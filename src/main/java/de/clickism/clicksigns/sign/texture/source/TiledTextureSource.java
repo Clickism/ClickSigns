@@ -2,8 +2,8 @@ package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
-import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.TileSet;
+import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;
@@ -41,11 +41,16 @@ public record TiledTextureSource(
     }
 
     @Override
-    public TextureSource resize(int width, int height) throws UnsupportedOperationException {
+    public TextureSource resize(int width, int height) {
         if (this.width == width && this.height == height) {
             return this; // No resizing needed
         }
         return new TiledTextureSource(tileSetId, width, height);
+    }
+
+    @Override
+    public boolean canResize() {
+        return true;
     }
 
     /**

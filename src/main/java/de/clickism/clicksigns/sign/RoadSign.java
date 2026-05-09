@@ -96,6 +96,12 @@ public record RoadSign(
         return frontTexture().height();
     }
 
+    public RoadSign resized(int width, int height) {
+        var front = frontSource.resize(width, height);
+        var back = backSource.resize(width, height);
+        return this.withFront(front).withBack(back);
+    }
+
     /**
      * Creates a new road sign with the given texture.
      * <p>

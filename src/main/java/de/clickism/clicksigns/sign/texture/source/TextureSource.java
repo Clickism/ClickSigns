@@ -3,9 +3,9 @@ package de.clickism.clicksigns.sign.texture.source;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
+import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
@@ -36,6 +36,15 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
      */
     default TextureSource resize(int width, int height) {
         return this; // By default, don't support resizing
+    }
+
+    /**
+     * Whether this texture source supports resizing.
+     *
+     * @return true if this texture source supports resizing, false otherwise
+     */
+    default boolean canResize() {
+        return false; // By default, don't support resizing
     }
 
     /**
