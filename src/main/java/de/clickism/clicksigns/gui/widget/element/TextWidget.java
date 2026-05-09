@@ -32,11 +32,19 @@ public class TextWidget extends EditBox implements ElementProvider {
      * Max text width in sign pixels
      */
     protected final int maxWidth;
+    protected final int outlineColor;
 
     /**
      * Creates a new text element box.
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
+        this(anchorX, anchorY, text, colorResolver, signWidth, GuiUtils.OUTLINE_COLOR);
+    }
+
+    /**
+     * Creates a new text element box with a custom outline color.
+     */
+    public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {
         // TODO: Maybe check other text fields to determine max width
         super(GuiUtils.font(), anchorX, anchorY,
                 maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
@@ -46,6 +54,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
         this.colorResolver = colorResolver;
+        this.outlineColor = outlineColor;
         // Calculate position
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
@@ -62,6 +71,9 @@ public class TextWidget extends EditBox implements ElementProvider {
         if (text.backgroundColor() != null) {
             var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
             guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
+        }
+        if (this.isHovered && this.active) {
+            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
     }
 

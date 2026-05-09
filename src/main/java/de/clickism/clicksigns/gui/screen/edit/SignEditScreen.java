@@ -46,7 +46,7 @@ public class SignEditScreen extends BaseScreen {
     protected void init() {
         // Add road sign texture
         // TODO: Use custom text and symbol widgets
-        var signWidget = new SignWidget(0, 0, roadSign, TextWidget::new, SymbolWidget::new, this);
+        var signWidget = new SignWidget(0, 0, roadSign, EditTextWidget::new, EditSymbolWidget::new, this);
         this.addRenderableWidget(signWidget);
 
         var sizeWidget = new StringWidget(0, 0, 100, 20, Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()), GuiUtils.font());
