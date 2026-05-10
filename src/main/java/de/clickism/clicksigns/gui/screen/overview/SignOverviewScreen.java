@@ -10,6 +10,7 @@ import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.SignTextBox;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
@@ -62,6 +63,9 @@ public class SignOverviewScreen extends BaseScreen {
         var editButton = editButton();
         this.addRenderableWidget(editButton);
 
+        // TODO: Remove test widget
+        var textBox = new SignTextBox(0, 0, 100, 20, GuiUtils.font());
+        this.addRenderableWidget(textBox);
 
         // Layout
         LinearLayout.vertical()
@@ -72,6 +76,7 @@ public class SignOverviewScreen extends BaseScreen {
                 .add(confirmButton)
                 .add(templateButton)
                 .add(editButton)
+                .add(textBox)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 

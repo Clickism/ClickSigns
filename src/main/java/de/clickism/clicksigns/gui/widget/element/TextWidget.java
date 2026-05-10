@@ -89,7 +89,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         if (this.isHovered && this.active) {
             GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
-        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, Color.GRAY.getRGB());
+        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() + 1, this.getY() + this.getHeight() - 2, this.width - 2, 1, Color.GRAY.getRGB());
     }
 
     protected void onChange(String value) {
@@ -172,7 +172,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         @Override
         public int drawString(Font font, @Nullable String string, int x, int y, int color) {
             this.pose().pushPose();
-            var scale = 1.33f;
+            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale()  * DEFAULT_TEXTURE_RENDER_SCALE;
             // Move pivot to (x, y)
             this.pose().translate(x, y, 0);
             // Scale around that point
@@ -192,7 +192,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         @Override
         public int drawString(Font font, FormattedCharSequence formattedCharSequence, int x, int y, int k) {
             this.pose().pushPose();
-            var scale = 1.33f;
+            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale() * DEFAULT_TEXTURE_RENDER_SCALE;
             // Move pivot to (x, y)
             this.pose().translate(x, y, 0);
             // Scale around that point
