@@ -27,6 +27,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     protected boolean editable = true;
 
     protected int textColor = Color.WHITE.getRGB();
+    protected int backgroundColor = 0;
 
     protected int cursorPos = 0;
     protected int highlightPos = 0;
@@ -41,6 +42,26 @@ public abstract class AbstractTextBox extends AbstractWidget {
     public AbstractTextBox(int x, int y, int width, int height, Font font) {
         super(x, y, width, height, Component.empty());
         this.font = font;
+    }
+
+    /**
+     * Set the text value of the text box.
+     *
+     * @param value the text value to set
+     */
+    public void value(String value) {
+        this.value = value;
+        setValidCursor(value.length());
+        highlightPos = cursorPos;
+    }
+
+    /**
+     * Get the current text value of the text box.
+     *
+     * @return the current text value of the text box
+     */
+    public String value() {
+        return this.value;
     }
 
     /**
@@ -68,6 +89,15 @@ public abstract class AbstractTextBox extends AbstractWidget {
      */
     public void textColor(int textColor) {
         this.textColor = textColor;
+    }
+
+    /**
+     * Set the background color of the text box.
+     *
+     * @param backgroundColor the background color to set
+     */
+    public void backgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     /**

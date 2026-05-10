@@ -8,9 +8,7 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +22,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * Widget for a text element of a road sign
  */
-public class TextWidget extends EditBox implements ElementProvider {
+public class TextWidget extends SignTextBox implements ElementProvider {
     protected static final int UNEDITABLE_COLOR = 0xFF5555;
     protected static final int TEXT_BOX_HEIGHT_SCALE = 4;
     /**
@@ -53,53 +51,56 @@ public class TextWidget extends EditBox implements ElementProvider {
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {
         // TODO: Maybe check other text fields to determine max width
-        super(GuiUtils.font(), anchorX, anchorY,
+        super(anchorX, anchorY,
                 maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
                 (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale()),
-                Component.empty());
+                GuiUtils.font(), text.scale());
         // Calculate max width
         this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
         this.colorResolver = colorResolver;
         this.outlineColor = outlineColor;
         // Calculate position
-        this.setTextColor(colorResolver.resolveInt(text.color()));
+        this.textColor(colorResolver.resolveInt(text.color()));
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
-        this.setValue(text.text());
-        this.setResponder(this::onChange);
+        this.value(text.text());
+        this.onValueChanged(this::onChange);
+        if (text.backgroundColor() != null) {
+            this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
+        }
         // Unreadable in some cases, so skip for now:
         // this.setTextColor(text.backgroundColor());
     }
 
-    // TODO: Maybe custom renderer to render like displayed?
-    @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Render text background
-        if (text.backgroundColor() != null) {
-            var backgroundColor = colorResolver.resolveInt(text.backgroundColor());
-            guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, backgroundColor);
-        }
-        var textElementGraphics = new TextElementGuiGraphics(guiGraphics);
-        super.renderWidget(textElementGraphics, mouseX, mouseY, partialTick);
+//    // TODO: Maybe custom renderer to render like displayed?
+//    @Override
+//    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+//        // Render text background
 //        if (text.backgroundColor() != null) {
-//            var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
-//            guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
+//            var backgroundColor = colorResolver.resolveInt(text.backgroundColor());
+//            guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, backgroundColor);
 //        }
-        if (this.isHovered && this.active) {
-            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
-        }
-        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() + 1, this.getY() + this.getHeight() - 2, this.width - 2, 1, Color.GRAY.getRGB());
-    }
+//        var textElementGraphics = new TextElementGuiGraphics(guiGraphics);
+//        super.renderWidget(textElementGraphics, mouseX, mouseY, partialTick);
 
+    /// /        if (text.backgroundColor() != null) {
+    /// /            var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
+    /// /            guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
+    /// /        }
+//        if (this.isHovered && this.active) {
+//            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
+//        }
+//        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() + 1, this.getY() + this.getHeight() - 2, this.width - 2, 1, Color.GRAY.getRGB());
+//    }
     protected void onChange(String value) {
         if (renderWidthOf(value) > this.maxWidth) {
             // Text too big, trim it and set text color to red
             value = value.substring(0, value.length() - 1);
-            this.setValue(value);
-            this.setTextColor(UNEDITABLE_COLOR);
+            this.value(value);
+            this.textColor(UNEDITABLE_COLOR);
         } else {
-            this.setTextColor(DEFAULT_TEXT_COLOR);
+            this.textColor(colorResolver.resolveInt(text.color()));
         }
         // Update text element with new text
         this.text = this.text.withText(value);
@@ -172,7 +173,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         @Override
         public int drawString(Font font, @Nullable String string, int x, int y, int color) {
             this.pose().pushPose();
-            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale()  * DEFAULT_TEXTURE_RENDER_SCALE;
+            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale() * DEFAULT_TEXTURE_RENDER_SCALE;
             // Move pivot to (x, y)
             this.pose().translate(x, y, 0);
             // Scale around that point

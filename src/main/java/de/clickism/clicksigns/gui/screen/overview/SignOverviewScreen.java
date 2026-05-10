@@ -64,7 +64,7 @@ public class SignOverviewScreen extends BaseScreen {
         this.addRenderableWidget(editButton);
 
         // TODO: Remove test widget
-        var textBox = new SignTextBox(0, 0, 100, 20, GuiUtils.font());
+        var textBox = new SignTextBox(0, 0, 100, 20, GuiUtils.font(), 1f);
         this.addRenderableWidget(textBox);
 
         // Layout
