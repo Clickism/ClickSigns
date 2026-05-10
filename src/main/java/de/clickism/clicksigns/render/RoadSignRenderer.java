@@ -9,6 +9,7 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
@@ -25,14 +26,16 @@ public final class RoadSignRenderer extends Renderer {
     /**
      * Creates a new road sign renderer for the given block entity and rendering context.
      */
-    public RoadSignRenderer(RoadSignBlockEntity entity, PoseStack stack, MultiBufferSource source, int light) {
+    public RoadSignRenderer(
+            @NotNull RoadSign roadSign,
+            Direction direction,
+            PoseStack stack,
+            MultiBufferSource source,
+            int light
+    ) {
         super(stack, source, light);
-        this.direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
-        if (entity.roadSign() != null) {
-            this.roadSign = entity.roadSign();
-        } else {
-            this.roadSign = RoadSign.DEFAULT;
-        }
+        this.direction = direction;
+        this.roadSign = roadSign;
     }
 
     public void render() {
