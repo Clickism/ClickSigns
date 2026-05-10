@@ -2,7 +2,6 @@ package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
-import de.clickism.clicksigns.gui.widget.TextElementWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -90,6 +89,7 @@ public class TextWidget extends EditBox implements ElementProvider {
         if (this.isHovered && this.active) {
             GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
+        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, Color.GRAY.getRGB());
     }
 
     protected void onChange(String value) {
@@ -170,18 +170,38 @@ public class TextWidget extends EditBox implements ElementProvider {
         }
 
         @Override
-        public int drawString(net.minecraft.client.gui.Font font, @Nullable String string, int i, int j, int color) {
+        public int drawString(Font font, @Nullable String string, int x, int y, int color) {
+            this.pose().pushPose();
+            var scale = 1.33f;
+            // Move pivot to (x, y)
+            this.pose().translate(x, y, 0);
+            // Scale around that point
+            this.pose().scale(scale, scale, 1.0f);
+            // Move back so text draws correctly
+            this.pose().translate(-x, -y, 0);
             // Render caret with caret color
             if ("_".equals(string)) {
                 color = caretColor();
             }
             // Render without shadow
-            return super.drawString(font, string, i, j, color, false);
+            var result = super.drawString(font, string, x, y, color, false);
+            this.pose().popPose();
+            return result;
         }
 
         @Override
-        public int drawString(Font font, FormattedCharSequence formattedCharSequence, int i, int j, int k) {
-            return super.drawString(font, formattedCharSequence, i, j, k, false); // No shadow
+        public int drawString(Font font, FormattedCharSequence formattedCharSequence, int x, int y, int k) {
+            this.pose().pushPose();
+            var scale = 1.33f;
+            // Move pivot to (x, y)
+            this.pose().translate(x, y, 0);
+            // Scale around that point
+            this.pose().scale(scale, scale, 1.0f);
+            // Move back so text draws correctly
+            this.pose().translate(-x, -y, 0);
+            var result = super.drawString(font, formattedCharSequence, x, y, k, false); // No shadow
+            this.pose().popPose();
+            return result;
         }
     }
 }
