@@ -30,6 +30,9 @@ public class SignTextBox extends AbstractTextBox {
         guiGraphics.fill(x, y + 1, x + width, y + height + 1, backgroundColor);
 
         // Visible text from display pos to end, truncated to fit in view
+        // TODO: Make sure placeholder is cut off properly
+        boolean showingPlaceholder = this.value.isEmpty() && !this.isFocused();
+        String value = showingPlaceholder ? placeholder : this.value;
         String visible = font.plainSubstrByWidth(value.substring(displayPos), width);
         int relativeCursor = cursorPos - displayPos;
         int relativeHighlight = highlightPos - displayPos;
@@ -64,7 +67,10 @@ public class SignTextBox extends AbstractTextBox {
         // GuiUtils.renderOutlineOnTop(guiGraphics, textX, textY, font.width(visible), font.lineHeight - 2, GuiUtils.OUTLINE_COLOR);
 
         // Render left of cursor
+        var highlightColor = textColor & 0xFFFFFF | 0x55000000; // Set alpha
+        var textColor = showingPlaceholder ? highlightColor : this.textColor;
         guiGraphics.drawString(font, left, textX, textY, textColor, false);
+
         textX += font.width(left);
         // Render cursor
         long time = System.currentTimeMillis();
@@ -87,7 +93,6 @@ public class SignTextBox extends AbstractTextBox {
             int highlightEnd = Math.max(relativeCursor, relativeHighlight);
             int highlightX = x + font.width(visible.substring(0, highlightStart));
             int highlightWidth = font.width(visible.substring(highlightStart, highlightEnd));
-            var highlightColor = textColor & 0xFFFFFF | 0x55000000; // Set alpha
             guiGraphics.fill(RenderType.guiOverlay(), highlightX, textY, highlightX + highlightWidth, textY + font.lineHeight, highlightColor); // TODO: Configurable selection color
         }
         guiGraphics.pose().popPose();

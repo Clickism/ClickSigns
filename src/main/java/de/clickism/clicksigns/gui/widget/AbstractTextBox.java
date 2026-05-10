@@ -23,7 +23,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     protected final Font font;
 
     protected String value = "";
-    protected String placeholder = "";
+    protected String placeholder = "Placeholder";
     protected boolean editable = true;
 
     protected int textColor = Color.WHITE.getRGB();
@@ -62,6 +62,16 @@ public abstract class AbstractTextBox extends AbstractWidget {
      */
     public String value() {
         return this.value;
+    }
+
+    /**
+     * Gets the current text or the placeholder if the text is empty.
+     * Should be used for diplaying the text
+     *
+     * @return the current text or the placeholder if the text is empty
+     */
+    public String valueOrPlaceholder() {
+        return this.value.isEmpty() ? this.placeholder : this.value;
     }
 
     /**
