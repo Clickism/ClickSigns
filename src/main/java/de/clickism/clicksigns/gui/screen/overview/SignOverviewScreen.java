@@ -63,10 +63,6 @@ public class SignOverviewScreen extends BaseScreen {
         var editButton = editButton();
         this.addRenderableWidget(editButton);
 
-        // TODO: Remove test widget
-        var textBox = new SignTextBox(0, 0, 100, 20, GuiUtils.font(), 1f);
-        this.addRenderableWidget(textBox);
-
         // Layout
         LinearLayout.vertical()
                 .center()
@@ -76,7 +72,6 @@ public class SignOverviewScreen extends BaseScreen {
                 .add(confirmButton)
                 .add(templateButton)
                 .add(editButton)
-                .add(textBox)
                 // Layout from center
                 .layout(halfWidth, halfHeight);
 
