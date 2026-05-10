@@ -23,7 +23,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     protected final Font font;
 
     protected String value = "";
-    protected String placeholder = "Placeholder";
+    protected String placeholder = "Text";
     protected boolean editable = true;
 
     protected int textColor = Color.WHITE.getRGB();
