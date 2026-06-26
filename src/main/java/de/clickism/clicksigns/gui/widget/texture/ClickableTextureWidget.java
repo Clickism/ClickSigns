@@ -9,7 +9,8 @@ import net.minecraft.client.gui.GuiGraphics;
  * Renders an outline on hover, and can be used as a button.
  */
 public class ClickableTextureWidget extends TextureWidget {
-    private final int outlineColor;
+    protected int outlineColor;
+    protected boolean renderOutlineOnHover = true;
 
     /**
      * Creates a new clickable texture widget.
@@ -42,7 +43,7 @@ public class ClickableTextureWidget extends TextureWidget {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered && this.active) {
+        if (this.isHovered && this.active && this.renderOutlineOnHover) {
             GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
     }

@@ -69,7 +69,7 @@ public class SymbolWidget extends ClickableTextureWidget implements ElementProvi
     /**
      * Updates the position of the widget based on the anchor and the size of the symbol.
      */
-    protected void updatePosition() {
+    public void updatePosition() {
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, symbol, this.width, this.height);
         this.setPosition(pos.x, pos.y);
     }

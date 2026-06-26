@@ -29,14 +29,18 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * Max text width in sign pixels
      */
     protected final int maxWidth;
-    protected final int outlineColor;
+    protected int outlineColor;
+
+    protected boolean renderOutlineOnHover = true;
+
+    protected final int anchorX;
+    protected final int anchorY;
 
     /**
      * Creates a new text element box.
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         this(anchorX, anchorY, text, colorResolver, signWidth, GuiUtils.OUTLINE_COLOR);
-
     }
 
     /**
@@ -48,16 +52,15 @@ public class TextWidget extends SignTextBox implements ElementProvider {
                 maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
                 (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale()),
                 GuiUtils.font(), text.scale());
+        this.anchorX = anchorX;
+        this.anchorY = anchorY;
         // Calculate max width
         this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
         this.colorResolver = colorResolver;
         this.outlineColor = outlineColor;
         // Calculate position
-        this.textColor(colorResolver.resolveInt(text.color()));
-        var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
-        this.setPosition(pos.x, pos.y);
-
+        this.updatePosition();
         // Filter current text to fit and update
         this.value(clampString(text.text()));
         this.placeholder = clampString(this.placeholder);
@@ -69,6 +72,16 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
+    }
+
+    /**
+     * Updates the position of the text box based on the anchor and the size of the text.
+     */
+    public void updatePosition() {
+        // Calculate position
+        this.textColor(colorResolver.resolveInt(text.color()));
+        var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
+        this.setPosition(pos.x, pos.y);
     }
 
     /**
@@ -116,7 +129,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered && this.active) {
+        if (this.isHovered && this.active && this.renderOutlineOnHover) {
             renderOutline(guiGraphics, outlineColor);
         }
     }

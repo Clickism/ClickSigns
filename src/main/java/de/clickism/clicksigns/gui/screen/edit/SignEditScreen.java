@@ -13,10 +13,15 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+
+// TODO: Add guidelines when dragging
+// TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
 /**
  * Screen for editing a road sign in an advanced way.
  * Supports resizing, adding/removing/editing elements, and changing textures.
@@ -31,6 +36,14 @@ public class SignEditScreen extends BaseScreen {
     private boolean dirty = false;
 
     private final EditContext editContext = new EditContext();
+
+    private SignWidget signWidget;
+
+    // Dragging state
+    double dragStartMouseX;
+    double dragStartMouseY;
+    int dragStartElementX;
+    int dragStartElementY;
 
     /**
      * Creates a new road sign edit screen
@@ -49,7 +62,7 @@ public class SignEditScreen extends BaseScreen {
     protected void init() {
         // Add road sign texture
         // TODO: Use custom text and symbol widgets
-        var signWidget = new SignWidget(0, 0, roadSign,
+        this.signWidget = new SignWidget(0, 0, roadSign,
                 (anchorX, anchorY, element, colorResolver, signWidth) ->
                         new EditTextWidget(anchorX, anchorY, element, colorResolver, signWidth, editContext),
                 (anchorX, anchorY, element, colorResolver, screen) ->
@@ -195,4 +208,54 @@ public class SignEditScreen extends BaseScreen {
         super.tick();
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        var res = super.mouseClicked(mouseX, mouseY, button); // Let children process first
+        var element = editContext.selectedElement();
+        if (element == null) {
+            // No selected element, don't start dragging
+            editContext.dragging(false);
+            return res;
+        }
+        // Start dragging
+        dragStartMouseX = mouseX;
+        dragStartMouseY = mouseY;
+        dragStartElementX = element.localX();
+        dragStartElementY = element.localY();
+        // Don't start dargging here, let child handle
+        return res;
+    }
+
+    @Override
+    public boolean mouseReleased(double d, double e, int i) {
+        editContext.dragging(false);
+        return super.mouseReleased(d, e, i);
+    }
+
+    @Override
+    public boolean mouseDragged(double fromX, double fromY, int button, double deltaX, double deltaY) {
+        var element = editContext.selectedElement();
+        if (element == null || !editContext.dragging()) {
+            return super.mouseDragged(fromX, fromY, button, deltaX, deltaY);
+        }
+        // Get total delta since drag started
+        int diffX = (int) ((fromX - dragStartMouseX) / DEFAULT_TEXTURE_RENDER_SCALE);
+        int diffY = (int) (-(fromY - dragStartMouseY) / DEFAULT_TEXTURE_RENDER_SCALE);
+
+        var newX = dragStartElementX + diffX;
+        var newY = dragStartElementY + diffY;
+
+        newX = Mth.clamp(newX, 0, roadSign.width());
+        newY = Mth.clamp(newY, 0, roadSign.height());
+
+        if (newX == element.localX() && newY == element.localY()) {
+            return super.mouseDragged(fromX, fromY, button, deltaX, deltaY);
+        }
+
+        element = element.withPosition(newX, newY);
+        this.roadSign(roadSign.replaceElement(editContext.selectedElement(), element));
+        editContext.selectElement(element);
+
+        return super.mouseDragged(fromX, fromY, button, deltaX, deltaY);
+    }
 }

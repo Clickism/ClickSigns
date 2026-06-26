@@ -2,9 +2,9 @@ package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
+import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
@@ -34,6 +34,15 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
      * @return the alignment of this element
      */
     Alignment alignment();
+
+    /**
+     * Creates a new element with the given local coordinates, keeping the other properties the same.
+     *
+     * @param localX local X coordinate
+     * @param localY local Y coordinate
+     * @return a new element with the given local coordinates, keeping the other properties the same
+     */
+    SignElement withPosition(int localX, int localY);
 
     /**
      * Writer for packets

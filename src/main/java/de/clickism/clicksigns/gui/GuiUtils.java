@@ -25,6 +25,10 @@ public class GuiUtils {
      */
     public static final int SELECTED_OUTLINE_COLOR = Color.GREEN.getRGB();
     /**
+     * Color for outlining elements being dragged
+     */
+    public static final int DRAGGING_OUTLINE_COLOR = Color.MAGENTA.getRGB();
+    /**
      * Color for uneditable elements
      */
     public static final int UNEDITABLE_COLOR = 0xFFFF5555;
@@ -148,6 +152,25 @@ public class GuiUtils {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 100);
         renderOutline(guiGraphics, x, y, width, height, outlineColor);
+        guiGraphics.pose().popPose();
+    }
+
+    /**
+     * Renders a plus sign on top of other graphics.
+     * @param guiGraphics the GuiGraphics to render with
+     * @param x
+     * @param y
+     * @param size how many pixels wide the plus sign should be (minimum 3)
+     * @param color
+     */
+    public static void renderPlusOnTop(GuiGraphics guiGraphics, int x, int y, int size, int color) {
+        if (size < 3) {
+            size = 3;
+        }
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 100);
+        guiGraphics.fill(x - size / 2, y, x + size / 2 + 1, y + 1, color);
+        guiGraphics.fill(x, y - size / 2, x + 1, y + size / 2 + 1, color);
         guiGraphics.pose().popPose();
     }
 

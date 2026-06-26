@@ -10,27 +10,37 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
+
 
 public class EditSymbolWidget extends SymbolWidget {
     private final EditContext editContext;
+    private final SymbolElement symbol;
 
     public EditSymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent, EditContext editContext) {
         super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
         setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
         this.editContext = editContext;
+        this.symbol = symbol;
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         editContext.selectElement(this.symbol);
+        editContext.dragging(true);
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.symbol.equals(editContext.selectedElement())) {
+        var selected = this.symbol.equals(editContext.selectedElement());
+        if (selected) {
+            this.renderOutlineOnHover = false;
             GuiUtils.renderOutlineOnTop(guiGraphics, getX(), getY(), width, height, GuiUtils.SELECTED_OUTLINE_COLOR);
+        } else if (!editContext.dragging()) {
+            this.renderOutlineOnHover = true;
         }
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        GuiUtils.renderPlusOnTop(guiGraphics, anchorX + symbol.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - symbol.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
     }
 }
