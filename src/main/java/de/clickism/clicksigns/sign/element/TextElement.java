@@ -1,11 +1,14 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Alignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
+import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.sign.ColorResolver.toHexString;
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Text element on a road sign.
@@ -103,5 +106,15 @@ public record TextElement(
      */
     public TextElement withAlignment(Alignment alignment) {
         return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+    }
+
+    /**
+     * Get the width of the text when rendered on a sign.
+     *
+     * @param string the text to measure.
+     * @return the rendered width of the text.
+     */
+    public float renderWidthOf(String string) {
+        return GuiUtils.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.scale();
     }
 }

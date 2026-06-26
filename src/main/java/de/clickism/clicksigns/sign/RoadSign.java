@@ -141,6 +141,22 @@ public record RoadSign(
     }
 
     /**
+     * Creates a new road sign with the given element replaced.
+     *
+     * @param oldElement the element to be replaced
+     * @param newElement the new element to replace the old one
+     * @return a new road sign with the updated elements
+     */
+    public RoadSign replaceElement(SignElement oldElement, SignElement newElement) {
+        var newElements = new ArrayList<>(elements);
+        int index = newElements.indexOf(oldElement);
+        if (index != -1) {
+            newElements.set(index, newElement);
+        }
+        return withElements(newElements);
+    }
+
+    /**
      * Creates a new road sign with the given alignment.
      *
      * @param alignment new alignment for the road sign

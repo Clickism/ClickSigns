@@ -7,10 +7,10 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.GuiGraphics;
 
+import java.util.function.Consumer;
+
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
-import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Widget for a text element of a road sign
@@ -62,21 +62,12 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         this.value(clampString(text.text()));
         this.placeholder = clampString(this.placeholder);
 
-        this.onValueChanged(this::onChange);
+        var textColor = colorResolver.resolveInt(text.color());
+        var responder = FitIntoElementResponder.create(text, signWidth, this::value, this::textColor, textColor);
+        this.onValueChanged(responder::onChange);
 
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
-        }
-    }
-
-    protected void onChange(String value) {
-        if (renderWidthOf(value) > this.maxWidth) {
-            // Text too big, trim it and set text color to red
-            value = value.substring(0, value.length() - 1);
-            this.value(value);
-            this.textColor(UNEDITABLE_COLOR);
-        } else {
-            this.textColor(colorResolver.resolveInt(text.color()));
         }
     }
 
@@ -87,7 +78,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * @return the clamped string that fits within the max width
      */
     protected String clampString(String string) {
-        while (renderWidthOf(string) > this.maxWidth && !string.isEmpty()) {
+        while (text.renderWidthOf(string) > this.maxWidth && !string.isEmpty()) {
             string = string.substring(0, string.length() - 1);
         }
         return string;
@@ -99,19 +90,9 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     }
 
     /**
-     * Get the width of the text when rendered on a sign.
-     *
-     * @param string the text to measure.
-     * @return the rendered width of the text.
-     */
-    private float renderWidthOf(String string) {
-        return GuiUtils.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.text.scale();
-    }
-
-    /**
      * Calculates the max text width in sign pixels
      */
-    private static int maxTextWidth(TextElement text, int signWidth) {
+    public static int maxTextWidth(TextElement text, int signWidth) {
         if (text.backgroundColor() != null) {
             // If there is a background color, we need to account for the outline, which is 1 pixel wide
             return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
@@ -123,7 +104,58 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         if (this.isHovered && this.active) {
-            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), this.width + 2, this.height + 1, this.outlineColor);
+            renderOutline(guiGraphics, outlineColor);
+        }
+    }
+
+    /**
+     * Renders an outline around the text box.
+     *
+     * @param guiGraphics  the GuiGraphics to render with
+     * @param outlineColor the color of the outline
+     */
+    protected void renderOutline(GuiGraphics guiGraphics, int outlineColor) {
+        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), this.width + 2, this.height + 1, outlineColor);
+    }
+
+    /**
+     * Class that responds to changes in the text value and ensures a text fits within a text element's max width.
+     */
+    public record FitIntoElementResponder(
+            TextElement text,
+            int maxWidth,
+            Consumer<String> valueSetter,
+            Consumer<Integer> colorSetter,
+            int defaultColor
+    ) {
+        /**
+         * Handler for when the text value changes.
+         *
+         * @param value new value
+         */
+        public void onChange(String value) {
+            if (text.renderWidthOf(value) > this.maxWidth) {
+                // Text too big, trim it and set text color to red
+                value = value.substring(0, value.length() - 1);
+                this.valueSetter.accept(value);
+                this.colorSetter.accept(UNEDITABLE_COLOR);
+            } else {
+                this.colorSetter.accept(defaultColor);
+            }
+        }
+
+        /**
+         * Creates a new FitIntoElementResponder for the given text element and sign width.
+         */
+        public static FitIntoElementResponder create(
+                TextElement text,
+                int signWidth,
+                Consumer<String> valueSetter,
+                Consumer<Integer> colorSetter,
+                int defaultColor
+        ) {
+            int maxWidth = maxTextWidth(text, signWidth);
+            return new FitIntoElementResponder(text, maxWidth, valueSetter, colorSetter, defaultColor);
         }
     }
 }

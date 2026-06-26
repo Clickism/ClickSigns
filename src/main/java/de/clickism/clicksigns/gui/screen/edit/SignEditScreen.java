@@ -6,6 +6,8 @@ import de.clickism.clicksigns.gui.screen.edit.widget.*;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -28,6 +30,8 @@ public class SignEditScreen extends BaseScreen {
     private final Consumer<RoadSign> onUpdate;
     private boolean dirty = false;
 
+    private final EditContext editContext = new EditContext();
+
     /**
      * Creates a new road sign edit screen
      *
@@ -45,7 +49,12 @@ public class SignEditScreen extends BaseScreen {
     protected void init() {
         // Add road sign texture
         // TODO: Use custom text and symbol widgets
-        var signWidget = new SignWidget(0, 0, roadSign, EditTextWidget::new, EditSymbolWidget::new, this);
+        var signWidget = new SignWidget(0, 0, roadSign,
+                (anchorX, anchorY, element, colorResolver, signWidth) ->
+                        new EditTextWidget(anchorX, anchorY, element, colorResolver, signWidth, editContext),
+                (anchorX, anchorY, element, colorResolver, screen) ->
+                        new EditSymbolWidget(anchorX, anchorY, element, colorResolver, screen, editContext),
+                this);
         this.addRenderableWidget(signWidget);
 
         var sizeWidget = new StringWidget(0, 0, 100, 20, Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()), GuiUtils.font());
@@ -91,15 +100,31 @@ public class SignEditScreen extends BaseScreen {
         var elementPanel = new PanelWidget(width - PANEL_WIDTH, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
         addRenderableWidget(elementPanel);
 
-        LinearLayout.vertical()
+        var textElementProperties = new TextElementProperties();
+
+        var composer = LinearLayout.vertical()
                 .padding(padding)
                 .centerHorizontal()
                 .composer(PANEL_WIDTH - PANEL_PADDING * 2)
                 // Add sections
-                .bigHeader(Component.literal("Element Properties"))
-                .text(Component.literal("No element selected"))
-                // Lay out in the center of the panel
-                .layout(width - PANEL_WIDTH / 2, PANEL_PADDING)
+                .bigHeader(Component.literal("Element Properties"));
+
+        var selectedElement = editContext.selectedElement();
+        if (selectedElement != null) {
+            if (selectedElement instanceof TextElement textElement) {
+                textElementProperties.compose(composer, roadSign.width(), textElement, newTextElement -> {
+                    this.roadSign(roadSign.replaceElement(selectedElement, newTextElement));
+                    this.editContext.selectElement(newTextElement);
+                });
+            } else if (selectedElement instanceof SymbolElement symbolElement) {
+                // TODO
+            }
+        } else {
+            composer.text(Component.literal("No element selected"));
+        }
+
+        // Lay out in the center of the panel
+        composer.layout(width - PANEL_WIDTH / 2, PANEL_PADDING)
                 .compose(this::addRenderableWidget);
     }
 
@@ -162,8 +187,9 @@ public class SignEditScreen extends BaseScreen {
 
     @Override
     public void tick() {
-        if (dirty) {
+        if (dirty || editContext.isDirty()) {
             this.dirty = false;
+            editContext.clearDirty();
             this.rebuildWidgets();
         }
         super.tick();

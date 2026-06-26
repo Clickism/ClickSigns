@@ -77,7 +77,7 @@ public class SignOverviewScreen extends BaseScreen {
                 .layout(halfWidth, halfHeight);
 
         var alignmentX = confirmButton.getX() + confirmButton.getWidth() + 10;
-        var alignmentWidget = new AlignmentWidget(alignmentX, confirmButton.getY(), roadSign.alignment(), alignment -> {
+        var alignmentWidget = AlignmentWidget.allAlignments(alignmentX, confirmButton.getY(), roadSign.alignment(), alignment -> {
             this.roadSign = roadSign.withAlignment(alignment);
             this.rebuildWidgets();
         });
@@ -107,7 +107,7 @@ public class SignOverviewScreen extends BaseScreen {
             GuiUtils.openScreen(new SignEditScreen(roadSign, sign -> {
                 this.roadSign = sign;
                 this.rebuildWithoutReading();
-            },this));
+            }, this));
         }).build();
     }
 

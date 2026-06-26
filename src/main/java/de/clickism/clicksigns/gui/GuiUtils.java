@@ -21,6 +21,11 @@ public class GuiUtils {
      */
     public static final int OUTLINE_COLOR = Color.RED.getRGB();
     /**
+     * Color for outlining selected elements
+     */
+    public static final int SELECTED_OUTLINE_COLOR = Color.GREEN.getRGB();
+
+    /**
      * Alpha value for inactive elements
      */
     public static final float INACTIVE_ALPHA = .3f;
