@@ -2,6 +2,7 @@ package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -37,6 +38,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         this(anchorX, anchorY, text, colorResolver, signWidth, GuiUtils.OUTLINE_COLOR);
+
     }
 
     /**
@@ -98,6 +100,19 @@ public class TextWidget extends SignTextBox implements ElementProvider {
             return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
         }
         return signWidth - text.localX() - SIGN_PADDING;
+// TODO: Half working, adapt:
+//        int maxWidth;
+//        if (text.alignment() == Alignment.TOP_CENTER) {
+//            // If the text is center aligned, we return its current width
+//            maxWidth = (int) Math.ceil(text.renderWidthOf(text.text()));
+//        } else {
+//            maxWidth = signWidth - text.localX() - SIGN_PADDING;
+//        }
+//        if (text.backgroundColor() != null) {
+//            // If there is a background color, we need to account for the outline
+//            maxWidth -= (int) (TEXT_PADDING_X * 2);
+//        }
+//        return maxWidth;
     }
 
     @Override
