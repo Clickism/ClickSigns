@@ -46,11 +46,11 @@ public class ColorResolver {
      * @return the resolved Color, or a default error color if the name is not found
      */
     public Color resolve(String name) {
-        var color = get(name);
-        if (color != null) {
-            return color;
+        try {
+            return resolveOrThrow(name);
+        } catch (IllegalArgumentException e) {
+            return ERROR_COLOR;
         }
-        return ERROR_COLOR;
     }
 
     /**
@@ -61,9 +61,15 @@ public class ColorResolver {
      * @throws IllegalArgumentException if the name is not found in this resolver or any parent resolver
      */
     public Color resolveOrThrow(String name) throws IllegalArgumentException {
+        // Try name
         var color = get(name);
         if (color != null) {
             return color;
+        }
+        // Try hex
+        var hexColor = parseHex(name);
+        if (hexColor != null) {
+            return hexColor;
         }
         throw new IllegalArgumentException("Color '" + name + "' not found in ColorResolver.");
     }
@@ -137,6 +143,16 @@ public class ColorResolver {
             return parent.get(name);
         }
         return null;
+    }
+
+    @Nullable
+    public Color parseHex(String hex) throws IllegalArgumentException {
+        if (!hex.startsWith("#")) return null;
+        try {
+            return Color.decode(hex);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     /**
