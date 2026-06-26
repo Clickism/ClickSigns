@@ -10,8 +10,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
-public class TextureProperties extends NestedWidget {
-    public TextureProperties(int x, int y, Screen parent, RoadSign roadSign, Consumer<RoadSign> onUpdate) {
+public class TexturePropertiesWidget extends NestedWidget {
+    public TexturePropertiesWidget(int x, int y, Screen parent, RoadSign roadSign, Consumer<RoadSign> onUpdate) {
         super(x, y);
         var frontWidget = new EditTextureWidget(parent, 0, 0, roadSign.frontSource(), roadSign.colorResolver(), source -> {
             onUpdate.accept(roadSign.withFront(source.resizeToFit(roadSign)));

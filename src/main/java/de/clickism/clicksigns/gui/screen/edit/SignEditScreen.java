@@ -79,15 +79,7 @@ public class SignEditScreen extends BaseScreen {
                 // Add sections
                 .bigHeader(Component.literal("Sign Properties"))
                 .header(Component.literal("Textures"))
-                .widget(new TextureProperties(0, 0, this, roadSign, this::roadSign))
-//                .header(Component.literal("Front Texture"))
-//                .widget(new EditableTextureWidget(this, 0, 0, roadSign.frontSource().resize(16, 16).resolve(roadSign.colorResolver()), source -> {
-//                    roadSign(roadSign.withFront(source.resizeToFit(roadSign)));
-//                }))
-//                .header(Component.literal("Back Texture"))
-//                .widget(new EditableTextureWidget(this, 0, 0, roadSign.backSource().resize(16, 16).resolve(roadSign.colorResolver()), source -> {
-//                    roadSign(roadSign.withBack(source.resizeToFit(roadSign)));
-//                }))
+                .widget(new TexturePropertiesWidget(0, 0, this, roadSign, this::roadSign))
                 .header(Component.literal("Elements"))
                 .button(Component.literal("Add Symbol"), b -> {})
                 .button(Component.literal("Add Text"), b -> {})
