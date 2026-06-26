@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.screen.template;
 
 import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.screen.template.widget.TemplateList;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;

@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.screen.template;
+package de.clickism.clicksigns.gui.screen.template.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;

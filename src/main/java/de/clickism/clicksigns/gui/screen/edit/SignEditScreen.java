@@ -2,10 +2,9 @@ package de.clickism.clicksigns.gui.screen.edit;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.screen.edit.widget.*;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
-import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
-import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.components.Button;

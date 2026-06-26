@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.screen.edit;
+package de.clickism.clicksigns.gui.screen.edit.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.LinearLayout;

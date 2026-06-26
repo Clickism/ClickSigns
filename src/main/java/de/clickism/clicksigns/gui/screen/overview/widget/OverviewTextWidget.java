@@ -1,10 +1,8 @@
-package de.clickism.clicksigns.gui.screen.overview;
+package de.clickism.clicksigns.gui.screen.overview.widget;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 

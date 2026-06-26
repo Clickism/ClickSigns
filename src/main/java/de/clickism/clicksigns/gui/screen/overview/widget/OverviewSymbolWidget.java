@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.screen.overview;
+package de.clickism.clicksigns.gui.screen.overview.widget;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.TextureMenuScreen;
