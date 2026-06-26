@@ -5,12 +5,6 @@ import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.FormattedCharSequence;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -23,7 +17,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * Widget for a text element of a road sign
  */
 public class TextWidget extends SignTextBox implements ElementProvider {
-    protected static final int UNEDITABLE_COLOR = 0xFF5555;
+    protected static final int UNEDITABLE_COLOR = 0xFFFF5555;
     protected static final int TEXT_BOX_HEIGHT_SCALE = 4;
     /**
      * Padding between the text and the edge of the sign, in pixels.
@@ -64,35 +58,16 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         this.textColor(colorResolver.resolveInt(text.color()));
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
-        this.value(text.text());
+        // Filter current text to fit and update
+        this.value(filterInput(text.text()));
+        this.text = this.text.withText(this.value());
+
         this.onValueChanged(this::onChange);
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
-        // Unreadable in some cases, so skip for now:
-        // this.setTextColor(text.backgroundColor());
     }
 
-//    // TODO: Maybe custom renderer to render like displayed?
-//    @Override
-//    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-//        // Render text background
-//        if (text.backgroundColor() != null) {
-//            var backgroundColor = colorResolver.resolveInt(text.backgroundColor());
-//            guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, backgroundColor);
-//        }
-//        var textElementGraphics = new TextElementGuiGraphics(guiGraphics);
-//        super.renderWidget(textElementGraphics, mouseX, mouseY, partialTick);
-
-    /// /        if (text.backgroundColor() != null) {
-    /// /            var backgroundColor = colorResolver.resolve(text.backgroundColor()).getRGB();
-    /// /            guiGraphics.renderOutline(this.getX() - 1, this.getY() - 1, this.width + 2, this.height + 2, backgroundColor);
-    /// /        }
-//        if (this.isHovered && this.active) {
-//            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
-//        }
-//        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() + 1, this.getY() + this.getHeight() - 2, this.width - 2, 1, Color.GRAY.getRGB());
-//    }
     protected void onChange(String value) {
         if (renderWidthOf(value) > this.maxWidth) {
             // Text too big, trim it and set text color to red
@@ -102,13 +77,28 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         } else {
             this.textColor(colorResolver.resolveInt(text.color()));
         }
-        // Update text element with new text
-        this.text = this.text.withText(value);
+    }
+
+    @Override
+    protected String filterInput(String input) {
+        // Trim input to fit in max width
+        boolean trimmed = false;
+        while (renderWidthOf(input) > this.maxWidth && !input.isEmpty()) {
+            input = input.substring(0, input.length() - 1);
+            trimmed = true;
+        }
+        // Adjust color
+        if (trimmed) {
+            this.textColor(UNEDITABLE_COLOR);
+        } else {
+            this.textColor(colorResolver.resolveInt(text.color()));
+        }
+        return input;
     }
 
     @Override
     public SignElement element() {
-        return text;
+        return text.withText(this.value());
     }
 
     /**
@@ -144,65 +134,4 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         return color.getRGB();
     }
 
-    /**
-     * Custom hacky gui graphics context to "mixin" into the EditBox rendering
-     * logic. Disabled background, text shadows, and uses caret color properly.
-     */
-    // TODO: Maybe just override the render logic instead?
-    // TODO: Caret color is bad when highlighted text!
-    private class TextElementGuiGraphics extends GuiGraphics {
-        /**
-         * Creates a new text element gui graphics context
-         *
-         * @param guiGraphics the gui graphics context to get the buffer source from
-         */
-        public TextElementGuiGraphics(GuiGraphics guiGraphics) {
-            super(Minecraft.getInstance(), guiGraphics.bufferSource());
-        }
-
-        @Override
-        public void fill(RenderType renderType, int i, int j, int k, int l, int m, int color) {
-            // Render text highlight with the same color
-            if (renderType.equals(RenderType.guiTextHighlight()) ||
-                renderType.equals(RenderType.guiOverlay())) {
-                super.fill(renderType, i, j, k, l, m, caretColor());
-            }
-            // No fill otherwise
-        }
-
-        @Override
-        public int drawString(Font font, @Nullable String string, int x, int y, int color) {
-            this.pose().pushPose();
-            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale() * DEFAULT_TEXTURE_RENDER_SCALE;
-            // Move pivot to (x, y)
-            this.pose().translate(x, y, 0);
-            // Scale around that point
-            this.pose().scale(scale, scale, 1.0f);
-            // Move back so text draws correctly
-            this.pose().translate(-x, -y, 0);
-            // Render caret with caret color
-            if ("_".equals(string)) {
-                color = caretColor();
-            }
-            // Render without shadow
-            var result = super.drawString(font, string, x, y, color, false);
-            this.pose().popPose();
-            return result;
-        }
-
-        @Override
-        public int drawString(Font font, FormattedCharSequence formattedCharSequence, int x, int y, int k) {
-            this.pose().pushPose();
-            var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * text.scale() * DEFAULT_TEXTURE_RENDER_SCALE;
-            // Move pivot to (x, y)
-            this.pose().translate(x, y, 0);
-            // Scale around that point
-            this.pose().scale(scale, scale, 1.0f);
-            // Move back so text draws correctly
-            this.pose().translate(-x, -y, 0);
-            var result = super.drawString(font, formattedCharSequence, x, y, k, false); // No shadow
-            this.pose().popPose();
-            return result;
-        }
-    }
 }

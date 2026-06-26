@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
-public class EditableTextureWidget extends ClickableTextureWidget {
+public class EditTextureWidget extends ClickableTextureWidget {
     private final Screen parent;
     private final TextureSource textureSource;
     private final Consumer<TextureSource> onTextureSelected;
@@ -29,7 +29,7 @@ public class EditableTextureWidget extends ClickableTextureWidget {
      * @param onTextureSelected callback for when a texture is selected.
      *                          There is no guarantee on the size of the texture source, so callback should handle resizing.
      */
-    public EditableTextureWidget(
+    public EditTextureWidget(
             Screen parent, int x, int y,
             TextureSource textureSource,
             ColorResolver colorResolver,

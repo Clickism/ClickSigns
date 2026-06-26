@@ -20,10 +20,12 @@ import java.util.function.Consumer;
  * A simple text box widget without rendering logic
  */
 public abstract class AbstractTextBox extends AbstractWidget {
+    private static final String DEFAULT_PLACEHOLDER = "Text";
+
     protected final Font font;
 
     protected String value = "";
-    protected String placeholder = "Text";
+    protected String placeholder = "";
     protected boolean editable = true;
 
     protected int textColor = Color.WHITE.getRGB();
@@ -31,7 +33,6 @@ public abstract class AbstractTextBox extends AbstractWidget {
 
     protected int cursorPos = 0;
     protected int highlightPos = 0;
-    protected int displayPos = 0;
 
     protected Consumer<String> onValueChanged = s -> {};
     /**
@@ -42,6 +43,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     public AbstractTextBox(int x, int y, int width, int height, Font font) {
         super(x, y, width, height, Component.empty());
         this.font = font;
+        this.placeholder = filterInput(DEFAULT_PLACEHOLDER);
     }
 
     /**
@@ -117,7 +119,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
      */
     public void insertText(String string) {
         if (!editable) return;
-        string = SharedConstants.filterText(string);
+        string = filterInput(string);
         if (highlightPos != cursorPos) {
             // Remove highlighted text before inserting
             int start = selectionStart();
@@ -257,6 +259,16 @@ public abstract class AbstractTextBox extends AbstractWidget {
      */
     public boolean listening() {
         return this.visible && this.isFocused() && this.editable;
+    }
+
+    /**
+     * Filters the input string before inserting it into the text box.
+     *
+     * @param input the input string to filter
+     * @return the filtered string
+     */
+    protected String filterInput(String input) {
+        return SharedConstants.filterText(input);
     }
 
     @Override

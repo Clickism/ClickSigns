@@ -178,5 +178,4 @@ public class SignEditScreen extends BaseScreen {
         super.tick();
     }
 
-
 }

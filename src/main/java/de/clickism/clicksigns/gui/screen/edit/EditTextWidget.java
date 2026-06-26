@@ -10,5 +10,6 @@ public class EditTextWidget extends TextWidget {
     public EditTextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         super(anchorX, anchorY, text, colorResolver, signWidth);
         setTooltip(Tooltip.create(Component.literal("§f§lClick+drag §rto move element")));
+        this.editable = false;
     }
 }
