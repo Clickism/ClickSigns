@@ -24,6 +24,10 @@ public class GuiUtils {
      * Color for outlining selected elements
      */
     public static final int SELECTED_OUTLINE_COLOR = Color.GREEN.getRGB();
+    /**
+     * Color for uneditable elements
+     */
+    public static final int UNEDITABLE_COLOR = 0xFFFF5555;
 
     /**
      * Alpha value for inactive elements

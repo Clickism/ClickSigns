@@ -2,7 +2,6 @@ package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
-import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -17,7 +16,6 @@ import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
  * Widget for a text element of a road sign
  */
 public class TextWidget extends SignTextBox implements ElementProvider {
-    protected static final int UNEDITABLE_COLOR = 0xFFFF5555;
     protected static final int TEXT_BOX_HEIGHT_SCALE = 4;
     /**
      * Padding between the text and the edge of the sign, in pixels.
@@ -153,7 +151,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
                 // Text too big, trim it and set text color to red
                 value = value.substring(0, value.length() - 1);
                 this.valueSetter.accept(value);
-                this.colorSetter.accept(UNEDITABLE_COLOR);
+                this.colorSetter.accept(GuiUtils.UNEDITABLE_COLOR);
             } else {
                 this.colorSetter.accept(defaultColor);
             }

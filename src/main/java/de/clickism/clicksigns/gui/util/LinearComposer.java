@@ -63,4 +63,8 @@ public class LinearComposer {
             }
         }
     }
+
+    public int width() {
+        return width;
+    }
 }

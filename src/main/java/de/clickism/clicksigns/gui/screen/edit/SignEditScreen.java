@@ -100,8 +100,6 @@ public class SignEditScreen extends BaseScreen {
         var elementPanel = new PanelWidget(width - PANEL_WIDTH, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
         addRenderableWidget(elementPanel);
 
-        var textElementProperties = new TextElementProperties();
-
         var composer = LinearLayout.vertical()
                 .padding(padding)
                 .centerHorizontal()
@@ -112,7 +110,7 @@ public class SignEditScreen extends BaseScreen {
         var selectedElement = editContext.selectedElement();
         if (selectedElement != null) {
             if (selectedElement instanceof TextElement textElement) {
-                textElementProperties.compose(composer, roadSign.width(), textElement, newTextElement -> {
+                TextElementPropertiesComposer.compose(composer, roadSign.width(), textElement, newTextElement -> {
                     this.roadSign(roadSign.replaceElement(selectedElement, newTextElement));
                     this.editContext.selectElement(newTextElement);
                 });
