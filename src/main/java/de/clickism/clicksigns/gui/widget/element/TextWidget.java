@@ -51,7 +51,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         super(anchorX, anchorY,
                 maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
                 (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale()),
-                GuiUtils.font(), text.scale());
+                GuiUtils.font(), text.scale(), text.alignment());
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         // Calculate max width

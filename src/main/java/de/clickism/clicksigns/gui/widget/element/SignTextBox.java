@@ -2,9 +2,12 @@ package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.AbstractTextBox;
+import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
+
+import java.awt.*;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.*;
@@ -15,10 +18,18 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  */
 public class SignTextBox extends AbstractTextBox {
     private final float textScale;
+    private final Alignment alignment;
 
-    public SignTextBox(int x, int y, int width, int height, Font font, float textScale) {
+    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment) {
         super(x, y, width, height, font);
         this.textScale = textScale;
+        this.alignment = alignment;
+    }
+
+    private int calculateTextX(int x, float scale) {
+        int textWidth = font.width(value);
+        int offset = (int) -alignment.offset().x() + 1; // Add 1 since left should be 0
+        return (int) Math.ceil(x + offset * (width) / (2 * scale) - offset * textWidth / 2f);
     }
 
     // TODO: Clean up and refactor
@@ -44,7 +55,7 @@ public class SignTextBox extends AbstractTextBox {
         // Move back so text draws correctly
         guiGraphics.pose().translate(-x, -y, 0);
 
-        int textX = x;
+        int textX = calculateTextX(x, scale);
         // Remove padding for accents, to center visually
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
         // slightly lower, so looks more aligned this way
@@ -88,7 +99,7 @@ public class SignTextBox extends AbstractTextBox {
         if (highlightPos != cursorPos) {
             int highlightStart = Math.min(cursorPos, highlightPos);
             int highlightEnd = Math.max(cursorPos, highlightPos);
-            int highlightX = x + font.width(value.substring(0, highlightStart));
+            int highlightX = textX + font.width(value.substring(0, highlightStart));
             int highlightWidth = font.width(value.substring(highlightStart, highlightEnd));
             guiGraphics.fill(RenderType.guiOverlay(), highlightX, textY, highlightX + highlightWidth, textY + font.lineHeight, highlightColor); // TODO: Configurable selection color
         }
