@@ -43,7 +43,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     public AbstractTextBox(int x, int y, int width, int height, Font font) {
         super(x, y, width, height, Component.empty());
         this.font = font;
-        this.placeholder = filterInput(DEFAULT_PLACEHOLDER);
+        this.placeholder = DEFAULT_PLACEHOLDER;
     }
 
     /**

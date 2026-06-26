@@ -6,8 +6,6 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 
-import java.awt.*;
-
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
@@ -58,33 +56,24 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         this.textColor(colorResolver.resolveInt(text.color()));
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
+
         // Filter current text to fit and update
         this.value(filterInput(text.text()));
-        this.text = this.text.withText(this.value());
+        this.placeholder = filterInput(this.placeholder);
 
-        this.onValueChanged(this::onChange);
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
     }
 
-    protected void onChange(String value) {
-        if (renderWidthOf(value) > this.maxWidth) {
-            // Text too big, trim it and set text color to red
-            value = value.substring(0, value.length() - 1);
-            this.value(value);
-            this.textColor(UNEDITABLE_COLOR);
-        } else {
-            this.textColor(colorResolver.resolveInt(text.color()));
-        }
-    }
-
     @Override
     protected String filterInput(String input) {
+        String newValue = value + input;
         // Trim input to fit in max width
         boolean trimmed = false;
-        while (renderWidthOf(input) > this.maxWidth && !input.isEmpty()) {
+        while (renderWidthOf(newValue) > this.maxWidth && !newValue.isEmpty()) {
             input = input.substring(0, input.length() - 1);
+            newValue = value + input;
             trimmed = true;
         }
         // Adjust color
@@ -120,18 +109,6 @@ public class TextWidget extends SignTextBox implements ElementProvider {
             return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
         }
         return signWidth - text.localX() - SIGN_PADDING;
-    }
-
-    /**
-     * Calculates the caret color from the text color
-     *
-     * @return the caret color
-     */
-    private int caretColor() {
-        var textColor = colorResolver.resolveInt(text.color());
-        var color = new Color(textColor, true);
-        color = color.brighter().brighter();
-        return color.getRGB();
     }
 
 }
