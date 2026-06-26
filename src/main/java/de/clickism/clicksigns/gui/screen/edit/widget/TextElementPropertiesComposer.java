@@ -4,6 +4,7 @@ import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.EditBox;
@@ -12,24 +13,30 @@ import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
-public class TextElementPropertiesComposer {
+/**
+ * Composes the property controls for a TextElement into a LinearComposer.
+ *
+ * @param composer      composer to add the controls to
+ * @param signWidth     width of the sign, used to calculate max text width
+ * @param colorResolver color resolver of the sign
+ * @param textElement   the TextElement to edit
+ * @param onUpdate      callback to call when the TextElement is updated
+ */
+public record TextElementPropertiesComposer(
+        LinearComposer composer,
+        int signWidth,
+        ColorResolver colorResolver,
+        TextElement textElement,
+        Consumer<TextElement> onUpdate
+) {
+    private static final int EDIT_BOX_OFFSET = 4;
 
     /**
-     * Adds the property controls for a TextElement to the given composer.
-     *
-     * @param composer    composer to add the controls to
-     * @param signWidth   width of the sign, used to calculate max text width
-     * @param textElement the TextElement to edit
-     * @param onUpdate    callback to call when the TextElement is updated
+     * Adds the property controls for the TextElement to the composer.
      */
-    public static void compose(
-            LinearComposer composer,
-            int signWidth,
-            TextElement textElement,
-            Consumer<TextElement> onUpdate
-    ) {
+    public void compose() {
         // Text
-        var textBox = new EditBox(GuiUtils.font(), 0, 0, composer.width(), 20, Component.literal("Text"));
+        var textBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Text"));
         textBox.setValue(textElement.text());
         var responder = TextWidget.FitIntoElementResponder.create(textElement, signWidth, textBox::setValue, textBox::setTextColor, EditBox.DEFAULT_TEXT_COLOR);
         textBox.setResponder(responder::onChange);
@@ -42,10 +49,11 @@ public class TextElementPropertiesComposer {
                 });
 
         // Color
-        var colorBox = new EditBox(GuiUtils.font(), 0, 0, composer.width(), 20, Component.literal("Color"));
+        var colorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         colorBox.setValue(textElement.color());
         colorBox.setTooltip(Tooltip.create(Component.literal("Text Color")));
-        var backgroundColorBox = new EditBox(GuiUtils.font(), 0, 0, composer.width(), 20, Component.literal("Background Color"));
+
+        var backgroundColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         backgroundColorBox.setValue(textElement.backgroundColor());
         backgroundColorBox.setTooltip(Tooltip.create(Component.literal("Background Color")));
         composer
@@ -79,6 +87,20 @@ public class TextElementPropertiesComposer {
                 .widget(AlignmentWidget.textAlignments(0, 0, textElement.alignment(), alignment -> {
                     onUpdate.accept(textElement.withAlignment(alignment));
                 }));
+    }
+
+    /**
+     * Edit box for a color value that dynamically updates its text color
+     * based on the resolved color from a ColorResolver.
+     */
+    private static class ColorBox extends EditBox {
+        public ColorBox(int x, int y, int width, int height, ColorResolver colorResolver) {
+            super(GuiUtils.font(), x, y, width, height, Component.empty());
+            this.setResponder(value -> {
+                var color = colorResolver.resolve(value);
+                this.setTextColor(color.getRGB());
+            });
+        }
     }
 
     /**

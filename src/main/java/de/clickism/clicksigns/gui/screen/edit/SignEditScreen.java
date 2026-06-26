@@ -110,10 +110,12 @@ public class SignEditScreen extends BaseScreen {
         var selectedElement = editContext.selectedElement();
         if (selectedElement != null) {
             if (selectedElement instanceof TextElement textElement) {
-                TextElementPropertiesComposer.compose(composer, roadSign.width(), textElement, newTextElement -> {
-                    this.roadSign(roadSign.replaceElement(selectedElement, newTextElement));
-                    this.editContext.selectElement(newTextElement);
-                });
+                new TextElementPropertiesComposer(composer, roadSign.width(), roadSign.colorResolver(), textElement,
+                        newTextElement -> {
+                            this.roadSign(roadSign.replaceElement(selectedElement, newTextElement));
+                            this.editContext.selectElement(newTextElement);
+                        })
+                        .compose();
             } else if (selectedElement instanceof SymbolElement symbolElement) {
                 // TODO
             }
