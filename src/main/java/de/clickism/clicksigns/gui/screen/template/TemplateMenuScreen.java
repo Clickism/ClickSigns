@@ -3,6 +3,8 @@ package de.clickism.clicksigns.gui.screen.template;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
+import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,9 +29,7 @@ public class TemplateMenuScreen extends BaseScreen {
         var listHeight = this.height - marginTop;
 
         // Preview
-        var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
-        var preview = new SignWidget(0, 0, roadSign, null);
-        preview.setActive(false);
+        var preview = signWidget();
         addRenderableWidget(preview);
 
         var layoutX = listWidth + 10;
@@ -52,6 +52,20 @@ public class TemplateMenuScreen extends BaseScreen {
         confirmButton.setX(this.width - confirmButton.getWidth() - 10);
         confirmButton.setY(this.height - confirmButton.getHeight() - 10);
         addRenderableWidget(confirmButton);
+    }
+
+    private SignWidget signWidget() {
+        var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
+        var preview = new SignWidget(0, 0, roadSign,
+                // No outline
+                (anchorX, anchorY, element, colorResolver, signWidth) ->
+                        new TextWidget(anchorX, anchorY, element, colorResolver, signWidth, 0),
+                // No outline
+                (anchorX, anchorY, element, colorResolver, screen) ->
+                        new SymbolWidget(anchorX, anchorY, element, colorResolver, 0, screen),
+                null);
+        preview.setActive(false);
+        return preview;
     }
 
     private Button confirmButton() {

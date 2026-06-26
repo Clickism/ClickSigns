@@ -5,6 +5,7 @@ import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import net.minecraft.client.gui.GuiGraphics;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
@@ -58,31 +59,38 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         this.setPosition(pos.x, pos.y);
 
         // Filter current text to fit and update
-        this.value(filterInput(text.text()));
-        this.placeholder = filterInput(this.placeholder);
+        this.value(clampString(text.text()));
+        this.placeholder = clampString(this.placeholder);
+
+        this.onValueChanged(this::onChange);
 
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
     }
 
-    @Override
-    protected String filterInput(String input) {
-        String newValue = value + input;
-        // Trim input to fit in max width
-        boolean trimmed = false;
-        while (renderWidthOf(newValue) > this.maxWidth && !newValue.isEmpty()) {
-            input = input.substring(0, input.length() - 1);
-            newValue = value + input;
-            trimmed = true;
-        }
-        // Adjust color
-        if (trimmed) {
+    protected void onChange(String value) {
+        if (renderWidthOf(value) > this.maxWidth) {
+            // Text too big, trim it and set text color to red
+            value = value.substring(0, value.length() - 1);
+            this.value(value);
             this.textColor(UNEDITABLE_COLOR);
         } else {
             this.textColor(colorResolver.resolveInt(text.color()));
         }
-        return input;
+    }
+
+    /**
+     * Clamps the given string to fit within the max width of the text box.
+     *
+     * @param string the string to clamp
+     * @return the clamped string that fits within the max width
+     */
+    protected String clampString(String string) {
+        while (renderWidthOf(string) > this.maxWidth && !string.isEmpty()) {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
     }
 
     @Override
@@ -111,4 +119,11 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         return signWidth - text.localX() - SIGN_PADDING;
     }
 
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        if (this.isHovered && this.active) {
+            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), this.width + 2, this.height + 1, this.outlineColor);
+        }
+    }
 }

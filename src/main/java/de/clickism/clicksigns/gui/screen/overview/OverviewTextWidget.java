@@ -21,12 +21,4 @@ public class OverviewTextWidget extends TextWidget {
         // Add tooltip
         this.setTooltip(Tooltip.create(Component.literal("§lClick §rto edit text\n§lRight+Click §rto change variant")));
     }
-
-    @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered && this.active) {
-            GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), this.width + 2, this.height + 1, GuiUtils.OUTLINE_COLOR);
-        }
-    }
 }
