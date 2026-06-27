@@ -24,8 +24,8 @@ public class SignTextBox extends AbstractTextBox {
         this.alignment = alignment;
     }
 
-    private int calculateTextX(int x, float scale) {
-        int textWidth = font.width(value);
+    private int calculateTextX(int x, float scale, String text) {
+        int textWidth = font.width(text);
         int offset = (int) -alignment.offset().x() + 1; // Add 1 since left should be 0
         return (int) Math.ceil(x + offset * (width) / (2 * scale) - offset * textWidth / 2f);
     }
@@ -54,7 +54,7 @@ public class SignTextBox extends AbstractTextBox {
         // Move back so text draws correctly
         guiGraphics.pose().translate(-x, -y, 0);
 
-        int textX = calculateTextX(x, scale);
+        int textX = calculateTextX(x, scale, text);
         int textXStart = textX;
         // Remove padding for accents, to center visually
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
