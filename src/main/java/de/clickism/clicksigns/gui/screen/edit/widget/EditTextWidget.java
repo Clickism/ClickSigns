@@ -58,6 +58,8 @@ public class EditTextWidget extends TextWidget {
         }
 
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        GuiUtils.renderPlusOnTop(guiGraphics, anchorX + text.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - text.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
+        if (selected) {
+            GuiUtils.renderPlusOnTop(guiGraphics, anchorX + text.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - text.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
+        }
     }
 }

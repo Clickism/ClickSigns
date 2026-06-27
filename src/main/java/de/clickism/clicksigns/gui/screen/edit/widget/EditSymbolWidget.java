@@ -49,6 +49,8 @@ public class EditSymbolWidget extends SymbolWidget {
             this.renderOutlineOnHover = !editContext.dragging();
         }
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        GuiUtils.renderPlusOnTop(guiGraphics, anchorX + symbol.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - symbol.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
+        if (selected) {
+            GuiUtils.renderPlusOnTop(guiGraphics, anchorX + symbol.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - symbol.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
+        }
     }
 }
