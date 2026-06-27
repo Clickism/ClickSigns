@@ -5,6 +5,8 @@ import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -16,12 +18,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 // TODO: Add guidelines when dragging
 // TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
+
 /**
  * Screen for editing a road sign in an advanced way.
  * Supports resizing, adding/removing/editing elements, and changing textures.
@@ -73,7 +77,10 @@ public class SignEditScreen extends BaseScreen {
         var sizeWidget = new StringWidget(0, 0, 100, 20, Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()), GuiUtils.font());
         this.addRenderableWidget(sizeWidget);
 
-        var confirmButton = Button.builder(Component.translatable("clicksigns.text.confirm"), b -> GuiUtils.closeScreen()).build();
+        var confirmButton = Button.builder(
+                Component.literal("✔ ").append(Component.translatable("clicksigns.text.confirm")),
+                b -> GuiUtils.closeScreen()
+        ).build();
         this.addRenderableWidget(confirmButton);
 
         LinearLayout.vertical()
@@ -94,6 +101,10 @@ public class SignEditScreen extends BaseScreen {
         addRenderableWidget(signPanel);
 
         var padding = 4;
+
+        var centerX = roadSign.width() / 2;
+        var centerY = roadSign.height() / 2;
+
         LinearLayout.vertical()
                 .padding(padding)
                 .centerHorizontal()
@@ -103,8 +114,15 @@ public class SignEditScreen extends BaseScreen {
                 .header(Component.literal("Textures"))
                 .widget(new TexturePropertiesWidget(0, 0, this, roadSign, this::roadSign))
                 .header(Component.literal("Elements"))
-                .button(Component.literal("Add Symbol"), b -> {})
-                .button(Component.literal("Add Text"), b -> {})
+                .button(Component.literal("+ Add Symbol"), b -> {
+                    var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
+                    var element = new SymbolElement(centerX, centerY, Alignment.CENTER, symbol);
+                    this.roadSign(roadSign.addElement(element));
+                })
+                .button(Component.literal("+ Add Text"), b -> {
+                    var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
+                    this.roadSign(roadSign.addElement(element));
+                })
                 // Lay out in the center of the panel
                 .layout(PANEL_WIDTH / 2, PANEL_PADDING)
                 .compose(this::addRenderableWidget);
@@ -137,8 +155,14 @@ public class SignEditScreen extends BaseScreen {
                         })
                         .compose();
             }
+            composer.header(Component.literal("Other"))
+                    .coloredButton(Color.RED, Component.literal("🗑 Delete Element"), button -> {
+                        this.roadSign(roadSign.removeElement(selectedElement));
+                        this.editContext.selectElement(null);
+                    });
         } else {
             composer.text(Component.literal("No element selected"));
+
         }
 
         // Lay out in the center of the panel

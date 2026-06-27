@@ -2,11 +2,13 @@ package de.clickism.clicksigns.gui.util;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
+import de.clickism.clicksigns.gui.widget.ColoredButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 public class LinearComposer {
@@ -37,6 +39,12 @@ public class LinearComposer {
         var button = Button.builder(label, onPress)
                 .width(width)
                 .build();
+        layout.add(button);
+        return this;
+    }
+
+    public LinearComposer coloredButton(Color color, Component label, Button.OnPress onPress) {
+        var button = new ColoredButton(0, 0, width, 20, color, label, onPress);
         layout.add(button);
         return this;
     }

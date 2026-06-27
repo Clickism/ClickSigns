@@ -1,12 +1,13 @@
 package de.clickism.clicksigns.gui.screen.edit.widget;
 
 import de.clickism.clicksigns.gui.util.NestedWidget;
+import de.clickism.clicksigns.gui.widget.ColoredButton;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -62,15 +63,15 @@ public class ResizeControls extends NestedWidget {
         UP, DOWN, LEFT, RIGHT
     }
 
-    private class ResizeButton extends Button {
+    private class ResizeButton extends ColoredButton {
         private final Direction direction;
 
         public ResizeButton(Direction direction) {
-            super(0, 0, 0, 0, Component.literal(iconOf(direction)),
+            super(0, 0, 0, 0, Color.BLACK, Component.literal(iconOf(direction)),
                     b -> {
                         if (!canResize.apply(direction)) return;
                         onResize.accept(direction);
-                    }, DEFAULT_NARRATION);
+                    });
             this.direction = direction;
             this.updateSize();
             this.updatePosition();

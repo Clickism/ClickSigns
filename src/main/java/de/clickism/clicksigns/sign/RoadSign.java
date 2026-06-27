@@ -36,6 +36,12 @@ public record RoadSign(
      * The default alignment for road signs when no alignment is set.
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
+
+    /**
+     * The default symbol texture.
+     */
+    public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
+
     /**
      * The default road sign to use when no road sign is set.
      */
@@ -43,10 +49,10 @@ public record RoadSign(
             new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
             new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
             List.of(
-                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))),
-                    new TextElement(9, 10, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                    new TextElement(9, 6, Alignment.TOP_RIGHT, "Main Street", 1f, "foreground", null),
-                    new TextElement(9, 2, Alignment.TOP_RIGHT, "Main Street", 1f, "white", "brown")
+                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
+                    new TextElement(9, 10, Alignment.TEXT_RIGHT, "Main Street", 1f, "foreground", null),
+                    new TextElement(9, 6, Alignment.TEXT_RIGHT, "Main Street", 1f, "foreground", null),
+                    new TextElement(9, 2, Alignment.TEXT_RIGHT, "Main Street", 1f, "white", "brown")
             ),
             DEFAULT_ALIGNMENT,
             ClickSigns.identifier("test")
@@ -153,6 +159,30 @@ public record RoadSign(
         if (index != -1) {
             newElements.set(index, newElement);
         }
+        return withElements(newElements);
+    }
+
+    /**
+     * Creates a new road sign with the given element removed.
+     *
+     * @param element the element to be removed
+     * @return a new road sign with the updated elements
+     */
+    public RoadSign removeElement(SignElement element) {
+        var newElements = new ArrayList<>(elements);
+        newElements.remove(element);
+        return withElements(newElements);
+    }
+
+    /**
+     * Creates a new road sign with the given element added.
+     *
+     * @param element the element to be added
+     * @return a new road sign with the updated elements
+     */
+    public RoadSign addElement(SignElement element) {
+        var newElements = new ArrayList<>(elements);
+        newElements.add(element);
         return withElements(newElements);
     }
 
