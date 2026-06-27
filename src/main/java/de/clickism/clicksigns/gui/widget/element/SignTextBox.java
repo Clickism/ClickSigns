@@ -7,10 +7,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 
-import java.awt.*;
-
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
-import static de.clickism.clicksigns.render.TextRenderer.*;
+import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
@@ -33,17 +31,18 @@ public class SignTextBox extends AbstractTextBox {
     }
 
     // TODO: Clean up and refactor
+    // TODO: Make sure placeholder is cut off properly
     @Override
     protected void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         int x = getX();
         int y = getY();
-        // Temporary background
+
+        // Background color
         guiGraphics.fill(x, y + 1, x + width, y + height + 1, backgroundColor);
 
         // Visible text from display pos to end, truncated to fit in view
-        // TODO: Make sure placeholder is cut off properly
-        boolean showingPlaceholder = this.value.isEmpty() && !this.isFocused();
-        String value = showingPlaceholder ? placeholder : this.value;
+        boolean showPlaceholder = this.value.isEmpty() && !this.isFocused();
+        String text = showPlaceholder ? placeholder : this.value;
 
         // Draw text
         guiGraphics.pose().pushPose();
@@ -56,35 +55,36 @@ public class SignTextBox extends AbstractTextBox {
         guiGraphics.pose().translate(-x, -y, 0);
 
         int textX = calculateTextX(x, scale);
+        int textXStart = textX;
         // Remove padding for accents, to center visually
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
         // slightly lower, so looks more aligned this way
         float mainLineHeight = font.lineHeight - 1;
         int textY = (int) (y + height / 2f - mainLineHeight * scale / 2f);
 
-        String left = value.substring(0, cursorPos);
-        String right = value.substring(cursorPos);
+        String left = text.substring(0, cursorPos);
+        String right = text.substring(cursorPos);
         String cursor = "_";
 
         // Render background
         int paddingX = 2;
-        int paddingY = 1;
         if (backgroundColor != 0) {
             textX += paddingX;
+            textXStart += paddingX;
         }
-        // GuiUtils.renderOutlineOnTop(guiGraphics, textX, textY, font.width(visible), font.lineHeight - 2, GuiUtils.OUTLINE_COLOR);
 
         // Render left of cursor
         var highlightColor = textColor & 0xFFFFFF | 0x55000000; // Set alpha
-        var textColor = showingPlaceholder ? highlightColor : this.textColor;
+        var textColor = showPlaceholder ? highlightColor : this.textColor;
         guiGraphics.drawString(font, left, textX, textY, textColor, false);
 
         textX += font.width(left);
+
         // Render cursor
         long time = System.currentTimeMillis();
         var cursorBlinking = time / 300 % 2 == 0; // Blink every 300 ms
         if (this.isFocused() && this.editable && !cursorBlinking) {
-            boolean lineCursor = cursorPos < value.length();
+            boolean lineCursor = cursorPos < text.length();
             if (lineCursor) {
                 guiGraphics.fill(RenderType.guiOverlay(), textX, textY, textX + 1, textY + font.lineHeight, textColor);
             } else {
@@ -93,14 +93,15 @@ public class SignTextBox extends AbstractTextBox {
                 textX += font.width(cursor);
             }
         }
+
         // Render right of cursor
         guiGraphics.drawString(font, right, textX, textY, textColor, false);
         // Render selection
         if (highlightPos != cursorPos) {
             int highlightStart = Math.min(cursorPos, highlightPos);
             int highlightEnd = Math.max(cursorPos, highlightPos);
-            int highlightX = textX + font.width(value.substring(0, highlightStart));
-            int highlightWidth = font.width(value.substring(highlightStart, highlightEnd));
+            int highlightX = textXStart + font.width(text.substring(0, highlightStart));
+            int highlightWidth = font.width(text.substring(highlightStart, highlightEnd));
             guiGraphics.fill(RenderType.guiOverlay(), highlightX, textY, highlightX + highlightWidth, textY + font.lineHeight, highlightColor); // TODO: Configurable selection color
         }
         guiGraphics.pose().popPose();
