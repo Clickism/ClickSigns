@@ -3,8 +3,7 @@ package de.clickism.clicksigns.sign;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Color Reserver that allows defining and resolving colors by name.
@@ -127,6 +126,19 @@ public class ColorResolver {
      */
     public boolean has(String name) {
         return colors.containsKey(name) || (parent != null && parent.has(name));
+    }
+
+    /**
+     * Returns a set of all color names defined in this resolver.
+     *
+     * @return a set of all color names defined in this resolver
+     */
+    public Set<String> definedColors() {
+        var colors = new HashSet<>(this.colors.keySet());
+        if (parent != null) {
+            colors.addAll(parent.definedColors());
+        }
+        return Collections.unmodifiableSet(colors);
     }
 
     /**

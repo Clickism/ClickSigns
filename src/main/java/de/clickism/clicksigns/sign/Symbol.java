@@ -1,11 +1,11 @@
 package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.registry.Categorized;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +28,16 @@ public record Symbol(
             new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
             null
     );
+
+    /**
+     * Creates a new symbol with the same identifier and category, but with a different texture.
+     *
+     * @param newTexture the new texture source for the symbol
+     * @return a new symbol with the updated texture
+     */
+    public Symbol withTexture(TextureSource newTexture) {
+        return new Symbol(this.identifier, newTexture, this.categoryId);
+    }
 
     /**
      * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.

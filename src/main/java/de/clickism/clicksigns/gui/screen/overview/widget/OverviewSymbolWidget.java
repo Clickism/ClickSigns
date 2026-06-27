@@ -10,11 +10,16 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * Symbol widget that can be edited/cycled by clicking
  */
 public class OverviewSymbolWidget extends SymbolWidget {
+    private @Nullable Consumer<SymbolElement> onSymbolChanged;
+
     /**
      * Creates a new editable symbol widget.
      */
@@ -22,6 +27,15 @@ public class OverviewSymbolWidget extends SymbolWidget {
         super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
         // TODO: Translate
         this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu")));
+    }
+
+    /**
+     * Sets the callback for when the symbol is changed.
+     *
+     * @param onSymbolChanged callback to call when the symbol is changed
+     */
+    public void onSymbolChanged(Consumer<SymbolElement> onSymbolChanged) {
+        this.onSymbolChanged = onSymbolChanged;
     }
 
     @Override
@@ -36,6 +50,7 @@ public class OverviewSymbolWidget extends SymbolWidget {
             // Cycle to next symbol in the same category
             var nextSymbol = symbol.symbol().nextInCategory();
             this.symbol(this.symbol.withSymbol(nextSymbol));
+            triggerSymbolChanged();
             return true;
         }
         // Right click
@@ -50,11 +65,17 @@ public class OverviewSymbolWidget extends SymbolWidget {
                 var symbol = SignRegistries.SYMBOLS.get(identifier);
                 if (symbol == null) return;
                 this.symbol(this.symbol.withSymbol(symbol));
+                triggerSymbolChanged();
                 GuiUtils.closeScreen();
             });
             GuiUtils.openScreen(screen);
             return true;
         }
         return false;
+    }
+
+    private void triggerSymbolChanged() {
+        if (onSymbolChanged == null) return;
+        onSymbolChanged.accept(this.symbol);
     }
 }

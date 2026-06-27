@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
@@ -61,6 +62,7 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             buf.writeUtf(text.text());
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
+            TextureSource.PACKET_WRITER.accept(buf, symbol.symbol().texture());
         }
     };
 
@@ -85,7 +87,8 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             }
             case SymbolElement.TYPE -> {
                 var id = buf.readResourceLocation();
-                var symbol = SignRegistries.SYMBOLS.get(id);
+                var source = TextureSource.PACKET_READER.apply(buf);
+                var symbol = SignRegistries.SYMBOLS.get(id).withTexture(source);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
@@ -110,6 +113,9 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             tag.putString("text", text.text());
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
+            var textureTag = tag.createWriter();
+            TextureSource.NBT_WRITER.write(textureTag, symbol.symbol().texture());
+            tag.putCompound("texture", textureTag.asCompoundTag());
         }
     };
 
@@ -131,7 +137,9 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
             }
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
-                var symbol = SignRegistries.SYMBOLS.get(id);
+                var textureTag = tag.getCompound("texture").orElseThrow();
+                var texture = TextureSource.NBT_READER.read(textureTag);
+                var symbol = SignRegistries.SYMBOLS.get(id).withTexture(texture);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);

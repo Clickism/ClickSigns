@@ -19,7 +19,10 @@ public class EditSymbolWidget extends SymbolWidget {
 
     public EditSymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent, EditContext editContext) {
         super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
-        setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
+        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
+        if (editContext.dragging()) {
+            this.setTooltipDelay(0);
+        }
         this.editContext = editContext;
         this.symbol = symbol;
     }

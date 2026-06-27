@@ -3,10 +3,10 @@ package de.clickism.clicksigns.gui.screen.edit.widget;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
+import de.clickism.clicksigns.gui.widget.ColorBox;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -29,6 +29,9 @@ public record TextElementPropertiesComposer(
         TextElement textElement,
         Consumer<TextElement> onUpdate
 ) {
+    private static final float MAX_SCALE = 4f;
+    private static final float MIN_SCALE = 0.3f;
+
     private static final int EDIT_BOX_OFFSET = 4;
 
     /**
@@ -62,13 +65,13 @@ public record TextElementPropertiesComposer(
                 .widget(backgroundColorBox)
                 .button(Component.literal("Confirm"), button -> {
                     onUpdate.accept(textElement
-                            .withColor(colorBox.getValue())
-                            .withBackgroundColor(backgroundColorBox.getValue())
+                            .withColor(colorBox.colorValue())
+                            .withBackgroundColor(backgroundColorBox.colorValueOrNull())
                     );
                 });
 
         // Scale
-        var slider = new ScaleSliderWidget(0, 0, composer.width(), 20, textElement.scale());
+        var slider = new ScaledSliderWidget(0, 0, composer.width(), 20, textElement.scale(), MIN_SCALE, MAX_SCALE);
         composer
                 .header(Component.literal("Scale"))
                 .widget(slider)
@@ -89,58 +92,4 @@ public record TextElementPropertiesComposer(
                 }));
     }
 
-    /**
-     * Edit box for a color value that dynamically updates its text color
-     * based on the resolved color from a ColorResolver.
-     */
-    private static class ColorBox extends EditBox {
-        public ColorBox(int x, int y, int width, int height, ColorResolver colorResolver) {
-            super(GuiUtils.font(), x, y, width, height, Component.empty());
-            this.setResponder(value -> {
-                var color = colorResolver.resolve(value);
-                this.setTextColor(color.getRGB());
-            });
-        }
-    }
-
-    /**
-     * Widget for a scale slider
-     */
-    private static class ScaleSliderWidget extends AbstractSliderButton {
-        private static final float MAX_SCALE = 4f;
-        private static final float MIN_SCALE = 0.3f;
-
-        private float scaleValue;
-
-        public ScaleSliderWidget(int x, int y, int width, int height, float initialScale) {
-            super(x, y, width, height, formatCurrentScale(mapScaleToSlider(initialScale)), mapScaleToSlider(initialScale));
-            this.scaleValue = initialScale;
-        }
-
-        @Override
-        protected void updateMessage() {
-            this.setMessage(formatCurrentScale(this.value));
-        }
-
-        @Override
-        protected void applyValue() {
-            scaleValue = mapSliderToScale(this.value);
-        }
-
-        public float scaleValue() {
-            return scaleValue;
-        }
-
-        private static Component formatCurrentScale(double value) {
-            return Component.literal(String.format("%.2f", mapSliderToScale(value)));
-        }
-
-        private static float mapSliderToScale(double sliderValue) {
-            return MIN_SCALE + (MAX_SCALE - MIN_SCALE) * (float) sliderValue;
-        }
-
-        private static float mapScaleToSlider(float scale) {
-            return (scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE);
-        }
-    }
 }

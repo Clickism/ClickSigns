@@ -130,7 +130,12 @@ public class SignEditScreen extends BaseScreen {
                         })
                         .compose();
             } else if (selectedElement instanceof SymbolElement symbolElement) {
-                // TODO
+                new SymbolElementPropertiesComposer(composer, this, roadSign.colorResolver(), symbolElement,
+                        newSymbolElement -> {
+                            this.roadSign(roadSign.replaceElement(selectedElement, newSymbolElement));
+                            this.editContext.selectElement(newSymbolElement);
+                        })
+                        .compose();
             }
         } else {
             composer.text(Component.literal("No element selected"));

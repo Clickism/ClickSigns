@@ -22,7 +22,10 @@ public class EditTextWidget extends TextWidget {
         this.text = text;
         this.editable = false;
         this.editContext = editContext;
-        setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
+        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
+        if (editContext.dragging()) {
+            this.setTooltipDelay(0);
+        }
     }
 
     @Override
