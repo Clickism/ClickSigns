@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -142,8 +143,8 @@ public record RoadSign(
      * @param elements new elements for the road sign
      * @return a new road sign with the updated elements
      */
-    public RoadSign withElements(List<SignElement> elements) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+    public RoadSign withElements(Collection<SignElement> elements) {
+        return new RoadSign(frontSource, backSource, new ArrayList<>(elements), alignment, templateId);
     }
 
     /**

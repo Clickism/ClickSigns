@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
@@ -100,6 +101,12 @@ public class SignEditScreen extends BaseScreen {
         var signPanel = new PanelWidget(-PANEL_PADDING, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
         addRenderableWidget(signPanel);
 
+        if (editContext.dragging()) {
+            // Guidelines
+            var guidelines = signWidget.new GuidelinesWidget();
+            addRenderableOnly(guidelines);
+        }
+
         var padding = 4;
 
         var centerX = roadSign.width() / 2;
@@ -122,6 +129,19 @@ public class SignEditScreen extends BaseScreen {
                 .button(Component.literal("+ Add Text"), b -> {
                     var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
                     this.roadSign(roadSign.addElement(element));
+                })
+                .header(Component.literal("Tools"))
+                .coloredButton(Color.BLUE, Component.literal("⏪ Reset Texts"), b -> {
+                    this.roadSign(roadSign.withElements(roadSign.elements().stream()
+                            .map(element -> {
+                                if (element instanceof TextElement text) {
+                                    return text.withText("");
+                                }
+                                return element;
+                            }).toList()));
+                })
+                .coloredButton(Color.RED, Component.literal("🗑 Remove Elements"), b -> {
+                    this.roadSign(roadSign.withElements(List.of()));
                 })
                 // Lay out in the center of the panel
                 .layout(PANEL_WIDTH / 2, PANEL_PADDING)
@@ -257,7 +277,11 @@ public class SignEditScreen extends BaseScreen {
 
     @Override
     public boolean mouseReleased(double d, double e, int i) {
-        editContext.dragging(false);
+        if (editContext.dragging()) {
+            // Stop dragging
+            editContext.dragging(false);
+            this.dirty = true;
+        }
         return super.mouseReleased(d, e, i);
     }
 

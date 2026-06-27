@@ -9,11 +9,16 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * Widget for rendering a road sign with its texture and elements.
@@ -142,5 +147,26 @@ public class SignWidget extends NestedWidget {
          * Creates a new symbol widget
          */
         SymbolWidget create(int anchorX, int anchorY, SymbolElement element, ColorResolver colorResolver, @Nullable Screen parent);
+    }
+
+    /**
+     * Widget for rendering guidelines on the sign widget.
+     */
+    public class GuidelinesWidget implements Renderable{
+        private static final int LINE_WIDTH = 1;
+        private static final int LINE_COLOR = new Color(255, 50, 50, 200).getRGB();
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+            if (lastRoadSign == null) return;
+            int x = SignWidget.this.getX();
+            int y = SignWidget.this.getY();
+            var signWidth = lastRoadSign.width() * DEFAULT_TEXTURE_RENDER_SCALE;
+            var signHeight = lastRoadSign.height() * DEFAULT_TEXTURE_RENDER_SCALE;
+            var centerX = x + signWidth / 2;
+            var centerY = y + signHeight / 2;
+            guiGraphics.fill(centerX, y, centerX + LINE_WIDTH, y + signHeight, LINE_COLOR);
+            guiGraphics.fill(x, centerY, x + signWidth, centerY + LINE_WIDTH, LINE_COLOR);
+        }
     }
 }

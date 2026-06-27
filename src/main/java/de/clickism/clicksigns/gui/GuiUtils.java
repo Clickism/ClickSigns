@@ -149,28 +149,40 @@ public class GuiUtils {
      * @param outlineColor the color of the outline
      */
     public static void renderOutlineOnTop(GuiGraphics guiGraphics, int x, int y, int width, int height, int outlineColor) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 100);
-        renderOutline(guiGraphics, x, y, width, height, outlineColor);
-        guiGraphics.pose().popPose();
+        renderWithZ(guiGraphics, 100, () -> renderOutline(guiGraphics, x, y, width, height, outlineColor));
     }
 
     /**
      * Renders a plus sign on top of other graphics.
+     *
      * @param guiGraphics the GuiGraphics to render with
-     * @param x
-     * @param y
-     * @param size how many pixels wide the plus sign should be (minimum 3)
-     * @param color
+     * @param x           the x position of the center of the plus sign
+     * @param y           the y position of the center of the plus sign
+     * @param size        how many pixels wide the plus sign should be (minimum 3)
+     * @param color       the color of the plus sign
      */
     public static void renderPlusOnTop(GuiGraphics guiGraphics, int x, int y, int size, int color) {
         if (size < 3) {
             size = 3;
         }
+        final int finalSize = size;
+        renderWithZ(guiGraphics, 100, () -> {
+            guiGraphics.fill(x - finalSize / 2, y, x + finalSize / 2 + 1, y + 1, color);
+            guiGraphics.fill(x, y - finalSize / 2, x + 1, y + finalSize / 2 + 1, color);
+        });
+    }
+
+    /**
+     * Renders graphics with a specified z-index.
+     *
+     * @param guiGraphics  the GuiGraphics to render with
+     * @param z            the z-index to render at
+     * @param renderAction the action to perform for rendering
+     */
+    public static void renderWithZ(GuiGraphics guiGraphics, int z, Runnable renderAction) {
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 100);
-        guiGraphics.fill(x - size / 2, y, x + size / 2 + 1, y + 1, color);
-        guiGraphics.fill(x, y - size / 2, x + 1, y + size / 2 + 1, color);
+        guiGraphics.pose().translate(0, 0, z);
+        renderAction.run();
         guiGraphics.pose().popPose();
     }
 

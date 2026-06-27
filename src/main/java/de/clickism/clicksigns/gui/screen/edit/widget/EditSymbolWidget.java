@@ -5,6 +5,7 @@ import de.clickism.clicksigns.gui.screen.edit.EditContext;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SymbolElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,12 +18,10 @@ public class EditSymbolWidget extends SymbolWidget {
     private final EditContext editContext;
     private final SymbolElement symbol;
 
+    private static final Tooltip TOOLTIP = Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element"));
+
     public EditSymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent, EditContext editContext) {
         super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
-        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element")));
-        if (editContext.dragging()) {
-            this.setTooltipDelay(0);
-        }
         this.editContext = editContext;
         this.symbol = symbol;
     }
@@ -36,12 +35,18 @@ public class EditSymbolWidget extends SymbolWidget {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (editContext.dragging()) {
+            this.setTooltip(null);
+        } else {
+            this.setTooltip(TOOLTIP);
+        }
         var selected = this.symbol.equals(editContext.selectedElement());
         if (selected) {
             this.renderOutlineOnHover = false;
             GuiUtils.renderOutlineOnTop(guiGraphics, getX(), getY(), width, height, GuiUtils.SELECTED_OUTLINE_COLOR);
-        } else if (!editContext.dragging()) {
-            this.renderOutlineOnHover = true;
+        } else {
+            // Only render outline if nothing is being dragged
+            this.renderOutlineOnHover = !editContext.dragging();
         }
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         GuiUtils.renderPlusOnTop(guiGraphics, anchorX + symbol.localX() * DEFAULT_TEXTURE_RENDER_SCALE, anchorY - symbol.localY() * DEFAULT_TEXTURE_RENDER_SCALE, 5, Color.MAGENTA.getRGB());
