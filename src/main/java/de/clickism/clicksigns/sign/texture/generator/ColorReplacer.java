@@ -73,7 +73,7 @@ public class ColorReplacer extends CachedTextureGenerator {
 
     @Override
     protected String key() {
-        var from = fromColor != null ? fromColor : "all";
+        var from = fromColor != null ? fromColor : "";
         return keySafe(texture) + "__" + from + "__" + toColor;
     }
 }
