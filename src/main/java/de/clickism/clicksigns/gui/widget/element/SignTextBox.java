@@ -73,6 +73,7 @@ public class SignTextBox extends AbstractTextBox {
         int x = getX();
         int y = getY();
 
+        // TODO: Fix background not rendering wide enough
         // Background color
         guiGraphics.fill(x, y + 1, x + width, y + height + 1, backgroundColor);
 
