@@ -166,9 +166,10 @@ public class GuiUtils {
             size = 3;
         }
         final int finalSize = size;
+        final int finalY = y - 1; // Move up by 1 pixel to center the plus sign
         renderWithZ(guiGraphics, 100, () -> {
-            guiGraphics.fill(x - finalSize / 2, y, x + finalSize / 2 + 1, y + 1, color);
-            guiGraphics.fill(x, y - finalSize / 2, x + 1, y + finalSize / 2 + 1, color);
+            guiGraphics.fill(x - finalSize / 2, finalY, x + finalSize / 2 + 1, finalY + 1, color);
+            guiGraphics.fill(x, finalY - finalSize / 2, x + 1, finalY + finalSize / 2 + 1, color);
         });
     }
 

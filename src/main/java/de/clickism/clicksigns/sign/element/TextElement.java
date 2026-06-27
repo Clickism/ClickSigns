@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Alignment;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -38,6 +39,25 @@ public record TextElement(
     @Override
     public String typeKey() {
         return TYPE;
+    }
+
+    @Override
+    public int signWidth() {
+        return calculateSignDimension(GuiUtils.font().width(text));
+    }
+
+    @Override
+    public int signHeight() {
+        return calculateSignDimension(GuiUtils.font().lineHeight);
+    }
+
+    private int calculateSignDimension(int dimension) {
+        return Mth.ceil(
+                dimension // Dimension of text in blocks
+                * BLOCK_PIXELS // Convert to pixels
+                * TEXT_RENDER_SCALE // Apply render scale
+                * this.scale() // Apply scale
+        );
     }
 
     /**
@@ -109,12 +129,12 @@ public record TextElement(
     }
 
     /**
-     * Get the width of the text when rendered on a sign.
+     * Get the width of the text when rendered on a sign gui.
      *
      * @param string the text to measure.
-     * @return the rendered width of the text.
+     * @return the gui width of the text.
      */
-    public float renderWidthOf(String string) {
+    public float guiWidthOf(String string) {
         return GuiUtils.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.scale();
     }
 }

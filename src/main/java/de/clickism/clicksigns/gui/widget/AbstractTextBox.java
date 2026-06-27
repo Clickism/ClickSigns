@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -34,7 +36,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
     protected int cursorPos = 0;
     protected int highlightPos = 0;
 
-    protected Consumer<String> onValueChanged = s -> {};
+    protected List<Consumer<String>> listeners = new ArrayList<>();
     /**
      * Render frame counter for blinking cursor
      */
@@ -81,8 +83,8 @@ public abstract class AbstractTextBox extends AbstractWidget {
      *
      * @param onValueChanged callback
      */
-    public void onValueChanged(@NotNull Consumer<String> onValueChanged) {
-        this.onValueChanged = onValueChanged;
+    public void addListener(@NotNull Consumer<String> onValueChanged) {
+        this.listeners.add(onValueChanged);
     }
 
     /**
@@ -112,6 +114,12 @@ public abstract class AbstractTextBox extends AbstractWidget {
         this.backgroundColor = backgroundColor;
     }
 
+    protected void triggerValueChanged() {
+        for (var listener : listeners) {
+            listener.accept(value);
+        }
+    }
+
     /**
      * Insert text at the current cursor position.
      *
@@ -132,7 +140,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
         value = value.substring(0, cursorPos) + string + value.substring(cursorPos);
         setValidCursor(cursorPos + string.length());
         highlightPos = cursorPos;
-        onValueChanged.accept(value);
+        triggerValueChanged();
     }
 
     /**
@@ -191,7 +199,7 @@ public abstract class AbstractTextBox extends AbstractWidget {
             cursorPos = start;
             highlightPos = cursorPos;
         }
-        onValueChanged.accept(value);
+        triggerValueChanged();
     }
 
     /**

@@ -22,10 +22,21 @@ public class SignTextBox extends AbstractTextBox {
     private final float renderScale;
     private final Alignment alignment;
 
-    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment) {
+    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment, String initialValue) {
         super(x, y, width, height, font);
-        this.renderScale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;;
+        this.renderScale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;
+        this.value = initialValue;
         this.alignment = alignment;
+        this.width = currentWidth();
+        addListener(value -> {
+            this.width = currentWidth();
+        });
+    }
+
+    @Override
+    public void setFocused(boolean bl) {
+        super.setFocused(bl);
+        this.width = currentWidth();
     }
 
     private int calculateTextX(int x, String text) {
@@ -41,7 +52,10 @@ public class SignTextBox extends AbstractTextBox {
             width += font.width(CURSOR);
         }
         width *= renderScale;
-        return Mth.ceil(Mth.clamp(width, MIN_BOX_WIDTH, this.width));
+        if (width < MIN_BOX_WIDTH) {
+            width = MIN_BOX_WIDTH;
+        }
+        return Mth.ceil(width);
     }
 
     protected boolean showingPlaceholder() {

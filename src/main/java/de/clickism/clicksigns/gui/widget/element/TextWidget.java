@@ -48,12 +48,11 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {
         // TODO: Maybe check other text fields to determine max width
-        super(anchorX, anchorY,
-                maxTextWidth(text, signWidth) * DEFAULT_TEXTURE_RENDER_SCALE,
-                (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale()),
-                GuiUtils.font(), text.scale(), text.alignment());
+        super(anchorX, anchorY, 0, 0, GuiUtils.font(), text.scale(), text.alignment(), text.text());
         this.anchorX = anchorX;
         this.anchorY = anchorY;
+        // Calculate dimensions
+        this.height = (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale());
         // Calculate max width
         this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
@@ -67,7 +66,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
 
         var textColor = colorResolver.resolveInt(text.color());
         var responder = FitIntoElementResponder.create(text, signWidth, this::value, this::textColor, textColor);
-        this.onValueChanged(responder::onChange);
+        this.addListener(responder::onChange);
 
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
@@ -84,6 +83,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         this.setPosition(pos.x, pos.y);
     }
 
+    // TODO: Fix clamp string and max text width to work for all alignments and background colors, maybe make and use roadSign#withinBounds
     /**
      * Clamps the given string to fit within the max width of the text box.
      *
@@ -91,7 +91,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * @return the clamped string that fits within the max width
      */
     protected String clampString(String string) {
-        while (text.renderWidthOf(string) > this.maxWidth && !string.isEmpty()) {
+        while (text.guiWidthOf(string) > this.maxWidth && !string.isEmpty()) {
             string = string.substring(0, string.length() - 1);
         }
         return string;
@@ -161,7 +161,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
          * @param value new value
          */
         public void onChange(String value) {
-            if (text.renderWidthOf(value) > this.maxWidth) {
+            if (text.guiWidthOf(value) > this.maxWidth) {
                 // Text too big, trim it and set text color to red
                 value = value.substring(0, value.length() - 1);
                 this.valueSetter.accept(value);

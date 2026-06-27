@@ -22,11 +22,23 @@ public sealed interface SignElement extends TypeKeyed permits TextElement, Symbo
 
     /**
      * Gets the local Y coordinate of this element.
-     * Local coordinates are relative to the bottom-left corner of the road sign, with (0
+     * Local coordinates are relative to the bottom-left corner of the road sign, with (0, 0) being the bottom-left corner.
      *
      * @return Local Y coordinate
      */
     int localY();
+
+    int signWidth();
+
+    int signHeight();
+
+    default int guiWidth(float guiScale) {
+        return (int) (signWidth() * guiScale);
+    }
+
+    default int guiHeight(float guiScale) {
+        return (int) (signWidth() * guiScale);
+    }
 
     /**
      * Gets the alignment of this element.

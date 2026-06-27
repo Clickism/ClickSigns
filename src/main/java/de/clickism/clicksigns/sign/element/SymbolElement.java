@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.Alignment;
 
@@ -26,6 +27,16 @@ public record SymbolElement(
     @Override
     public String typeKey() {
         return TYPE;
+    }
+
+    @Override
+    public int signWidth() {
+        return symbol.texture().resolve(ColorResolver.empty()).width();
+    }
+
+    @Override
+    public int signHeight() {
+        return symbol.texture().resolve(ColorResolver.empty()).height();
     }
 
     /**
