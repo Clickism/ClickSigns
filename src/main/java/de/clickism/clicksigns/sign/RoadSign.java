@@ -197,6 +197,10 @@ public record RoadSign(
         return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
 
+    public boolean isWithinBounds(SignElement element) {
+        return false; // TODO: Implement
+    }
+
     /**
      * Writer for packets
      */

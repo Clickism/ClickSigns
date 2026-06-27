@@ -141,7 +141,8 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * @param outlineColor the color of the outline
      */
     protected void renderOutline(GuiGraphics guiGraphics, int outlineColor) {
-        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), this.width + 2, this.height + 1, outlineColor);
+        var currentWidth = currentWidth();
+        GuiUtils.renderOutlineOnTop(guiGraphics, this.getX() - 1, this.getY(), currentWidth + 2, this.height + 1, outlineColor);
     }
 
     /**

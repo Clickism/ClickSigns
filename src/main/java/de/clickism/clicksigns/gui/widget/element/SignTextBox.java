@@ -6,6 +6,7 @@ import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
@@ -15,19 +16,40 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * A text box that renders the text for editing sign text elements.
  */
 public class SignTextBox extends AbstractTextBox {
-    private final float textScale;
+    private static final String CURSOR = "_";
+    private static final int MIN_BOX_WIDTH = 10;
+
+    private final float renderScale;
     private final Alignment alignment;
 
     public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment) {
         super(x, y, width, height, font);
-        this.textScale = textScale;
+        this.renderScale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;;
         this.alignment = alignment;
     }
 
-    private int calculateTextX(int x, float scale, String text) {
+    private int calculateTextX(int x, String text) {
         int textWidth = font.width(text);
         int offset = (int) -alignment.offset().x() + 1; // Add 1 since left should be 0
-        return (int) Math.ceil(x + offset * (width) / (2 * scale) - offset * textWidth / 2f);
+        return (int) Math.ceil(x + offset * (width) / (2 * renderScale) - offset * textWidth / 2f);
+    }
+
+    protected int currentWidth() {
+        String text = textToShow();
+        float width = font.width(text);
+        if (listening()) {
+            width += font.width(CURSOR);
+        }
+        width *= renderScale;
+        return Mth.ceil(Mth.clamp(width, MIN_BOX_WIDTH, this.width));
+    }
+
+    protected boolean showingPlaceholder() {
+        return this.value.isEmpty() && !listening();
+    }
+
+    protected String textToShow() {
+        return showingPlaceholder() ? placeholder : this.value;
     }
 
     // TODO: Clean up and refactor
@@ -41,30 +63,28 @@ public class SignTextBox extends AbstractTextBox {
         guiGraphics.fill(x, y + 1, x + width, y + height + 1, backgroundColor);
 
         // Visible text from display pos to end, truncated to fit in view
-        boolean showPlaceholder = this.value.isEmpty() && !this.isFocused();
-        String text = showPlaceholder ? placeholder : this.value;
+        String text = textToShow();
 
         // Draw text
         guiGraphics.pose().pushPose();
-        var scale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;
         // Move pivot to (x, y)
         guiGraphics.pose().translate(x, y, 0);
         // Scale around that point
-        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.pose().scale(renderScale, renderScale, 1.0f);
         // Move back so text draws correctly
         guiGraphics.pose().translate(-x, -y, 0);
 
-        int textX = calculateTextX(x, scale, text);
+        int textX = calculateTextX(x, text);
         int textXStart = textX;
         // Remove padding for accents, to center visually
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
         // slightly lower, so looks more aligned this way
         float mainLineHeight = font.lineHeight - 1;
-        int textY = (int) (y + height / 2f - mainLineHeight * scale / 2f);
+        int textY = (int) (y + height / 2f - mainLineHeight * renderScale / 2f);
 
         String left = text.substring(0, cursorPos);
         String right = text.substring(cursorPos);
-        String cursor = "_";
+        String cursor = CURSOR;
 
         // Render background
         int paddingX = 2;
@@ -75,7 +95,7 @@ public class SignTextBox extends AbstractTextBox {
 
         // Render left of cursor
         var highlightColor = textColor & 0xFFFFFF | 0x55000000; // Set alpha
-        var textColor = showPlaceholder ? highlightColor : this.textColor;
+        var textColor = showingPlaceholder() ? highlightColor : this.textColor;
         guiGraphics.drawString(font, left, textX, textY, textColor, false);
 
         textX += font.width(left);
@@ -83,7 +103,7 @@ public class SignTextBox extends AbstractTextBox {
         // Render cursor
         long time = System.currentTimeMillis();
         var cursorBlinking = time / 300 % 2 == 0; // Blink every 300 ms
-        if (this.isFocused() && this.editable && !cursorBlinking) {
+        if (listening() && !cursorBlinking) {
             boolean lineCursor = cursorPos < text.length();
             if (lineCursor) {
                 guiGraphics.fill(RenderType.guiOverlay(), textX, textY, textX + 1, textY + font.lineHeight, textColor);
@@ -108,7 +128,9 @@ public class SignTextBox extends AbstractTextBox {
 
         // Render underline
         var lineX = backgroundColor != 0 ? x + paddingX : x;
-        var lineWidth = backgroundColor != 0 ? width - paddingX * 2 : width;
+        var currentWidth = currentWidth();
+        var lineWidth = backgroundColor != 0 ? currentWidth - paddingX * 2 : currentWidth;
         GuiUtils.renderOutline(guiGraphics, lineX, y + height - 1, lineWidth, 1, textColor);
+
     }
 }
