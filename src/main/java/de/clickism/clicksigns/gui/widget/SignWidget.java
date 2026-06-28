@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.widget;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.gui.util.NestedWidget;
 import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
@@ -172,10 +173,22 @@ public class SignWidget extends NestedWidget {
             int y = textureWidget.getY();
             var signWidth = lastRoadSign.width() * DEFAULT_TEXTURE_RENDER_SCALE;
             var signHeight = lastRoadSign.height() * DEFAULT_TEXTURE_RENDER_SCALE;
-            var centerX = x + signWidth / 2;
-            var centerY = y + signHeight / 2;
-            guiGraphics.fill(centerX, y, centerX + LINE_WIDTH, y + signHeight, LINE_COLOR);
-            guiGraphics.fill(x, centerY, x + signWidth, centerY + LINE_WIDTH, LINE_COLOR);
+            renderGuidelines(guiGraphics, x, y, signWidth, signHeight);
+            // Render for plate elements
+            for (SignElement element : lastRoadSign.elements()) {
+                if (!(element instanceof PlateElement plate)) continue;
+                var elementWidth = plate.signWidth() * DEFAULT_TEXTURE_RENDER_SCALE;
+                var elementHeight = plate.signHeight() * DEFAULT_TEXTURE_RENDER_SCALE;
+                var pos = GuiUtils.calculateElementPosition(x, y + signHeight, plate, elementWidth, elementHeight);
+                renderGuidelines(guiGraphics, pos.x, pos.y, elementWidth, elementHeight);
+            }
+        }
+
+        private void renderGuidelines(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+            var centerX = x + width / 2;
+            var centerY = y + height / 2;
+            guiGraphics.fill(centerX, y, centerX + LINE_WIDTH, y + height, LINE_COLOR);
+            guiGraphics.fill(x, centerY, x + width, centerY + LINE_WIDTH, LINE_COLOR);
         }
     }
 }
