@@ -14,6 +14,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * A text box that renders the text for editing sign text elements.
  */
+// TODO: Fix broken rendering when scale is high
 public class SignTextBox extends AbstractTextBox {
     private static final String CURSOR = "_";
     private static final int MIN_BOX_WIDTH = 4;
