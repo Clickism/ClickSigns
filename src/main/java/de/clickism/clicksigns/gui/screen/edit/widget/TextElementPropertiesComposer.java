@@ -34,6 +34,7 @@ public record TextElementPropertiesComposer(
 
     private static final int EDIT_BOX_OFFSET = 4;
 
+    // TODO: Maybe make values update on change instead of having to click confirm
     /**
      * Adds the property controls for the TextElement to the composer.
      */
