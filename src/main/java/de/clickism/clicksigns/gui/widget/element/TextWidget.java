@@ -48,7 +48,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {
         // TODO: Maybe check other text fields to determine max width
-        super(anchorX, anchorY, 0, 0, GuiUtils.font(), text.scale(), text.alignment(), text.text());
+        super(anchorX, anchorY, 0, 0, GuiUtils.font(), text.scale(), text.alignment());
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         // Calculate dimensions
@@ -68,9 +68,13 @@ public class TextWidget extends SignTextBox implements ElementProvider {
         var responder = FitIntoElementResponder.create(text, signWidth, this::value, this::textColor, textColor);
         this.addListener(responder::onChange);
 
+        this.textColor(textColor);
         if (text.backgroundColor() != null) {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
+
+        // Update width
+        this.width = currentWidth();
     }
 
     /**
@@ -78,7 +82,6 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      */
     public void updatePosition() {
         // Calculate position
-        this.textColor(colorResolver.resolveInt(text.color()));
         var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, text, this.width, this.height);
         this.setPosition(pos.x, pos.y);
     }

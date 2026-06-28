@@ -17,20 +17,24 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  */
 public class SignTextBox extends AbstractTextBox {
     private static final String CURSOR = "_";
-    private static final int MIN_BOX_WIDTH = 10;
+    private static final int MIN_BOX_WIDTH = 4;
+    private static final int BACKGROUND_PADDING = 3;
 
     private final float renderScale;
     private final Alignment alignment;
 
-    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment, String initialValue) {
+    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment) {
         super(x, y, width, height, font);
         this.renderScale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;
-        this.value = initialValue;
         this.alignment = alignment;
         this.width = currentWidth();
         addListener(value -> {
-            this.width = currentWidth();
+            updateWidth();
         });
+    }
+
+    protected void updateWidth() {
+        this.width = currentWidth();
     }
 
     @Override
@@ -52,6 +56,9 @@ public class SignTextBox extends AbstractTextBox {
             width += font.width(CURSOR);
         }
         width *= renderScale;
+        if (backgroundColor != 0) {
+            width += BACKGROUND_PADDING * 2;
+        }
         if (width < MIN_BOX_WIDTH) {
             width = MIN_BOX_WIDTH;
         }
@@ -102,10 +109,9 @@ public class SignTextBox extends AbstractTextBox {
         String cursor = CURSOR;
 
         // Render background
-        int paddingX = 2;
         if (backgroundColor != 0) {
-            textX += paddingX;
-            textXStart += paddingX;
+            textX += BACKGROUND_PADDING;
+            textXStart += BACKGROUND_PADDING;
         }
 
         // Render left of cursor
@@ -142,10 +148,8 @@ public class SignTextBox extends AbstractTextBox {
         guiGraphics.pose().popPose();
 
         // Render underline
-        var lineX = backgroundColor != 0 ? x + paddingX : x;
-        var currentWidth = currentWidth();
-        var lineWidth = backgroundColor != 0 ? currentWidth - paddingX * 2 : currentWidth;
-        GuiUtils.renderOutline(guiGraphics, lineX, y + height - 1, lineWidth, 1, textColor);
+        var lineWidth = backgroundColor != 0 ? width - BACKGROUND_PADDING * 2 : width;
+        GuiUtils.renderOutline(guiGraphics, textXStart, y + height - 1, lineWidth, 1, textColor);
 
     }
 }
