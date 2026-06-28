@@ -1,11 +1,10 @@
-package de.clickism.clicksigns.gui.screen.edit.widget;
+package de.clickism.clicksigns.gui.screen.edit.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.edit.EditContext;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;

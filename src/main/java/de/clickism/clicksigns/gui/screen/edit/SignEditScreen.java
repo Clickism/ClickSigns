@@ -3,6 +3,8 @@ package de.clickism.clicksigns.gui.screen.edit;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
+import de.clickism.clicksigns.gui.screen.edit.widget.element.EditSymbolWidget;
+import de.clickism.clicksigns.gui.screen.edit.widget.element.EditTextWidget;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.gui.widget.element.PlateWidget;
