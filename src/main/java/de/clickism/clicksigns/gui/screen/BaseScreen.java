@@ -2,6 +2,7 @@ package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,7 @@ public abstract class BaseScreen extends Screen {
      * The parent screen to return to when closing this screen, or null if no parent
      */
     protected final @Nullable Screen parent;
+    protected @Nullable GuiEventListener hoveredWidget;
 
     /**
      * Creates a new screen with background.
@@ -36,9 +38,10 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int i, int j, float f) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(graphics);
-        super.render(graphics, i, j, f);
+        hoveredWidget = GuiUtils.findFirstHoveredWidget(this, mouseX, mouseY);
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -67,5 +70,33 @@ public abstract class BaseScreen extends Screen {
      */
     public int halfHeight() {
         return height / 2;
+    }
+
+    /**
+     * Checks if the given widget is currently hovered by the mouse.
+     *
+     * @param widget the widget to check
+     * @return true if the widget is hovered, false otherwise
+     * @throws IllegalStateException if the current screen is not a BaseScreen
+     */
+    public static boolean isHovered(GuiEventListener widget) {
+        var screen = GuiUtils.currentScreen();
+        if (!(screen instanceof BaseScreen baseScreen)) {
+            throw new IllegalStateException("Current screen is not a BaseScreen, cannot check hovered widget.");
+        }
+        return widget.equals(baseScreen.hoveredWidget);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Check if the hovered widget is clicked first
+        if (hoveredWidget != null && hoveredWidget.mouseClicked(mouseX, mouseY, button)) {
+            hoveredWidget.setFocused(true);
+            if (GuiUtils.isLeftClick(button)) {
+                this.setDragging(true);
+            }
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.widget.texture;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -43,7 +44,7 @@ public class ClickableTextureWidget extends TextureWidget {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered && this.active && this.renderOutlineOnHover) {
+        if (BaseScreen.isHovered(this) && this.active && this.renderOutlineOnHover) {
             GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
     }

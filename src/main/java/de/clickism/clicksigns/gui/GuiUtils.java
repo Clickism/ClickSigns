@@ -1,9 +1,11 @@
 package de.clickism.clicksigns.gui;
 
+import de.clickism.clicksigns.gui.util.NestedWidget;
 import de.clickism.clicksigns.sign.element.SignElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
@@ -205,5 +207,28 @@ public class GuiUtils {
      */
     public static boolean isRightClick(int button) {
         return button == 1;
+    }
+
+    /**
+     * Finds the first hovered widget in the children of this screen.
+     *
+     * @param mouseX mouse x position
+     * @param mouseY mouse y position
+     * @return the first hovered widget, or null if none are hovered
+     */
+    public static @Nullable GuiEventListener findFirstHoveredWidget(Screen screen, int mouseX, int mouseY) {
+        for (int i = screen.children().size() - 1; i >= 0; i--) {
+            var child = screen.children().get(i);
+            if (!child.isMouseOver(mouseX, mouseY)) continue;
+            if (!(child instanceof NestedWidget nested)) return child;
+            // Iterate over children and find first hovered
+            for (int j = nested.children().size() - 1; j >= 0; j--) {
+                var nestedChild = nested.children().get(j);
+                if (nestedChild.isMouseOver(mouseX, mouseY)) {
+                    return nestedChild;
+                }
+            }
+        }
+        return null;
     }
 }

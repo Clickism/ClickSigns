@@ -86,12 +86,17 @@ public class SignWidget extends NestedWidget {
         int anchorX = textureWidget.getX();
         int anchorY = textureWidget.getY() + textureWidget.getHeight();
         // Add elements
+        // Add symbol elements
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
                 var symbolWidget = symbolFactory.create(anchorX, anchorY, symbol, roadSign.colorResolver(), parent);
                 this.addChild(symbolWidget);
                 this.elementProviders.add(symbolWidget);
-            } else if (element instanceof TextElement textElement) {
+            }
+        }
+        // Add text elements last to render on top of symbols
+        for (var element : roadSign.elements()) {
+            if (element instanceof TextElement textElement) {
                 var textBox = textFactory.create(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.width());
                 this.addChild(textBox);
                 this.elementProviders.add(textBox);

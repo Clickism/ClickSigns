@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
@@ -132,7 +133,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (this.isHovered && this.active && this.renderOutlineOnHover) {
+        if (BaseScreen.isHovered(this) && this.active && this.renderOutlineOnHover) {
             renderOutline(guiGraphics, outlineColor);
         }
     }
