@@ -13,11 +13,11 @@ import java.util.function.Consumer;
 public class TexturePropertiesWidget extends NestedWidget {
     public TexturePropertiesWidget(int x, int y, Screen parent, RoadSign roadSign, Consumer<RoadSign> onUpdate) {
         super(x, y);
-        var frontWidget = new EditTextureWidget(parent, 0, 0, roadSign.frontSource(), roadSign.colorResolver(), source -> {
+        var frontWidget = new SelectTextureWidget(parent, 0, 0, roadSign.frontSource(), roadSign.colorResolver(), source -> {
             onUpdate.accept(roadSign.withFront(source.resizeToFit(roadSign)));
         });
         addChild(frontWidget);
-        var backWidget = new EditTextureWidget(parent, 0, 0, roadSign.backSource(), roadSign.colorResolver(), source -> {
+        var backWidget = new SelectTextureWidget(parent, 0, 0, roadSign.backSource(), roadSign.colorResolver(), source -> {
             onUpdate.accept(roadSign.withBack(source.resizeToFit(roadSign)));
         });
         addChild(backWidget);

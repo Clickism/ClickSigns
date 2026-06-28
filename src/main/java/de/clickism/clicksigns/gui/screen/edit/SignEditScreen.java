@@ -3,11 +3,9 @@ package de.clickism.clicksigns.gui.screen.edit;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
-import de.clickism.clicksigns.gui.screen.edit.widget.element.EditSymbolWidget;
-import de.clickism.clicksigns.gui.screen.edit.widget.element.EditTextWidget;
+import de.clickism.clicksigns.gui.screen.edit.widget.EditBehavior;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
-import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
@@ -74,11 +72,11 @@ public class SignEditScreen extends BaseScreen {
         // TODO: Use custom text and symbol widgets
         this.signWidget = new SignWidget(0, 0, roadSign,
                 (anchorX, anchorY, element, roadSign, parent) ->
-                        new EditTextWidget(anchorX, anchorY, element, roadSign.colorResolver(), roadSign.width(), editContext),
+                        EditBehavior.forText(editContext, anchorX, anchorY, element, roadSign),
                 (anchorX, anchorY, element, roadSign, screen) ->
-                        new EditSymbolWidget(anchorX, anchorY, element, roadSign.colorResolver(), screen, editContext),
+                        EditBehavior.forSymbol(editContext, anchorX, anchorY, element, roadSign, parent),
                 (anchorX, anchorY, element, roadSign, parent) ->
-                        new PlateWidget(anchorX, anchorY, element, roadSign.colorResolver()),
+                        EditBehavior.forPlate(editContext, anchorX, anchorY, element, roadSign, parent),
                 this);
         this.addRenderableWidget(signWidget);
 
