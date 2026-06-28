@@ -9,6 +9,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Size;
@@ -19,11 +20,13 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
+// TODO: Add guidelines when dragging
 // TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
 
 /**
@@ -126,6 +129,15 @@ public class SignEditScreen extends BaseScreen {
                     var newSign = this.roadSign
                             .withFront(frontSource.resizeToFit(roadSign))
                             .withBack(backSource.resizeToFit(roadSign));
+                    // Update plate textures to match the new sign texture
+                    var elements = new ArrayList<>(newSign.elements());
+                    for (SignElement element : elements) {
+                        if (!(element instanceof PlateElement plate)) continue;
+                        var plateFront = plate.front().resolve(newSign.colorResolver());
+                        newSign = newSign.replaceElement(element, plate
+                                .withFront(newSign.frontSource().resizeToFit(plateFront))
+                                .withBack(newSign.backSource().resizeToFit(plateFront)));
+                    }
                     this.roadSign(newSign);
                 }))
                 .header(Component.literal("Elements"))
