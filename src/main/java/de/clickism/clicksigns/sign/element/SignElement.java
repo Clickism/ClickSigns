@@ -11,7 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 /**
  * An element that can be placed on a road sign.
  */
-public sealed interface SignElement extends TypeKeyed permits TextElement, SymbolElement {
+public sealed interface SignElement extends TypeKeyed permits PlateElement, SymbolElement, TextElement {
     /**
      * Gets the local X coordinate of this element.
      * Local coordinates are relative to the bottom-left corner of the road sign, with (0, 0) being the bottom-left corner.

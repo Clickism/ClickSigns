@@ -4,6 +4,7 @@ import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.template.widget.TemplateList;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.template.Template;
@@ -59,11 +60,12 @@ public class TemplateMenuScreen extends BaseScreen {
         var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
         var preview = new SignWidget(0, 0, roadSign,
                 // No outline
-                (anchorX, anchorY, element, colorResolver, signWidth) ->
-                        new TextWidget(anchorX, anchorY, element, colorResolver, signWidth, 0),
-                // No outline
-                (anchorX, anchorY, element, colorResolver, screen) ->
-                        new SymbolWidget(anchorX, anchorY, element, colorResolver, 0, screen),
+                (anchorX, anchorY, element, sign, parent) ->
+                        new TextWidget(anchorX, anchorY, element, sign.colorResolver(), sign.width(), 0),
+                (anchorX, anchorY, element, sign, screen) ->
+                        new SymbolWidget(anchorX, anchorY, element, sign.colorResolver(), 0, screen),
+                (anchorX, anchorY, element, sign, parent) ->
+                        new PlateWidget(anchorX, anchorY, element, sign.colorResolver()),
                 null);
         preview.setActive(false);
         return preview;

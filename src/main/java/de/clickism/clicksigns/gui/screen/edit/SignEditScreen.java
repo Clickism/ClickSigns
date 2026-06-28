@@ -5,9 +5,11 @@ import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Size;
@@ -69,10 +71,12 @@ public class SignEditScreen extends BaseScreen {
         // Add road sign texture
         // TODO: Use custom text and symbol widgets
         this.signWidget = new SignWidget(0, 0, roadSign,
-                (anchorX, anchorY, element, colorResolver, signWidth) ->
-                        new EditTextWidget(anchorX, anchorY, element, colorResolver, signWidth, editContext),
-                (anchorX, anchorY, element, colorResolver, screen) ->
-                        new EditSymbolWidget(anchorX, anchorY, element, colorResolver, screen, editContext),
+                (anchorX, anchorY, element, roadSign, parent) ->
+                        new EditTextWidget(anchorX, anchorY, element, roadSign.colorResolver(), roadSign.width(), editContext),
+                (anchorX, anchorY, element, roadSign, screen) ->
+                        new EditSymbolWidget(anchorX, anchorY, element, roadSign.colorResolver(), screen, editContext),
+                (anchorX, anchorY, element, roadSign, parent) ->
+                        new PlateWidget(anchorX, anchorY, element, roadSign.colorResolver()),
                 this);
         this.addRenderableWidget(signWidget);
 
@@ -129,6 +133,10 @@ public class SignEditScreen extends BaseScreen {
                 })
                 .coloredButton(Color.GREEN, Component.literal("+ Add Text"), b -> {
                     var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
+                    this.roadSign(roadSign.addElement(element));
+                })
+                .coloredButton(Color.GREEN, Component.literal("+ Add Plate"), b -> {
+                    var element = new PlateElement(centerX, centerY, Alignment.CENTER, this.roadSign.frontSource().resize(8, 6), this.roadSign.backSource().resize(8, 6));
                     this.roadSign(roadSign.addElement(element));
                 })
                 .header(Component.literal("Tools"))

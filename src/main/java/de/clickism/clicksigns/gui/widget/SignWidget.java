@@ -2,14 +2,14 @@ package de.clickism.clicksigns.gui.widget;
 
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.gui.util.NestedWidget;
-import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
-import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.gui.widget.texture.TextureWidget;
-import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
@@ -28,21 +28,9 @@ public class SignWidget extends NestedWidget {
     protected @Nullable RoadSign lastRoadSign;
     protected final List<ElementProvider> elementProviders = new ArrayList<>();
 
-    protected final TextWidgetFactory textFactory;
-    protected final SymbolWidgetFactory symbolFactory;
-
-    /**
-     * Creates a new preview sign widget at the given position, displaying the given road sign.
-     * Will use {@link TextWidget} and {@link SymbolWidget} for rendering text and symbol elements.
-     *
-     * @param x        the x position of the widget
-     * @param y        the y position of the widget
-     * @param roadSign the road sign to display, or null to create an empty widget
-     * @param parent   the parent screen for symbol menus
-     */
-    public SignWidget(int x, int y, @Nullable RoadSign roadSign, @Nullable Screen parent) {
-        this(x, y, roadSign, TextWidget::new, SymbolWidget::new, parent);
-    }
+    protected final ElementWidgetFactory<TextElement> textFactory;
+    protected final ElementWidgetFactory<SymbolElement> symbolFactory;
+    protected final ElementWidgetFactory<PlateElement> plateFactory;
 
     /**
      * Creates a new custom sign widget at the given position, displaying the given road sign.
@@ -58,14 +46,16 @@ public class SignWidget extends NestedWidget {
     public SignWidget(
             int x, int y,
             @Nullable RoadSign roadSign,
-            TextWidgetFactory textFactory,
-            SymbolWidgetFactory symbolFactory,
+            ElementWidgetFactory<TextElement> textFactory,
+            ElementWidgetFactory<SymbolElement> symbolFactory,
+            ElementWidgetFactory<PlateElement> plateFactory,
             @Nullable Screen parent
     ) {
         super(x, y);
         this.parent = parent;
         this.textFactory = textFactory;
         this.symbolFactory = symbolFactory;
+        this.plateFactory = plateFactory;
         if (roadSign == null) return;
         roadSign(roadSign);
         this.lastRoadSign = roadSign;
@@ -86,20 +76,35 @@ public class SignWidget extends NestedWidget {
         int anchorX = textureWidget.getX();
         int anchorY = textureWidget.getY() + textureWidget.getHeight();
         // Add elements
+        // Add plate elements
+        for (var element : roadSign.elements()) {
+            if (element instanceof PlateElement plate) {
+                var plateWidget = plateFactory.create(anchorX, anchorY, plate, roadSign, parent);
+                this.addChild(plateWidget);
+                if (plateWidget instanceof ElementProvider provider) {
+                    this.elementProviders.add(provider);
+                }
+            }
+        }
+
         // Add symbol elements
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
-                var symbolWidget = symbolFactory.create(anchorX, anchorY, symbol, roadSign.colorResolver(), parent);
+                var symbolWidget = symbolFactory.create(anchorX, anchorY, symbol, roadSign, parent);
                 this.addChild(symbolWidget);
-                this.elementProviders.add(symbolWidget);
+                if (symbolWidget instanceof ElementProvider provider) {
+                    this.elementProviders.add(provider);
+                }
             }
         }
         // Add text elements last to render on top of symbols
         for (var element : roadSign.elements()) {
             if (element instanceof TextElement textElement) {
-                var textBox = textFactory.create(anchorX, anchorY, textElement, roadSign.colorResolver(), roadSign.width());
+                var textBox = textFactory.create(anchorX, anchorY, textElement, roadSign, parent);
                 this.addChild(textBox);
-                this.elementProviders.add(textBox);
+                if (textBox instanceof ElementProvider provider) {
+                    this.elementProviders.add(provider);
+                }
             }
         }
         this.updateSize();
@@ -135,29 +140,27 @@ public class SignWidget extends NestedWidget {
     }
 
     /**
-     * Factory interface for text widgets
+     * Factory interface for element widgets
+     * <p>
+     * The returned widget must implement {@link ElementProvider} to provide the corresponding element.
      */
-    public interface TextWidgetFactory {
+    public interface ElementWidgetFactory<T extends SignElement> {
         /**
-         * Creates a new text widget
+         * Creates a new widget for the given element.
          */
-        TextWidget create(int anchorX, int anchorY, TextElement element, ColorResolver colorResolver, int signWidth);
-    }
-
-    /**
-     * Factory interface for symbol widgets
-     */
-    public interface SymbolWidgetFactory {
-        /**
-         * Creates a new symbol widget
-         */
-        SymbolWidget create(int anchorX, int anchorY, SymbolElement element, ColorResolver colorResolver, @Nullable Screen parent);
+        AbstractWidget create(
+                int anchorX,
+                int anchorY,
+                T element,
+                RoadSign roadSign,
+                @Nullable Screen parent
+        );
     }
 
     /**
      * Widget for rendering guidelines on the sign widget.
      */
-    public class GuidelinesWidget implements Renderable{
+    public class GuidelinesWidget implements Renderable {
         private static final int LINE_WIDTH = 1;
         private static final int LINE_COLOR = new Color(255, 50, 50, 200).getRGB();
 

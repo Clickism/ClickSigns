@@ -33,13 +33,6 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     protected final int anchorY;
 
     /**
-     * Creates a new text element box.
-     */
-    public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
-        this(anchorX, anchorY, text, colorResolver, signWidth, GuiUtils.OUTLINE_COLOR);
-    }
-
-    /**
      * Creates a new text element box with a custom outline color.
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {

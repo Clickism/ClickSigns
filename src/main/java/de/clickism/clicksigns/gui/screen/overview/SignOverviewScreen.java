@@ -12,6 +12,7 @@ import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
 import de.clickism.clicksigns.gui.widget.SignWidget;
+import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
@@ -51,7 +52,14 @@ public class SignOverviewScreen extends BaseScreen {
         var halfHeight = height / 2;
 
         // Add road sign texture
-        this.signWidget = new SignWidget(0, 0, roadSign, OverviewTextWidget::new, OverviewSymbolWidget::new, this);
+        this.signWidget = new SignWidget(0, 0, roadSign,
+                (anchorX, anchorY, element, roadSign, parent) ->
+                        new OverviewTextWidget(anchorX, anchorY, element, roadSign.colorResolver(), roadSign.width()),
+                (anchorX, anchorY, element, roadSign, screen) ->
+                        new OverviewSymbolWidget(anchorX, anchorY, element, roadSign.colorResolver(), screen),
+                (anchorX, anchorY, element, roadSign, parent) ->
+                        new PlateWidget(anchorX, anchorY, element, roadSign.colorResolver()),
+                this);
         this.addRenderableWidget(signWidget);
 
         // Add confirm button
