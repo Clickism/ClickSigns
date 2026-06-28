@@ -17,7 +17,7 @@ import java.util.function.Consumer;
  * @param composer      composer to add the controls to
  * @param parent        parent screen for the controls
  * @param colorResolver color resolver of the sign
- * @param plateElement the PlateElement to edit
+ * @param plateElement  the PlateElement to edit
  * @param onUpdate      callback to call when the PlateElement is updated
  */
 public record PlateElementPropertiesComposer(
@@ -45,8 +45,8 @@ public record PlateElementPropertiesComposer(
                 .widget(textureWidget);
 
         // Size
-        var widthBox = new EditBox(GuiUtils.font(), 0, 0, composer.width(), 20, Component.empty());
-        var heightBox = new EditBox(GuiUtils.font(), 0, 0, composer.width(), 20, Component.empty());
+        var widthBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - 2, 20, Component.empty());
+        var heightBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - 2, 20, Component.empty());
         widthBox.setValue(String.valueOf(plateElement.signWidth()));
         heightBox.setValue(String.valueOf(plateElement.signHeight()));
         composer
@@ -64,34 +64,6 @@ public record PlateElementPropertiesComposer(
                         // Ignore invalid input
                     }
                 });
-
-//        var symbolWidget = new OverviewSymbolWidget(0, 0, plateElement, colorResolver, parent);
-//        symbolWidget.onSymbolChanged(onUpdate);
-//        composer
-//                .header(Component.literal("Symbol"))
-//                .widget(symbolWidget);
-//
-//        if (plateElement.symbol().texture() instanceof ColorizedTextureSource colorized) {
-//            var fromColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
-//            fromColorBox.setValue(colorized.fromColor());
-//            fromColorBox.setTooltip(Tooltip.create(Component.literal("Color to Replace")));
-//
-//            var toColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
-//            toColorBox.setValue(colorized.toColor());
-//            toColorBox.setTooltip(Tooltip.create(Component.literal("Color to Replace With")));
-//            composer
-//                    .header(Component.literal("Color Replacement"))
-//                    .widget(fromColorBox)
-//                    .widget(toColorBox)
-//                    .button(Component.literal("Confirm"), button -> {
-//                        var fromColor = fromColorBox.colorValueOrNull();
-//                        var toColor = toColorBox.colorValue();
-//                        var source = new ColorizedTextureSource(colorized.baseTexture(), fromColor, toColor);
-//                        var oldSymbol = plateElement.symbol();
-//                        var newSymbol = new Symbol(oldSymbol.identifier(), source, oldSymbol.categoryId());
-//                        onUpdate.accept(plateElement.withSymbol(newSymbol));
-//                    });
-//        }
 
         // Alignment
         composer
