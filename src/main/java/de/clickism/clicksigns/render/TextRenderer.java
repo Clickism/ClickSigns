@@ -64,7 +64,7 @@ public class TextRenderer extends Renderer {
         if (text.isEmpty()) return;
         stack.pushPose();
         // Calculate dimensions
-        float textWidth = font.width(text);
+        float textWidth = font.width(text) - 1; // Subtract one, because by default there is 1 empty pixel to the right
         float textHeight = font.lineHeight; // TODO: Check if correct with scaling?
         float blockWidth = textWidth * TEXT_RENDER_SCALE * textScale;
         float blockHeight = textHeight * TEXT_RENDER_SCALE * textScale;
