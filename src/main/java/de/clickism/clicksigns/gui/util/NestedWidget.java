@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.gui.util;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -140,6 +139,24 @@ public abstract class NestedWidget extends AbstractWidget {
         return minY;
     }
 
+    /**
+     * Gets the maximum x position of this widget and its children.
+     *
+     * @return the maximum x position
+     */
+    public int maxX() {
+        return getX() + width;
+    }
+
+    /**
+     * Gets the maximum y position of this widget and its children.
+     *
+     * @return the maximum y position
+     */
+    public int maxY() {
+        return getY() + height;
+    }
+
     @Override
     public void setX(int i) {
         int deltaX = i - this.getX();
@@ -242,6 +259,12 @@ public abstract class NestedWidget extends AbstractWidget {
             }
         }
         return super.charTyped(c, i);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX >= minX() && mouseX <= maxX()
+               && mouseY >= minY() && mouseY <= maxY();
     }
 
     @Override

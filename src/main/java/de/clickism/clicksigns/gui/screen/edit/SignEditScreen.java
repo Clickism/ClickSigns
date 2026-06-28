@@ -3,13 +3,13 @@ package de.clickism.clicksigns.gui.screen.edit;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
-import de.clickism.clicksigns.gui.screen.edit.widget.EditBehavior;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.Size;
@@ -17,10 +17,10 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -124,7 +124,22 @@ public class SignEditScreen extends BaseScreen {
                 // Add sections
                 .bigHeader(Component.literal("Sign Properties"))
                 .header(Component.literal("Textures"))
-                .widget(new TexturePropertiesWidget(0, 0, this, roadSign, this::roadSign))
+                .widget(new TexturePropertiesWidget(0, 0, this, roadSign.colorResolver(),
+                        roadSign.frontSource(), roadSign.backSource(), (frontSource, backSource) -> {
+                    var newSign = this.roadSign
+                            .withFront(frontSource.resizeToFit(roadSign))
+                            .withBack(backSource.resizeToFit(roadSign));
+                    // Update plate textures to match the new sign texture
+                    var elements = new ArrayList<>(newSign.elements());
+                    for (SignElement element : elements) {
+                        if (!(element instanceof PlateElement plate)) continue;
+                        var plateFront = plate.front().resolve(newSign.colorResolver());
+                        newSign = newSign.replaceElement(element, plate
+                                .withFront(newSign.frontSource().resizeToFit(plateFront))
+                                .withBack(newSign.backSource().resizeToFit(plateFront)));
+                    }
+                    this.roadSign(newSign);
+                }))
                 .header(Component.literal("Elements"))
                 .coloredButton(Color.GREEN, Component.literal("+ Add Symbol"), b -> {
                     var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
@@ -181,6 +196,13 @@ public class SignEditScreen extends BaseScreen {
                         newSymbolElement -> {
                             this.roadSign(roadSign.replaceElement(selectedElement, newSymbolElement));
                             this.editContext.selectElement(newSymbolElement);
+                        })
+                        .compose();
+            } else if (selectedElement instanceof PlateElement plateElement) {
+                new PlateElementPropertiesComposer(composer, this, roadSign.colorResolver(), plateElement,
+                        newPlateElement -> {
+                            this.roadSign(roadSign.replaceElement(selectedElement, newPlateElement));
+                            this.editContext.selectElement(newPlateElement);
                         })
                         .compose();
             }

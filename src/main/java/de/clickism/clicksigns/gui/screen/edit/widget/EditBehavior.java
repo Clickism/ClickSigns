@@ -23,6 +23,11 @@ import java.awt.*;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
+/**
+ * Widget that wraps an element widget and adds edit behavior to it, such as selection and dragging.
+ * <p>
+ * Only the edit behavior should be added to the screen, it will render the element widget itself.
+ */
 public class EditBehavior extends AbstractWidget {
     private static final Tooltip DEFAULT_TOOLTIP = Tooltip.create(Component.literal(
             "§f§lClick §rto select/deselect\n§f§lClick+drag §rto move element"
@@ -35,6 +40,9 @@ public class EditBehavior extends AbstractWidget {
     private final SignElement element;
     private final Tooltip tooltip;
 
+    /**
+     * Creates a new edit behavior widget.
+     */
     public EditBehavior(
             EditContext editContext,
             int anchorX, int anchorY,

@@ -32,7 +32,19 @@ public record PlateElement(
     }
 
     @Override
-    public SignElement withPosition(int localX, int localY) {
+    public PlateElement withPosition(int localX, int localY) {
         return new PlateElement(localX, localY, alignment(), front(), back());
+    }
+
+    public PlateElement withAlignment(Alignment alignment) {
+        return new PlateElement(localX(), localY(), alignment, front(), back());
+    }
+
+    public PlateElement withFront(TextureSource front) {
+        return new PlateElement(localX(), localY(), alignment(), front, back());
+    }
+
+    public PlateElement withBack(TextureSource back) {
+        return new PlateElement(localX(), localY(), alignment(), front(), back);
     }
 }
