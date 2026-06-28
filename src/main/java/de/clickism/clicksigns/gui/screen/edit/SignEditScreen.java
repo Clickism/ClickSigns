@@ -308,6 +308,9 @@ public class SignEditScreen extends BaseScreen {
         element = element.withPosition(newX, newY);
         this.roadSign(roadSign.replaceElement(editContext.selectedElement(), element));
         editContext.selectElement(element);
+        // Rerender immediately for smooth dragging
+        editContext.clearDirty();
+        this.rebuildWidgets();
 
         return super.mouseDragged(fromX, fromY, button, deltaX, deltaY);
     }
