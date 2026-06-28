@@ -2,7 +2,6 @@ package de.clickism.clicksigns.gui.widget.element;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.AbstractTextBox;
-import de.clickism.clicksigns.sign.Alignment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -21,12 +20,10 @@ public class SignTextBox extends AbstractTextBox {
     private static final int BACKGROUND_PADDING = 3;
 
     private final float renderScale;
-    private final Alignment alignment;
 
-    public SignTextBox(int x, int y, int width, int height, Font font, float textScale, Alignment alignment) {
+    public SignTextBox(int x, int y, int width, int height, Font font, float textScale) {
         super(x, y, width, height, font);
         this.renderScale = BLOCK_PIXELS * TEXT_RENDER_SCALE * textScale * DEFAULT_TEXTURE_RENDER_SCALE;
-        this.alignment = alignment;
         this.width = currentWidth();
         addListener(value -> {
             updateWidth();
@@ -41,12 +38,6 @@ public class SignTextBox extends AbstractTextBox {
     public void setFocused(boolean bl) {
         super.setFocused(bl);
         this.width = currentWidth();
-    }
-
-    private int calculateTextX(int x, String text) {
-        int textWidth = font.width(text);
-        int offset = (int) -alignment.offset().x() + 1; // Add 1 since left should be 0
-        return (int) Math.ceil(x + offset * (width) / (2 * renderScale) - offset * textWidth / 2f);
     }
 
     protected int currentWidth() {
@@ -73,83 +64,109 @@ public class SignTextBox extends AbstractTextBox {
         return showingPlaceholder() ? placeholder : this.value;
     }
 
-    // TODO: Clean up and refactor
-    // TODO: Make sure placeholder is cut off properly
+    protected boolean hasBackground() {
+        return backgroundColor != 0;
+    }
+
+    protected int highlightColor() {
+        return textColor & 0xFFFFFF | 0x55000000; // Set alpha for highlight
+    }
+
+    protected int colorToShow() {
+        return showingPlaceholder() ? highlightColor() : this.textColor;
+    }
+
     @Override
     protected void renderText(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        // Layout
+        final int textX = hasBackground()
+                ? getX() + BACKGROUND_PADDING - 1 // -1 makes it better aligned
+                : getX();
+        final int textY = textY();
+
+        var text = textToShow();
+        var color = colorToShow();
+
+        // Background color
+        renderBackground(guiGraphics);
+
+        // Render text and cursor
+        withScale(guiGraphics, renderScale, renderScale, () -> {
+            String left = text.substring(0, cursorPos);
+            String right = text.substring(cursorPos);
+
+            // Render left of cursor
+            guiGraphics.drawString(font, left, textX, textY, color, false);
+            var rightX = textX + font.width(left); // Where the right of cursor starts
+
+            // Render cursor
+            renderCursor(guiGraphics, rightX, textY);
+
+            // Render right of cursor
+            guiGraphics.drawString(font, right, rightX, textY, color, false);
+
+            // Render highlight
+            renderHighlight(guiGraphics, textX, textY);
+        });
+
+        // Render underline
+        withScale(guiGraphics, renderScale, 1f, () -> {
+            var lineWidth = Math.max(font.width(text), font.width(CURSOR));
+            GuiUtils.renderOutline(guiGraphics, textX, getY() + height - 1, lineWidth, 1, color);
+        });
+    }
+
+    private void renderHighlight(GuiGraphics guiGraphics, int x, int y) {
+        if (highlightPos == cursorPos) return;
+        int highlightStart = Math.min(cursorPos, highlightPos);
+        int highlightEnd = Math.max(cursorPos, highlightPos);
+        int highlightX = x + font.width(textToShow().substring(0, highlightStart));
+        int highlightWidth = font.width(textToShow().substring(highlightStart, highlightEnd));
+        guiGraphics.fill(RenderType.guiOverlay(), highlightX, y, highlightX + highlightWidth, y + font.lineHeight, highlightColor());
+    }
+
+    private void renderCursor(GuiGraphics guiGraphics, int x, int y) {
+        long time = System.currentTimeMillis();
+        var cursorBlinking = time / 300 % 2 == 0; // Blink every 300 ms
+        if (!listening() || cursorBlinking) return;
+        // Render cursor
+        boolean lineCursor = cursorPos < textToShow().length();
+        if (lineCursor) {
+            // Inline cursor as line
+            guiGraphics.fill(RenderType.guiOverlay(), x, y, x + 1, y + font.lineHeight, textColor);
+        } else {
+            // Underscore cursor
+            guiGraphics.drawString(font, CURSOR, x, y, textColor, false);
+        }
+    }
+
+    private void renderBackground(GuiGraphics guiGraphics) {
         int x = getX();
         int y = getY();
+        guiGraphics.fill(x, y, getX() + width, getY() + height, backgroundColor);
+    }
 
-        // TODO: Fix background not rendering wide enough
-        // Background color
-        guiGraphics.fill(x, y + 1, x + width, y + height + 1, backgroundColor);
-
-        // Visible text from display pos to end, truncated to fit in view
-        String text = textToShow();
-
-        // Draw text
-        guiGraphics.pose().pushPose();
-        // Move pivot to (x, y)
-        guiGraphics.pose().translate(x, y, 0);
-        // Scale around that point
-        guiGraphics.pose().scale(renderScale, renderScale, 1.0f);
-        // Move back so text draws correctly
-        guiGraphics.pose().translate(-x, -y, 0);
-
-        int textX = calculateTextX(x, text);
-        int textXStart = textX;
+    private int textY() {
         // Remove padding for accents, to center visually
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
         // slightly lower, so looks more aligned this way
         float mainLineHeight = font.lineHeight - 1;
-        int textY = (int) (y + height / 2f - mainLineHeight * renderScale / 2f);
+        return (int) (getY() + height / 2f - mainLineHeight * renderScale / 2f);
+    }
 
-        String left = text.substring(0, cursorPos);
-        String right = text.substring(cursorPos);
-        String cursor = CURSOR;
-
-        // Render background
-        if (backgroundColor != 0) {
-            textX += BACKGROUND_PADDING;
-            textXStart += BACKGROUND_PADDING;
-        }
-
-        // Render left of cursor
-        var highlightColor = textColor & 0xFFFFFF | 0x55000000; // Set alpha
-        var textColor = showingPlaceholder() ? highlightColor : this.textColor;
-        guiGraphics.drawString(font, left, textX, textY, textColor, false);
-
-        textX += font.width(left);
-
-        // Render cursor
-        long time = System.currentTimeMillis();
-        var cursorBlinking = time / 300 % 2 == 0; // Blink every 300 ms
-        if (listening() && !cursorBlinking) {
-            boolean lineCursor = cursorPos < text.length();
-            if (lineCursor) {
-                guiGraphics.fill(RenderType.guiOverlay(), textX, textY, textX + 1, textY + font.lineHeight, textColor);
-            } else {
-                // Underscore cursor
-                guiGraphics.drawString(font, cursor, textX, textY, textColor, false);
-                textX += font.width(cursor);
-            }
-        }
-
-        // Render right of cursor
-        guiGraphics.drawString(font, right, textX, textY, textColor, false);
-        // Render selection
-        if (highlightPos != cursorPos) {
-            int highlightStart = Math.min(cursorPos, highlightPos);
-            int highlightEnd = Math.max(cursorPos, highlightPos);
-            int highlightX = textXStart + font.width(text.substring(0, highlightStart));
-            int highlightWidth = font.width(text.substring(highlightStart, highlightEnd));
-            guiGraphics.fill(RenderType.guiOverlay(), highlightX, textY, highlightX + highlightWidth, textY + font.lineHeight, highlightColor); // TODO: Configurable selection color
-        }
+    private void withScale(GuiGraphics guiGraphics, float scaleX, float scaleY, Runnable runnable) {
+        int x = getX();
+        int y = getY();
+        guiGraphics.pose().pushPose();
+        // Move pivot to (x, y)
+        guiGraphics.pose().translate(x, y, 0);
+        // Scale around that point
+        guiGraphics.pose().scale(scaleX, scaleY, 1.0f);
+        // Move back so it draws correctly
+        guiGraphics.pose().translate(-x, -y, 0);
+        // Render
+        runnable.run();
+        // Pop pose
         guiGraphics.pose().popPose();
-
-        // Render underline
-        var lineWidth = backgroundColor != 0 ? width - BACKGROUND_PADDING * 2 : width;
-        GuiUtils.renderOutline(guiGraphics, textXStart, y + height - 1, lineWidth, 1, textColor);
-
     }
 }

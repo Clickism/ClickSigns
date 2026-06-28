@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
-import static de.clickism.clicksigns.render.TextRenderer.TEXT_PADDING_X;
 
 /**
  * Widget for a text element of a road sign
@@ -25,10 +24,6 @@ public class TextWidget extends SignTextBox implements ElementProvider {
 
     protected TextElement text;
     protected final ColorResolver colorResolver;
-    /**
-     * Max text width in sign pixels
-     */
-    protected final int maxWidth;
     protected int outlineColor;
 
     protected boolean renderOutlineOnHover = true;
@@ -48,18 +43,15 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      */
     public TextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth, int outlineColor) {
         // TODO: Maybe check other text fields to determine max width
-        super(anchorX, anchorY, 0, 0, GuiUtils.font(), text.scale(), text.alignment());
+        super(anchorX, anchorY, 0, 0, GuiUtils.font(), text.scale());
         this.anchorX = anchorX;
         this.anchorY = anchorY;
         // Calculate dimensions
         this.height = (int) (TEXT_BOX_HEIGHT_SCALE * DEFAULT_TEXTURE_RENDER_SCALE * text.scale());
         // Calculate max width
-        this.maxWidth = maxTextWidth(text, signWidth);
         this.text = text;
         this.colorResolver = colorResolver;
         this.outlineColor = outlineColor;
-        // Calculate position
-        this.updatePosition();
         // Filter current text to fit and update
         this.value(clampString(text.text()));
         this.placeholder = clampString(this.placeholder);
@@ -73,8 +65,15 @@ public class TextWidget extends SignTextBox implements ElementProvider {
             this.backgroundColor(colorResolver.resolveInt(text.backgroundColor()));
         }
 
-        // Update width
-        this.width = currentWidth();
+        // Calculate dimensions and position
+        this.updateWidth();
+    }
+
+    @Override
+    protected void updateWidth() {
+        super.updateWidth();
+        // Update position after width change
+        this.updatePosition();
     }
 
     /**
@@ -94,9 +93,9 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * @return the clamped string that fits within the max width
      */
     protected String clampString(String string) {
-        while (text.guiWidthOf(string) > this.maxWidth && !string.isEmpty()) {
-            string = string.substring(0, string.length() - 1);
-        }
+//        while (text.guiWidthOf(string) > this.maxWidth && !string.isEmpty()) {
+//            string = string.substring(0, string.length() - 1);
+//        }
         return string;
     }
 
@@ -109,11 +108,12 @@ public class TextWidget extends SignTextBox implements ElementProvider {
      * Calculates the max text width in sign pixels
      */
     public static int maxTextWidth(TextElement text, int signWidth) {
-        if (text.backgroundColor() != null) {
-            // If there is a background color, we need to account for the outline, which is 1 pixel wide
-            return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
-        }
-        return signWidth - text.localX() - SIGN_PADDING;
+        return Integer.MAX_VALUE;
+//        if (text.backgroundColor() != null) {
+//            // If there is a background color, we need to account for the outline, which is 1 pixel wide
+//            return signWidth - text.localX() - SIGN_PADDING - (int) (TEXT_PADDING_X * 2);
+//        }
+//        return signWidth - text.localX() - SIGN_PADDING;
 // TODO: Half working, adapt:
 //        int maxWidth;
 //        if (text.alignment() == Alignment.TOP_CENTER) {
