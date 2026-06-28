@@ -22,6 +22,11 @@ public abstract class BaseScreen extends Screen {
      */
     protected final @Nullable Screen parent;
     protected @Nullable GuiEventListener hoveredWidget;
+    /**
+     * Whether to support colliding widgets.
+     * If enabled, tooltips, hovers and clicks will only be sent to the topmost widget under the mouse.
+     */
+    protected boolean supportCollidingWidgets = false;
 
     /**
      * Creates a new screen with background.
@@ -85,10 +90,13 @@ public abstract class BaseScreen extends Screen {
      * @return true if the widget is hovered, false otherwise
      * @throws IllegalStateException if the current screen is not a BaseScreen
      */
-    public static boolean isHovered(GuiEventListener widget) {
+    public static boolean isHovered(GuiEventListener widget, int mouseX, int mouseY) {
         var screen = GuiUtils.currentScreen();
         if (!(screen instanceof BaseScreen baseScreen)) {
             throw new IllegalStateException("Current screen is not a BaseScreen, cannot check hovered widget.");
+        }
+        if (!baseScreen.supportCollidingWidgets) {
+            return widget.isMouseOver(mouseX, mouseY);
         }
         return widget.equals(baseScreen.hoveredWidget);
     }

@@ -44,7 +44,7 @@ public class ClickableTextureWidget extends TextureWidget {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (BaseScreen.isHovered(this) && this.active && this.renderOutlineOnHover) {
+        if (BaseScreen.isHovered(this, mouseX, mouseY) && this.active && this.renderOutlineOnHover) {
             GuiUtils.renderOutlineOnTop(guiGraphics, this.getX(), this.getY(), this.width, this.height, outlineColor);
         }
     }

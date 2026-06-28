@@ -61,6 +61,7 @@ public class SignEditScreen extends BaseScreen {
         super(parent);
         this.roadSign = roadSign;
         this.onUpdate = onUpdate;
+        this.supportCollidingWidgets = true;
     }
 
     @Override
@@ -121,12 +122,12 @@ public class SignEditScreen extends BaseScreen {
                 .header(Component.literal("Textures"))
                 .widget(new TexturePropertiesWidget(0, 0, this, roadSign, this::roadSign))
                 .header(Component.literal("Elements"))
-                .button(Component.literal("+ Add Symbol"), b -> {
+                .coloredButton(Color.GREEN, Component.literal("+ Add Symbol"), b -> {
                     var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
                     var element = new SymbolElement(centerX, centerY, Alignment.CENTER, symbol);
                     this.roadSign(roadSign.addElement(element));
                 })
-                .button(Component.literal("+ Add Text"), b -> {
+                .coloredButton(Color.GREEN, Component.literal("+ Add Text"), b -> {
                     var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
                     this.roadSign(roadSign.addElement(element));
                 })

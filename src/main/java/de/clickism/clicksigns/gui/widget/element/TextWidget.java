@@ -133,7 +133,7 @@ public class TextWidget extends SignTextBox implements ElementProvider {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        if (BaseScreen.isHovered(this) && this.active && this.renderOutlineOnHover) {
+        if (BaseScreen.isHovered(this, mouseX, mouseY) && this.active && this.renderOutlineOnHover) {
             renderOutline(guiGraphics, outlineColor);
         }
     }

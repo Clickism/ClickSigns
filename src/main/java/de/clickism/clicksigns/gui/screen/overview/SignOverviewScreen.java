@@ -36,6 +36,7 @@ public class SignOverviewScreen extends BaseScreen {
      */
     public SignOverviewScreen(@Nullable Screen parent, RoadSignBlockEntity entity) {
         super(parent);
+        this.supportCollidingWidgets = true;
         this.blockPos = entity.getBlockPos();
         var roadSign = entity.roadSign();
         if (roadSign == null) {
