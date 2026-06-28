@@ -307,8 +307,8 @@ public class SignEditScreen extends BaseScreen {
         var newX = dragStartElementX + diffX;
         var newY = dragStartElementY + diffY;
 
-        newX = Mth.clamp(newX, 0, roadSign.width());
-        newY = Mth.clamp(newY, 0, roadSign.height());
+//        newX = Mth.clamp(newX, 0, roadSign.width());
+//        newY = Mth.clamp(newY, 0, roadSign.height());
 
         if (newX == element.localX() && newY == element.localY()) {
             return super.mouseDragged(fromX, fromY, button, deltaX, deltaY);

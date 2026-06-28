@@ -26,12 +26,12 @@ public class TexturePropertiesWidget extends NestedWidget {
                 .add(frontWidget)
                 .add(backWidget)
                 .layout(x, y);
-        updateSize();
+        updateSizeAndPosition();
         int padding = 4;
         var frontLabel = new StringWidget(frontWidget.getX(), frontWidget.getY() + frontWidget.getHeight() + padding, frontWidget.getWidth(), 16, Component.literal("Front"), GuiUtils.font());
         addChild(frontLabel);
         var backLabel = new StringWidget(backWidget.getX(), backWidget.getY() + backWidget.getHeight() + padding, backWidget.getWidth(), 16, Component.literal("Back"), GuiUtils.font());
         addChild(backLabel);
-        updateSize();
+        updateSizeAndPosition();
     }
 }

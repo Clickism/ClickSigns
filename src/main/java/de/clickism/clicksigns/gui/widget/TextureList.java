@@ -11,10 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -80,7 +78,7 @@ public class TextureList<T extends Categorized<T>> extends VerticalScrollContain
                     .sorted(Comparator.comparing(widget -> widget.identifier.toString()))
                     .toList());
             positionWidgets();
-            updateSize(); // Update size after positioning
+            updateSizeAndPosition(); // Update size after positioning
         }
 
         private void positionWidgets() {

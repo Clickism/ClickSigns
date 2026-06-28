@@ -11,10 +11,22 @@ public class PlateWidget extends ClickableTextureWidget implements ElementProvid
     protected final ColorResolver colorResolver;
     protected PlateElement plate;
 
-    public PlateWidget(int x, int y, PlateElement plate, ColorResolver colorResolver) {
-        super(x, y, plate.front().resolve(colorResolver), GuiUtils.OUTLINE_COLOR);
+    protected final int anchorX;
+    protected final int anchorY;
+
+    public PlateWidget(int anchorX, int anchorY, PlateElement plate, ColorResolver colorResolver) {
+        super(anchorX, anchorY, plate.front().resolve(colorResolver), GuiUtils.OUTLINE_COLOR);
+        this.anchorX = anchorX;
+        this.anchorY = anchorY;
         this.plate = plate;
         this.colorResolver = colorResolver;
+        this.updatePosition();
+    }
+
+    public void updatePosition() {
+        // Calculate position
+        var pos = GuiUtils.calculateElementPosition(anchorX, anchorY, plate, this.width, this.height);
+        this.setPosition(pos.x, pos.y);
     }
 
     @Override

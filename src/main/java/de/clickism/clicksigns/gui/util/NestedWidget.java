@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.util;
 
+import de.clickism.clicksigns.gui.GuiUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,6 +18,12 @@ import java.util.function.Consumer;
 public abstract class NestedWidget extends AbstractWidget {
     private final List<AbstractWidget> children = new ArrayList<>();
 
+    private final int anchorX;
+    private final int anchorY;
+
+    private int minX;
+    private int minY;
+
     /**
      * Creates a new nested widget.
      *
@@ -25,6 +32,10 @@ public abstract class NestedWidget extends AbstractWidget {
      */
     public NestedWidget(int x, int y) {
         super(x, y, 0, 0, Component.empty());
+        this.anchorX = x;
+        this.anchorY = y;
+        this.minX = x;
+        this.minY = y;
     }
 
     /**
@@ -34,7 +45,7 @@ public abstract class NestedWidget extends AbstractWidget {
      */
     protected void addChildAndUpdate(AbstractWidget widget) {
         addChild(widget);
-        updateSize();
+        updateSizeAndPosition();
     }
 
     /**
@@ -57,7 +68,7 @@ public abstract class NestedWidget extends AbstractWidget {
         for (var widget : widgets) {
             addChild(widget);
         }
-        updateSize();
+        updateSizeAndPosition();
     }
 
     /**
@@ -70,7 +81,14 @@ public abstract class NestedWidget extends AbstractWidget {
     /**
      * Calculates and updates the size of this widget based on its children.
      */
-    public void updateSize() {
+    public void updateSizeAndPosition() {
+        if (children.isEmpty()) {
+            this.width = 0;
+            this.height = 0;
+            return;
+        }
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
         int maxX = 0;
         int maxY = 0;
         for (var child : children) {
@@ -82,9 +100,17 @@ public abstract class NestedWidget extends AbstractWidget {
             if (boundY > maxY) {
                 maxY = boundY;
             }
+            if (child.getX() < minX) {
+                minX = child.getX();
+            }
+            if (child.getY() < minY) {
+                minY = child.getY();
+            }
         }
         this.width = maxX - this.getX();
         this.height = maxY - this.getY();
+        this.minX = minX;
+        this.minY = minY;
     }
 
     /**
@@ -94,6 +120,24 @@ public abstract class NestedWidget extends AbstractWidget {
      */
     public List<AbstractWidget> children() {
         return children;
+    }
+
+    /**
+     * Gets the minimum x position of this widget and its children.
+     *
+     * @return the minimum x position
+     */
+    public int minX() {
+        return minX;
+    }
+
+    /**
+     * Gets the minimum y position of this widget and its children.
+     *
+     * @return the minimum y position
+     */
+    public int minY() {
+        return minY;
     }
 
     @Override

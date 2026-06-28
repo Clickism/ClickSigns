@@ -32,6 +32,8 @@ public class SignWidget extends NestedWidget {
     protected final ElementWidgetFactory<SymbolElement> symbolFactory;
     protected final ElementWidgetFactory<PlateElement> plateFactory;
 
+    protected @Nullable TextureWidget textureWidget;
+
     /**
      * Creates a new custom sign widget at the given position, displaying the given road sign.
      * Uses the given factories for creating element widgets.
@@ -70,7 +72,7 @@ public class SignWidget extends NestedWidget {
         this.clearChildren();
         this.elementProviders.clear();
         // Add road sign texture
-        var textureWidget = new TextureWidget(this.getX(), this.getY(), roadSign.frontTexture());
+        textureWidget = new TextureWidget(this.getX(), this.getY(), roadSign.frontTexture());
         this.addChild(textureWidget);
         // Calculate anchor for elements
         int anchorX = textureWidget.getX();
@@ -86,7 +88,6 @@ public class SignWidget extends NestedWidget {
                 }
             }
         }
-
         // Add symbol elements
         for (var element : roadSign.elements()) {
             if (element instanceof SymbolElement symbol) {
@@ -107,7 +108,7 @@ public class SignWidget extends NestedWidget {
                 }
             }
         }
-        this.updateSize();
+        this.updateSizeAndPosition();
     }
 
     /**
@@ -166,9 +167,9 @@ public class SignWidget extends NestedWidget {
 
         @Override
         public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-            if (lastRoadSign == null) return;
-            int x = SignWidget.this.getX();
-            int y = SignWidget.this.getY();
+            if (lastRoadSign == null || textureWidget == null) return;
+            int x = textureWidget.getX();
+            int y = textureWidget.getY();
             var signWidth = lastRoadSign.width() * DEFAULT_TEXTURE_RENDER_SCALE;
             var signHeight = lastRoadSign.height() * DEFAULT_TEXTURE_RENDER_SCALE;
             var centerX = x + signWidth / 2;
