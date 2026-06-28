@@ -83,10 +83,6 @@ public record TextElementPropertiesComposer(
         // Alignment
         composer
                 .header(Component.literal("Alignment"))
-                /*
-                 TODO: Anything but right alignment is cursed when editing text and also max width isnt, that nice.
-                 Maybe make a dynamic text edit box and make it dynamic when center aligned? idk... or adjust from the center?
-                 */
                 .widget(AlignmentWidget.textAlignments(0, 0, textElement.alignment(), alignment -> {
                     onUpdate.accept(textElement.withAlignment(alignment));
                 }));
