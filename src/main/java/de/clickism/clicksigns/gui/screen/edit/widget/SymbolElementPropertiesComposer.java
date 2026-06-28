@@ -35,6 +35,7 @@ public record SymbolElementPropertiesComposer(
     /**
      * Adds the property controls for the SymbolElement to the composer.
      */
+    // TODO: Allow color replacement even if symbol doesnt by default
     public void compose() {
         // Texture
         var symbolWidget = new OverviewSymbolWidget(0, 0, symbolElement, colorResolver, parent);
@@ -43,7 +44,6 @@ public record SymbolElementPropertiesComposer(
                 .header(Component.literal("Symbol"))
                 .widget(symbolWidget);
 
-        // TODO: Fix color doesnt update when clicking confirm
         if (symbolElement.symbol().texture() instanceof ColorizedTextureSource colorized) {
             var fromColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
             fromColorBox.setValue(colorized.fromColor());
