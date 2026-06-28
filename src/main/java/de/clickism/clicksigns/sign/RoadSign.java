@@ -51,9 +51,9 @@ public record RoadSign(
             new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
             List.of(
                     new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-                    new TextElement(9, 10, Alignment.TEXT_RIGHT, "Main Street", 1f, "foreground", null),
-                    new TextElement(9, 6, Alignment.TEXT_RIGHT, "Main Street", 1f, "foreground", null),
-                    new TextElement(9, 2, Alignment.TEXT_RIGHT, "Main Street", 1f, "white", "brown")
+                    new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+                    new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+                    new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
             ),
             DEFAULT_ALIGNMENT,
             ClickSigns.identifier("test")
