@@ -28,6 +28,12 @@ public class TextRenderer extends Renderer {
      * Text padding in pixels for the y-axis.
      */
     public static final float TEXT_PADDING_Y = .25f;
+
+    /**
+     * The amount to darken text colors by to match texture colors.
+     */
+    private static final float COLOR_DARKEN_FACTOR = 0.74f;
+
     private final Font font;
     private final TextureRenderer textureRenderer;
 
@@ -87,7 +93,7 @@ public class TextRenderer extends Renderer {
         float paddingX = backgroundColor != 0 ? TEXT_PADDING_X / BLOCK_PIXELS : 0;
         textX += paddingX / TEXT_RENDER_SCALE;
         // Draw text
-        color = multiplyColor(color, 0.8f); // Darken color to match texture colors
+        color = multiplyColor(color, COLOR_DARKEN_FACTOR); // Darken color to match texture colors
         font.drawInBatch(
                 text,
                 // Apply text offset
@@ -121,6 +127,8 @@ public class TextRenderer extends Renderer {
         // Add padding
         blockWidth += paddingX * 2;
         blockHeight += paddingY * 2;
+        // Darken color
+        backgroundColor = multiplyColor(backgroundColor, COLOR_DARKEN_FACTOR);
         // Render background
         textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, Alignment.CENTER);
     }
