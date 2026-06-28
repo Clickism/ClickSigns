@@ -1,11 +1,17 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * A screen that renders a background
@@ -91,6 +97,7 @@ public abstract class BaseScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Check if the hovered widget is clicked first
         if (hoveredWidget != null && hoveredWidget.mouseClicked(mouseX, mouseY, button)) {
+            this.setFocused(hoveredWidget);
             hoveredWidget.setFocused(true);
             if (GuiUtils.isLeftClick(button)) {
                 this.setDragging(true);
@@ -98,5 +105,23 @@ public abstract class BaseScreen extends Screen {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void setTooltipForNextRenderPass(List<FormattedCharSequence> list, ClientTooltipPositioner clientTooltipPositioner, boolean bl) {
+        // Only allow setting if element is hovered
+        if (!(hoveredWidget instanceof AbstractWidget abstractWidget)) {
+            super.setTooltipForNextRenderPass(list, clientTooltipPositioner, bl);
+            return;
+        }
+        var tooltip = abstractWidget.getTooltip();
+        if (tooltip == null) {
+            super.setTooltipForNextRenderPass(list, clientTooltipPositioner, bl);
+            return;
+        }
+        List<FormattedCharSequence> hoveredList = abstractWidget.getTooltip().toCharSequence(Minecraft.getInstance());
+        if (hoveredList.equals(list)) {
+            super.setTooltipForNextRenderPass(list, clientTooltipPositioner, bl);
+        }
     }
 }
