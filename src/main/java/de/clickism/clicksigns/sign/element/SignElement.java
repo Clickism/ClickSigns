@@ -75,6 +75,9 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
             TextureSource.PACKET_WRITER.accept(buf, symbol.symbol().texture());
+        } else if (element instanceof PlateElement plate) {
+            TextureSource.PACKET_WRITER.accept(buf, plate.front());
+            TextureSource.PACKET_WRITER.accept(buf, plate.back());
         }
     };
 
@@ -103,6 +106,11 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var symbol = SignRegistries.SYMBOLS.get(id).withTexture(source);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
+            case PlateElement.TYPE -> {
+                var front = TextureSource.PACKET_READER.apply(buf);
+                var back = TextureSource.PACKET_READER.apply(buf);
+                yield new PlateElement(localX, localY, alignment, front, back);
+            }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
         };
     };
@@ -128,6 +136,13 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             var textureTag = tag.createWriter();
             TextureSource.NBT_WRITER.write(textureTag, symbol.symbol().texture());
             tag.putCompound("texture", textureTag.asCompoundTag());
+        } else if (element instanceof PlateElement plate) {
+            var frontTag = tag.createWriter();
+            var backTag = tag.createWriter();
+            TextureSource.NBT_WRITER.write(frontTag, plate.front());
+            TextureSource.NBT_WRITER.write(backTag, plate.back());
+            tag.putCompound("front", frontTag.asCompoundTag());
+            tag.putCompound("back", backTag.asCompoundTag());
         }
     };
 
@@ -153,6 +168,13 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var texture = TextureSource.NBT_READER.read(textureTag);
                 var symbol = SignRegistries.SYMBOLS.get(id).withTexture(texture);
                 yield new SymbolElement(localX, localY, alignment, symbol);
+            }
+            case PlateElement.TYPE -> {
+                var frontTag = tag.getCompound("front").orElseThrow();
+                var backTag = tag.getCompound("back").orElseThrow();
+                var front = TextureSource.NBT_READER.read(frontTag);
+                var back = TextureSource.NBT_READER.read(backTag);
+                yield new PlateElement(localX, localY, alignment, front, back);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
         };
