@@ -16,6 +16,7 @@ import static de.clickism.clicksigns.gui.GuiUtils.INACTIVE_ALPHA;
 /**
  * Widget for resize controls around a central widget.
  */
+// TODO: on the 32x32 when you press down it jumps to 32x16 but up goes to 32x24
 public class ResizeControls extends NestedWidget {
     private final AbstractWidget centerWidget;
     private final Consumer<Direction> onResize;

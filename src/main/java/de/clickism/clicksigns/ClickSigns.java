@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Add loading/saving/sharing templates
 /**
  * Main mod class
  */
