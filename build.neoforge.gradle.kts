@@ -1,5 +1,5 @@
 plugins {
-    id("net.neoforged.moddev") version "2.0.137"
+    id("net.neoforged.moddev") version "2.0.141"
     id("java")
 }
 val modVersion = property("mod.version").toString()
@@ -45,13 +45,18 @@ sourceSets {
         resources.srcDir(
             "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
         )
+        java {
+            val platform = "de/clickism/clicksigns/platform"
+            exclude("$platform/fabric/**")
+            exclude("$platform/forge/**")
+        }
     }
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 base {

@@ -1,6 +1,9 @@
 package de.clickism.clicksigns.gui.widget;
 
-import net.minecraft.SharedConstants;
+//? if < 1.21.1
+/*import net.minecraft.SharedConstants;*/
+//? if >= 1.21.1
+import net.minecraft.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -275,8 +278,12 @@ public abstract class AbstractTextBox extends AbstractWidget {
      * @param input the input string to filter
      * @return the filtered string
      */
+
     protected String filterInput(String input) {
-        return SharedConstants.filterText(input);
+        //? if < 1.21.1
+        /*return SharedConstants.filterText(input);*/
+        //? if >= 1.21.1
+        return StringUtil.filterText(input);
     }
 
     @Override
@@ -354,7 +361,10 @@ public abstract class AbstractTextBox extends AbstractWidget {
     @Override
     public boolean charTyped(char c, int modifiers) {
         if (!listening()) return false;
-        if (!SharedConstants.isAllowedChatCharacter(c)) return false;
+        //? if < 1.21.1
+        /*if (!SharedConstants.isAllowedChatCharacter(c)) return false;*/
+        //? if >= 1.21.1
+        if (!StringUtil.isAllowedChatCharacter(c)) return false;
         insertText(Character.toString(c));
         return true;
     }

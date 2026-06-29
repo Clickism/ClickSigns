@@ -5,6 +5,7 @@ import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.nbt.NbtReaderWriterImpl;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -62,22 +63,39 @@ public class RoadSignBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    //Inverse comma syntax is pain
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag(
+            //? if >= 1.21.1
+            HolderLookup.Provider provider
+    ) {
         var tag = new CompoundTag();
-        this.saveAdditional(tag);
+        this.saveAdditional(
+                tag
+                //? if >= 1.21.1
+                , provider
+        );
         return tag;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(
+            CompoundTag tag
+            //? if >= 1.21.1
+            , HolderLookup.Provider provider
+    ) {
+        super.saveAdditional(
+                tag
+                //? if >= 1.21.1
+                , provider
+        );
         if (this.roadSign == null) return;
         var writer = new NbtReaderWriterImpl(tag);
         RoadSign.NBT_WRITER.write(writer, this.roadSign);
     }
 
-    @Override
+    //? if < 1.21.1 {
+    /*@Override
     public void load(CompoundTag tag) {
         super.load(tag);
         var reader = new NbtReaderWriterImpl(tag);
@@ -87,4 +105,17 @@ public class RoadSignBlockEntity extends BlockEntity {
             ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
         }
     }
+    *///? }
+    //? if >= 1.21.1 {
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        var reader = new NbtReaderWriterImpl(tag);
+        try {
+            this.roadSign = RoadSign.NBT_READER.read(reader);
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
+        }
+    }
+    //? }
 }

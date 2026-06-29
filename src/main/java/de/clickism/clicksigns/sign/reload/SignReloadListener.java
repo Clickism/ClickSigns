@@ -108,7 +108,10 @@ public interface SignReloadListener extends ReloadListener {
      */
     default ResourceLocation stripExtension(ResourceLocation location, String extension) {
         var path = stripExtension(location.getPath(), extension);
-        return new ResourceLocation(location.getNamespace(), path);
+        //? if < 1.21.1
+        /*return new ResourceLocation(location.getNamespace(), path);*/
+        //? if >= 1.21.1
+        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path);
     }
 
     /**
@@ -124,7 +127,10 @@ public interface SignReloadListener extends ReloadListener {
         if (path.endsWith(oldExtension)) {
             path = path.substring(0, path.length() - oldExtension.length()) + newExtension;
         }
-        return new ResourceLocation(location.getNamespace(), path);
+        //? if < 1.21.1
+        /*return new ResourceLocation(location.getNamespace(), path);*/
+        //? if >= 1.21.1
+        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path);
     }
 
     /**

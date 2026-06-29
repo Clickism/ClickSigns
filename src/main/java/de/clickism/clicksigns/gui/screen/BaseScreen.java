@@ -55,10 +55,18 @@ public abstract class BaseScreen extends Screen {
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    @Override
+    //? if < 1.20.4
+    /*@Override*/
     public void renderBackground(GuiGraphics graphics) {
         graphics.fillGradient(0, 0, this.width, this.height, -0x4FEFEFF0, -0x3FEFEFF0);
     }
+
+    //? if >= 1.20.4 {
+    @Override
+    public void renderBackground(GuiGraphics graphics, int i, int j, float f) {
+        renderBackground(graphics);
+    }
+    //? }
 
     @Override
     public void onClose() {
