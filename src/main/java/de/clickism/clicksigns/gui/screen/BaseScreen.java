@@ -50,23 +50,19 @@ public abstract class BaseScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics);
+        this.actualRenderBackground(graphics);
         hoveredWidget = GuiUtils.findFirstHoveredWidget(this, mouseX, mouseY);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    //? if < 1.20.4
-    /*@Override*/
-    public void renderBackground(GuiGraphics graphics) {
+    public void actualRenderBackground(GuiGraphics graphics) {
         graphics.fillGradient(0, 0, this.width, this.height, -0x4FEFEFF0, -0x3FEFEFF0);
     }
 
-    //? if >= 1.20.4 {
     @Override
-    public void renderBackground(GuiGraphics graphics, int i, int j, float f) {
-        renderBackground(graphics);
+    public void renderBackground(GuiGraphics graphics /*? if >= 1.21.1 {*/, int i, int j, float f /*? }*/) {
+        actualRenderBackground(graphics);
     }
-    //? }
 
     @Override
     public void onClose() {
