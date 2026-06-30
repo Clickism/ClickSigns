@@ -107,13 +107,13 @@ public class VerticalScrollContainer extends AbstractWidget {
         guiGraphics.fill(scrollbarX, scrollbarEndY, scrollbarEndX - 1, scrollbarEndY - 1, SCROLLBAR_SHADOW_COLOR);
     }
 
-    //? if < 1.20.4
-    /*@Override*/
-    public boolean mouseScrolled(double d, double e, double f) {
+    @Override
+    public boolean mouseScrolled(double d, double e, double f/*? if >= 1.20.4 {*/, double g /*? }*/) {
         if (!this.visible) return false;
         this.scroll(this.scrollAmount - f * SCROLL_RATE);
         return true;
     }
+
 
     /**
      * Set the scroll amount and clamp it.
