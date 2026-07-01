@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.util;
 
+import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -108,9 +109,15 @@ public class VerticalScrollContainer extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double d, double e, double f/*? if >= 1.20.4 {*/, double g /*? }*/) {
+    public boolean mouseScrolled(
+            double mouseX,
+            double mouseY,
+            //? if >= 1.20.1
+            double horizontalAmount,
+            double verticalAmount) {
+        ClickSigns.LOGGER.info("layout attempted scroll via mouse");
         if (!this.visible) return false;
-        this.scroll(this.scrollAmount - f * SCROLL_RATE);
+        this.scroll(this.scrollAmount - verticalAmount * SCROLL_RATE);
         return true;
     }
 
