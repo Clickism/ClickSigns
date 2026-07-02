@@ -5,7 +5,6 @@ import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.gui.widget.ColorBox;
 import de.clickism.clicksigns.gui.widget.LazyEditBox;
-import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
 import net.minecraft.client.gui.components.EditBox;
@@ -30,12 +29,13 @@ public record TextElementPropertiesComposer(
         TextElement textElement,
         Consumer<TextElement> onUpdate
 ) {
-    private static final float MAX_SCALE = 4f;
+    private static final float MAX_SCALE = 6f;
     private static final float MIN_SCALE = 0.3f;
 
     private static final int EDIT_BOX_OFFSET = 4;
 
     // TODO: Maybe make values update on change instead of having to click confirm
+
     /**
      * Adds the property controls for the TextElement to the composer.
      */
@@ -70,13 +70,32 @@ public record TextElementPropertiesComposer(
                 });
 
         // Scale
-        var slider = new ScaledSliderWidget(0, 0, composer.width(), 20, textElement.scale(), MIN_SCALE, MAX_SCALE);
+        var scaleBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Scale"));
+        scaleBox.setValue(String.valueOf(textElement.scale()));
+        scaleBox.setResponder(value -> {
+            try {
+                float scale = Float.parseFloat(value);
+                if (scale < MIN_SCALE || scale > MAX_SCALE) {
+                    scaleBox.setTextColor(GuiUtils.UNEDITABLE_COLOR);
+                } else {
+                    scaleBox.setTextColor(EditBox.DEFAULT_TEXT_COLOR);
+                }
+            } catch (NumberFormatException e) {
+                scaleBox.setTextColor(GuiUtils.UNEDITABLE_COLOR);
+            }
+        });
         composer
                 .header(Component.literal("Scale"))
-                .widget(slider)
+                .widget(scaleBox)
                 .button(Component.literal("Confirm"), button -> {
-                    float scale = slider.scaleValue();
-                    onUpdate.accept(textElement.withScale(scale));
+                    try {
+                        float scale = Float.parseFloat(scaleBox.getValue());
+                        if (scale < MIN_SCALE || scale > MAX_SCALE) {
+                            return;
+                        }
+                        onUpdate.accept(textElement.withScale(scale));
+                    } catch (NumberFormatException ignored) {
+                    }
                 });
 
         // Alignment
