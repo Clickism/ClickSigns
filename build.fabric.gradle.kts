@@ -68,7 +68,7 @@ fabricApi {
 loom {
     runConfigs.all {
         generateRunConfig.set(true)
-        runDirectory.set(project.file("runs/fabric"))
+        runDirectory.set(rootProject.file("runs/fabric"))
         if (runtimeEnvironment.get() == "client") {
             programArguments.set(listOf("--username=ClickToPlay"))
         }
