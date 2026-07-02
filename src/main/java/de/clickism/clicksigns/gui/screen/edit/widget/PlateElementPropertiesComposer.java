@@ -1,11 +1,10 @@
 package de.clickism.clicksigns.gui.screen.edit.widget;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.PlateElement;
-import net.minecraft.client.gui.components.EditBox;
+import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -27,6 +26,8 @@ public record PlateElementPropertiesComposer(
         PlateElement plateElement,
         Consumer<PlateElement> onUpdate
 ) {
+    private static final Size MAX_SIZE = new Size(96, 64);
+
     /**
      * Adds the property controls for the PlateElement to the composer.
      */
@@ -45,26 +46,17 @@ public record PlateElementPropertiesComposer(
                 .widget(textureWidget);
 
         // Size
-        var widthBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - 2, 20, Component.empty());
-        var heightBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - 2, 20, Component.empty());
-        widthBox.setValue(String.valueOf(plateElement.signWidth()));
-        heightBox.setValue(String.valueOf(plateElement.signHeight()));
+        var sizeControls = new SizeControls(0, 0, composer.width() - 2, plateElement.signSize(), MAX_SIZE, size -> {});
         composer
                 .header(Component.literal("Size"))
-                .widget(widthBox)
-                .widget(heightBox)
+                .widget(sizeControls)
                 .button(Component.literal("Confirm"), button -> {
-                    try {
-                        var newWidth = Integer.parseInt(widthBox.getValue());
-                        var newHeight = Integer.parseInt(heightBox.getValue());
-                        onUpdate.accept(plateElement
-                                .withFront(plateElement().front().resize(newWidth, newHeight))
-                                .withBack(plateElement().back().resize(newWidth, newHeight)));
-                    } catch (NumberFormatException e) {
-                        // Ignore invalid input
-                    }
+                    var size = sizeControls.size();
+                    onUpdate.accept(plateElement
+                            .withFront(plateElement.front().resizeToFit(size))
+                            .withBack(plateElement.back().resizeToFit(size))
+                    );
                 });
-
         // Alignment
         composer
                 .header(Component.literal("Alignment"))

@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 /**
  * A widget that can contain other widgets as children.
  */
+// TODO: Fix centering issue in composer when plate has alignment
 public abstract class NestedWidget extends AbstractWidget {
     private final List<AbstractWidget> children = new ArrayList<>();
 

@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
-// TODO: Add guidelines when dragging
 // TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
 
 /**
@@ -69,7 +68,6 @@ public class SignEditScreen extends BaseScreen {
     @Override
     protected void init() {
         // Add road sign texture
-        // TODO: Use custom text and symbol widgets
         this.signWidget = new SignWidget(0, 0, roadSign,
                 (anchorX, anchorY, element, roadSign, parent) ->
                         EditBehavior.forText(editContext, anchorX, anchorY, element, roadSign),
@@ -287,6 +285,8 @@ public class SignEditScreen extends BaseScreen {
         }
         super.tick();
     }
+
+    // Dragging logic for elements
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

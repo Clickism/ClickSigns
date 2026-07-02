@@ -4,6 +4,7 @@ import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.gui.widget.ColorBox;
+import de.clickism.clicksigns.gui.widget.LazyEditBox;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -40,11 +41,8 @@ public record TextElementPropertiesComposer(
      */
     public void compose() {
         // Text
-        var textBox = new EditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Text"));
+        var textBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Text"));
         textBox.setValue(textElement.text());
-        var responder = TextWidget.FitIntoElementResponder.create(textElement, signWidth, textBox::setValue, textBox::setTextColor, EditBox.DEFAULT_TEXT_COLOR);
-        textBox.setResponder(responder::onChange);
-
         composer
                 .header(Component.literal("Text"))
                 .widget(textBox)

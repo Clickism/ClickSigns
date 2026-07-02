@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.screen;
 
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.util.NestedWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -22,6 +23,9 @@ public abstract class BaseScreen extends Screen {
      */
     protected final @Nullable Screen parent;
     protected @Nullable GuiEventListener hoveredWidget;
+
+    private @Nullable FocusData lastFocus;
+
     /**
      * Whether to support colliding widgets.
      * If enabled, tooltips, hovers and clicks will only be sent to the topmost widget under the mouse.
@@ -63,6 +67,28 @@ public abstract class BaseScreen extends Screen {
     @Override
     public void onClose() {
         GuiUtils.openScreen(parent);
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        super.rebuildWidgets();
+        // Restore focus to the last focused widget if it still exists
+        if (lastFocus == null) return;
+        var widget = lastFocus.findIn(this.children());
+        if (widget != null) {
+            this.setFocused(widget);
+        } else {
+            lastFocus = null; // Widget no longer exists, clear focusAfterRebuild
+        }
+    }
+
+    @Override
+    public void setFocused(@Nullable GuiEventListener guiEventListener) {
+        super.setFocused(guiEventListener);
+        if (guiEventListener instanceof AbstractWidget widget) {
+            // Update last focus
+            lastFocus = new FocusData(widget.getX(), widget.getY(), widget);
+        }
     }
 
     /**
@@ -130,6 +156,45 @@ public abstract class BaseScreen extends Screen {
         List<FormattedCharSequence> hoveredList = abstractWidget.getTooltip().toCharSequence(Minecraft.getInstance());
         if (hoveredList.equals(list)) {
             super.setTooltipForNextRenderPass(list, clientTooltipPositioner, bl);
+        }
+    }
+
+    private record FocusData(int x, int y, AbstractWidget focusedWidget) {
+        /**
+         * Checks if the given widget matches the focus data.
+         *
+         * @param widget the widget to check
+         * @return true if the widget matches the focus data, false otherwise
+         */
+        private boolean is(@Nullable AbstractWidget widget) {
+            if (widget == null) return false;
+            return widget.getX() == x
+                   && widget.getY() == y
+                   && focusedWidget.getClass() == widget.getClass();
+        }
+
+        /**
+         * Finds the focused widget in the given list of listeners.
+         *
+         * @param listeners the list of listeners to search
+         * @param <T>       the type of the listeners
+         * @return the focused widget if found, null otherwise
+         */
+        private <T extends GuiEventListener> @Nullable AbstractWidget findIn(List<T> listeners) {
+            for (var listener : listeners) {
+                if (!(listener instanceof AbstractWidget widget)) continue;
+                if (is(widget)) {
+                    return widget;
+                }
+                // Check nested
+                if (widget instanceof NestedWidget nested) {
+                    var found = findIn(nested.children());
+                    if (found != null) {
+                        return found;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
