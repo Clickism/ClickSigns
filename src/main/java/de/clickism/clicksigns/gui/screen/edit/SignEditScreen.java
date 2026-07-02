@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 // TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
+// TODO: Refactor, so that not everything rerenders all the time, also refactor composers into widgets that are persistent
 
 /**
  * Screen for editing a road sign in an advanced way.
