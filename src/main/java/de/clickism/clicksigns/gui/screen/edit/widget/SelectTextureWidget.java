@@ -8,9 +8,8 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
-import net.minecraft.client.gui.components.Tooltip;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
@@ -39,8 +38,7 @@ public class SelectTextureWidget extends ClickableTextureWidget {
         this.parent = parent;
         this.textureSource = textureSource;
         this.onTextureSelected = onTextureSelected;
-        // TODO: Translate
-        this.setTooltip(Tooltip.create(Component.literal("§f§lClick §rto cycle texture\n§f§lRight click §rto open texture menu")));
+        this.setTooltip(ComponentUtil.translatableTooltip("clicksigns.select_texture.tooltip"));
     }
 
     @Override

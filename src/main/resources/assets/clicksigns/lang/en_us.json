@@ -1,22 +1,46 @@
 {
-  "clicksigns.text.road_sign_edit_screen": "Road Sign Editor",
-  "clicksigns.text.road_signs": "Road Signs",
-  "clicksigns.text.road_sign_template_selection": "Road Sign Template Selection",
-  "clicksigns.text.alignment": "Alignment",
-  "clicksigns.text.left": "Left",
-  "clicksigns.text.right": "Right",
-  "clicksigns.text.forward": "Forward",
-  "clicksigns.text.filter_by": "Filter by:",
-  "clicksigns.text.width": "→ Width: %d",
-  "clicksigns.text.height": "↓ Height: %d",
-  "clicksigns.text.arrows": "🪧 Arrows: %s",
-  "clicksigns.text.variants": "🎨 Variants: %s",
-  "clicksigns.text.category": "📂 Category: %s",
-  "clicksigns.text.pack": "📦 Pack: %s",
-  "clicksigns.text.author": "👤 Author: %s",
   "clicksigns.text.confirm": "Confirm",
   "clicksigns.text.change_template": "Change Template",
   "clicksigns.text.edit": "Edit",
+  "clicksigns.text.alignment": "Alignment",
+
+  "clicksigns.select_texture.tooltip": "§f§lClick §rto cycle texture\n§f§lRight click §rto open texture menu",
+  "clicksigns.overview.symbol.tooltip": "§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu",
+  "clicksigns.overview.text.tooltip": "§lClick §rto edit text\n§lRight+Click §rto change variant",
+
+  "clicksigns.element.symbol": "Symbol",
+  "clicksigns.element.text": "Text",
+  "clicksigns.element.plate": "Plate",
+
+  "clicksigns.editor.alignment": "Alignment",
+  "clicksigns.editor.texture": "Texture",
+  "clicksigns.editor.size": "Size",
+  "clicksigns.editor.element_properties": "Element Properties",
+  "clicksigns.editor.size_display": "Size: %s x %s",
+  "clicksigns.editor.sign_properties": "Sign Properties",
+  "clicksigns.editor.sign_textures": "Sign Textures",
+  "clicksigns.editor.remove_element": "Remove Element",
+  "clicksigns.editor.elements": "Elements",
+  "clicksigns.editor.tools": "Tools",
+  "clicksigns.editor.other": "Other",
+  "clicksigns.editor.no_element_selected": "No Element Selected",
+
+  "clicksigns.editor.elements.add_symbol": "Add Symbol",
+  "clicksigns.editor.elements.add_text": "Add Text",
+  "clicksigns.editor.elements.add_plate": "Add Plate",
+
+  "clicksigns.editor.tools.reset_texts": "Reset Texts",
+  "clicksigns.editor.tools.remove_elements": "Remove Elements",
+
+  "clicksigns.editor.symbol.color_replacement": "Color Replacement",
+  "clicksigns.editor.symbol.from_color": "Color to Replace",
+  "clicksigns.editor.symbol.to_color": "Color to Replace With",
+
+  "clicksigns.editor.text.color": "Color",
+  "clicksigns.editor.text.text_color": "Text Color",
+  "clicksigns.editor.text.background_color": "Background Color",
+  "clicksigns.editor.text.scale": "Scale",
+
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"

@@ -7,8 +7,8 @@ import de.clickism.clicksigns.gui.widget.ColorBox;
 import de.clickism.clicksigns.gui.widget.LazyEditBox;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
@@ -41,28 +41,28 @@ public record TextElementPropertiesComposer(
      */
     public void compose() {
         // Text
-        var textBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Text"));
+        var textBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.empty());
         textBox.setValue(textElement.text());
         composer
-                .header(Component.literal("Text"))
+                .header(Component.translatable("clicksigns.element.text"))
                 .widget(textBox)
-                .button(Component.literal("Confirm"), button -> {
+                .button(ComponentUtil.confirm(), button -> {
                     onUpdate.accept(textElement.withText(textBox.getValue()));
                 });
 
         // Color
         var colorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         colorBox.setValue(textElement.color());
-        colorBox.setTooltip(Tooltip.create(Component.literal("Text Color")));
+        colorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.text.text_color"));
 
         var backgroundColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         backgroundColorBox.setValue(textElement.backgroundColor());
-        backgroundColorBox.setTooltip(Tooltip.create(Component.literal("Background Color")));
+        backgroundColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.text.background_color"));
         composer
-                .header(Component.literal("Color"))
+                .header(Component.translatable("clicksigns.editor.text.color"))
                 .widget(colorBox)
                 .widget(backgroundColorBox)
-                .button(Component.literal("Confirm"), button -> {
+                .button(ComponentUtil.confirm(), button -> {
                     onUpdate.accept(textElement
                             .withColor(colorBox.colorValue())
                             .withBackgroundColor(backgroundColorBox.colorValueOrNull())
@@ -70,7 +70,7 @@ public record TextElementPropertiesComposer(
                 });
 
         // Scale
-        var scaleBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.literal("Scale"));
+        var scaleBox = new LazyEditBox(GuiUtils.font(), 0, 0, composer.width() - EDIT_BOX_OFFSET, 20, Component.empty());
         scaleBox.setValue(String.valueOf(textElement.scale()));
         scaleBox.setResponder(value -> {
             try {
@@ -85,9 +85,9 @@ public record TextElementPropertiesComposer(
             }
         });
         composer
-                .header(Component.literal("Scale"))
+                .header(Component.translatable("clicksigns.editor.text.scale"))
                 .widget(scaleBox)
-                .button(Component.literal("Confirm"), button -> {
+                .button(ComponentUtil.confirm(), button -> {
                     try {
                         float scale = Float.parseFloat(scaleBox.getValue());
                         if (scale < MIN_SCALE || scale > MAX_SCALE) {
@@ -100,7 +100,7 @@ public record TextElementPropertiesComposer(
 
         // Alignment
         composer
-                .header(Component.literal("Alignment"))
+                .header(Component.translatable("clicksigns.editor.alignment"))
                 .widget(AlignmentWidget.textAlignments(0, 0, textElement.alignment(), alignment -> {
                     onUpdate.accept(textElement.withAlignment(alignment));
                 }));

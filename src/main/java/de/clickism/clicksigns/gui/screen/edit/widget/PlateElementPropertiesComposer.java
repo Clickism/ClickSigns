@@ -5,6 +5,7 @@ import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.util.Size;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -42,15 +43,15 @@ public record PlateElementPropertiesComposer(
                             .withBack(backSource.resizeToFit(oldFront)));
                 }));
         composer
-                .header(Component.literal("Texture"))
+                .header(Component.translatable("clicksigns.editor.texture"))
                 .widget(textureWidget);
 
         // Size
         var sizeControls = new SizeControls(0, 0, composer.width() - 2, plateElement.signSize(), MAX_SIZE, size -> {});
         composer
-                .header(Component.literal("Size"))
+                .header(Component.translatable("clicksigns.editor.size"))
                 .widget(sizeControls)
-                .button(Component.literal("Confirm"), button -> {
+                .button(ComponentUtil.confirm(), button -> {
                     var size = sizeControls.size();
                     onUpdate.accept(plateElement
                             .withFront(plateElement.front().resizeToFit(size))
@@ -59,7 +60,7 @@ public record PlateElementPropertiesComposer(
                 });
         // Alignment
         composer
-                .header(Component.literal("Alignment"))
+                .header(Component.translatable("clicksigns.editor.alignment"))
                 .widget(AlignmentWidget.allAlignments(0, 0, plateElement.alignment(), alignment -> {
                     onUpdate.accept(plateElement.withAlignment(alignment));
                 }));

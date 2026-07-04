@@ -16,6 +16,7 @@ import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -99,8 +100,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button confirmButton() {
-        var title = Component.literal("✔ ")
-                .append(Component.translatable("clicksigns.text.confirm"));
+        var title = ComponentUtil.translatableWithIcon("✔ ", "clicksigns.text.confirm");
         return Button.builder(title, button -> {
                     var roadSign = readRoadSign();
                     Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, roadSign));
@@ -110,8 +110,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button editButton() {
-        var title = Component.literal("✎ ")
-                .append(Component.translatable("clicksigns.text.edit"));
+        var title = ComponentUtil.translatableWithIcon("✎ ", "clicksigns.text.edit");
         return Button.builder(title, button -> {
             GuiUtils.openScreen(new SignEditScreen(roadSign, sign -> {
                 this.roadSign = sign;
@@ -121,8 +120,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button changeTemplateButton() {
-        var title = Component.literal("📝 ")
-                .append(Component.translatable("clicksigns.text.change_template"));
+        var title = ComponentUtil.translatableWithIcon("📝 ", "clicksigns.text.change_template");
         return Button.builder(title, button -> {
                     GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                         // Change template
