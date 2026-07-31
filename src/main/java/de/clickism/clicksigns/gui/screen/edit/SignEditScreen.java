@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
@@ -12,6 +14,8 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.template.Template;
+import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.components.Button;
@@ -35,6 +39,10 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
  * Supports resizing, adding/removing/editing elements, and changing textures.
  */
 public class SignEditScreen extends BaseScreen {
+    private static final Gson PRETTY_GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
+
     private static final int PANEL_WIDTH = 120;
     private static final int PANEL_PADDING = 8;
     private static final int MIN_SIGN_SIZE = 8;
@@ -168,6 +176,19 @@ public class SignEditScreen extends BaseScreen {
                 })
                 .coloredButton(Color.RED, ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.tools.remove_elements"), b -> {
                     this.roadSign(roadSign.withElements(List.of()));
+                })
+                .header(Component.translatable("clicksigns.editor.export"))
+                .coloredButton(Color.YELLOW, ComponentUtil.translatableWithIcon("📄", "clicksigns.editor.export.copy_json"), b -> {
+                    var json = new TemplateParser().toJson(
+                            Template.Meta.placeholder(),
+                            roadSign,
+                            true
+                    );
+                    var string = PRETTY_GSON.toJson(json);
+                    GuiUtils.copyToClipboard(string);
+                })
+                .coloredButton(Color.YELLOW, ComponentUtil.translatableWithIcon("💾", "clicksigns.editor.export.save_template"), b -> {
+
                 })
                 // Lay out in the center of the panel
                 .layout(PANEL_WIDTH / 2, PANEL_PADDING)

@@ -43,4 +43,14 @@ public class ComponentUtil {
     public static Component confirmWithIcon() {
         return translatableWithIcon("✔", "clicksigns.text.confirm");
     }
+
+    /**
+     * Renders a component to a string representation.
+     *
+     * @param component the component to render
+     * @return the string representation of the component
+     */
+    public static String render(Component component) {
+        return component.getString();
+    }
 }

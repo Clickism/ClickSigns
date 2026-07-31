@@ -23,6 +23,7 @@
   "clicksigns.editor.elements": "Elements",
   "clicksigns.editor.tools": "Tools",
   "clicksigns.editor.other": "Other",
+  "clicksigns.editor.export": "Export",
   "clicksigns.editor.no_element_selected": "No Element Selected",
 
   "clicksigns.editor.elements.add_symbol": "Add Symbol",
@@ -31,6 +32,9 @@
 
   "clicksigns.editor.tools.reset_texts": "Reset Texts",
   "clicksigns.editor.tools.remove_elements": "Remove Elements",
+
+  "clicksigns.editor.export.copy_json": "Copy JSON",
+  "clicksigns.editor.export.save_template": "Save Template",
 
   "clicksigns.editor.symbol.color_replacement": "Color Replacement",
   "clicksigns.editor.symbol.from_color": "Color to Replace",
@@ -41,6 +45,9 @@
   "clicksigns.editor.text.background_color": "Background Color",
   "clicksigns.editor.text.scale": "Scale",
 
+  "clicksigns.template.placeholder.name": "Name",
+  "clicksigns.template.placeholder.description": "Description",
+  "clicksigns.template.placeholder.author": "Author",
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"

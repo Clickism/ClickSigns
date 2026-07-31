@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.util.PixelSized;
@@ -59,6 +60,42 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
     default TextureSource resizeToFit(PixelSized sized) {
         return resize(sized.width(), sized.height());
     }
+
+    /**
+     * Parses the given texture identifier as tileset or static texture.
+     * <p>
+     * Only support static or tiled textures for templates!
+     *
+     * @param location the texture identifier to parse
+     * @param width    the width of the texture in pixels
+     * @param height   the height of the texture in pixels
+     * @return texture source
+     */
+    static TextureSource parse(ResourceLocation location, int width, int height) {
+        if (SignRegistries.TILE_SETS.has(location)) {
+            return new TiledTextureSource(location, width, height);
+        }
+        return new StaticTextureSource(location);
+    }
+
+    /**
+     * Gets the texture location of the given texture source.
+     * <p>
+     * Only support static or tiled textures for templates!
+     *
+     * @param source the texture source to get the location of
+     * @return the texture location of the source
+     */
+    static ResourceLocation textureLocationOf(TextureSource source) {
+        if (source instanceof StaticTextureSource staticSource) {
+            return staticSource.location();
+        }
+        if (source instanceof TiledTextureSource tiledSource) {
+            return tiledSource.tileSetId();
+        }
+        throw new IllegalArgumentException("Unsupported texture source type: " + source.getClass().getName());
+    }
+
 
     /**
      * Writer for packets

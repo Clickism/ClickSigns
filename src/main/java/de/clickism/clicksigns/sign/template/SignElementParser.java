@@ -3,15 +3,20 @@ package de.clickism.clicksigns.sign.template;
 import com.google.gson.JsonObject;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Parser for sign elements from JSON objects.
+ *
+ * TODO: Fix, texture sources are not fully encodable in json!
  */
 public class SignElementParser implements JsonHandler {
     /**
@@ -30,6 +35,10 @@ public class SignElementParser implements JsonHandler {
             case "symbol" -> {
                 var symbolElementJson = fromJsonOrThrow(object, SymbolElementJson.class);
                 return symbolElementJson.toSymbolElement();
+            }
+            case "plate" -> {
+                var plateElementJson = fromJsonOrThrow(object, PlateElementJson.class);
+                return plateElementJson.toPlateElement();
             }
             default -> {
                 throw new IllegalArgumentException("Unknown sign element type: " + type);
@@ -77,6 +86,16 @@ public class SignElementParser implements JsonHandler {
                     symbolElement.symbol().identifier(),
                     nullIfDefault(symbolElement.alignment(), SymbolElementJson.DEFAULT_ALIGNMENT),
                     new Position(symbolElement.localX(), symbolElement.localY())
+            );
+        }
+        if (element instanceof PlateElement plateElement) {
+            return new PlateElementJson(
+                    nullIfDefault(plateElement.alignment(), PlateElementJson.DEFAULT_ALIGNMENT),
+                    new Position(plateElement.localX(), plateElement.localY()),
+                    plateElement.front().resolve(ColorResolver.empty()).width(),
+                    plateElement.front().resolve(ColorResolver.empty()).height(),
+                    TextureSource.textureLocationOf(plateElement.front()),
+                    TextureSource.textureLocationOf(plateElement.back())
             );
         }
         throw new IllegalArgumentException("Unknown sign element type: " + element.getClass().getName());
@@ -163,4 +182,40 @@ public class SignElementParser implements JsonHandler {
             );
         }
     }
+
+    /**
+     * Json format for a plate element.
+     *
+     * @param alignment the alignment of the plate
+     * @param position  the local position of the plate
+     * @param width     the width of the plate in pixels
+     * @param height    the height of the plate in pixels
+     * @param front     the front texture of the plate
+     * @param back      the back texture of the plate
+     */
+    private record PlateElementJson(
+            @Nullable Alignment alignment,
+            @Nullable Position position,
+            int width,
+            int height,
+            ResourceLocation front,
+            ResourceLocation back
+    ) {
+        private static final Alignment DEFAULT_ALIGNMENT = Alignment.CENTER;
+
+        /**
+         * Converts the JSON object to a plate element object
+         */
+        private PlateElement toPlateElement() {
+            var pos = position != null ? position : new Position(0, 0);
+            return new PlateElement(
+                    pos.x,
+                    pos.y,
+                    alignment != null ? alignment : DEFAULT_ALIGNMENT,
+                    TextureSource.parse(front, width, height),
+                    TextureSource.parse(back, width, height)
+            );
+        }
+    }
+
 }

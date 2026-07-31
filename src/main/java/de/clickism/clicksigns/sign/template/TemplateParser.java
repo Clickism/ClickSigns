@@ -1,11 +1,8 @@
 package de.clickism.clicksigns.sign.template;
 
 import com.google.gson.JsonObject;
-import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
 
@@ -46,30 +43,14 @@ public class TemplateParser implements JsonHandler {
         var signJson = new TemplateJson.SignJson(
                 roadSign.width(),
                 roadSign.height(),
-                textureLocationOf(roadSign.frontSource()),
-                textureLocationOf(roadSign.backSource()),
+                TextureSource.textureLocationOf(roadSign.frontSource()),
+                TextureSource.textureLocationOf(roadSign.backSource()),
                 roadSign.elements().stream()
                         .map(element -> ELEMENT_PARSER.toJson(element, includeTexts))
                         .toList()
         );
         var templateJson = new TemplateJson(meta, signJson);
         return toJsonObject(templateJson);
-    }
-
-    /**
-     * Gets the texture location of the given texture source.
-     *
-     * @param source the texture source to get the location of
-     * @return the texture location of the source
-     */
-    private ResourceLocation textureLocationOf(TextureSource source) {
-        if (source instanceof StaticTextureSource staticSource) {
-            return staticSource.location();
-        }
-        if (source instanceof TiledTextureSource tiledSource) {
-            return tiledSource.tileSetId();
-        }
-        throw new IllegalArgumentException("Unsupported texture source type: " + source.getClass().getName());
     }
 
     /**
@@ -122,25 +103,10 @@ public class TemplateParser implements JsonHandler {
                 return new Template.Sign(
                         width,
                         height,
-                        parseTexture(front),
-                        parseTexture(back),
+                        TextureSource.parse(front, width, height),
+                        TextureSource.parse(back, width, height),
                         parsedElements
                 );
-            }
-
-            /**
-             * Parses the given texture identifier as tileset or static texture.
-             * <p>
-             * Only support static or tiled textures for templates!
-             *
-             * @param location the texture identifier to parse
-             * @return texture source
-             */
-            private TextureSource parseTexture(ResourceLocation location) {
-                if (SignRegistries.TILE_SETS.has(location)) {
-                    return new TiledTextureSource(location, width, height);
-                }
-                return new StaticTextureSource(location);
             }
         }
     }

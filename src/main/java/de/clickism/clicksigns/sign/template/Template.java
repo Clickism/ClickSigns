@@ -6,7 +6,9 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.PixelSized;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +42,17 @@ public record Template(
             String description,
             @Nullable String author
     ) {
+        /**
+         * Creates a placeholder meta instance with default values.
+         *
+         * @return a new Meta instance with placeholder values
+         */
+        public static Meta placeholder() {
+            var name = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.name"));
+            var description = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.description"));
+            var author = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.author"));
+            return new Meta(name, description, author);
+        }
     }
 
     /**
