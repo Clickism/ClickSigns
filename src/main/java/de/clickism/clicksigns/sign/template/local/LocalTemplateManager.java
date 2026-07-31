@@ -33,6 +33,11 @@ public class LocalTemplateManager {
         }
     }
 
+    public void reload() {
+        templates.clear();
+        initialize();
+    }
+
     public Collection<Template> templates() {
         return templates.values();
     }

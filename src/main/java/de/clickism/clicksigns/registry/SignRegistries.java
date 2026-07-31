@@ -19,7 +19,7 @@ public class SignRegistries {
     /**
      * Registry for templates.
      */
-    public static final CategorizedRegistry<Template> TEMPLATES = new CategorizedRegistry<>();
+    public static final CategorizedRegistry<Template> RESOURCE_TEMPLATES = new CategorizedRegistry<>();
 
     private SignRegistries() {
         // Singleton

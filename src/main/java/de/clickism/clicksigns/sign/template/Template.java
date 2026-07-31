@@ -91,6 +91,6 @@ public record Template(
 
     @Override
     public CategorizedRegistry<Template> registry() {
-        return SignRegistries.TEMPLATES;
+        return SignRegistries.RESOURCE_TEMPLATES;
     }
 }

@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.template.local;
 
 import com.google.gson.JsonObject;
+import de.clickism.clicksigns.sign.reload.TemplateListener;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.JsonHandler;
@@ -9,7 +10,10 @@ import net.minecraft.resources.ResourceLocation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.function.BiConsumer;
+
+import static de.clickism.clicksigns.sign.reload.TemplateListener.TEMPLATE_EXTENSION;
 
 public class LocalTemplateLoader implements JsonHandler {
     private static final TemplateParser TEMPLATE_PARSER = new TemplateParser();
@@ -23,7 +27,7 @@ public class LocalTemplateLoader implements JsonHandler {
     public void processAll(BiConsumer<Path, Template> consumer) throws IOException {
         try (var stream = Files.walk(root)) {
             stream
-                    .filter(path -> path.toString().endsWith(".template.json"))
+                    .filter(path -> path.toString().endsWith(TEMPLATE_EXTENSION))
                     .forEach(path -> {
                         try {
                             var template = loadTemplate(path);
@@ -44,8 +48,10 @@ public class LocalTemplateLoader implements JsonHandler {
     private ResourceLocation pathToResourceLocation(Path path) {
         var relative = root.relativize(path);
         var name = relative.toString()
+                .toLowerCase(Locale.ROOT)
                 .replace("\\", "/")
-                .replace(".template.json", "");
+                .replace(TEMPLATE_EXTENSION, "")
+                .replaceAll("[^a-z0-9/._-]", "_");
         try {
             return new ResourceLocation("local", name);
         } catch (Exception e) {

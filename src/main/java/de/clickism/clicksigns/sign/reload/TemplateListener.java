@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * Template reload listener.
  */
 public class TemplateListener extends CategorizedReloadListener<TemplateListener.CategoryJson> {
-    private static final String TEMPLATE_EXTENSION = ".template.json";
+    public static final String TEMPLATE_EXTENSION = ".template.json";
     private static final String TEMPLATE_DIRECTORY = "templates";
 
     private static final TemplateParser TEMPLATE_PARSER = new TemplateParser();
@@ -20,7 +20,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
      * Creates a new template listener.
      */
     public TemplateListener() {
-        super(SignRegistries.TEMPLATES, TEMPLATE_DIRECTORY, TEMPLATE_EXTENSION, CategoryJson.class);
+        super(SignRegistries.RESOURCE_TEMPLATES, TEMPLATE_DIRECTORY, TEMPLATE_EXTENSION, CategoryJson.class);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
     ) {
         var json = fromJsonOrThrow(resource, JsonObject.class);
         var template = TEMPLATE_PARSER.parse(json, location, categoryId);
-        SignRegistries.TEMPLATES.register(template);
+        SignRegistries.RESOURCE_TEMPLATES.register(template);
     }
 
     /**

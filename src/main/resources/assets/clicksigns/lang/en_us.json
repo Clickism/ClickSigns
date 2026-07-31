@@ -49,6 +49,8 @@
   "clicksigns.template.placeholder.description": "Description",
   "clicksigns.template.placeholder.author": "Author",
 
+  "clicksigns.template.category.local": "Local Templates",
+
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"
 }
