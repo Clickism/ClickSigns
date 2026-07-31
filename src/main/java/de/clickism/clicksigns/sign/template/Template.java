@@ -18,6 +18,7 @@ public record Template(
         Meta meta,
         Sign sign,
         // Other data
+        // TODO: Maybe remove identifier at all? or make it nullable. Not needed for local templates
         ResourceLocation identifier,
         @Nullable ResourceLocation categoryId
 ) implements Categorized<Template> {
