@@ -8,7 +8,7 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
-import net.minecraft.client.gui.components.Tooltip;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -41,22 +41,22 @@ public record SymbolElementPropertiesComposer(
         var symbolWidget = new OverviewSymbolWidget(0, 0, symbolElement, colorResolver, parent);
         symbolWidget.onSymbolChanged(onUpdate);
         composer
-                .header(Component.literal("Symbol"))
+                .header(Component.translatable("clicksigns.element.symbol"))
                 .widget(symbolWidget);
 
         if (symbolElement.symbol().texture() instanceof ColorizedTextureSource colorized) {
             var fromColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
             fromColorBox.setValue(colorized.fromColor());
-            fromColorBox.setTooltip(Tooltip.create(Component.literal("Color to Replace")));
+            fromColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.symbol.from_color"));
 
             var toColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
             toColorBox.setValue(colorized.toColor());
-            toColorBox.setTooltip(Tooltip.create(Component.literal("Color to Replace With")));
+            toColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.symbol.to_color"));
             composer
-                    .header(Component.literal("Color Replacement"))
+                    .header(Component.translatable("clicksigns.editor.symbol.color_replacement"))
                     .widget(fromColorBox)
                     .widget(toColorBox)
-                    .button(Component.literal("Confirm"), button -> {
+                    .button(ComponentUtil.confirm(), button -> {
                         var fromColor = fromColorBox.colorValueOrNull();
                         var toColor = toColorBox.colorValue();
                         var source = new ColorizedTextureSource(colorized.baseTexture(), fromColor, toColor);
@@ -68,7 +68,7 @@ public record SymbolElementPropertiesComposer(
 
         // Alignment
         composer
-                .header(Component.literal("Alignment"))
+                .header(Component.translatable("clicksigns.editor.alignment"))
                 .widget(AlignmentWidget.allAlignments(0, 0, symbolElement.alignment(), alignment -> {
                     onUpdate.accept(symbolElement.withAlignment(alignment));
                 }));

@@ -12,6 +12,7 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -26,8 +27,8 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
-// TODO: Add guidelines when dragging
 // TODO: Make a common utility when converting between coordinate spaces (screen, sign, element)
+// TODO: Refactor, so that not everything rerenders all the time, also refactor composers into widgets that are persistent
 
 /**
  * Screen for editing a road sign in an advanced way.
@@ -69,7 +70,6 @@ public class SignEditScreen extends BaseScreen {
     @Override
     protected void init() {
         // Add road sign texture
-        // TODO: Use custom text and symbol widgets
         this.signWidget = new SignWidget(0, 0, roadSign,
                 (anchorX, anchorY, element, roadSign, parent) ->
                         EditBehavior.forText(editContext, anchorX, anchorY, element, roadSign),
@@ -80,11 +80,13 @@ public class SignEditScreen extends BaseScreen {
                 this);
         this.addRenderableWidget(signWidget);
 
-        var sizeWidget = new StringWidget(0, 0, 100, 20, Component.literal("Size: " + roadSign.width() + " x " + roadSign.height()), GuiUtils.font());
+        var sizeWidget = new StringWidget(0, 0, 100, 20,
+                Component.translatable("clicksigns.editor.size_display", roadSign.width(), roadSign.height()),
+                GuiUtils.font());
         this.addRenderableWidget(sizeWidget);
 
         var confirmButton = Button.builder(
-                Component.literal("✔ ").append(Component.translatable("clicksigns.text.confirm")),
+                ComponentUtil.confirmWithIcon(),
                 b -> GuiUtils.closeScreen()
         ).build();
         this.addRenderableWidget(confirmButton);
@@ -122,8 +124,8 @@ public class SignEditScreen extends BaseScreen {
                 .centerHorizontal()
                 .composer(PANEL_WIDTH - PANEL_PADDING * 2)
                 // Add sections
-                .bigHeader(Component.literal("Sign Properties"))
-                .header(Component.literal("Textures"))
+                .bigHeader(Component.translatable("clicksigns.editor.sign_properties"))
+                .header(Component.translatable("clicksigns.editor.sign_textures"))
                 .widget(new TexturePropertiesWidget(0, 0, this, roadSign.colorResolver(),
                         roadSign.frontSource(), roadSign.backSource(), (frontSource, backSource) -> {
                     var newSign = this.roadSign
@@ -140,22 +142,22 @@ public class SignEditScreen extends BaseScreen {
                     }
                     this.roadSign(newSign);
                 }))
-                .header(Component.literal("Elements"))
-                .coloredButton(Color.GREEN, Component.literal("+ Add Symbol"), b -> {
+                .header(Component.translatable("clicksigns.editor.elements"))
+                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_symbol"), b -> {
                     var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
                     var element = new SymbolElement(centerX, centerY, Alignment.CENTER, symbol);
                     this.roadSign(roadSign.addElement(element));
                 })
-                .coloredButton(Color.GREEN, Component.literal("+ Add Text"), b -> {
+                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_text"), b -> {
                     var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
                     this.roadSign(roadSign.addElement(element));
                 })
-                .coloredButton(Color.GREEN, Component.literal("+ Add Plate"), b -> {
+                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_plate"), b -> {
                     var element = new PlateElement(centerX, centerY, Alignment.CENTER, this.roadSign.frontSource().resize(8, 6), this.roadSign.backSource().resize(8, 6));
                     this.roadSign(roadSign.addElement(element));
                 })
-                .header(Component.literal("Tools"))
-                .coloredButton(Color.BLUE, Component.literal("⏪ Reset Texts"), b -> {
+                .header(Component.translatable("clicksigns.editor.tools"))
+                .coloredButton(Color.BLUE, ComponentUtil.translatableWithIcon("⏪", "clicksigns.editor.tools.reset_texts"), b -> {
                     this.roadSign(roadSign.withElements(roadSign.elements().stream()
                             .map(element -> {
                                 if (element instanceof TextElement text) {
@@ -164,7 +166,7 @@ public class SignEditScreen extends BaseScreen {
                                 return element;
                             }).toList()));
                 })
-                .coloredButton(Color.RED, Component.literal("🗑 Remove Elements"), b -> {
+                .coloredButton(Color.RED, ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.tools.remove_elements"), b -> {
                     this.roadSign(roadSign.withElements(List.of()));
                 })
                 // Lay out in the center of the panel
@@ -180,7 +182,7 @@ public class SignEditScreen extends BaseScreen {
                 .centerHorizontal()
                 .composer(PANEL_WIDTH - PANEL_PADDING * 2)
                 // Add sections
-                .bigHeader(Component.literal("Element Properties"));
+                .bigHeader(Component.translatable("clicksigns.editor.element_properties"));
 
         var selectedElement = editContext.selectedElement();
         if (selectedElement != null) {
@@ -206,13 +208,15 @@ public class SignEditScreen extends BaseScreen {
                         })
                         .compose();
             }
-            composer.header(Component.literal("Other"))
-                    .coloredButton(Color.RED, Component.literal("🗑 Delete Element"), button -> {
-                        this.roadSign(roadSign.removeElement(selectedElement));
-                        this.editContext.selectElement(null);
-                    });
+            composer.header(Component.translatable("clicksigns.editor.other"))
+                    .coloredButton(Color.RED,
+                            ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.elements.remove_element"),
+                            button -> {
+                                this.roadSign(roadSign.removeElement(selectedElement));
+                                this.editContext.selectElement(null);
+                            });
         } else {
-            composer.text(Component.literal("No element selected"));
+            composer.text(Component.translatable("clicksigns.editor.no_element_selected"));
 
         }
 
@@ -287,6 +291,8 @@ public class SignEditScreen extends BaseScreen {
         }
         super.tick();
     }
+
+    // Dragging logic for elements
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {

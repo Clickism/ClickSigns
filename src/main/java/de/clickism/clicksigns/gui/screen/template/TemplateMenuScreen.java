@@ -8,9 +8,9 @@ import de.clickism.clicksigns.gui.widget.element.PlateWidget;
 import de.clickism.clicksigns.gui.widget.element.SymbolWidget;
 import de.clickism.clicksigns.gui.widget.element.TextWidget;
 import de.clickism.clicksigns.sign.template.Template;
+import de.clickism.clicksigns.util.ComponentUtil;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -72,7 +72,7 @@ public class TemplateMenuScreen extends BaseScreen {
     }
 
     private Button confirmButton() {
-        return Button.builder(Component.literal("Confirm"), (button) -> {
+        return Button.builder(ComponentUtil.confirm(), (button) -> {
             if (this.selectedTemplate != null) {
                 this.onTemplateChanged.accept(this.selectedTemplate);
             }

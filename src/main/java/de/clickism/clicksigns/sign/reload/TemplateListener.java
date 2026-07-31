@@ -43,19 +43,17 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
     ) {
         var json = fromJsonOrThrow(resource, JsonObject.class);
         var type = getTypeOrThrow(json);
-        switch (type) {
-            case "fixed" -> {
-                var templateJson = fromJsonOrThrow(json, FixedTemplateJson.class);
-                var template = templateJson.toTemplate(location, categoryId);
-                SignRegistries.TEMPLATES.register(template);
-            }
-            case "layout" -> {
-                // TODO: Implement layout templates
-            }
-            default -> {
-                // Unknown template type
-                ClickSigns.LOGGER.error("Unknown template type \"{}\" in template json {}. Ignoring...", type, location.toString());
-            }
+
+        if (type.equals("fixed")) {
+            var templateJson = fromJsonOrThrow(json, FixedTemplateJson.class);
+            var template = templateJson.toTemplate(location, categoryId);
+            SignRegistries.TEMPLATES.register(template);
+        } else {
+            // Unknown template type
+            ClickSigns.LOGGER.error(
+                    "Unknown template type \"{}\" in template json {}. Ignoring...",
+                    type, location.toString()
+            );
         }
     }
 

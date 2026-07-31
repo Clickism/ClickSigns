@@ -3,6 +3,7 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.util.Size;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
@@ -33,6 +34,10 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     int signWidth();
 
     int signHeight();
+
+    default Size signSize() {
+        return new Size(signWidth(), signHeight());
+    }
 
     default int guiWidth(float guiScale) {
         return (int) (signWidth() * guiScale);
