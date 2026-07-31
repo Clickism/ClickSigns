@@ -1,7 +1,5 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
@@ -125,6 +123,8 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
         var centerX = roadSign.width() / 2;
         var centerY = roadSign.height() / 2;
 
+        var statusWidget = new StringWidget(0, 0, PANEL_WIDTH - PANEL_PADDING * 2, 20, Component.empty(), GuiUtils.font());
+
         LinearLayout.vertical()
                 .padding(padding)
                 .centerHorizontal()
@@ -176,7 +176,7 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                     this.roadSign(roadSign.withElements(List.of()));
                 })
                 .header(Component.translatable("clicksigns.editor.export"))
-                .coloredButton(Color.YELLOW, ComponentUtil.translatableWithIcon("📄", "clicksigns.editor.export.copy_json"), b -> {
+                .coloredButton(Color.ORANGE, ComponentUtil.translatableWithIcon("📄", "clicksigns.editor.export.copy_json"), b -> {
                     var json = new TemplateParser().toJson(
                             Template.Meta.placeholder(),
                             roadSign,
@@ -184,14 +184,17 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                     );
                     var string = GSON.toJson(json);
                     GuiUtils.copyToClipboard(string);
+                    statusWidget.setMessage(Component.translatable("clicksigns.editor.export.copy_json.success"));
                 })
-                .coloredButton(Color.YELLOW, ComponentUtil.translatableWithIcon("💾", "clicksigns.editor.export.save_template"), b -> {
+                .coloredButton(Color.ORANGE, ComponentUtil.translatableWithIcon("💾", "clicksigns.editor.export.save_template"), b -> {
                     ClickSigns.LOCAL_TEMPLATE_MANAGER.saveAsTemplate(
                             Template.Meta.placeholder(),
                             roadSign,
                             true // TODO: Ask
                     );
+                    statusWidget.setMessage(Component.translatable("clicksigns.editor.export.save_template.success"));
                 })
+                .widget(statusWidget)
                 // Lay out in the center of the panel
                 .layout(PANEL_WIDTH / 2, PANEL_PADDING)
                 .compose(this::addRenderableWidget);

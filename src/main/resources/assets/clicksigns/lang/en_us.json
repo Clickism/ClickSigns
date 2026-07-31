@@ -34,7 +34,9 @@
   "clicksigns.editor.tools.remove_elements": "Remove Elements",
 
   "clicksigns.editor.export.copy_json": "Copy JSON",
+  "clicksigns.editor.export.copy_json.success": "Copied to clipboard!",
   "clicksigns.editor.export.save_template": "Save Template",
+  "clicksigns.editor.export.save_template.success": "Saved to templates!",
 
   "clicksigns.editor.symbol.color_replacement": "Color Replacement",
   "clicksigns.editor.symbol.from_color": "Color to Replace",
