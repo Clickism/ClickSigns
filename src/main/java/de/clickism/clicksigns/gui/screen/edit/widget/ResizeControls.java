@@ -5,6 +5,7 @@ import de.clickism.clicksigns.gui.widget.ColoredButton;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
@@ -16,7 +17,6 @@ import static de.clickism.clicksigns.gui.GuiUtils.INACTIVE_ALPHA;
 /**
  * Widget for resize controls around a central widget.
  */
-// TODO: on the 32x32 when you press down it jumps to 32x16 but up goes to 32x24
 public class ResizeControls extends NestedWidget {
     private final AbstractWidget centerWidget;
     private final Consumer<Direction> onResize;
@@ -28,6 +28,7 @@ public class ResizeControls extends NestedWidget {
      * @param centerWidget widget to place the controls around
      * @param onResize     resize callback
      */
+    // TODO: on the 32x32 when you press down it jumps to 32x16 but up goes to 32x24
     public ResizeControls(AbstractWidget centerWidget, Consumer<Direction> onResize, Function<Direction, Boolean> canResize) {
         super(centerWidget.getX(), centerWidget.getY());
         this.centerWidget = centerWidget;

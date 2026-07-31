@@ -13,7 +13,7 @@ import java.util.Comparator;
  * Edit box for a color value that dynamically updates its text color
  * based on the resolved color from a ColorResolver.
  */
-public class ColorBox extends EditBox {
+public class ColorBox extends LazyEditBox {
     private final ColorResolver colorResolver;
 
     public ColorBox(int x, int y, int width, int height, ColorResolver colorResolver) {

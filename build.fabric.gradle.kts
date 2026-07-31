@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT"
+    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -67,10 +67,10 @@ fabricApi {
 
 loom {
     runConfigs.all {
-        ideConfigGenerated(true)
-        runDir = "../../runs/fabric"
-        if (environment == "client") {
-            programArgs("--username=ClickToPlay")
+        generateRunConfig.set(true)
+        runDirectory.set(rootProject.file("runs/fabric"))
+        if (runtimeEnvironment.get() == "client") {
+            programArguments.set(listOf("--username=ClickToPlay"))
         }
     }
 }
