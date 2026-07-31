@@ -201,6 +201,7 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                 .compose(this::addRenderableWidget);
 
         // Element panel
+        // TODO: Use borders instead
         var elementPanel = new PanelWidget(width - PANEL_WIDTH, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
         addRenderableWidget(elementPanel);
 

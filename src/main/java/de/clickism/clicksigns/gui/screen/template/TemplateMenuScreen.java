@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.function.Consumer;
 
 public class TemplateMenuScreen extends BaseScreen {
@@ -34,10 +35,12 @@ public class TemplateMenuScreen extends BaseScreen {
         boolean showingLocal = false;
 
         // Panel
-        var panel = new PanelWidget(0, 0, this.width, marginTop);
+        var backgroundColor = new Color(0, 0, 0, 150).getRGB();
+        var outlineColor = new Color(255, 255, 255, 100).getRGB();
+        var panel = new PanelWidget(0, 0, this.width, marginTop, backgroundColor, outlineColor);
+        panel.onlyBottomBorder();
         addRenderableWidget(panel);
-
-        // Local and Resource buttons
+        // TODO: Local and Resource buttons
 
         // Preview
         var preview = signWidget();

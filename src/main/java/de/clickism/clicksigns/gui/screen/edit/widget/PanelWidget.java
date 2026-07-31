@@ -14,6 +14,11 @@ public class PanelWidget extends AbstractWidget {
     private final int backgroundColor;
     private final int outlineColor;
 
+    private boolean leftBorder = true;
+    private boolean rightBorder = true;
+    private boolean topBorder = true;
+    private boolean bottomBorder = true;
+
     public PanelWidget(int x, int y, int width, int height) {
         this(x, y, width, height, BACKGROUND_COLOR, OUTLINE_COLOR);
     }
@@ -24,10 +29,37 @@ public class PanelWidget extends AbstractWidget {
         this.outlineColor = outlineColor;
     }
 
+    public void borders(boolean left, boolean right, boolean top, boolean bottom) {
+        this.leftBorder = left;
+        this.rightBorder = right;
+        this.topBorder = top;
+        this.bottomBorder = bottom;
+    }
+
+    public void onlyBottomBorder() {
+        this.borders(false, false, false, true);
+    }
+
+    public void onlyTopBorder() {
+        this.borders(false, false, true, false);
+    }
+
+    public void onlyLeftBorder() {
+        this.borders(true, false, false, false);
+    }
+
+    public void onlyRightBorder() {
+        this.borders(false, true, false, false);
+    }
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, backgroundColor);
-        guiGraphics.renderOutline(getX(), getY(), width, height, outlineColor);
+
+        if (leftBorder) guiGraphics.fill(getX(), getY(), getX() + 1, getY() + height, outlineColor);
+        if (rightBorder) guiGraphics.fill(getX() + width - 1, getY(), getX() + width, getY() + height, outlineColor);
+        if (topBorder) guiGraphics.fill(getX(), getY(), getX() + width, getY() + 1, outlineColor);
+        if (bottomBorder) guiGraphics.fill(getX(), getY() + height - 1, getX() + width, getY() + height, outlineColor);
     }
 
     @Override
