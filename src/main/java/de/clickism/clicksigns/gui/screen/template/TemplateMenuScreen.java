@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.gui.screen.template;
 
 import de.clickism.clicksigns.gui.screen.BaseScreen;
+import de.clickism.clicksigns.gui.screen.edit.widget.PanelWidget;
 import de.clickism.clicksigns.gui.screen.template.widget.TemplateList;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
@@ -30,23 +31,36 @@ public class TemplateMenuScreen extends BaseScreen {
         int marginTop = 40;
         var listHeight = this.height - marginTop;
 
+        boolean showingLocal = false;
+
+        // Panel
+        var panel = new PanelWidget(0, 0, this.width, marginTop);
+        addRenderableWidget(panel);
+
+        // Local and Resource buttons
+
         // Preview
         var preview = signWidget();
         addRenderableWidget(preview);
 
+        int gap = 8;
         var layoutX = listWidth + 10;
-        var layoutY = marginTop;
+        var layoutY = marginTop + gap;
 
         var layout = LinearLayout.vertical()
-                .padding(8)
+                .padding(gap)
                 .add(preview);
         layout.layout(layoutX, layoutY);
         // List
         var list = new TemplateList(0, marginTop, listWidth, listHeight, (template) -> {
             this.selectedTemplate = template;
+            // Reset layout to recalculate size
+            layout.layout(layoutX, layoutY);
             // Update preview
             preview.roadSign(template.build());
-            layout.layout(layoutX, layoutY);
+            var offsetX = layoutX - preview.minX();
+            var offsetY = layoutY - preview.minY();
+            layout.layout(layoutX + offsetX, layoutY + offsetY);
         });
         addRenderableWidget(list);
 

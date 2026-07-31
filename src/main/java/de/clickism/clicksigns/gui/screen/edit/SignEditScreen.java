@@ -187,10 +187,11 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                     statusWidget.setMessage(Component.translatable("clicksigns.editor.export.copy_json.success"));
                 })
                 .coloredButton(Color.ORANGE, ComponentUtil.translatableWithIcon("💾", "clicksigns.editor.export.save_template"), b -> {
+                    // TODO: Separate Menu and ask for name, desc and author, then save as template
                     ClickSigns.LOCAL_TEMPLATE_MANAGER.saveAsTemplate(
                             Template.Meta.placeholder(),
                             roadSign,
-                            true // TODO: Ask
+                            true
                     );
                     statusWidget.setMessage(Component.translatable("clicksigns.editor.export.save_template.success"));
                 })

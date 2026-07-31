@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.function.Consumer;
 
-// TODO: Fix misaligned and overlapping when plates on left side of sign
 public class TemplateList extends VerticalScrollContainer {
     private final Consumer<Template> onTemplateSelected;
     private @Nullable Template selectedTemplate;
