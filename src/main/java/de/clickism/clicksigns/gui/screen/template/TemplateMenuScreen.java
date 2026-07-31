@@ -45,7 +45,7 @@ public class TemplateMenuScreen extends BaseScreen {
         var list = new TemplateList(0, marginTop, listWidth, listHeight, (template) -> {
             this.selectedTemplate = template;
             // Update preview
-            preview.roadSign(template.buildDefault());
+            preview.roadSign(template.build());
             layout.layout(layoutX, layoutY);
         });
         addRenderableWidget(list);
@@ -57,7 +57,7 @@ public class TemplateMenuScreen extends BaseScreen {
     }
 
     private SignWidget signWidget() {
-        var roadSign = selectedTemplate != null ? selectedTemplate.buildDefault() : null;
+        var roadSign = selectedTemplate != null ? selectedTemplate.build() : null;
         var preview = new SignWidget(0, 0, roadSign,
                 // No outline
                 (anchorX, anchorY, element, sign, parent) ->

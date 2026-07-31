@@ -1,32 +1,33 @@
 {
-  "type": "fixed",
   "meta": {
     "name": "Half Street",
     "description": "A small street sign",
     "author": "Clickism"
   },
-  "width": 32,
-  "height": 10,
-  "front": "clicksigns:signs/tilesets/default/white.png",
-  "back": "clicksigns:signs/tilesets/backs/back.png",
-  "textVariants": [
-    "#default"
-  ],
-  "elements": [
-    {
-      "type": "symbol",
-      "symbol": "clicksigns:signs/symbols/arrows/right_curvy.png",
-      "position": {
-        "x": 5,
-        "y": 5
+  "sign": {
+    "width": 32,
+    "height": 10,
+    "front": "clicksigns:signs/tilesets/default/white.png",
+    "back": "clicksigns:signs/tilesets/backs/back.png",
+    "textVariants": [
+      "#default"
+    ],
+    "elements": [
+      {
+        "type": "symbol",
+        "symbol": "clicksigns:signs/symbols/arrows/right_curvy.png",
+        "position": {
+          "x": 5,
+          "y": 5
+        }
+      },
+      {
+        "type": "text",
+        "position": {
+          "x": 10,
+          "y": 3
+        }
       }
-    },
-    {
-      "type": "text",
-      "position": {
-        "x": 10,
-        "y": 3
-      }
-    }
-  ]
+    ]
+  }
 }

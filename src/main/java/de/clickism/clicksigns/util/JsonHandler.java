@@ -70,6 +70,14 @@ public interface JsonHandler {
         }
     }
 
+    default JsonObject toJsonObject(Object obj) {
+        try {
+            return GSON.toJsonTree(obj).getAsJsonObject();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert object to JSON: " + obj, e);
+        }
+    }
+
     /**
      * Gets the "type" field from a JSON object.
      *

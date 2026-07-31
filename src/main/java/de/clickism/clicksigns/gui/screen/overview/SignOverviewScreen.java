@@ -124,7 +124,7 @@ public class SignOverviewScreen extends BaseScreen {
         return Button.builder(title, button -> {
                     GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                         // Change template
-                        this.roadSign = template.buildDefault();
+                        this.roadSign = template.build();
                         this.rebuildWithoutReading();
                     }));
                 })
