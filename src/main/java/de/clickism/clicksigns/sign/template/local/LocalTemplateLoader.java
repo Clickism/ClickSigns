@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.template.local;
 
 import com.google.gson.JsonObject;
-import de.clickism.clicksigns.sign.reload.TemplateListener;
+import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.JsonHandler;
@@ -26,16 +26,14 @@ public class LocalTemplateLoader implements JsonHandler {
 
     public void processAll(BiConsumer<Path, Template> consumer) throws IOException {
         try (var stream = Files.walk(root)) {
-            stream
-                    .filter(path -> path.toString().endsWith(TEMPLATE_EXTENSION))
-                    .forEach(path -> {
-                        try {
-                            var template = loadTemplate(path);
-                            consumer.accept(path, template);
-                        } catch (IOException e) {
-                            throw new RuntimeException("Failed to load template from path: " + path, e);
-                        }
-                    });
+            stream.filter(path -> path.toString().endsWith(TEMPLATE_EXTENSION)).forEach(path -> {
+                try {
+                    var template = loadTemplate(path);
+                    consumer.accept(path, template);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to load template from path: " + path, e);
+                }
+            });
         }
     }
 
@@ -45,13 +43,19 @@ public class LocalTemplateLoader implements JsonHandler {
         return TEMPLATE_PARSER.parse(jsonObject, location, null);
     }
 
+    public void saveAsTemplate(Path path, Template.Meta meta, RoadSign sign, boolean includeTexts) {
+        try {
+            var jsonObject = TEMPLATE_PARSER.toJson(meta, sign, includeTexts);
+            Files.createDirectories(path.getParent());
+            Files.writeString(path, GSON.toJson(jsonObject));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save template to path: " + path, e);
+        }
+    }
+
     private ResourceLocation pathToResourceLocation(Path path) {
         var relative = root.relativize(path);
-        var name = relative.toString()
-                .toLowerCase(Locale.ROOT)
-                .replace("\\", "/")
-                .replace(TEMPLATE_EXTENSION, "")
-                .replaceAll("[^a-z0-9/._-]", "_");
+        var name = relative.toString().toLowerCase(Locale.ROOT).replace("\\", "/").replace(TEMPLATE_EXTENSION, "").replaceAll("[^a-z0-9/._-]", "_");
         try {
             return new ResourceLocation("local", name);
         } catch (Exception e) {

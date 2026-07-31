@@ -1,11 +1,13 @@
 package de.clickism.clicksigns.sign.template.local;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.Minecraft;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,5 +42,19 @@ public class LocalTemplateManager {
 
     public Collection<Template> templates() {
         return templates.values();
+    }
+
+    public void saveAsTemplate(Template.Meta meta, RoadSign sign, boolean includeTexts) {
+        var path = root.resolve(meta.name().toLowerCase() + ".template.json");
+        int counter = 1;
+        while (path.toFile().exists()) {
+            path = root.resolve(meta.name().toLowerCase() + "_" + counter + ".template.json");
+            counter++;
+        }
+        saveAsTemplate(path, meta, sign, includeTexts);
+    }
+
+    public void saveAsTemplate(Path path, Template.Meta meta, RoadSign sign, boolean includeTexts) {
+        loader.saveAsTemplate(path, meta, sign, includeTexts);
     }
 }

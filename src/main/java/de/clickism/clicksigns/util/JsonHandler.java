@@ -17,6 +17,7 @@ public interface JsonHandler {
      */
     Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .setPrettyPrinting()
             .create();
 
     /**
