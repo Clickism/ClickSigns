@@ -40,7 +40,7 @@ public record Template(
      */
     public record Meta(
             String name,
-            String description,
+            @Nullable String description,
             @Nullable String author
     ) {
         /**

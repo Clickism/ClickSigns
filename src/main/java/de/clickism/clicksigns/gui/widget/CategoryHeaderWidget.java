@@ -17,7 +17,14 @@ public class CategoryHeaderWidget extends StringWidget {
     }
 
     public CategoryHeaderWidget(int width, int height, Component text) {
-        super(0, 0, width, height, text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE), GuiUtils.font());
+        this(width, height, text, true);
+    }
+
+    public CategoryHeaderWidget(int width, int height, Component text, boolean style) {
+        super(0, 0, width, height, style
+                ? text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
+                : text,
+                GuiUtils.font());
     }
 
     @Override

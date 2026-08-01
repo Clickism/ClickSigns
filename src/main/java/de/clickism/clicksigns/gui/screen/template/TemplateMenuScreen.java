@@ -26,8 +26,9 @@ import java.util.function.Consumer;
 public class TemplateMenuScreen extends BaseScreen {
     private final Consumer<Template> onTemplateChanged;
     private @Nullable Template selectedTemplate;
-    private Button deleteButton;
     private boolean showingLocal = false;
+
+    // TODO: Maybe add image view for templates
 
     public TemplateMenuScreen(@Nullable Screen parent, Consumer<Template> onTemplateChanged) {
         super(parent);
@@ -82,7 +83,7 @@ public class TemplateMenuScreen extends BaseScreen {
         layout.layout(layoutX, layoutY);
 
         // Info area
-        var templateInfo = new TemplateInfo(0, 0);
+        var templateInfo = new TemplateInfo(0, 0, halfWidth() - gap * 2);
         templateInfo.setX(layoutX);
         templateInfo.setY(preview.getY() + preview.getHeight() + gap);
         templateInfo.template(selectedTemplate);

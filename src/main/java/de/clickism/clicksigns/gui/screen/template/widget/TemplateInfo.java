@@ -12,8 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public class TemplateInfo extends NestedWidget {
-    public TemplateInfo(int x, int y) {
+    private final int maxWidth;
+
+    public TemplateInfo(int x, int y, int maxWidth) {
         super(x, y);
+        this.maxWidth = maxWidth;
     }
 
     public void template(@Nullable Template template) {
@@ -32,14 +35,24 @@ public class TemplateInfo extends NestedWidget {
         var meta = template.meta();
         var layout = LinearLayout.vertical()
                 .padding(4);
-        var name = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.name"), Component.literal(meta.name()));
-        var description = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.description"), Component.literal(meta.description()));
-        var author = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.author"), Component.literal(meta.author()));
-        layout.add(name)
-                .add(description)
-                .add(author);
+        var name = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.name"), Component.literal(meta.name()), maxWidth);
+        layout.add(name);
+        addChild(name);
+
+        if (meta.description() != null && !meta.description().isEmpty()) {
+            var description = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.description"), Component.literal(meta.description()), maxWidth);
+            layout.add(description);
+            addChild(description);
+        }
+
+        if (meta.author() != null && !meta.author().isEmpty()) {
+            var author = new FieldWidget(x, y, Component.translatable("clicksigns.template.info.author"), Component.literal(meta.author()), maxWidth);
+            layout.add(author);
+            addChild(author);
+        }
+
         layout.layout(x, y);
 
-        addChildrenAndUpdate(name, author, description);
+        updateSizeAndPosition();
     }
 }

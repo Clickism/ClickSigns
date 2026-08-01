@@ -29,14 +29,15 @@
   "clicksigns.editor.elements.add_symbol": "Add Symbol",
   "clicksigns.editor.elements.add_text": "Add Text",
   "clicksigns.editor.elements.add_plate": "Add Plate",
+  "clicksigns.editor.elements.remove_element": "Remove Elements",
 
   "clicksigns.editor.tools.reset_texts": "Reset Texts",
   "clicksigns.editor.tools.remove_element": "Remove Element",
-  "clicksigns.editor.tools.remove_elements": "Remove Elements",
 
-  "clicksigns.editor.export.copy_json": "Copy JSON",
+  "clicksigns.editor.export_template": "Export Template",
+  "clicksigns.editor.export.copy_json": "Copy Template JSON",
   "clicksigns.editor.export.copy_json.success": "Copied to clipboard!",
-  "clicksigns.editor.export.save_template": "Save Template",
+  "clicksigns.editor.export.save_template": "Save to Local Templates",
   "clicksigns.editor.export.save_template.success": "Saved to templates!",
 
   "clicksigns.editor.symbol.color_replacement": "Color Replacement",
@@ -58,6 +59,7 @@
   "clicksigns.template.info.none": "No template selected",
   "clicksigns.template.apply": "Apply Template",
   "clicksigns.template.delete": "Delete Template",
+  "clicksigns.template.include_texts": "Include Written Texts",
 
   "clicksigns.template.category.local": "Local Templates",
   "clicksigns.template.category.local.tooltip": "Local templates are stored on your computer (.minecraft/sign_templates). You can save your signs as templates in the editor and find them here.",
