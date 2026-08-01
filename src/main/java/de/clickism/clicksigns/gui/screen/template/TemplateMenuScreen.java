@@ -29,6 +29,7 @@ public class TemplateMenuScreen extends BaseScreen {
     private boolean showingLocal = false;
 
     // TODO: Maybe add image view for templates
+    // TODO: Add option to open template folder in file explorer
 
     public TemplateMenuScreen(@Nullable Screen parent, Consumer<Template> onTemplateChanged) {
         super(parent);
