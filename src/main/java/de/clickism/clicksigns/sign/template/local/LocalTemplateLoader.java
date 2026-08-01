@@ -43,6 +43,10 @@ public class LocalTemplateLoader implements JsonHandler {
         return TEMPLATE_PARSER.parse(jsonObject, location, null);
     }
 
+    public void deleteTemplate(Path path) throws IOException {
+        Files.deleteIfExists(path);
+    }
+
     public void saveAsTemplate(Path path, Template.Meta meta, RoadSign sign, boolean includeTexts) {
         try {
             var jsonObject = TEMPLATE_PARSER.toJson(meta, sign, includeTexts);

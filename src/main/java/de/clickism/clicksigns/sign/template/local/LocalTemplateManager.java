@@ -44,6 +44,26 @@ public class LocalTemplateManager {
         return templates.values();
     }
 
+    public boolean isLocal(Template template) {
+        return templates.containsValue(template);
+    }
+
+    public void deleteTemplate(Template template) {
+        var path = templates.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(template))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+        if (path != null) {
+            try {
+                loader.deleteTemplate(path);
+                templates.remove(path);
+            } catch (Exception e) {
+                ClickSigns.LOGGER.error("Failed to delete local template: {}", template.meta().name(), e);
+            }
+        }
+    }
+
     public void saveAsTemplate(Template.Meta meta, RoadSign sign, boolean includeTexts) {
         var path = root.resolve(meta.name().toLowerCase() + ".template.json");
         int counter = 1;
