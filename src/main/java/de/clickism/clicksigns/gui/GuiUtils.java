@@ -231,4 +231,14 @@ public class GuiUtils {
         }
         return null;
     }
+
+    /**
+     * Copies the given text to the system clipboard.
+     *
+     * @param text the text to copy
+     */
+    public static void copyToClipboard(String text) {
+        var keyboard = Minecraft.getInstance().keyboardHandler;
+        keyboard.setClipboard(text);
+    }
 }

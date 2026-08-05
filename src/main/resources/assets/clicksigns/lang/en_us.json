@@ -1,6 +1,6 @@
 {
   "clicksigns.text.confirm": "Confirm",
-  "clicksigns.text.change_template": "Change Template",
+  "clicksigns.text.change_template": "Templates",
   "clicksigns.text.edit": "Edit",
   "clicksigns.text.alignment": "Alignment",
 
@@ -23,14 +23,22 @@
   "clicksigns.editor.elements": "Elements",
   "clicksigns.editor.tools": "Tools",
   "clicksigns.editor.other": "Other",
+  "clicksigns.editor.export": "Export",
   "clicksigns.editor.no_element_selected": "No Element Selected",
 
   "clicksigns.editor.elements.add_symbol": "Add Symbol",
   "clicksigns.editor.elements.add_text": "Add Text",
   "clicksigns.editor.elements.add_plate": "Add Plate",
+  "clicksigns.editor.elements.remove_element": "Remove Elements",
 
   "clicksigns.editor.tools.reset_texts": "Reset Texts",
-  "clicksigns.editor.tools.remove_elements": "Remove Elements",
+  "clicksigns.editor.tools.remove_element": "Remove Element",
+
+  "clicksigns.editor.export_template": "Export Template",
+  "clicksigns.editor.export.copy_json": "Copy Template JSON",
+  "clicksigns.editor.export.copy_json.success": "Copied to clipboard!",
+  "clicksigns.editor.export.save_template": "Save to Local Templates",
+  "clicksigns.editor.export.save_template.success": "Saved to templates!",
 
   "clicksigns.editor.symbol.color_replacement": "Color Replacement",
   "clicksigns.editor.symbol.from_color": "Color to Replace",
@@ -41,6 +49,22 @@
   "clicksigns.editor.text.background_color": "Background Color",
   "clicksigns.editor.text.scale": "Scale",
 
+  "clicksigns.template.placeholder.name": "Name",
+  "clicksigns.template.placeholder.description": "Description",
+  "clicksigns.template.placeholder.author": "Author",
+
+  "clicksigns.template.info.name": "Name",
+  "clicksigns.template.info.description": "Description",
+  "clicksigns.template.info.author": "Author",
+  "clicksigns.template.info.none": "No template selected",
+  "clicksigns.template.apply": "Apply Template",
+  "clicksigns.template.delete": "Delete Template",
+  "clicksigns.template.include_texts": "Include Written Texts",
+
+  "clicksigns.template.category.local": "Local Templates",
+  "clicksigns.template.category.local.tooltip": "Local templates are stored on your computer (.minecraft/sign_templates). You can save your signs as templates in the editor and find them here.",
+  "clicksigns.template.category.resource": "Resource Templates",
+    "clicksigns.template.category.resource.tooltip": "Resource templates are loaded from resource packs or are built into the mod.",
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"

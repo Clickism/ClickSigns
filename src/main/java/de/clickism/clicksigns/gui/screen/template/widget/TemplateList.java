@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.screen.template.widget;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.widget.CategoryHeaderWidget;
 import de.clickism.clicksigns.gui.util.NestedWidget;
@@ -26,18 +27,29 @@ public class TemplateList extends VerticalScrollContainer {
      * @param width  the width of the container
      * @param height the height of the container
      */
-    public TemplateList(int x, int y, int width, int height, Consumer<Template> onTemplateSelected) {
+    public TemplateList(int x, int y, int width, int height, Consumer<Template> onTemplateSelected, boolean showingLocal) {
         super(x, y, width, height);
         this.onTemplateSelected = onTemplateSelected;
-        // Add templates
-        // TODO: Use real categories instead of repeating the same ones, used currently for testing
-        // TODO: Add uncategorized symbols at the end
-        SignRegistries.TEMPLATES.allCategories().forEach(category -> {
-            addChild(new CategoryHeaderWidget(this.width, category.name()));
-            category.resolveEntries().forEach(template -> {
-                addChild(new TemplateEntry(template));
+        // Add resource templates
+        if (showingLocal) {
+            // Add local templates
+            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload local templates to ensure they are up to date
+            var localTemplates = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates();
+            if (!localTemplates.isEmpty()) {
+                addChild(new CategoryHeaderWidget(this.width, Component.translatable("clicksigns.template.category.local")));
+                localTemplates.forEach(template -> {
+                    addChild(new TemplateEntry(template));
+                });
+            }
+        } else {
+            // TODO: Add uncategorized symbols at the end
+            SignRegistries.RESOURCE_TEMPLATES.allCategories().forEach(category -> {
+                addChild(new CategoryHeaderWidget(this.width, category.name()));
+                category.resolveEntries().forEach(template -> {
+                    addChild(new TemplateEntry(template));
+                });
             });
-        });
+        }
     }
 
     @Override

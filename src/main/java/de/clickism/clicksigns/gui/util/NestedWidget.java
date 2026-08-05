@@ -72,6 +72,18 @@ public abstract class NestedWidget extends AbstractWidget {
     }
 
     /**
+     * Adds multiple child widgets to this widget.
+     *
+     * @param widgets The widgets to add as children.
+     */
+    protected void addChildrenAndUpdate(AbstractWidget... widgets) {
+        for (var widget : widgets) {
+            addChild(widget);
+        }
+        updateSizeAndPosition();
+    }
+
+    /**
      * Removes all child widgets from this widget.
      */
     protected void clearChildren() {

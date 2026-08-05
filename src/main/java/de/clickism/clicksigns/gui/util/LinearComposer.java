@@ -30,6 +30,11 @@ public class LinearComposer {
         return this;
     }
 
+    public LinearComposer header(Component header, boolean style) {
+        layout.add(new CategoryHeaderWidget(this.width, 16, header, style));
+        return this;
+    }
+
     public LinearComposer text(Component text) {
         layout.add(new StringWidget(0, 0, width, 16, text, GuiUtils.font()));
         return this;

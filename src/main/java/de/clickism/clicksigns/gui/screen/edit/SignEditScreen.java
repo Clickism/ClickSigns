@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
@@ -12,7 +13,10 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.template.Template;
+import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.ComponentUtil;
+import de.clickism.clicksigns.util.JsonHandler;
 import de.clickism.clicksigns.util.Size;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -34,7 +38,7 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
  * Screen for editing a road sign in an advanced way.
  * Supports resizing, adding/removing/editing elements, and changing textures.
  */
-public class SignEditScreen extends BaseScreen {
+public class SignEditScreen extends BaseScreen implements JsonHandler {
     private static final int PANEL_WIDTH = 120;
     private static final int PANEL_PADDING = 8;
     private static final int MIN_SIGN_SIZE = 8;
@@ -169,11 +173,16 @@ public class SignEditScreen extends BaseScreen {
                 .coloredButton(Color.RED, ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.tools.remove_elements"), b -> {
                     this.roadSign(roadSign.withElements(List.of()));
                 })
+                .header(Component.translatable("clicksigns.editor.export"))
+                .coloredButton(Color.CYAN, ComponentUtil.translatableWithIcon("📤", "clicksigns.editor.export_template"), b -> {
+                    GuiUtils.openScreen(new TemplateExportScreen(this, roadSign));
+                })
                 // Lay out in the center of the panel
                 .layout(PANEL_WIDTH / 2, PANEL_PADDING)
                 .compose(this::addRenderableWidget);
 
         // Element panel
+        // TODO: Use borders instead
         var elementPanel = new PanelWidget(width - PANEL_WIDTH, -PANEL_PADDING, PANEL_WIDTH + PANEL_PADDING, height + PANEL_PADDING * 2);
         addRenderableWidget(elementPanel);
 

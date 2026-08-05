@@ -13,7 +13,7 @@ import java.util.Map;
  * Tile set reload listener.
  */
 public class TileSetListener extends CategorizedReloadListener<TileSetListener.CategoryJson> {
-    private static final String TILESET_EXTENSION = ".tileset.json";
+    public static final String TILESET_EXTENSION = ".tileset.json";
     private static final String TILESET_DIRECTORY = "tilesets";
 
     /**

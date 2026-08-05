@@ -17,6 +17,7 @@ public interface JsonHandler {
      */
     Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .setPrettyPrinting()
             .create();
 
     /**
@@ -67,6 +68,14 @@ public interface JsonHandler {
         } catch (Exception e) {
             ClickSigns.LOGGER.error("Failed to parse JSON object: " + json.toString(), e);
             return null;
+        }
+    }
+
+    default JsonObject toJsonObject(Object obj) {
+        try {
+            return GSON.toJsonTree(obj).getAsJsonObject();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert object to JSON: " + obj, e);
         }
     }
 
