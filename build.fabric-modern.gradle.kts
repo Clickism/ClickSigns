@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -28,9 +28,9 @@ sourceSets {
 
 java {
 
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 base {
@@ -39,9 +39,8 @@ base {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 }
 
 tasks.processResources {
@@ -68,10 +67,10 @@ fabricApi {
 
 loom {
     runConfigs.all {
-        generateRunConfig.set(true)
-        runDirectory.set(rootProject.file("runs/fabric"))
-        if (runtimeEnvironment.get() == "client") {
-            programArguments.set(listOf("--username=ClickToPlay"))
+        ideConfigGenerated(true)
+        runDir = "../../runs/fabric"
+        if (environment == "client") {
+            programArgs("--username=ClickToPlay")
         }
     }
 }

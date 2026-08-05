@@ -14,6 +14,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+//? if >= 26.1 {
+/*
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.TagValueInput;
+*///?}
 
 /**
  * Road sign block entity
@@ -63,21 +70,7 @@ public class RoadSignBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    //Inverse comma syntax is pain
-    @Override
-    public @NotNull CompoundTag getUpdateTag(
-            //? if >= 1.21.1
-            HolderLookup.Provider provider
-    ) {
-        var tag = new CompoundTag();
-        this.saveAdditional(
-                tag
-                //? if >= 1.21.1
-                , provider
-        );
-        return tag;
-    }
-
+    //? if < 26.1 {
     @Override
     protected void saveAdditional(
             CompoundTag tag
@@ -94,7 +87,48 @@ public class RoadSignBlockEntity extends BlockEntity {
         RoadSign.NBT_WRITER.write(writer, this.roadSign);
     }
 
-    //? if < 1.21.1 {
+    @Override
+    public @NotNull CompoundTag getUpdateTag(
+            //? if >= 1.21.1
+            HolderLookup.Provider provider
+    ) {
+        var tag = new CompoundTag();
+        this.saveAdditional(
+                tag
+                //? if >= 1.21.1
+                , provider
+        );
+        return tag;
+    }
+    //? } elif >= 26.1 {
+    /*@Override
+    public @NotNull CompoundTag getUpdateTag(
+            //? if >= 1.21.1
+            HolderLookup.Provider provider
+    ) {
+        var tag = new CompoundTag();
+        this.saveAdditional(
+                tag
+                //? if >= 1.21.1
+                , provider
+        );
+        return tag;
+    }
+
+    @Override
+    protected void saveAdditional(
+            final ValueOutput output
+    ) {
+        super.saveAdditional(
+                output
+        );
+        if (this.roadSign == null) return;
+        var writer = new NbtReaderWriterImpl(output);
+        RoadSign.NBT_WRITER.write(writer, this.roadSign);
+    }
+    *///?}
+
+    //? if < 1.21 {
     /*@Override
     public void load(CompoundTag tag) {
         super.load(tag);
