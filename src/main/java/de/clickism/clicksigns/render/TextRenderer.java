@@ -14,6 +14,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * Text renderer utility class
  */
+// TODO: Fix text and outline rendering when scaling is high
 public class TextRenderer extends Renderer {
     /**
      * The scale multiplier used to render text

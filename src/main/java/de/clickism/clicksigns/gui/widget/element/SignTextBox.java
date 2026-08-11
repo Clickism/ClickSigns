@@ -152,7 +152,7 @@ public class SignTextBox extends AbstractTextBox {
         // Actual padding should be 2, but 1 makes it so text is slightly higher as opposed to
         // slightly lower, so looks more aligned this way
         float mainLineHeight = font.lineHeight - 1;
-        return (int) (getY() + height / 2f - mainLineHeight * renderScale / 2f);
+        return Mth.floor(getY() + (height / renderScale - mainLineHeight) / 2f);
     }
 
     private void withScale(GuiGraphics guiGraphics, float scaleX, float scaleY, Runnable runnable) {
