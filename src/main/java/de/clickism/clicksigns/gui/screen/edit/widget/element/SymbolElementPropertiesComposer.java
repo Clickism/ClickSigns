@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.gui.screen.edit.widget;
+package de.clickism.clicksigns.gui.screen.edit.widget.element;
 
 import de.clickism.clicksigns.gui.screen.overview.widget.OverviewSymbolWidget;
 import de.clickism.clicksigns.gui.util.LinearComposer;

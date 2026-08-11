@@ -1,5 +1,7 @@
-package de.clickism.clicksigns.gui.screen.edit.widget;
+package de.clickism.clicksigns.gui.screen.edit.widget.element;
 
+import de.clickism.clicksigns.gui.screen.edit.widget.SizeControls;
+import de.clickism.clicksigns.gui.screen.edit.widget.TexturePropertiesWidget;
 import de.clickism.clicksigns.gui.util.LinearComposer;
 import de.clickism.clicksigns.gui.widget.AlignmentWidget;
 import de.clickism.clicksigns.sign.ColorResolver;

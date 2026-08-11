@@ -1,9 +1,11 @@
 package de.clickism.clicksigns.gui.screen.edit;
 
-import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.BaseScreen;
 import de.clickism.clicksigns.gui.screen.edit.widget.*;
+import de.clickism.clicksigns.gui.screen.edit.widget.element.PlateElementPropertiesComposer;
+import de.clickism.clicksigns.gui.screen.edit.widget.element.SymbolElementPropertiesComposer;
+import de.clickism.clicksigns.gui.screen.edit.widget.element.TextElementPropertiesComposer;
 import de.clickism.clicksigns.gui.util.LinearLayout;
 import de.clickism.clicksigns.gui.widget.SignWidget;
 import de.clickism.clicksigns.registry.SignRegistries;
@@ -13,8 +15,6 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.template.Template;
-import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.JsonHandler;
 import de.clickism.clicksigns.util.Size;
