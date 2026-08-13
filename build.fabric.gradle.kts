@@ -11,6 +11,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 sourceSets {
@@ -41,6 +42,7 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    modImplementation("de.clickism:clickui:0.1")
 }
 
 tasks.processResources {
