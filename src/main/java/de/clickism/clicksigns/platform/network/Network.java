@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.platform.network;
 
+import de.clickism.clicksigns.ClickSigns;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -48,8 +49,14 @@ public abstract class Network {
      */
     @SuppressWarnings("unchecked")
     protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
-        var type = (PacketType<T>) packet.type();
+        var type = (PacketType<T>) packet
+                //? if < 1.21.1
+                /* .type();*/
+                //? if >= 1.21.1
+                .subtype();
+
         server.execute(() -> type.serverHandler().handle(packet, player));
+        ClickSigns.LOGGER.info("Succeeded at handling server");
     }
 
     /**
@@ -60,8 +67,14 @@ public abstract class Network {
      */
     @SuppressWarnings("unchecked")
     protected static <T extends Packet> void handleClient(T packet) {
-        PacketType<T> type = (PacketType<T>) packet.type();
+
+        PacketType<T> type = (PacketType<T>) packet
+                //? if < 1.21.1
+                /* .type(); */
+                //? if >= 1.21.1
+                .subtype();
         type.clientHandler().handle(packet);
+        ClickSigns.LOGGER.info("Succeeded at handling client");
     }
 
     /**
@@ -75,10 +88,17 @@ public abstract class Network {
     protected static <T extends Packet> FriendlyByteBuf writePacket(T packet) {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         // Write packet id
-        var type = (PacketType<T>) packet.type();
+        var type = (PacketType<T>) packet
+                //? if < 1.21.1
+                /*.type(); */
+                //? if >= 1.21.1
+                .subtype();
         buf.writeResourceLocation(type.id());
         // Write packet data
-        type.writer().accept(buf, packet);
+        //? if < 1.21.1
+        /*type.writer().accept(buf, packet);*/
+        //? if >= 1.21.1
+        type.packet().encode(buf, packet);
         return buf;
     }
 
@@ -96,6 +116,9 @@ public abstract class Network {
             throw new IllegalStateException("Received packet with unknown id: " + id);
         }
         // Read packet data
-        return type.reader().apply(buf);
+        //? if < 1.21.1
+        /*return type.reader().apply(buf);*/
+        //? if >= 1.21.1
+        return type.packet().decode(buf);
     }
 }

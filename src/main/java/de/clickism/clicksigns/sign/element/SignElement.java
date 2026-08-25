@@ -8,6 +8,8 @@ import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
+//? if >= 1.21.1
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * An element that can be placed on a road sign.
@@ -62,9 +64,62 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      */
     SignElement withPosition(int localX, int localY);
 
-    /**
-     * Writer for packets
-     */
+    //? if >= 1.21.1 {
+    StreamCodec<FriendlyByteBuf, SignElement> PACKET = StreamCodec.of(
+            (buf, element) -> {
+                var type = element.typeKey();
+                buf.writeUtf(type);
+                buf.writeInt(element.localX());
+                buf.writeInt(element.localY());
+                buf.writeInt(element.alignment().ordinal());
+                if (element instanceof TextElement text) {
+                    buf.writeFloat(text.scale());
+                    buf.writeUtf(text.color());
+                    var backgroundColor = text.backgroundColor() != null ? text.backgroundColor() : "";
+                    buf.writeUtf(backgroundColor);
+                    buf.writeUtf(text.text());
+                } else if (element instanceof SymbolElement symbol) {
+                    buf.writeResourceLocation(symbol.symbol().identifier());
+                    TextureSource.PACKET.encode(buf, symbol.symbol().texture());
+                } else if (element instanceof PlateElement plate) {
+                    TextureSource.PACKET.encode(buf, plate.front());
+                    TextureSource.PACKET.encode(buf, plate.back());
+                }
+            },
+            (buf) -> {
+                var type = buf.readUtf();
+                int localX = buf.readInt();
+                int localY = buf.readInt();
+                Alignment alignment = Alignment.values()[buf.readInt()];
+                return switch (type) {
+                    case TextElement.TYPE -> {
+                        var scale = buf.readFloat();
+                        var color = buf.readUtf();
+                        var backgroundColor = buf.readUtf();
+                        if (backgroundColor.isEmpty()) {
+                            backgroundColor = null;
+                        }
+                        var text = buf.readUtf();
+                        yield new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+                    }
+                    case SymbolElement.TYPE -> {
+                        var id = buf.readResourceLocation();
+                        var source = TextureSource.PACKET.decode(buf);
+                        var symbol = SignRegistries.SYMBOLS.get(id).withTexture(source);
+                        yield new SymbolElement(localX, localY, alignment, symbol);
+                    }
+                    case PlateElement.TYPE -> {
+                        var front = TextureSource.PACKET.decode(buf);
+                        var back = TextureSource.PACKET.decode(buf);
+                        yield new PlateElement(localX, localY, alignment, front, back);
+                    }
+                    default -> throw new IllegalArgumentException("Unknown element type: " + type);
+                };
+            }
+    );
+    //? }
+    //? if < 1.21.1 {
+    /*//Writer for packets
     FriendlyByteBuf.Writer<SignElement> PACKET_WRITER = (buf, element) -> {
         var type = element.typeKey();
         buf.writeUtf(type);
@@ -86,9 +141,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         }
     };
 
-    /**
-     * Reader for packets
-     */
+    //Reader for packets
     FriendlyByteBuf.Reader<SignElement> PACKET_READER = (buf) -> {
         var type = buf.readUtf();
         int localX = buf.readInt();
@@ -119,6 +172,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
         };
     };
+    *///? }
 
     /**
      * Nbt writer

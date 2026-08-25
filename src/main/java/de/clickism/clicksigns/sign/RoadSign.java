@@ -12,6 +12,8 @@ import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
+//? if >= 1.21.1
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -202,8 +204,29 @@ public record RoadSign(
     }
 
     /**
-     * Writer for packets
+     * Codec replaces read/write functions past 1.21.1
      */
+    //? if >= 1.21.1 {
+    public static final StreamCodec<FriendlyByteBuf, RoadSign> PACKET = StreamCodec.of(
+            (buf, sign) -> {
+                TextureSource.PACKET.encode(buf, sign.frontSource());
+                TextureSource.PACKET.encode(buf, sign.backSource());
+                buf.writeCollection(sign.elements(), SignElement.PACKET);
+                buf.writeInt(sign.alignment().ordinal());
+                buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
+            },
+            (buf) -> {
+                var front = TextureSource.PACKET.decode(buf);
+                var back = TextureSource.PACKET.decode(buf);
+                var elements = buf.readList(SignElement.PACKET);
+                var alignment = Alignment.values()[buf.readInt()];
+                var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
+                return new RoadSign(front, back, elements, alignment, templateId);
+            }
+    );
+    //? }
+    //? if < 1.21.1 {
+    /*
     public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
         TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
         TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
@@ -212,9 +235,6 @@ public record RoadSign(
         buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
     };
 
-    /**
-     * Reader for packets
-     */
     public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
         var front = TextureSource.PACKET_READER.apply(buf);
         var back = TextureSource.PACKET_READER.apply(buf);
@@ -223,6 +243,7 @@ public record RoadSign(
         var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
         return new RoadSign(front, back, elements, alignment, templateId);
     };
+    *///? }
 
     /**
      * Writer for NBT

@@ -17,11 +17,17 @@ stonecutter {
     create(rootProject) {
         fun version(version: String, vararg loaders: String) {
             loaders.forEach {
-                this.version("$version-$it", version)
-                    .buildscript = "build.$it.gradle.kts"
+                if (stonecutter.eval(version, "<=1.21.1")) {
+                    this.version("$version-$it", version)
+                        .buildscript = "build.$it.gradle.kts"
+                } else {
+                    this.version("$version-$it", version)
+                        .buildscript = "build.$it-modern.gradle.kts"
+                }
             }
         }
         version("1.20.1", "fabric", "forge")
-        vcsVersion = "1.20.1-fabric"
+        version("1.21.1", "fabric", "neoforge")
+        vcsVersion = "1.21.1-fabric"
     }
 }

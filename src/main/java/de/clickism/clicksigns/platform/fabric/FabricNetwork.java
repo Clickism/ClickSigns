@@ -4,6 +4,11 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.network.Network;
 import de.clickism.clicksigns.platform.network.Packet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//? if >= 1.21.1 {
+import de.clickism.clicksigns.network.RoadSignUpdatePacket;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+//? }
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
@@ -24,10 +29,31 @@ public class FabricNetwork extends Network {
     private FabricNetwork() {
         // Singleton class
     }
-
     @Override
     public void register() {
+        //? if >= 1.21.1 {
+        PayloadTypeRegistry.playS2C().register(
+                RoadSignUpdatePacket.TYPE,
+                RoadSignUpdatePacket.SUBTYPE.packet()
+        );
+        PayloadTypeRegistry.playC2S().register(
+                RoadSignUpdatePacket.TYPE,
+                RoadSignUpdatePacket.SUBTYPE.packet()
+        );
         ServerPlayNetworking.registerGlobalReceiver(
+                RoadSignUpdatePacket.TYPE,
+                (payload, context) -> {
+                    handleServer(payload, context.server(), context.player());
+                }
+        );
+        ClientPlayNetworking.registerGlobalReceiver(
+                RoadSignUpdatePacket.TYPE,
+                (payload, context) -> {
+                    handleClient(payload);
+                }
+        );
+        //? } elif < 1.21.1 {
+        /*ServerPlayNetworking.registerGlobalReceiver(
                 CHANNEL,
                 (server, player, handler, buf, responseSender) -> {
                     handleServer(readPacket(buf), server, player);
@@ -39,16 +65,28 @@ public class FabricNetwork extends Network {
                     handleClient(readPacket(buf));
                 }
         );
+        *///?}
     }
 
     @Override
     public void sendToServer(Packet packet) {
-        ClientPlayNetworking.send(CHANNEL, writePacket(packet));
+        ClientPlayNetworking.send(
+                //? if < 1.21.1
+                /*CHANNEL, writePacket(packet)*/
+                //? if >= 1.21.1
+                packet
+        );
     }
 
     @Override
     public void sendToPlayer(ServerPlayer player, Packet packet) {
-        ServerPlayNetworking.send(player, CHANNEL, writePacket(packet));
+        ServerPlayNetworking.send(
+                player,
+                //? if < 1.21.1
+                /*CHANNEL, writePacket(packet)*/
+                //? if >= 1.21.1
+                packet
+        );
     }
 
     @Override

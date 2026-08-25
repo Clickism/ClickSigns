@@ -39,7 +39,7 @@ public class ClickSigns {
     public static void initialize() {
         ClickSignsBlocks.initialize();
         ClickSignsBlockEntityTypes.initialize();
-        PacketRegistry.register(RoadSignUpdatePacket.TYPE);
+        PacketRegistry.register(RoadSignUpdatePacket.SUBTYPE);
         Platform.network().register(); // Register network
         // Local template manager
         LOCAL_TEMPLATE_MANAGER.initialize();

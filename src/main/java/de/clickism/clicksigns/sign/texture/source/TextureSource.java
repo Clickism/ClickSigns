@@ -10,6 +10,8 @@ import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+//? if >= 1.21.1
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Represents a source for a texture, which can be resolved to obtain the actual texture.
@@ -97,9 +99,55 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
     }
 
 
-    /**
-     * Writer for packets
-     */
+    //? if >= 1.21.1 {
+    StreamCodec<FriendlyByteBuf, TextureSource> PACKET = StreamCodec.of(
+            (buf, texture) -> {
+                var type = texture.typeKey();
+                buf.writeUtf(type);
+                if (texture instanceof TiledTextureSource tiled) {
+                    // Tiled texture
+                    buf.writeResourceLocation(tiled.tileSetId());
+                    buf.writeInt(tiled.width());
+                    buf.writeInt(tiled.height());
+                } else if (texture instanceof StaticTextureSource staticTextureSource) {
+                    // Static texture
+                    buf.writeResourceLocation(staticTextureSource.location());
+                } else if (texture instanceof ColorizedTextureSource colorized) {
+                    // Colorized texture
+                    buf.writeResourceLocation(colorized.baseTexture());
+                    buf.writeNullable(colorized.fromColor(), FriendlyByteBuf::writeUtf);
+                    buf.writeUtf(colorized.toColor());
+                } else {
+                    throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
+                }
+            },
+            (buf) -> {
+                var type = buf.readUtf();
+                return switch (type) {
+                    case TiledTextureSource.TYPE -> {
+                        var tileSetId = buf.readResourceLocation();
+                        var pixelWidth = buf.readInt();
+                        var pixelHeight = buf.readInt();
+                        yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
+                    }
+                    case ColorizedTextureSource.TYPE -> {
+                        var baseTexture = buf.readResourceLocation();
+                        var fromColor = buf.readNullable(FriendlyByteBuf::readUtf);
+                        var toColor = buf.readUtf();
+                        yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
+                    }
+                    case StaticTextureSource.TYPE -> {
+                        var location = buf.readResourceLocation();
+                        yield new StaticTextureSource(location);
+                    }
+                    default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
+                };
+            }
+    );
+    //? }
+    //? if < 1.21.1 {
+    /*// Writer for packets
+
     FriendlyByteBuf.Writer<TextureSource> PACKET_WRITER = (buf, texture) -> {
         var type = texture.typeKey();
         buf.writeUtf(type);
@@ -121,9 +169,9 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
         }
     };
 
-    /**
-     * Reader for packets
-     */
+
+     //Reader for packets
+
     FriendlyByteBuf.Reader<TextureSource> PACKET_READER = (buf) -> {
         var type = buf.readUtf();
         return switch (type) {
@@ -146,6 +194,7 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
             default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
         };
     };
+    *///? }
 
     /**
      * Writer for NBT

@@ -111,12 +111,22 @@ public class TextureRenderer extends Renderer {
      */
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
         var isXAxis = renderDirection.getAxis() == Direction.Axis.X;
-        buffer.vertex(pose.pose(), x, y, 0)
+        //? if < 1.21.1 {
+        /*buffer.vertex(pose.pose(), x, y, 0)
                 .color(color)
                 .uv(u, v)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(light)
                 .normal(pose.normal(), isXAxis ? 1 : 0, 0, isXAxis ? 0 : 1)
                 .endVertex();
+        *///? }
+        //? if >= 1.21.1 {
+        buffer.addVertex(pose.pose(), x, y, 0)
+                .setColor(color)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light)
+                .setNormal(pose, isXAxis ? 1 : 0, 0, isXAxis ? 0 : 1);
+        //? }
     }
 }
