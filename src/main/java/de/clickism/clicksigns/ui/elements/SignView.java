@@ -3,13 +3,10 @@ package de.clickism.clicksigns.ui.elements;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clickui.Component;
 import de.clickism.clickui.Element;
 import de.clickism.clickui.reactivity.State;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,25 +40,6 @@ public class SignView extends Component<SignView> {
         return this.elementProviders;
     }
 
-    // TODO: Refactor
-    private Vector2f alignedLocalPos(SignElement element) {
-        // Calculate in sign space
-        float x = element.localX();
-        float y = element.localY();
-        float width = element.signWidth();
-        float height = element.signHeight();
-        // Adjust for center origin
-        var halfWidth = width / 2f;
-        var halfHeight = height / 2f;
-        x -= halfWidth;
-        y -= halfHeight;
-        // Align
-        var offset = element.alignment().offset();
-        x += offset.x * halfWidth;
-        y += offset.y * halfHeight;
-        return new Vector2f(x, y);
-    }
-
     /**
      * Adds the given ui element, and if it implements ElementProvider, adds it to the list of element providers.
      *
@@ -72,13 +50,11 @@ public class SignView extends Component<SignView> {
         if (element instanceof ElementProvider provider) {
             this.elementProviders.add(provider);
             var signElement = provider.element();
-            // Position
-            var pos = alignedLocalPos(signElement);
             // Position in UI space
-            float x = pos.x() * DEFAULT_TEXTURE_RENDER_SCALE;
-            // Y position is inverted, and images render below origin in UI
+            float x = signElement.alignedX() * DEFAULT_TEXTURE_RENDER_SCALE;
+            // Y position is inverted
             float signHeight = this.roadSign.get().height();
-            float y = (signHeight - pos.y() - signElement.signHeight()) * DEFAULT_TEXTURE_RENDER_SCALE;
+            float y = (signHeight - signElement.alignedY() - signElement.signHeight()) * DEFAULT_TEXTURE_RENDER_SCALE;
 
             element.relative((int) x, (int) y);
         }
@@ -103,6 +79,7 @@ public class SignView extends Component<SignView> {
         }
         // Add text elements last to render on top of symbols
         for (var textElement : roadSign.textElements()) {
+            // TODO: Proper text field
             var textField = new SignTextField(textElement).width(20);
             addAndPositionElement(textField);
         }

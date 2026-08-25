@@ -37,12 +37,36 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         return new Size(signWidth(), signHeight());
     }
 
-    default int guiWidth(float guiScale) {
-        return (int) (signWidth() * guiScale);
+    /**
+     * Returns the aligned X coordinate of this element in sign space.
+     *
+     * @return The aligned X coordinate of this element in sign space
+     */
+    default float alignedX() {
+        float x = localX();
+        float width = signWidth();
+        // Center origin
+        x -= width / 2f;
+        // Align
+        var offset = alignment().offset();
+        x += offset.x * (width / 2f);
+        return x;
     }
 
-    default int guiHeight(float guiScale) {
-        return (int) (signHeight() * guiScale);
+    /**
+     * Returns the aligned Y coordinate of this element in sign space.
+     *
+     * @return The aligned Y coordinate of this element in sign space
+     */
+    default float alignedY() {
+        float y = localY();
+        float height = signHeight();
+        // Center origin
+        y -= height / 2f;
+        // Align
+        var offset = alignment().offset();
+        y += offset.y * (height / 2f);
+        return y;
     }
 
     /**
@@ -74,7 +98,9 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         if (element instanceof TextElement text) {
             buf.writeFloat(text.scale());
             buf.writeUtf(text.color());
-            var backgroundColor = text.backgroundColor() != null ? text.backgroundColor() : "";
+            var backgroundColor = text.backgroundColor() != null
+                ? text.backgroundColor()
+                : "";
             buf.writeUtf(backgroundColor);
             buf.writeUtf(text.text());
         } else if (element instanceof SymbolElement symbol) {
