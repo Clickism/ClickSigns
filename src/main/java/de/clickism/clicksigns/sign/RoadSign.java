@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -27,11 +28,11 @@ import java.util.List;
  * @param elements    elements of the road sign
  */
 public record RoadSign(
-        TextureSource frontSource,
-        TextureSource backSource,
-        List<SignElement> elements,
-        Alignment alignment,
-        @Nullable ResourceLocation templateId
+    TextureSource frontSource,
+    TextureSource backSource,
+    List<SignElement> elements,
+    Alignment alignment,
+    @Nullable ResourceLocation templateId
 ) implements PixelSized {
     /**
      * The default alignment for road signs when no alignment is set.
@@ -47,16 +48,16 @@ public record RoadSign(
      * The default road sign to use when no road sign is set.
      */
     public static RoadSign DEFAULT = new RoadSign(
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
-            List.of(
-                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-                    new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-                    new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-                    new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
-            ),
-            DEFAULT_ALIGNMENT,
-            ClickSigns.identifier("test")
+        new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
+        new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
+        List.of(
+            new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
+            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
+        ),
+        DEFAULT_ALIGNMENT,
+        ClickSigns.identifier("test")
     );
 
     /**
@@ -195,6 +196,42 @@ public record RoadSign(
      */
     public RoadSign withAlignment(Alignment alignment) {
         return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+    }
+
+    /**
+     * Returns a collection of all symbol elements in the road sign.
+     *
+     * @return a collection of all symbol elements in the road sign.
+     */
+    public Collection<SymbolElement> symbolElements() {
+        return elements.stream()
+            .filter(e -> e instanceof SymbolElement)
+            .map(e -> (SymbolElement) e)
+            .toList();
+    }
+
+    /**
+     * Returns a collection of all text elements in the road sign.
+     *
+     * @return a collection of all text elements in the road sign.
+     */
+    public Collection<TextElement> textElements() {
+        return elements.stream()
+            .filter(e -> e instanceof TextElement)
+            .map(e -> (TextElement) e)
+            .toList();
+    }
+
+    /**
+     * Returns a collection of all plate elements in the road sign.
+     *
+     * @return a collection of all plate elements in the road sign.
+     */
+    public Collection<PlateElement> plateElements() {
+        return elements.stream()
+            .filter(e -> e instanceof PlateElement)
+            .map(e -> (PlateElement) e)
+            .toList();
     }
 
     public boolean isWithinBounds(SignElement element) {

@@ -53,7 +53,7 @@ public class TemplateMenuScreen extends BaseScreen {
         var switchButtonWidth = (halfWidth() - gap * 3) / 2;
 
         // Local and Resource buttons
-        var resourceButton = new Button.Builder(ComponentUtil.translatableWithIcon("📦", "clicksigns.template.category.resource"), (button) -> {
+        var resourceButton = new Button.Builder(ComponentUtil.t("📦", "clicksigns.template.category.resource"), (button) -> {
             this.showingLocal = false;
             this.selectedTemplate = null;
             this.rebuildWidgets();
@@ -62,7 +62,7 @@ public class TemplateMenuScreen extends BaseScreen {
         resourceButton.setTooltip(Tooltip.create(Component.translatable("clicksigns.template.category.resource.tooltip")));
         addRenderableWidget(resourceButton);
 
-        var localButton = new Button.Builder(ComponentUtil.translatableWithIcon("💾", "clicksigns.template.category.local"), (button) -> {
+        var localButton = new Button.Builder(ComponentUtil.t("💾", "clicksigns.template.category.local"), (button) -> {
             this.showingLocal = true;
             this.selectedTemplate = null;
             this.rebuildWidgets();
@@ -97,7 +97,7 @@ public class TemplateMenuScreen extends BaseScreen {
         // Apply button
         var applyButton = new ColoredButton(buttonBaseX + buttonWidth + gap, buttonY, buttonWidth,
                 Button.DEFAULT_HEIGHT, Color.GREEN,
-                ComponentUtil.translatableWithIcon("🛠", "clicksigns.template.apply"), (button) -> {
+                ComponentUtil.t("🛠", "clicksigns.template.apply"), (button) -> {
             if (this.selectedTemplate != null) {
                 this.onTemplateChanged.accept(this.selectedTemplate);
             }
@@ -108,7 +108,7 @@ public class TemplateMenuScreen extends BaseScreen {
         // Local, add option to delete
         var deleteButton = new ColoredButton(buttonBaseX, buttonY, buttonWidth,
                 Button.DEFAULT_HEIGHT, Color.RED,
-                ComponentUtil.translatableWithIcon("🗑", "clicksigns.template.delete"), (button) -> {
+                ComponentUtil.t("🗑", "clicksigns.template.delete"), (button) -> {
             ClickSigns.LOCAL_TEMPLATE_MANAGER.deleteTemplate(selectedTemplate);
             this.selectedTemplate = null;
             this.rebuildWidgets();

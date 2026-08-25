@@ -100,7 +100,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button confirmButton() {
-        var title = ComponentUtil.translatableWithIcon("✔ ", "clicksigns.text.confirm");
+        var title = ComponentUtil.t("✔ ", "clicksigns.text.confirm");
         return Button.builder(title, button -> {
                     var roadSign = readRoadSign();
                     Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, roadSign));
@@ -110,7 +110,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button editButton() {
-        var title = ComponentUtil.translatableWithIcon("✎ ", "clicksigns.text.edit");
+        var title = ComponentUtil.t("✎ ", "clicksigns.text.edit");
         return Button.builder(title, button -> {
             GuiUtils.openScreen(new SignEditScreen(roadSign, sign -> {
                 this.roadSign = sign;
@@ -120,7 +120,7 @@ public class SignOverviewScreen extends BaseScreen {
     }
 
     private Button changeTemplateButton() {
-        var title = ComponentUtil.translatableWithIcon("📝 ", "clicksigns.text.change_template");
+        var title = ComponentUtil.t("📝 ", "clicksigns.text.change_template");
         return Button.builder(title, button -> {
                     GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                         // Change template

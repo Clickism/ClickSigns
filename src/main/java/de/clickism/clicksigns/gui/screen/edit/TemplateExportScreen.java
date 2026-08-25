@@ -17,7 +17,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
-import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +78,7 @@ public class TemplateExportScreen extends BaseScreen implements JsonHandler {
         var includeTextsBox = new Checkbox(0, 0, boxWidth, Button.DEFAULT_HEIGHT, Component.translatable("clicksigns.template.include_texts"), false);
         composer.widget(includeTextsBox);
 
-        var saveTemplateButton = new ColoredButton(0, 0, boxWidth, Button.DEFAULT_HEIGHT, Color.CYAN, ComponentUtil.translatableWithIcon("💾", "clicksigns.editor.export.save_template"), button -> {
+        var saveTemplateButton = new ColoredButton(0, 0, boxWidth, Button.DEFAULT_HEIGHT, Color.CYAN, ComponentUtil.t("💾", "clicksigns.editor.export.save_template"), button -> {
             // TODO: Separate Menu and ask for name, desc and author, then save as template
             ClickSigns.LOCAL_TEMPLATE_MANAGER.saveAsTemplate(
                     readMeta(),
@@ -89,7 +88,7 @@ public class TemplateExportScreen extends BaseScreen implements JsonHandler {
             this.onClose();
         });
 
-        var copyJsonButton = new ColoredButton(0, 0, boxWidth, Button.DEFAULT_HEIGHT, Color.CYAN, ComponentUtil.translatableWithIcon("📄", "clicksigns.editor.export.copy_json"), button -> {
+        var copyJsonButton = new ColoredButton(0, 0, boxWidth, Button.DEFAULT_HEIGHT, Color.CYAN, ComponentUtil.t("📄", "clicksigns.editor.export.copy_json"), button -> {
             var json = new TemplateParser().toJson(
                     Template.Meta.placeholder(),
                     roadSign,

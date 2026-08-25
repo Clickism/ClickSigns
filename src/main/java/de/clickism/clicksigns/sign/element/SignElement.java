@@ -42,7 +42,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     }
 
     default int guiHeight(float guiScale) {
-        return (int) (signWidth() * guiScale);
+        return (int) (signHeight() * guiScale);
     }
 
     /**

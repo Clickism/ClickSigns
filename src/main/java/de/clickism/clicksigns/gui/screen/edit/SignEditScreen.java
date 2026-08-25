@@ -147,21 +147,21 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                     this.roadSign(newSign);
                 }))
                 .header(Component.translatable("clicksigns.editor.elements"))
-                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_symbol"), b -> {
+                .coloredButton(Color.GREEN, ComponentUtil.t("+", "clicksigns.editor.elements.add_symbol"), b -> {
                     var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
                     var element = new SymbolElement(centerX, centerY, Alignment.CENTER, symbol);
                     this.roadSign(roadSign.addElement(element));
                 })
-                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_text"), b -> {
+                .coloredButton(Color.GREEN, ComponentUtil.t("+", "clicksigns.editor.elements.add_text"), b -> {
                     var element = new TextElement(centerX, centerY, Alignment.TEXT_RIGHT, "", 1f, "foreground", null);
                     this.roadSign(roadSign.addElement(element));
                 })
-                .coloredButton(Color.GREEN, ComponentUtil.translatableWithIcon("+", "clicksigns.editor.elements.add_plate"), b -> {
+                .coloredButton(Color.GREEN, ComponentUtil.t("+", "clicksigns.editor.elements.add_plate"), b -> {
                     var element = new PlateElement(centerX, centerY, Alignment.CENTER, this.roadSign.frontSource().resize(8, 6), this.roadSign.backSource().resize(8, 6));
                     this.roadSign(roadSign.addElement(element));
                 })
                 .header(Component.translatable("clicksigns.editor.tools"))
-                .coloredButton(Color.BLUE, ComponentUtil.translatableWithIcon("⏪", "clicksigns.editor.tools.reset_texts"), b -> {
+                .coloredButton(Color.BLUE, ComponentUtil.t("⏪", "clicksigns.editor.tools.reset_texts"), b -> {
                     this.roadSign(roadSign.withElements(roadSign.elements().stream()
                             .map(element -> {
                                 if (element instanceof TextElement text) {
@@ -170,11 +170,11 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
                                 return element;
                             }).toList()));
                 })
-                .coloredButton(Color.RED, ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.tools.remove_elements"), b -> {
+                .coloredButton(Color.RED, ComponentUtil.t("🗑", "clicksigns.editor.tools.remove_elements"), b -> {
                     this.roadSign(roadSign.withElements(List.of()));
                 })
                 .header(Component.translatable("clicksigns.editor.export"))
-                .coloredButton(Color.CYAN, ComponentUtil.translatableWithIcon("📤", "clicksigns.editor.export_template"), b -> {
+                .coloredButton(Color.CYAN, ComponentUtil.t("📤", "clicksigns.editor.export_template"), b -> {
                     GuiUtils.openScreen(new TemplateExportScreen(this, roadSign));
                 })
                 // Lay out in the center of the panel
@@ -219,7 +219,7 @@ public class SignEditScreen extends BaseScreen implements JsonHandler {
             }
             composer.header(Component.translatable("clicksigns.editor.other"))
                     .coloredButton(Color.RED,
-                            ComponentUtil.translatableWithIcon("🗑", "clicksigns.editor.elements.remove_element"),
+                            ComponentUtil.t("🗑", "clicksigns.editor.elements.remove_element"),
                             button -> {
                                 this.roadSign(roadSign.removeElement(selectedElement));
                                 this.editContext.selectElement(null);

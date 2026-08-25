@@ -2,6 +2,8 @@ package de.clickism.clicksigns.gui;
 
 import de.clickism.clicksigns.gui.util.NestedWidget;
 import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clickui.elements.Image;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -91,9 +93,9 @@ public class GuiUtils {
      * @return The calculated position
      */
     public static Vector2i calculateElementPosition(
-            int anchorX, int anchorY,
-            SignElement element,
-            int width, int height
+        int anchorX, int anchorY,
+        SignElement element,
+        int width, int height
     ) {
         // Calculate position, by default renders bottom-right aligned
         int x = anchorX;
@@ -240,5 +242,19 @@ public class GuiUtils {
     public static void copyToClipboard(String text) {
         var keyboard = Minecraft.getInstance().keyboardHandler;
         keyboard.setClipboard(text);
+    }
+
+    /**
+     * Creates an Image from a Texture, scaling it by the default texture render scale.
+     *
+     * @param texture the texture to create an image from
+     * @return the created Image
+     */
+    public static Image imageOf(Texture texture) {
+        return new Image(
+            texture.location(),
+            texture.width() * DEFAULT_TEXTURE_RENDER_SCALE,
+            texture.height() * DEFAULT_TEXTURE_RENDER_SCALE
+        );
     }
 }

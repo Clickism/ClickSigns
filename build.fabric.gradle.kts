@@ -37,12 +37,21 @@ base {
     archivesName.set(property("archives_base_name").toString())
 }
 
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor(0, "seconds")
+    }
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-    modImplementation("de.clickism:clickui:0.1")
+    modImplementation("de.clickism:clickui:0.1") {
+        isChanging = true
+        isTransitive = false
+    }
 }
 
 tasks.processResources {
@@ -75,4 +84,9 @@ loom {
             programArguments.set(listOf("--username=ClickToPlay"))
         }
     }
+}
+
+tasks.register<Delete>("cleanLoomCache") {
+    description = "Cleans the Loom cache for remapped mods"
+    delete(rootProject.file(".gradle/loom-cache/remapped_mods"))
 }

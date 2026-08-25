@@ -21,7 +21,7 @@ public class ComponentUtil {
      * @param key  the translation key for the text
      * @return a component with the icon and translated text
      */
-    public static Component translatableWithIcon(String icon, String key) {
+    public static Component t(String icon, String key) {
         return Component.literal(icon + " ")
                 .append(Component.translatable(key));
     }
@@ -41,7 +41,7 @@ public class ComponentUtil {
      * @return a component with the icon and translated text for "Confirm"
      */
     public static Component confirmWithIcon() {
-        return translatableWithIcon("✔", "clicksigns.text.confirm");
+        return t("✔", "clicksigns.text.confirm");
     }
 
     /**
