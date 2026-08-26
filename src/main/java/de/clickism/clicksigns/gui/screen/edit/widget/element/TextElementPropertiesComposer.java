@@ -53,11 +53,11 @@ public record TextElementPropertiesComposer(
         // Color
         var colorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         colorBox.setValue(textElement.color());
-        colorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.text.text_color"));
+        colorBox.setTooltip(ComponentUtil.tTooltip("clicksigns.editor.text.text_color"));
 
         var backgroundColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
         backgroundColorBox.setValue(textElement.backgroundColor());
-        backgroundColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.text.background_color"));
+        backgroundColorBox.setTooltip(ComponentUtil.tTooltip("clicksigns.editor.text.background_color"));
         composer
                 .header(Component.translatable("clicksigns.editor.text.color"))
                 .widget(colorBox)

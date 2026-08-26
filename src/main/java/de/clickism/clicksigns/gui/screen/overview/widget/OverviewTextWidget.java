@@ -15,6 +15,6 @@ public class OverviewTextWidget extends TextWidget {
      */
     public OverviewTextWidget(int anchorX, int anchorY, TextElement text, ColorResolver colorResolver, int signWidth) {
         super(anchorX, anchorY, text, colorResolver, signWidth, GuiUtils.OUTLINE_COLOR);
-        this.setTooltip(ComponentUtil.translatableTooltip("clicksigns.overview.text.tooltip"));
+        this.setTooltip(ComponentUtil.tTooltip("clicksigns.overview.text.tooltip"));
     }
 }

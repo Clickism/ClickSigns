@@ -10,7 +10,7 @@ public class ComponentUtil {
      * @param key the translation key for the tooltip text
      * @return a tooltip component with the translated text
      */
-    public static Tooltip translatableTooltip(String key) {
+    public static Tooltip tTooltip(String key) {
         return Tooltip.create(Component.translatable(key));
     }
 
@@ -23,7 +23,17 @@ public class ComponentUtil {
      */
     public static Component t(String icon, String key) {
         return Component.literal(icon + " ")
-                .append(Component.translatable(key));
+            .append(Component.translatable(key));
+    }
+
+    /**
+     * Creates a translatable component for the given translation key.
+     *
+     * @param key the translation key for the text
+     * @return a component with the translated text
+     */
+    public static Component t(String key) {
+        return Component.translatable(key);
     }
 
     /**

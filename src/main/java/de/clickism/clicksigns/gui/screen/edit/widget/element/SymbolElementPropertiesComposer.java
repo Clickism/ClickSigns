@@ -47,11 +47,11 @@ public record SymbolElementPropertiesComposer(
         if (symbolElement.symbol().texture() instanceof ColorizedTextureSource colorized) {
             var fromColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
             fromColorBox.setValue(colorized.fromColor());
-            fromColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.symbol.from_color"));
+            fromColorBox.setTooltip(ComponentUtil.tTooltip("clicksigns.editor.symbol.from_color"));
 
             var toColorBox = new ColorBox(0, 0, composer.width() - EDIT_BOX_OFFSET, 20, colorResolver);
             toColorBox.setValue(colorized.toColor());
-            toColorBox.setTooltip(ComponentUtil.translatableTooltip("clicksigns.editor.symbol.to_color"));
+            toColorBox.setTooltip(ComponentUtil.tTooltip("clicksigns.editor.symbol.to_color"));
             composer
                     .header(Component.translatable("clicksigns.editor.symbol.color_replacement"))
                     .widget(fromColorBox)

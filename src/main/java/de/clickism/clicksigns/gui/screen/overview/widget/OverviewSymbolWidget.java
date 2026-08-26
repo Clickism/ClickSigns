@@ -24,7 +24,7 @@ public class OverviewSymbolWidget extends SymbolWidget {
      */
     public OverviewSymbolWidget(int anchorX, int anchorY, SymbolElement symbol, ColorResolver colorResolver, Screen parent) {
         super(anchorX, anchorY, symbol, colorResolver, GuiUtils.OUTLINE_COLOR, parent);
-        this.setTooltip(ComponentUtil.translatableTooltip("clicksigns.overview.symbol.tooltip"));
+        this.setTooltip(ComponentUtil.tTooltip("clicksigns.overview.symbol.tooltip"));
     }
 
     /**

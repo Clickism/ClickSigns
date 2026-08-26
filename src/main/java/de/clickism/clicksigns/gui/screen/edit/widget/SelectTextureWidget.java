@@ -38,7 +38,7 @@ public class SelectTextureWidget extends ClickableTextureWidget {
         this.parent = parent;
         this.textureSource = textureSource;
         this.onTextureSelected = onTextureSelected;
-        this.setTooltip(ComponentUtil.translatableTooltip("clicksigns.select_texture.tooltip"));
+        this.setTooltip(ComponentUtil.tTooltip("clicksigns.select_texture.tooltip"));
     }
 
     @Override
