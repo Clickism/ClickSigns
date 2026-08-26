@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui.elements;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clickui.Component;
 import de.clickism.clickui.Element;
 import de.clickism.clickui.layout.Rect;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
@@ -59,11 +61,10 @@ public class SignView extends Component<SignView> {
      * @param config a consumer that configures each SignElement
      * @return this SignView instance for method chaining
      */
-    @SuppressWarnings("unchecked")
-    public <T extends Element<?> & ElementProvider> SignView elementConfig(Consumer<T> config) {
+    public SignView elementConfig(BiConsumer<Element<?>, SignElement> config) {
         this.elementConfig = element -> {
             if (element instanceof ElementProvider provider) {
-                config.accept((T) provider);
+                config.accept(element, provider.element());
             }
         };
         return this;

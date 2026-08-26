@@ -105,7 +105,7 @@ public class SignTextField extends TextField implements ElementProvider {
 
     @Override
     public SignElement element() {
-        return element.withText(value());
+        return element.withText(textToShow());
     }
 
     @Override

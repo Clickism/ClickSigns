@@ -2,11 +2,14 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.gui.screen.TextureMenuScreen;
 import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
 import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.gui.widget.TextureList;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -19,6 +22,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
 import java.awt.*;
+import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -50,6 +54,13 @@ public class SignOverviewScreen extends UiScreen {
     public Element<?> build() {
         Ref<SignView> signViewRef = ref();
         Ref<AlignmentSelector> alignmentSelectorRef = ref();
+
+        Consumer<RoadSign> updateSign = newSign -> {
+            this.roadSign = newSign;
+            signViewRef.get().roadSign(newSign);
+            alignmentSelectorRef.get().alignment(newSign.alignment());
+        };
+
         return box()
             .alignCenter()
             .childGap(8)
@@ -59,15 +70,44 @@ public class SignOverviewScreen extends UiScreen {
                 new SignView()
                     .roadSign(roadSign)
                     .ref(signViewRef)
-                    .elementConfig(uiElement -> {
+                    // Set up element logic
+                    .elementConfig((uiElement, signElement) -> {
+                        // TODO: No hover style for plate?
                         uiElement.style(s -> s
                             .whenHovered(h -> h
                                 .border(Color.RED)));
-                        // Add tooltips
-                        if (uiElement.element() instanceof TextElement) {
+                        // Element specific config
+                        if (signElement instanceof TextElement) {
                             uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
-                        } else if (uiElement.element() instanceof SymbolElement) {
-                            uiElement.tooltip(t("clicksigns.overview.symbol.tooltip"));
+                        } else if (signElement instanceof SymbolElement symbol) {
+                            uiElement
+                                .tooltip(t("clicksigns.overview.symbol.tooltip"))
+                                .onClick(event -> {
+                                    // TODO: Refactor
+                                    if (GuiUtils.isLeftClick(event.button())) {
+                                        // Cycle to next symbol in the same category
+                                        var nextSymbol = symbol.symbol().nextInCategory();
+                                        var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(nextSymbol));
+                                        updateSign.accept(newSign);
+                                    }
+                                    // Right click
+                                    if (GuiUtils.isRightClick(event.button())) {
+                                        // Open symbol menu
+                                        // TODO: Add uncategorized symbols at the end
+                                        var categoryToTextures = SignRegistries.SYMBOLS.categoryToEntriesAndThen(s -> new TextureList.IdentifiableTexture(
+                                            s.identifier(),
+                                            s.texture().resolve(roadSign.colorResolver())));
+                                        // Open symbol selector screen
+                                        var screen = new TextureMenuScreen<>(this, categoryToTextures, identifier -> {
+                                            var s = SignRegistries.SYMBOLS.get(identifier);
+                                            if (s == null) return;
+                                            var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(s));
+                                            updateSign.accept(newSign);
+                                            GuiUtils.closeScreen();
+                                        });
+                                        GuiUtils.openScreen(screen);
+                                    }
+                                });
                         }
                     }),
 
@@ -111,8 +151,7 @@ public class SignOverviewScreen extends UiScreen {
                                     .onClick(event -> {
                                         GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
                                             // Change template
-                                            this.roadSign = template.build();
-                                            signViewRef.get().roadSign(roadSign);
+                                            updateSign.accept(template.build());
                                         }));
                                     }),
                                 // Edit button
@@ -120,10 +159,7 @@ public class SignOverviewScreen extends UiScreen {
                                     .growWidth()
                                     .onClick(event -> {
                                         // Open Editor
-                                        GuiUtils.openScreen(new SignEditScreen(roadSign, sign -> {
-                                            this.roadSign = sign;
-                                            signViewRef.get().roadSign(sign);
-                                        }, this));
+                                        GuiUtils.openScreen(new SignEditScreen(roadSign, updateSign, this));
                                     })
                             ),
 
