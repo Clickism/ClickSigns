@@ -10,7 +10,7 @@ import de.clickism.clickui.Component;
 public class SymbolView extends Component<SymbolView>
     implements ElementProvider {
 
-    private SymbolElement element;
+    private final SymbolElement element;
     private final ColorResolver colorResolver;
 
     public SymbolView(SymbolElement element, ColorResolver colorResolver) {

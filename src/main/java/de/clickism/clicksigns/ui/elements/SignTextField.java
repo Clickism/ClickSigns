@@ -11,8 +11,6 @@ import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.style.Style;
 import net.minecraft.util.Mth;
 
-import java.awt.*;
-
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
@@ -56,8 +54,6 @@ public class SignTextField extends TextField implements ElementProvider {
             ? null
             : colorResolver.resolve(element.backgroundColor());
         this.overrideStyle(Style.empty()
-            .whenHovered(s -> s
-                .border(new Color(GuiUtils.OUTLINE_COLOR)))
             .background(background));
         // Set up listeners so that width is recalculated when needed
         this.onValueChanged(value -> {

@@ -8,6 +8,8 @@ import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.Element;
@@ -15,6 +17,8 @@ import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+
+import java.awt.*;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -54,7 +58,18 @@ public class SignOverviewScreen extends UiScreen {
                 // Sign view
                 new SignView()
                     .roadSign(roadSign)
-                    .ref(signViewRef),
+                    .ref(signViewRef)
+                    .elementConfig(uiElement -> {
+                        uiElement.style(s -> s
+                            .whenHovered(h -> h
+                                .border(Color.RED)));
+                        // Add tooltips
+                        if (uiElement.element() instanceof TextElement) {
+                            uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
+                        } else if (uiElement.element() instanceof SymbolElement) {
+                            uiElement.tooltip(t("clicksigns.overview.symbol.tooltip"));
+                        }
+                    }),
 
                 // Container
                 box()
@@ -73,6 +88,7 @@ public class SignOverviewScreen extends UiScreen {
                                 // Spacer
                                 box().height(8),
                                 // Buttons
+                                // Confirm button
                                 button(t("✔", "clicksigns.text.confirm"))
                                     .growWidth()
                                     .onClick(event -> {
@@ -89,6 +105,7 @@ public class SignOverviewScreen extends UiScreen {
                                         // Close screen
                                         this.back();
                                     }),
+                                // Template button
                                 button(t("📝", "clicksigns.text.change_template"))
                                     .growWidth()
                                     .onClick(event -> {
@@ -98,6 +115,7 @@ public class SignOverviewScreen extends UiScreen {
                                             signViewRef.get().roadSign(roadSign);
                                         }));
                                     }),
+                                // Edit button
                                 button(t("✎", "clicksigns.text.edit"))
                                     .growWidth()
                                     .onClick(event -> {
@@ -112,13 +130,13 @@ public class SignOverviewScreen extends UiScreen {
                         // Alignment
                         box()
                             .children(
+                                // Header
                                 text(t("clicksigns.text.alignment").copy()
                                     .withStyle(ChatFormatting.UNDERLINE, ChatFormatting.GRAY))
                                     .height(16) // Also use as spacer
                                     .growWidth()
-                                    .alignTextCenter()
-                                    .style(s -> s
-                                        .alpha(1f)),
+                                    .alignTextCenter(),
+                                // Selector
                                 new AlignmentSelector()
                                     .alignment(roadSign.alignment())
                                     .ref(alignmentSelectorRef)
