@@ -62,6 +62,8 @@ public class SignView extends Component<SignView> {
 
     @Override
     protected void build() {
+        // Clear previous elements
+        this.elementProviders.clear();
         // Add main texture
         var roadSign = this.roadSign.get();
         var texture = roadSign.frontTexture();
@@ -80,7 +82,7 @@ public class SignView extends Component<SignView> {
         // Add text elements last to render on top of symbols
         for (var textElement : roadSign.textElements()) {
             // TODO: Proper text field
-            var textField = new SignTextField(textElement).width(20);
+            var textField = new SignTextField(textElement, roadSign.colorResolver());
             addAndPositionElement(textField);
         }
     }

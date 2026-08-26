@@ -120,6 +120,7 @@ public class SignOverviewScreen extends UiScreen {
                                     .style(s -> s
                                         .alpha(1f)),
                                 new AlignmentSelector()
+                                    .alignment(roadSign.alignment())
                                     .ref(alignmentSelectorRef)
                             )
 

@@ -257,4 +257,29 @@ public class GuiUtils {
             texture.height() * DEFAULT_TEXTURE_RENDER_SCALE
         );
     }
+
+    /**
+     * Adds an alpha value to a color represented as an integer.
+     *
+     * @param color the color as an integer (ARGB format)
+     * @param alpha the alpha value to add (0.0 to 1.0)
+     * @return the color with the new alpha value as an integer (ARGB format)
+     */
+    public static int colorWithAlpha(int color, float alpha) {
+        int a = (int) (alpha * 255);
+        return (a << 24) | (color & 0x00FFFFFF);
+    }
+
+    /**
+     * Multiplies the alpha value of a color represented as an integer by a factor.
+     *
+     * @param color  the color as an integer (ARGB format)
+     * @param factor the factor to multiply the alpha value by (0.0 to 1.0)
+     * @return the color with the multiplied alpha value as an integer (ARGB format)
+     */
+    public static int colorWithMultipliedAlpha(int color, float factor) {
+        int alpha = (color >> 24) & 0xFF;
+        int newAlpha = (int) (alpha * factor);
+        return (newAlpha << 24) | (color & 0x00FFFFFF);
+    }
 }
