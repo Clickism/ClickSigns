@@ -5,6 +5,8 @@ import de.clickism.clicksigns.sign.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.Component;
 import de.clickism.clickui.UiColor;
+import de.clickism.clickui.layout.Align;
+import de.clickism.clickui.layout.Sizing;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -48,23 +50,33 @@ public class TextureList extends Component<TextureList> {
             .scrollable(true)
             .padding(8)
             .childGap(4)
-            .alignCenter();
+            .crossAlign(Align.CENTER);
         add(box);
-        // TODO: Flex layout for better arrangement of textures
+
         categoryToEntries.forEach((category, entries) -> {
             box.add(text(category.name()));
+            // Add symbols
+            var row = box()
+                .horizontal()
+                .wrapChildren(true)
+                .childGap(4)
+                .crossAlign(Align.START);
+
+            box.add(row);
             entries.forEach(entry -> {
                 var texture = entry.texture();
-                box.add(
-                    GuiUtils.imageOf(texture)
-                        .style(s -> s
-                            .whenHovered(h -> h
-                                .border(UiColor.WHITE)
-                                .background(UiColor.WHITE_A20)))
-                        .onClick(event -> {
-                            onTextureSelected.accept(entry);
-                        })
-                );
+                for (int i = 0; i < 1; i++) {
+                    row.add(
+                        GuiUtils.imageOf(texture)
+                            .style(s -> s
+                                .whenHovered(h -> h
+                                    .border(UiColor.WHITE)
+                                    .background(UiColor.WHITE_A20)))
+                            .onClick(event -> {
+                                onTextureSelected.accept(entry);
+                            })
+                    );
+                }
             });
         });
     }

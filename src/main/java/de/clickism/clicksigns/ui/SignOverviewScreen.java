@@ -109,7 +109,6 @@ public class SignOverviewScreen extends UiScreen {
                                                 if (newSymbol == null) return;
                                                 var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(newSymbol));
                                                 updateSign.accept(newSign);
-                                                close();
                                             }).open();
                                     }
                                 });

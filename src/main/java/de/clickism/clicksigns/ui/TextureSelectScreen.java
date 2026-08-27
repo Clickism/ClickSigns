@@ -44,14 +44,17 @@ public class TextureSelectScreen extends UiScreen {
                     .scrollable(false)
                     .maxHeight(400)
                     .crossAlign(Align.CENTER)
-                    .maxWidth(400)
+                    .maxWidth(300)
                     .style(s -> s
                         .border(UiColor.LIGHT_GRAY.alpha(0.5f))
                         .background(UiColor.BLACK.alpha(0.5f))
                     )
                     .children(
                         new TextureList(entries)
-                            .onTextureSelected(onTextureSelected)
+                            .onTextureSelected(texture -> {
+                                onTextureSelected.accept(texture);
+                                close();
+                            })
                             .grow()
                     )
             );
