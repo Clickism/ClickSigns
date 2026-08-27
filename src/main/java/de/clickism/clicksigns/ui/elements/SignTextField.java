@@ -5,6 +5,7 @@ import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
@@ -54,7 +55,7 @@ public class SignTextField extends TextField implements ElementProvider {
             ? null
             : colorResolver.resolve(element.backgroundColor());
         this.overrideStyle(Style.empty()
-            .background(background));
+            .background(UiColor.of(background)));
         // Set up listeners so that width is recalculated when needed
         this.onValueChanged(value -> {
             this.invalidate();

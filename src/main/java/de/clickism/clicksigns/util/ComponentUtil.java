@@ -37,6 +37,16 @@ public class ComponentUtil {
     }
 
     /**
+     * Creates a literal component for the given text.
+     *
+     * @param text the text to display
+     * @return a component with the literal text
+     */
+    public static Component l(String text) {
+        return Component.literal(text);
+    }
+
+    /**
      * Creates a translatable component for a confirmation button.
      *
      * @return a component with the translated text for "Confirm"

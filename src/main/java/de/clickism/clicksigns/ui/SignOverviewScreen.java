@@ -2,11 +2,9 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.TextureMenuScreen;
 import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
 import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
 import de.clickism.clicksigns.gui.util.ElementProvider;
-import de.clickism.clicksigns.gui.widget.TextureList;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.registry.SignRegistries;
@@ -17,13 +15,15 @@ import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.Element;
 import de.clickism.clickui.Ref;
+import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
+import de.clickism.clickui.util.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
-import java.awt.*;
 import java.util.function.Consumer;
 
+import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
@@ -75,7 +75,7 @@ public class SignOverviewScreen extends UiScreen {
                         // TODO: No hover style for plate?
                         uiElement.style(s -> s
                             .whenHovered(h -> h
-                                .border(Color.RED)));
+                                .border(UiColor.RED)));
                         // Element specific config
                         if (signElement instanceof TextElement) {
                             uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
@@ -83,6 +83,7 @@ public class SignOverviewScreen extends UiScreen {
                             uiElement
                                 .tooltip(t("clicksigns.overview.symbol.tooltip"))
                                 .onClick(event -> {
+                                    event.playSound();
                                     // TODO: Refactor
                                     if (GuiUtils.isLeftClick(event.button())) {
                                         // Cycle to next symbol in the same category
@@ -93,19 +94,23 @@ public class SignOverviewScreen extends UiScreen {
                                     // Right click
                                     if (GuiUtils.isRightClick(event.button())) {
                                         // Open symbol menu
-                                        // TODO: Add uncategorized symbols at the end
-                                        var categoryToTextures = SignRegistries.SYMBOLS.categoryToEntriesAndThen(s -> new TextureList.IdentifiableTexture(
-                                            s.identifier(),
-                                            s.texture().resolve(roadSign.colorResolver())));
-                                        // Open symbol selector screen
-                                        var screen = new TextureMenuScreen<>(this, categoryToTextures, identifier -> {
-                                            var s = SignRegistries.SYMBOLS.get(identifier);
-                                            if (s == null) return;
-                                            var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(s));
-                                            updateSign.accept(newSign);
-                                            GuiUtils.closeScreen();
-                                        });
-                                        GuiUtils.openScreen(screen);
+                                        var entries = SignRegistries.SYMBOLS.all().stream()
+                                            .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
+                                                s.texture().resolve(roadSign.colorResolver()),
+                                                s.identifier(),
+                                                // TODO: Handle uncategorized symbols
+                                                s.resolveCategory()
+                                            ))
+                                            .toList();
+
+                                        new TextureSelectScreen(l("Select Symbol"), entries)
+                                            .onTextureSelected(entry -> {
+                                                var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
+                                                if (newSymbol == null) return;
+                                                var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(newSymbol));
+                                                updateSign.accept(newSign);
+                                                close();
+                                            }).open();
                                     }
                                 });
                         }
@@ -143,7 +148,7 @@ public class SignOverviewScreen extends UiScreen {
                                         // Send packet
                                         Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, newSign));
                                         // Close screen
-                                        this.back();
+                                        this.close();
                                     }),
                                 // Template button
                                 button(t("📝", "clicksigns.text.change_template"))
