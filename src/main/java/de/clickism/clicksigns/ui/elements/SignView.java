@@ -26,6 +26,8 @@ public class SignView extends Component<SignView> {
     private final State<RoadSign> roadSign = state(RoadSign.DEFAULT);
     private final List<ElementProvider> elementProviders = new ArrayList<>();
 
+    // TODO: Guidelines
+    
     private Consumer<Element<?>> elementConfig = element -> {};
 
     /**

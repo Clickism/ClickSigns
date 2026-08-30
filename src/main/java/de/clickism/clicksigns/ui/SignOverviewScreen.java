@@ -17,7 +17,6 @@ import de.clickism.clickui.Element;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
-import de.clickism.clickui.util.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
@@ -157,6 +156,16 @@ public class SignOverviewScreen extends UiScreen {
                                             // Change template
                                             updateSign.accept(template.build());
                                         }));
+                                    }),
+                                button("New Template Screen")
+                                    .onClick(e -> {
+                                        new TemplateSelectScreen().open();
+                                    }),
+                                button("New Edit Screen")
+                                    .onClick(e -> {
+                                        new de.clickism.clicksigns.ui.SignEditScreen(roadSign)
+                                            .onSignUpdate(updateSign)
+                                            .open();
                                     }),
                                 // Edit button
                                 button(t("✎", "clicksigns.text.edit"))

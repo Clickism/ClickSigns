@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.Component;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.layout.Align;
-import de.clickism.clickui.layout.Sizing;
+import de.clickism.clickui.style.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static de.clickism.clicksigns.util.ComponentUtil.l;
 
 public class TextureList extends Component<TextureList> {
 
@@ -44,17 +46,30 @@ public class TextureList extends Component<TextureList> {
 
     @Override
     protected void build() {
+        // TODO: Fix multiple screens are opened?
+        // TODO: Use tileset as a backgroudn to give better idea about symbols
         // Scrollable box
         var box = box()
             .grow()
             .scrollable(true)
             .padding(8)
             .childGap(4)
+            .overrideStyle(Style.empty()
+                .background(UiColor.WHITE))
             .crossAlign(Align.CENTER);
         add(box);
 
         categoryToEntries.forEach((category, entries) -> {
-            box.add(text(category.name()));
+            box.add(box()
+                .padding(4)
+                .growWidth()
+                .alignCenter()
+                .overrideStyle(Style.empty()
+                    .border(UiColor.LIGHT_GRAY)
+                    .background(UiColor.BLACK_A80))
+                .children(
+                    text(category.name())
+                ));
             // Add symbols
             var row = box()
                 .horizontal()
@@ -68,10 +83,11 @@ public class TextureList extends Component<TextureList> {
                 for (int i = 0; i < 1; i++) {
                     row.add(
                         GuiUtils.imageOf(texture)
+                            .tooltip(l("Click to select this texture"))
                             .style(s -> s
                                 .whenHovered(h -> h
-                                    .border(UiColor.WHITE)
-                                    .background(UiColor.WHITE_A20)))
+                                    .border(UiColor.RED)
+                                    .background(UiColor.RED.alpha(0.1f))))
                             .onClick(event -> {
                                 onTextureSelected.accept(entry);
                             })
