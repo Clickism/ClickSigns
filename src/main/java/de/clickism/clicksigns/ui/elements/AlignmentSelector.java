@@ -2,12 +2,12 @@ package de.clickism.clicksigns.ui.elements;
 
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clickui.Component;
+import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.reactivity.State;
 
 import java.util.Map;
 
-public class AlignmentSelector extends Component<AlignmentSelector> {
+public class AlignmentSelector extends UiComponent<AlignmentSelector> {
     private static final int BUTTON_SIZE = 20;
     private static final int CHILD_GAP = 8;
     public static final int TOTAL_SIZE = BUTTON_SIZE * 3 + CHILD_GAP * 2;

@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TemplateSelectScreen extends UiScreen {
-    private boolean showLocal = false;
+public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
+    private final State<Boolean> showLocal = state(false);
 
     private Consumer<Template> onTemplateSelected = template -> {};
     private Template selected = null;
@@ -24,7 +24,7 @@ public class TemplateSelectScreen extends UiScreen {
     }
 
     @Override
-    public Element<?> build() {
+    public void build() {
         Ref<TemplateList> listRef = ref();
         Ref<TemplateInfo> infoRef = ref();
 
@@ -33,12 +33,11 @@ public class TemplateSelectScreen extends UiScreen {
             infoRef.get().template.update(selected);
         };
 
-        return box()
-            .grow()
+        this.grow()
             .children(
                 // Top Bar
                 box()
-                    .padding(0, 8)
+                    .padding(8, 8)
                     .style(s -> s
                         .border(UiColor.LIGHT_GRAY)
                         .background(UiColor.BLACK_A50))
@@ -48,26 +47,23 @@ public class TemplateSelectScreen extends UiScreen {
                         box()
                             .horizontal()
                             .growWidth()
-                            .padding(8)
                             .childGap(8)
                             .children(
                                 button(t("📦", "clicksigns.template.category.resource"))
                                     .grow()
                                     .style(s -> s
-                                        .when(context -> showLocal, l -> l
+                                        .when(context -> showLocal.get(), l -> l
                                             .alpha(GuiUtils.INACTIVE_ALPHA)))
                                     .onClick(event -> {
-                                        showLocal = false;
-                                        listRef.get().showLocal(showLocal);
+                                        showLocal.update(false);
                                     }),
                                 button(t("💾", "clicksigns.template.category.local"))
                                     .grow()
                                     .style(s -> s
-                                        .when(context -> !showLocal, l -> l
+                                        .when(context -> !showLocal.get(), l -> l
                                             .alpha(GuiUtils.INACTIVE_ALPHA)))
                                     .onClick(event -> {
-                                        showLocal = true;
-                                        listRef.get().showLocal(showLocal);
+                                        showLocal.update(true);
                                     })
                             ),
 
@@ -86,6 +82,7 @@ public class TemplateSelectScreen extends UiScreen {
                             .children(
                                 new TemplateList()
                                     .ref(listRef)
+                                    .showLocal(showLocal.get())
                                     .grow()
                                     .onTemplateSelected(updateSelected)
                             ),
@@ -107,14 +104,14 @@ public class TemplateSelectScreen extends UiScreen {
                                     .childGap(8)
                                     .children(
                                         // Delete button
-                                        showLocal
+                                        showLocal.get()
                                             ? button(t("🗑", "clicksigns.template.delete"))
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Delete template
                                                 ClickSigns.LOCAL_TEMPLATE_MANAGER.deleteTemplate(selected);
                                                 updateSelected.accept(null);
-                                                listRef.get().invalidate(); // Invalidate list
+                                                listRef.get().invalidateTree(); // Invalidate list
                                             })
                                             : box().growWidth(), // Spacer,
                                         // Apply button
@@ -133,11 +130,12 @@ public class TemplateSelectScreen extends UiScreen {
             );
     }
 
-    private static class TemplateInfo extends Component<TemplateInfo> {
+    private static class TemplateInfo extends UiComponent<TemplateInfo> {
         private final State<Template> template = state(null);
 
         @Override
         protected void build() {
+            childGap(8);
             var template = this.template.get();
             if (template == null) {
                 add(text("No template selected.")
@@ -165,18 +163,20 @@ public class TemplateSelectScreen extends UiScreen {
                 ));
         }
 
-        private Element<?> infoField(
+        private UiElement<?> infoField(
             net.minecraft.network.chat.Component label,
             String value
         ) {
             return box()
                 .style(s -> s
-                    .background(UiColor.BLACK_A30))
-                .padding(8)
+                    .background(UiColor.BLACK_A50))
+                .padding(4)
+                .childGap(2)
+                // TODO: Text here not wrapping
                 .children(
                     text(label.copy().withStyle(ChatFormatting.GRAY))
                         .style(s -> s
-                            .fontScale(0.75f)),
+                            .fontScale(0.7f)),
                     text(value)
                 );
         }

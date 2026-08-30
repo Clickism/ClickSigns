@@ -4,8 +4,8 @@ import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clickui.Component;
-import de.clickism.clickui.Element;
+import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.UiElement;
 import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.reactivity.State;
@@ -15,20 +15,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * A UI component that displays a road sign with its texture and elements.
  */
-public class SignView extends Component<SignView> {
+public class SignView extends UiComponent<SignView> {
     private final State<RoadSign> roadSign = state(RoadSign.DEFAULT);
     private final List<ElementProvider> elementProviders = new ArrayList<>();
 
     // TODO: Guidelines
-    
-    private Consumer<Element<?>> elementConfig = element -> {};
+
+    private BiConsumer<UiElement<?>, SignElement> elementConfig = (uiElement, signElement) -> {};
 
     /**
      * Sets the road sign to be displayed in this SignView.
@@ -63,12 +62,9 @@ public class SignView extends Component<SignView> {
      * @param config a consumer that configures each SignElement
      * @return this SignView instance for method chaining
      */
-    public SignView elementConfig(BiConsumer<Element<?>, SignElement> config) {
-        this.elementConfig = element -> {
-            if (element instanceof ElementProvider provider) {
-                config.accept(element, provider.element());
-            }
-        };
+    public SignView elementConfig(BiConsumer<UiElement<?>, SignElement> config) {
+        this.elementConfig = config;
+        this.invalidateTree();
         return this;
     }
 
@@ -86,7 +82,7 @@ public class SignView extends Component<SignView> {
      *
      * @param element the ui element to add
      */
-    private void addAndPositionElement(Element<?> element, Rect maxBounds) {
+    private void addAndPositionElement(UiElement<?> element, Rect maxBounds) {
         this.add(element);
         if (element instanceof ElementProvider provider) {
             this.elementProviders.add(provider);
@@ -118,19 +114,19 @@ public class SignView extends Component<SignView> {
         for (var plate : roadSign.plateElements()) {
             var plateElement = memo(() -> new PlateView(plate, roadSign.colorResolver()));
             addAndPositionElement(plateElement, maxBounds);
-            elementConfig.accept(plateElement);
+            elementConfig.accept(plateElement, plate);
         }
         // Add symbol elements
         for (var symbol : roadSign.symbolElements()) {
             var symbolElement = memo(() -> new SymbolView(symbol, roadSign.colorResolver()));
             addAndPositionElement(symbolElement, maxBounds);
-            elementConfig.accept(symbolElement);
+            elementConfig.accept(symbolElement, symbol);
         }
         // Add text elements last to render on top of symbols
         for (var textElement : roadSign.textElements()) {
             var textField = memo(() -> new SignTextField(textElement, roadSign.colorResolver()));
             addAndPositionElement(textField, maxBounds);
-            elementConfig.accept(textField);
+            elementConfig.accept(textField, textElement);
         }
     }
 
@@ -139,6 +135,7 @@ public class SignView extends Component<SignView> {
      *
      * @return a Rect representing the maximum relative bounds of the sign and its elements
      */
+    // TODO: Move into roadSign itself
     private Rect maxRelativeBounds() {
         // Size based on bounds of the elements
         var sign = roadSign.get();

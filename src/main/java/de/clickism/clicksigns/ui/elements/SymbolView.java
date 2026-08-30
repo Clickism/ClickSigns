@@ -5,9 +5,9 @@ import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clickui.Component;
+import de.clickism.clickui.UiComponent;
 
-public class SymbolView extends Component<SymbolView>
+public class SymbolView extends UiComponent<SymbolView>
     implements ElementProvider {
 
     private final SymbolElement element;

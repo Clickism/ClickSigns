@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clickui.Element;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;
@@ -9,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-public class TextureSelectScreen extends UiScreen {
+public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
 
     private final Component title;
     private final Collection<TextureList.Entry> entries;
@@ -27,9 +26,8 @@ public class TextureSelectScreen extends UiScreen {
     }
 
     @Override
-    public Element<?> build() {
-        return box()
-            .alignCenter()
+    public void build() {
+        this.alignCenter()
             .grow()
             .padding(8)
             .childGap(8)

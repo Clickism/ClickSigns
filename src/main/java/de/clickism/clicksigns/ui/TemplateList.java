@@ -4,9 +4,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.elements.SignView;
-import de.clickism.clickui.Component;
-import de.clickism.clickui.Element;
-import de.clickism.clickui.UiColor;
+import de.clickism.clickui.*;
 import de.clickism.clickui.reactivity.State;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +12,7 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TemplateList extends Component<TemplateList> {
+public class TemplateList extends UiComponent<TemplateList> {
 
     private Consumer<Template> onTemplateSelected = template -> {};
     private final State<Boolean> showLocal = state(false);
@@ -42,7 +40,6 @@ public class TemplateList extends Component<TemplateList> {
             }
         } else {
             // Add resource templates
-
             // TODO: Add uncategorized templates at the end
             SignRegistries.RESOURCE_TEMPLATES.allCategories().forEach(category -> {
                 box.add(h4(category.name())
@@ -55,9 +52,9 @@ public class TemplateList extends Component<TemplateList> {
         }
     }
 
-    private Element<?> entry(Template template) {
+    private UiElement<?> entry(Template template) {
         return text(template.identifier().getNamespace() + " : " + template.meta().name())
-            .padding(8)
+            .padding(4, 24)
             .growWidth()
             .tooltip(new SignView()
                 .roadSign(template.build()))

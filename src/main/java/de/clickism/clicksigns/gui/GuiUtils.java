@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
@@ -281,5 +282,12 @@ public class GuiUtils {
         int alpha = (color >> 24) & 0xFF;
         int newAlpha = (int) (alpha * factor);
         return (newAlpha << 24) | (color & 0x00FFFFFF);
+    }
+
+    public static void sendClientMessage(String message) {
+        var client = Minecraft.getInstance();
+        if (client.player != null) {
+            client.player.sendSystemMessage(Component.literal(message));
+        }
     }
 }

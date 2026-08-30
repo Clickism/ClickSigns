@@ -58,13 +58,13 @@ public class SignTextField extends TextField implements ElementProvider {
             .background(UiColor.of(background)));
         // Set up listeners so that width is recalculated when needed
         this.onValueChanged(value -> {
-            this.invalidate();
+            this.invalidateLayout();
         });
         this.onFocusEnter(event -> {
-            this.invalidate();
+            this.invalidateLayout();
         });
         this.onFocusExit(event -> {
-            this.invalidate();
+            this.invalidateLayout();
         });
         // Set up height
         var font = GuiUtils.font();

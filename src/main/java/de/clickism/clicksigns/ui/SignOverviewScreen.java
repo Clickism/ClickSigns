@@ -13,10 +13,10 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
-import de.clickism.clickui.Element;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
+import de.clickism.clickui.UiScreenHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
@@ -31,7 +31,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  * Provides an easy way to edit the texts of a road sign, its alignment,
  * change its template, and open the editor.
  */
-public class SignOverviewScreen extends UiScreen {
+public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
 
     private final BlockPos blockPos;
     private RoadSign roadSign;
@@ -50,7 +50,7 @@ public class SignOverviewScreen extends UiScreen {
     }
 
     @Override
-    public Element<?> build() {
+    public void build() {
         Ref<SignView> signViewRef = ref();
         Ref<AlignmentSelector> alignmentSelectorRef = ref();
 
@@ -60,8 +60,7 @@ public class SignOverviewScreen extends UiScreen {
             alignmentSelectorRef.get().alignment(newSign.alignment());
         };
 
-        return box()
-            .alignCenter()
+        this.alignCenter()
             .childGap(8)
             .grow()
             .children(
@@ -152,7 +151,7 @@ public class SignOverviewScreen extends UiScreen {
                                 button(t("📝", "clicksigns.text.change_template"))
                                     .growWidth()
                                     .onClick(event -> {
-                                        GuiUtils.openScreen(new TemplateMenuScreen(this, (template) -> {
+                                        GuiUtils.openScreen(new TemplateMenuScreen(UiScreenHandler.current(), (template) -> {
                                             // Change template
                                             updateSign.accept(template.build());
                                         }));
@@ -172,7 +171,7 @@ public class SignOverviewScreen extends UiScreen {
                                     .growWidth()
                                     .onClick(event -> {
                                         // Open Editor
-                                        GuiUtils.openScreen(new SignEditScreen(roadSign, updateSign, this));
+                                        GuiUtils.openScreen(new SignEditScreen(roadSign, updateSign, UiScreenHandler.current()));
                                     })
                             ),
 

@@ -3,8 +3,8 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clickui.Component;
 import de.clickism.clickui.UiColor;
+import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.style.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
-public class TextureList extends Component<TextureList> {
+public class TextureList extends UiComponent<TextureList> {
 
     private final Map<Category<?>, List<Entry>> categoryToEntries;
 

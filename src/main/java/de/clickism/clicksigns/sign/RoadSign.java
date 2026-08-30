@@ -12,6 +12,7 @@ import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
+import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.layout.Size;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -237,10 +238,6 @@ public record RoadSign(
             .filter(e -> e instanceof PlateElement)
             .map(e -> (PlateElement) e)
             .toList();
-    }
-
-    public boolean isWithinBounds(SignElement element) {
-        return false; // TODO: Implement
     }
 
     /**
