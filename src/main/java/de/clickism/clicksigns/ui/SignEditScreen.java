@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.*;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -25,9 +27,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
     private final Ref<SignEditor> signEditorRef = ref();
     private final Ref<ElementControls> elementControlsRef = ref();
 
-    private int dragStartX = 0;
-    private int dragStartY = 0;
-
     private RoadSign sign;
 
     public SignEditScreen(@NotNull RoadSign sign) {
@@ -39,10 +38,15 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         return this;
     }
 
-    private void sign(RoadSign sign) {
-        this.sign = sign;
-        this.signViewRef.get().roadSign(sign);
-        // TODO: Invalidate or relayout?
+    private void updateSign(Function<RoadSign, RoadSign> updater) {
+        this.sign = updater.apply(currentSign());
+        this.signViewRef.get().roadSign(this.sign);
+    }
+
+    private RoadSign currentSign() {
+        return this.sign
+            // Read the elements from the sign view
+            .withElements(this.signViewRef.get().readElements());
     }
 
     private void selected(SignElement element) {
@@ -52,20 +56,11 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
     @Override
     public void build() {
-        var panelWidth = 120;
-
         this.grow()
             .horizontal()
             .children(
                 // Left panel
-                box()
-                    .width(panelWidth)
-                    .growHeight()
-                    .padding(8)
-                    .crossAlign(Align.CENTER)
-                    .style(s -> s
-                        .background(UiColor.BLACK_A50)
-                        .border(UiColor.GRAY))
+                panel()
                     .children(
                         // Scroll container
                         box()
@@ -75,6 +70,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 new SignControls()
                                     .ref(signControlsRef)
                                     .grow()
+                                    .crossAlign(Align.CENTER)
                             )
                     ),
 
@@ -92,14 +88,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                     ),
 
                 // Right panel
-                box()
-                    .width(panelWidth)
-                    .growHeight()
-                    .padding(8)
-                    .crossAlign(Align.CENTER)
-                    .style(s -> s
-                        .background(UiColor.BLACK_A50)
-                        .border(UiColor.GRAY))
+                panel()
                     .children(
                         // Scroll container
                         box()
@@ -109,12 +98,18 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 new ElementControls()
                                     .ref(elementControlsRef)
                                     .grow()
+                                    .crossAlign(Align.CENTER)
                             )
                     )
             );
     }
 
     private class SignEditor extends UiComponent<SignEditor> {
+
+        private int dragStartX = 0;
+        private int dragStartY = 0;
+        private SignElement draggedElement = null;
+        private int draggedElementIndex = -1;
 
         @Override
         protected void build() {
@@ -131,7 +126,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             .style(s -> s
                                 .whenHovered(h -> h
                                     .border(UiColor.RED))
-                                .when(context -> signElement == selected, l -> l
+                                .when(context -> signElement == selected || signElement == draggedElement, l -> l
                                     // TODO: Render origin
                                     .border(UiColor.GREEN)))
                             // Update selected on click
@@ -141,6 +136,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             .onDragStart(event -> {
                                 dragStartX = signElement.localX();
                                 dragStartY = signElement.localY();
+                                draggedElement = signElement;
+                                draggedElementIndex = signViewRef.get().readElements().indexOf(signElement);
                             })
                             // Drag controls
                             .onDrag(event -> {
@@ -151,31 +148,32 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 int newX = dragStartX + deltaX;
                                 int newY = dragStartY - deltaY;
 
-                                if (selected == null) return;
+                                if (draggedElement == null) return;
+                                if (draggedElementIndex == -1) return;
 
-                                if (newX == selected.localX() && newY == selected.localY()) {
+                                if (newX == draggedElement.localX() && newY == draggedElement.localY()) {
                                     // No change
                                     return;
                                 }
 
-                                var selectedHash = System.identityHashCode(selected);
-                                var elementHash = System.identityHashCode(signElement);
-
-                                GuiUtils.sendClientMessage(
-                                    "Moving element %s to (%d, %d). Selected: %s".formatted(elementHash, newX, newY, selectedHash)
-                                );
-
-                                // Causes new elements to build, and thus we lose track of the dragged element, and they are sent to the old ones
-                                sign(sign.replaceElement(selected, selected.withPosition(newX, newY)));
+                                // Replace the element in the sign with a new one at the new position
+                                updateSign(sign -> {
+                                    // Use index since it is stable, and the element may have been replaced already
+                                    var element = sign.elements().get(draggedElementIndex);
+                                    var newElement = element.withPosition(newX, newY);
+                                    draggedElement = newElement;
+                                    return sign.replaceElement(element, newElement);
+                                });
                             });
                     }),
+                box().height(16), // Spacer
                 // Show size
                 text("Size: %d x %d".formatted(sign.width(), sign.height())),
                 // Confirm
                 button(ComponentUtil.confirmWithIcon())
                     .onClick(event -> {
                         // Callback and close
-                        onSignUpdate.accept(sign);
+                        onSignUpdate.accept(currentSign());
                         close();
                     })
             );
@@ -203,8 +201,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
     }
 
     /**
-     * The element controls, meant for editing the
-     * selected element.
+     * The element controls, meant for editing the selected element.
      */
     private class ElementControls extends UiComponent<ElementControls> {
         private final State<SignElement> element = state(null);
@@ -223,16 +220,41 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 return;
             }
 
-            add(text(element.getClass().getSimpleName() + " (ID: " + System.identityHashCode(element) + ")"));
+            // Text controls
+            if (element instanceof TextElement text) {
+                add(h5(t("clicksigns.editor.text_element")));
+                add(textField(text.text())
+                    .value(text.text())
+                    .onValueChanged(newText -> {
+                        updateSign(sign -> sign.replaceElement(selected, text.withText(newText)));
+                    }));
 
+                add(h5("Color"));
+                add(textField()
+                    .value(text.color())
+                    .onValueChanged(newColor -> {
+                        updateSign(sign -> sign.replaceElement(selected, text.withColor(newColor)));
+                    })
+                );
+            }
 
             // Delete button
             add(h5(t("clicksigns.editor.other")));
             add(button(t("🗑", "clicksigns.editor.tools.remove_element"))
                 .onClick(event -> {
-                    // TODO: Update sign (and other elements?)
-                    sign(sign.removeElement(element));
+                    updateSign(sign -> sign.removeElement(selected));
                 }));
         }
+    }
+
+    private UiElement<?> panel() {
+        var panelWidth = 120;
+        return box()
+            .width(panelWidth)
+            .growHeight()
+            .padding(8)
+            .style(s -> s
+                .background(UiColor.BLACK_A70)
+                .border(UiColor.LIGHT_GRAY).alpha(0.5f));
     }
 }

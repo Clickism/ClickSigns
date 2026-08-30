@@ -4,7 +4,6 @@ import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
 import de.clickism.clicksigns.gui.screen.template.TemplateMenuScreen;
-import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.registry.SignRegistries;
@@ -21,6 +20,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -60,6 +60,12 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
             alignmentSelectorRef.get().alignment(newSign.alignment());
         };
 
+        Supplier<RoadSign> currentSign = () -> this.roadSign
+            // Make sure elements are up to date from text fields
+            .withElements(signViewRef.get().readElements())
+            // Make sure alignment is up to date from selector
+            .withAlignment(alignmentSelectorRef.get().alignment());
+
         this.alignCenter()
             .childGap(8)
             .grow()
@@ -83,10 +89,12 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                 .onClick(event -> {
                                     event.playSound();
                                     // TODO: Refactor
+                                    // Left click
                                     if (GuiUtils.isLeftClick(event.button())) {
                                         // Cycle to next symbol in the same category
                                         var nextSymbol = symbol.symbol().nextInCategory();
-                                        var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(nextSymbol));
+                                        var newSign = currentSign.get()
+                                            .replaceElement(symbol, symbol.withSymbol(nextSymbol));
                                         updateSign.accept(newSign);
                                     }
                                     // Right click
@@ -105,7 +113,8 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                             .onTextureSelected(entry -> {
                                                 var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
                                                 if (newSymbol == null) return;
-                                                var newSign = roadSign.replaceElement(symbol, symbol.withSymbol(newSymbol));
+                                                var newSign = currentSign.get()
+                                                    .replaceElement(symbol, symbol.withSymbol(newSymbol));
                                                 updateSign.accept(newSign);
                                             }).open();
                                     }
@@ -134,16 +143,10 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                 button(t("✔", "clicksigns.text.confirm"))
                                     .growWidth()
                                     .onClick(event -> {
-                                        // Read and update sign
-                                        var newElements = signViewRef.get().elementProviders().stream()
-                                            .map(ElementProvider::element)
-                                            .toList();
-                                        var newAlignment = alignmentSelectorRef.get().alignment();
-                                        var newSign = this.roadSign
-                                            .withElements(newElements)
-                                            .withAlignment(newAlignment);
                                         // Send packet
-                                        Platform.network().sendToServer(new RoadSignUpdatePacket(blockPos, newSign));
+                                        Platform.network().sendToServer(
+                                            new RoadSignUpdatePacket(blockPos, currentSign.get())
+                                        );
                                         // Close screen
                                         this.close();
                                     }),
@@ -189,7 +192,6 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     .alignment(roadSign.alignment())
                                     .ref(alignmentSelectorRef)
                             )
-
                     )
             );
     }

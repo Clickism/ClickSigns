@@ -3,7 +3,10 @@ package de.clickism.clicksigns.ui.elements;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.gui.util.ElementProvider;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.layout.Rect;
@@ -36,10 +39,6 @@ public class SignView extends UiComponent<SignView> {
      * @return this SignView instance for method chaining
      */
     public SignView roadSign(@NotNull RoadSign sign) {
-        this.elementProviders.clear();
-        sign.elements().forEach(element -> {
-            this.elementProviders.add(() -> element);
-        });
         // TODO: Make sure that this memo/rebuild cycle makes sense
         // Clear memo since the elements can be different now
         this.clearMemo();
@@ -54,6 +53,17 @@ public class SignView extends UiComponent<SignView> {
      */
     public List<ElementProvider> elementProviders() {
         return this.elementProviders;
+    }
+
+    /**
+     * Returns a list of SignElements provided by the element providers in this SignView.
+     *
+     * @return a list of SignElements
+     */
+    public List<SignElement> readElements() {
+        return this.elementProviders.stream()
+            .map(ElementProvider::element)
+            .toList();
     }
 
     /**
@@ -109,24 +119,41 @@ public class SignView extends UiComponent<SignView> {
 
         add(GuiUtils.imageOf(texture)
             .relative(-maxBounds.x(), -maxBounds.y()));
+
         // Add elements
-        // Add plate elements
-        for (var plate : roadSign.plateElements()) {
-            var plateElement = memo(() -> new PlateView(plate, roadSign.colorResolver()));
-            addAndPositionElement(plateElement, maxBounds);
-            elementConfig.accept(plateElement, plate);
-        }
-        // Add symbol elements
-        for (var symbol : roadSign.symbolElements()) {
-            var symbolElement = memo(() -> new SymbolView(symbol, roadSign.colorResolver()));
-            addAndPositionElement(symbolElement, maxBounds);
-            elementConfig.accept(symbolElement, symbol);
-        }
-        // Add text elements last to render on top of symbols
-        for (var textElement : roadSign.textElements()) {
-            var textField = memo(() -> new SignTextField(textElement, roadSign.colorResolver()));
-            addAndPositionElement(textField, maxBounds);
-            elementConfig.accept(textField, textElement);
+        roadSign.plateElements().forEach(element -> addUiElementFor(element, maxBounds));
+        roadSign.symbolElements().forEach(element -> addUiElementFor(element, maxBounds));
+        roadSign.textElements().forEach(element -> addUiElementFor(element, maxBounds));
+    }
+
+    /**
+     * Creates, positions, and configures a UI element for the given SignElement.
+     *
+     * @param element   the SignElement for which to create a UI element
+     * @param maxBounds the maximum bounds of the sign and its elements, used for positioning
+     */
+    private void addUiElementFor(SignElement element, Rect maxBounds) {
+        var elementView = memo(() -> createViewFor(element));
+        addAndPositionElement(elementView, maxBounds);
+        elementConfig.accept(elementView, element);
+    }
+
+    /**
+     * Creates a UI element view for the given SignElement based on its type.
+     *
+     * @param element the SignElement for which to create a view
+     * @return a UiElement representing the view for the given SignElement
+     */
+    protected UiElement<?> createViewFor(SignElement element) {
+        var colorResolver = roadSign.get().colorResolver();
+        if (element instanceof PlateElement plate) {
+            return new PlateView(plate, colorResolver);
+        } else if (element instanceof SymbolElement symbol) {
+            return new SymbolView(symbol, colorResolver);
+        } else if (element instanceof TextElement text) {
+            return new SignTextField(text, colorResolver);
+        } else {
+            throw new IllegalArgumentException("Unknown SignElement type: " + element.getClass().getName());
         }
     }
 
@@ -135,7 +162,7 @@ public class SignView extends UiComponent<SignView> {
      *
      * @return a Rect representing the maximum relative bounds of the sign and its elements
      */
-    // TODO: Move into roadSign itself
+    // TODO: Move into roadSign itself?
     private Rect maxRelativeBounds() {
         // Size based on bounds of the elements
         var sign = roadSign.get();
