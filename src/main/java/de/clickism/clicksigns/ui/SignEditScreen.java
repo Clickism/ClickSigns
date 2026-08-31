@@ -1,25 +1,26 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.ui.editor.EditableRoadSign;
+import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.*;
 import de.clickism.clickui.layout.Align;
-import de.clickism.clickui.reactivity.State;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class SignEditScreen extends UiScreen<SignEditScreen> {
-    private @Nullable SignElement selected = null;
+
+    private EditableRoadSign sign;
+    private @Nullable EditableSignElement selected = null;
+
     private Consumer<RoadSign> onSignUpdate = sign -> {};
 
     private final Ref<SignView> signViewRef = ref();
@@ -27,10 +28,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
     private final Ref<SignEditor> signEditorRef = ref();
     private final Ref<ElementControls> elementControlsRef = ref();
 
-    private RoadSign sign;
-
     public SignEditScreen(@NotNull RoadSign sign) {
-        this.sign = sign;
+        this.sign = new EditableRoadSign(sign);
+        this.sign.addChangeListener(change -> {
+            // Update the sign view and controls when the sign changes
+            this.signControlsRef.get().invalidateTree();
+            this.elementControlsRef.get().invalidateTree();
+        });
     }
 
     public SignEditScreen onSignUpdate(Consumer<RoadSign> onSignUpdate) {
@@ -38,20 +42,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         return this;
     }
 
-    private void updateSign(Function<RoadSign, RoadSign> updater) {
-        this.sign = updater.apply(currentSign());
-        this.signViewRef.get().roadSign(this.sign);
-    }
-
-    private RoadSign currentSign() {
-        return this.sign
-            // Read the elements from the sign view
-            .withElements(this.signViewRef.get().readElements());
-    }
-
-    private void selected(SignElement element) {
+    private void selected(EditableSignElement element) {
         this.selected = element;
-        this.elementControlsRef.get().element.update(element);
+        this.elementControlsRef.get().invalidateTree();
     }
 
     @Override
@@ -108,36 +101,35 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
         private int dragStartX = 0;
         private int dragStartY = 0;
-        private SignElement draggedElement = null;
-        private int draggedElementIndex = -1;
+        private EditableSignElement draggedElement = null;
 
         @Override
         protected void build() {
             childGap(8);
+            var build = sign.build();
             children(
                 // TODO: Resize controls!
                 // Sign view
-                new SignView()
+                memo(() -> new SignView(sign)
                     .ref(signViewRef)
-                    .roadSign(sign)
-                    .elementConfig((uiElement, signElement) -> {
+                    .elementConfig((uiElement, editableElement) -> {
                         uiElement
                             // Hover style
                             .style(s -> s
                                 .whenHovered(h -> h
                                     .border(UiColor.RED))
-                                .when(context -> signElement == selected || signElement == draggedElement, l -> l
+                                .when(context -> editableElement.equals(selected) ||
+                                                 editableElement.equals(draggedElement), l -> l
                                     // TODO: Render origin
                                     .border(UiColor.GREEN)))
                             // Update selected on click
                             .onClick(event -> {
-                                selected(signElement);
+                                selected(editableElement);
                             })
                             .onDragStart(event -> {
-                                dragStartX = signElement.localX();
-                                dragStartY = signElement.localY();
-                                draggedElement = signElement;
-                                draggedElementIndex = signViewRef.get().readElements().indexOf(signElement);
+                                dragStartX = editableElement.current().localX();
+                                dragStartY = editableElement.current().localY();
+                                draggedElement = editableElement;
                             })
                             // Drag controls
                             .onDrag(event -> {
@@ -149,31 +141,28 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 int newY = dragStartY - deltaY;
 
                                 if (draggedElement == null) return;
-                                if (draggedElementIndex == -1) return;
 
-                                if (newX == draggedElement.localX() && newY == draggedElement.localY()) {
+                                var currentElement = draggedElement.current();
+                                if (newX == currentElement.localX() && newY == currentElement.localY()) {
                                     // No change
                                     return;
                                 }
 
                                 // Replace the element in the sign with a new one at the new position
-                                updateSign(sign -> {
-                                    // Use index since it is stable, and the element may have been replaced already
-                                    var element = sign.elements().get(draggedElementIndex);
-                                    var newElement = element.withPosition(newX, newY);
-                                    draggedElement = newElement;
-                                    return sign.replaceElement(element, newElement);
-                                });
+                                sign.updateElement(
+                                    draggedElement.id(),
+                                    element -> element.withPosition(newX, newY)
+                                );
                             });
-                    }),
+                    })),
                 box().height(16), // Spacer
                 // Show size
-                text("Size: %d x %d".formatted(sign.width(), sign.height())),
-                // Confirm
+                text("Size: %d x %d".formatted(build.width(), build.height())),
+                // Confirm button
                 button(ComponentUtil.confirmWithIcon())
                     .onClick(event -> {
                         // Callback and close
-                        onSignUpdate.accept(currentSign());
+                        onSignUpdate.accept(sign.build());
                         close();
                     })
             );
@@ -187,6 +176,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
     private class SignControls extends UiComponent<SignControls> {
         @Override
         protected void build() {
+            childGap(4);
             children(
                 h4(t("clicksigns.editor.sign_properties")),
                 // Add texture selection
@@ -204,15 +194,12 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
      * The element controls, meant for editing the selected element.
      */
     private class ElementControls extends UiComponent<ElementControls> {
-        private final State<SignElement> element = state(null);
-
         @Override
         protected void build() {
-            var element = this.element.get();
-
+            childGap(4);
             add(h4(t("clicksigns.editor.element_properties")));
 
-            if (element == null) {
+            if (selected == null) {
                 // No element selecteed
                 add(text(t("clicksigns.editor.no_element_selected"))
                     .style(s -> s
@@ -221,28 +208,42 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             }
 
             // Text controls
-            if (element instanceof TextElement text) {
-                add(h5(t("clicksigns.editor.text_element")));
-                add(textField(text.text())
-                    .value(text.text())
-                    .onValueChanged(newText -> {
-                        updateSign(sign -> sign.replaceElement(selected, text.withText(newText)));
-                    }));
-
+            var current = selected.current();
+            if (current instanceof TextElement text) {
                 add(h5("Color"));
-                add(textField()
+
+                add(memo(selected.id() + "-fg", () -> textField()
+                    .tooltip("Text Color")
                     .value(text.color())
                     .onValueChanged(newColor -> {
-                        updateSign(sign -> sign.replaceElement(selected, text.withColor(newColor)));
+                        if (selected == null) return;
+                        sign.updateElement(selected.id(),
+                            element -> ((TextElement) element).withColor(newColor));
                     })
-                );
+                ));
+
+                add(memo(selected.id() + "-bg", () -> textField()
+                    .tooltip("Background Color")
+                    .value(text.backgroundColor() == null
+                        ? ""
+                        : text.backgroundColor())
+                    .onValueChanged(newColor -> {
+                        if (selected == null) return;
+                        var newColorValue = newColor.isEmpty()
+                            ? null
+                            : newColor;
+                        sign.updateElement(selected.id(),
+                            element -> ((TextElement) element).withBackgroundColor(newColorValue));
+                    })
+                ));
             }
 
             // Delete button
             add(h5(t("clicksigns.editor.other")));
             add(button(t("🗑", "clicksigns.editor.tools.remove_element"))
                 .onClick(event -> {
-                    updateSign(sign -> sign.removeElement(selected));
+                    if (selected == null) return;
+                    sign.removeElement(selected.id());
                 }));
         }
     }

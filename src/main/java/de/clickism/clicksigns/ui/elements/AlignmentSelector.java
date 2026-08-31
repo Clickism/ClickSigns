@@ -6,6 +6,7 @@ import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.reactivity.State;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class AlignmentSelector extends UiComponent<AlignmentSelector> {
     private static final int BUTTON_SIZE = 20;
@@ -25,6 +26,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
     );
 
     private final State<Alignment> alignment = state(Alignment.TOP_RIGHT);
+    private Consumer<Alignment> onAlignmentChange = alignment -> {};
 
     public Alignment alignment() {
         return alignment.get();
@@ -35,8 +37,14 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
         return this;
     }
 
+    public AlignmentSelector onAlignmentChange(Consumer<Alignment> listener) {
+        this.onAlignmentChange = listener;
+        return this;
+    }
+
     @Override
     protected void build() {
+        // TODO: Doesnt need to be reactive
         var currentAlignment = alignment.get();
         // Build the UI for the alignment selector here
         var grid = grid(3)
@@ -50,7 +58,10 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
                 .style(s -> s
                     .when(context -> !a.equals(currentAlignment), o -> o
                         .alpha(GuiUtils.INACTIVE_ALPHA)))
-                .onClick(event -> alignment.update(a));
+                .onClick(event -> {
+                    alignment.update(a);
+                    onAlignmentChange.accept(a);
+                });
             grid.add(button);
         }
     }

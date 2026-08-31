@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
+import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
@@ -76,8 +77,7 @@ public class TemplateList extends UiComponent<TemplateList> {
         return text(template.identifier().getNamespace() + " : " + template.meta().name())
             .padding(5, 12, 4, 12)
             .growWidth()
-            .tooltip(new SignView()
-                .roadSign(template.build()))
+            .tooltip(new SignView(new EditableRoadSign(template.build())))
             .style(s -> s
                 .whenHovered(h -> h
                     .background(UiColor.WHITE_A30))

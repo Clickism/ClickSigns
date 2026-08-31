@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.UUID;
 
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.sign.ColorResolver.toHexString;
@@ -23,13 +24,13 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * @param backgroundColor RGBA color of the text background, or 0 for no background
  */
 public record TextElement(
-        int localX,
-        int localY,
-        Alignment alignment,
-        String text,
-        float scale,
-        String color,
-        @Nullable String backgroundColor
+    int localX,
+    int localY,
+    Alignment alignment,
+    String text,
+    float scale,
+    String color,
+    @Nullable String backgroundColor
 ) implements SignElement {
     /**
      * Type key
@@ -53,10 +54,10 @@ public record TextElement(
 
     private int calculateSignDimension(int dimension) {
         return Mth.ceil(
-                dimension // Dimension of text in blocks
-                * BLOCK_PIXELS // Convert to pixels
-                * TEXT_RENDER_SCALE // Apply render scale
-                * this.scale() // Apply scale
+            dimension // Dimension of text in blocks
+            * BLOCK_PIXELS // Convert to pixels
+            * TEXT_RENDER_SCALE // Apply render scale
+            * this.scale() // Apply scale
         );
     }
 
@@ -64,7 +65,9 @@ public record TextElement(
      * Creates a new TextElement with the given parameters.
      */
     public TextElement(int localX, int localY, Alignment alignment, String text, float scale, Color color, @Nullable Color backgroundColor) {
-        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null ? toHexString(backgroundColor) : null);
+        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null
+            ? toHexString(backgroundColor)
+            : null);
     }
 
     /**

@@ -10,6 +10,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.Ref;
@@ -18,9 +19,6 @@ import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.UiScreenHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -34,7 +32,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
 
     private final BlockPos blockPos;
-    private RoadSign roadSign;
+    private final EditableRoadSign roadSign;
 
     /**
      * Creates a new road sign overview screen for the given block entity.
@@ -43,44 +41,33 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
      */
     public SignOverviewScreen(RoadSignBlockEntity entity) {
         this.blockPos = entity.getBlockPos();
-        this.roadSign = entity.roadSign();
-        if (this.roadSign == null) {
-            this.roadSign = RoadSign.DEFAULT;
+        // Use entity road sign or default if null
+        var roadSign = entity.roadSign();
+        if (roadSign == null) {
+            roadSign = RoadSign.DEFAULT;
         }
+        this.roadSign = new EditableRoadSign(roadSign);
     }
 
     @Override
     public void build() {
         Ref<SignView> signViewRef = ref();
-        Ref<AlignmentSelector> alignmentSelectorRef = ref();
-
-        Consumer<RoadSign> updateSign = newSign -> {
-            this.roadSign = newSign;
-            signViewRef.get().roadSign(newSign);
-            alignmentSelectorRef.get().alignment(newSign.alignment());
-        };
-
-        Supplier<RoadSign> currentSign = () -> this.roadSign
-            // Make sure elements are up to date from text fields
-            .withElements(signViewRef.get().readElements())
-            // Make sure alignment is up to date from selector
-            .withAlignment(alignmentSelectorRef.get().alignment());
 
         this.alignCenter()
             .childGap(8)
             .grow()
             .children(
                 // Sign view
-                new SignView()
-                    .roadSign(roadSign)
+                new SignView(roadSign)
                     .ref(signViewRef)
                     // Set up element logic
-                    .elementConfig((uiElement, signElement) -> {
+                    .elementConfig((uiElement, editableSignElement) -> {
                         // TODO: No hover style for plate?
                         uiElement.style(s -> s
                             .whenHovered(h -> h
                                 .border(UiColor.RED)));
                         // Element specific config
+                        var signElement = editableSignElement.current();
                         if (signElement instanceof TextElement) {
                             uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
                         } else if (signElement instanceof SymbolElement symbol) {
@@ -93,16 +80,18 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     if (GuiUtils.isLeftClick(event.button())) {
                                         // Cycle to next symbol in the same category
                                         var nextSymbol = symbol.symbol().nextInCategory();
-                                        var newSign = currentSign.get()
-                                            .replaceElement(symbol, symbol.withSymbol(nextSymbol));
-                                        updateSign.accept(newSign);
+                                        roadSign.updateElement(
+                                            editableSignElement.id(),
+                                            element -> ((SymbolElement) element).withSymbol(nextSymbol)
+                                        );
                                     }
                                     // Right click
                                     if (GuiUtils.isRightClick(event.button())) {
                                         // Open symbol menu
+                                        var colorResolver = roadSign.build().colorResolver();
                                         var entries = SignRegistries.SYMBOLS.all().stream()
                                             .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
-                                                s.texture().resolve(roadSign.colorResolver()),
+                                                s.texture().resolve(colorResolver),
                                                 s.identifier(),
                                                 // TODO: Handle uncategorized symbols
                                                 s.resolveCategory()
@@ -113,9 +102,10 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                             .onTextureSelected(entry -> {
                                                 var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
                                                 if (newSymbol == null) return;
-                                                var newSign = currentSign.get()
-                                                    .replaceElement(symbol, symbol.withSymbol(newSymbol));
-                                                updateSign.accept(newSign);
+                                                roadSign.updateElement(
+                                                    editableSignElement.id(),
+                                                    element -> ((SymbolElement) element).withSymbol(newSymbol)
+                                                );
                                             }).open();
                                     }
                                 });
@@ -145,7 +135,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     .onClick(event -> {
                                         // Send packet
                                         Platform.network().sendToServer(
-                                            new RoadSignUpdatePacket(blockPos, currentSign.get())
+                                            new RoadSignUpdatePacket(blockPos, roadSign.build())
                                         );
                                         // Close screen
                                         this.close();
@@ -156,7 +146,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     .onClick(event -> {
                                         GuiUtils.openScreen(new TemplateMenuScreen(UiScreenHandler.current(), (template) -> {
                                             // Change template
-                                            updateSign.accept(template.build());
+                                            roadSign.loadSign(template.build());
                                         }));
                                     }),
                                 button("New Template Screen")
@@ -165,8 +155,8 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     }),
                                 button("New Edit Screen")
                                     .onClick(e -> {
-                                        new de.clickism.clicksigns.ui.SignEditScreen(roadSign)
-                                            .onSignUpdate(updateSign)
+                                        new de.clickism.clicksigns.ui.SignEditScreen(roadSign.build())
+                                            .onSignUpdate(roadSign::loadSign)
                                             .open();
                                     }),
                                 // Edit button
@@ -174,7 +164,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     .growWidth()
                                     .onClick(event -> {
                                         // Open Editor
-                                        GuiUtils.openScreen(new SignEditScreen(roadSign, updateSign, UiScreenHandler.current()));
+                                        GuiUtils.openScreen(new SignEditScreen(roadSign.build(), roadSign::loadSign, UiScreenHandler.current()));
                                     })
                             ),
 
@@ -190,7 +180,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                 // Selector
                                 new AlignmentSelector()
                                     .alignment(roadSign.alignment())
-                                    .ref(alignmentSelectorRef)
+                                    .onAlignmentChange(roadSign::alignment)
                             )
                     )
             );

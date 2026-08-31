@@ -27,8 +27,8 @@ public class SignTextField extends TextField implements ElementProvider {
     private static final int MIN_WIDTH = 4;
     private static final int BACKGROUND_PADDING = 3;
 
-    private final TextElement element;
-    private final ColorResolver colorResolver;
+    private TextElement element;
+    private ColorResolver colorResolver;
 
     // TODO: Refactor renderScale?
     private final float renderScale;
@@ -51,11 +51,7 @@ public class SignTextField extends TextField implements ElementProvider {
         this.placeholder("Text");
         this.value(element.text());
         // Set up style
-        var background = element.backgroundColor() == null
-            ? null
-            : colorResolver.resolve(element.backgroundColor());
-        this.overrideStyle(Style.empty()
-            .background(UiColor.of(background)));
+        updateStyle();
         // Set up listeners so that width is recalculated when needed
         this.onValueChanged(value -> {
             this.invalidateLayout();
@@ -75,6 +71,27 @@ public class SignTextField extends TextField implements ElementProvider {
             padding = Mth.ceil(BACKGROUND_PADDING * element.scale());
         }
         this.padding(1, padding, 0, padding);
+    }
+
+    public SignTextField textElement(TextElement element) {
+        this.element = element;
+        updateStyle();
+        return this;
+    }
+
+    public SignTextField colorResolver(ColorResolver colorResolver) {
+        this.colorResolver = colorResolver;
+        updateStyle();
+        return this;
+    }
+
+    private void updateStyle() {
+        // Set up style
+        var background = element.backgroundColor() == null
+            ? null
+            : colorResolver.resolve(element.backgroundColor());
+        this.overrideStyle(Style.empty()
+            .background(UiColor.of(background)));
     }
 
     @Override
