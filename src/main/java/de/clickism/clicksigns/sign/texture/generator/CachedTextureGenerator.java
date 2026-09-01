@@ -75,7 +75,7 @@ public abstract class CachedTextureGenerator {
      * @return a NativeImage representing the opened image
      * @throws Exception if the image cannot be found or read using any of the methods
      */
-    protected static NativeImage openImage(ResourceLocation location) throws Exception {
+    public static NativeImage openImage(ResourceLocation location) throws Exception {
         // Try resource manager
         var minecraft = Minecraft.getInstance();
         try {

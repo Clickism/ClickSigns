@@ -15,9 +15,16 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
 
     private Consumer<TextureList.Entry> onTextureSelected = entry -> {};
 
-    public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries) {
+    private final UiColor backgroundColor;
+
+    public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries, UiColor backgroundColor) {
         this.title = title;
         this.entries = entries;
+        this.backgroundColor = backgroundColor;
+    }
+
+    public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries) {
+        this(title, entries, UiColor.BLACK.alpha(0.5f));
     }
 
     public TextureSelectScreen onTextureSelected(Consumer<TextureList.Entry> onTextureSelected) {
@@ -48,7 +55,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
                         .backgroundColor(UiColor.BLACK.alpha(0.5f))
                     )
                     .children(
-                        new TextureList(entries)
+                        new TextureList(entries, backgroundColor)
                             .onTextureSelected(texture -> {
                                 onTextureSelected.accept(texture);
                                 close();

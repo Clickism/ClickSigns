@@ -10,6 +10,9 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
@@ -88,7 +91,8 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     // Right click
                                     if (GuiUtils.isRightClick(event.button())) {
                                         // Open symbol menu
-                                        var colorResolver = roadSign.build().colorResolver();
+                                        var built = roadSign.build();
+                                        var colorResolver = built.colorResolver();
                                         var entries = SignRegistries.SYMBOLS.all().stream()
                                             .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
                                                 s.texture().resolve(colorResolver),
@@ -98,7 +102,16 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                             ))
                                             .toList();
 
-                                        new TextureSelectScreen(l("Select Symbol"), entries)
+                                        // Find sign background primary color
+                                        var backgroundColor = UiColor.BLACK_A50;
+                                        if (built.frontSource() instanceof TiledTextureSource tiled) {
+                                            var primary = tiled.primaryColor();
+                                            if (primary != null) {
+                                                backgroundColor = UiColor.rgba(primary);
+                                            }
+                                        }
+
+                                        new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
                                             .onTextureSelected(entry -> {
                                                 var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
                                                 if (newSymbol == null) return;
