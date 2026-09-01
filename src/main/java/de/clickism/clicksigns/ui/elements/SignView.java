@@ -7,15 +7,16 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
+import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.layout.Point;
 import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.layout.Size;
+import de.clickism.clickui.render.RenderContext;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
@@ -24,15 +25,27 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
  * A UI component that displays a road sign with its texture and elements.
  */
 // TODO: Rename to Sign Editor
-// TODO: Add way to disable text input
 public class SignView extends UiComponent<SignView> {
+    /**
+     * The editable road sign that this SignView displays and allows editing of.
+     */
     private final EditableRoadSign roadSign;
-    // TODO: Guidelines
 
     private BiConsumer<UiElement<?>, EditableSignElement> elementConfig =
         (uiElement, signElement) -> {};
-    private final Map<UUID, UiElement<?>> elementViews = new java.util.HashMap<>();
 
+    /**
+     * The bounds of the main sign texture, used for rendering guidelines.
+     */
+    private @Nullable UiElement<?> mainSignElement = null;
+
+    private boolean renderGuidelines = false;
+
+    /**
+     * Creates a new SignView for the given EditableRoadSign.
+     *
+     * @param roadSign the editable road sign to display and edit
+     */
     public SignView(EditableRoadSign roadSign) {
         this.roadSign = roadSign;
         this.roadSign.addChangeListener(change -> {
@@ -52,6 +65,17 @@ public class SignView extends UiComponent<SignView> {
         return this;
     }
 
+    /**
+     * Sets whether to render guidelines for the sign.
+     *
+     * @param renderGuidelines true to render guidelines, false otherwise
+     * @return this SignView instance for method chaining
+     */
+    public SignView renderGuidelines(boolean renderGuidelines) {
+        this.renderGuidelines = renderGuidelines;
+        return this;
+    }
+
     @Override
     public Size intrinsicSize() {
         var bounds = maxRelativeBounds();
@@ -63,14 +87,14 @@ public class SignView extends UiComponent<SignView> {
 
     @Override
     protected void build() {
-        elementViews.clear();
         // Calculate maximum bounds of the sign and its elements
         var maxBounds = maxRelativeBounds();
         // Add main texture
         var texture = roadSign.build().frontTexture();
-
-        add(GuiUtils.imageOf(texture)
-            .relative(-maxBounds.x(), -maxBounds.y()));
+        var mainSignElement = GuiUtils.imageOf(texture)
+            .relative(-maxBounds.x(), -maxBounds.y());
+        this.mainSignElement = mainSignElement;
+        add(mainSignElement);
 
         // Add plate elements
         roadSign.elements().stream()
@@ -86,6 +110,41 @@ public class SignView extends UiComponent<SignView> {
         roadSign.elements().stream()
             .filter(element -> element.current() instanceof TextElement)
             .forEach(element -> addElementView(element, maxBounds));
+    }
+
+    @Override
+    public void render(RenderContext context) {
+        if (!renderGuidelines) return;
+        var children = children();
+        if (children.isEmpty()) return;
+        // Render guidelines for the main sign
+        var mainSignBounds = children().get(0).bounds();
+        renderGuidelinesFor(context, mainSignBounds);
+        // Render guidelines for plate elements
+        for (var child : children()) {
+            if (child instanceof PlateView) {
+                renderGuidelinesFor(context, child.bounds());
+            }
+        }
+    }
+
+    private void renderGuidelinesFor(RenderContext context, Rect bounds) {
+        var graphics = context.graphics();
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 10); // Render on top of other elements
+        // Draw center lines
+        var color = UiColor.RED.color();
+        var lineWidth = 1;
+        var x = bounds.x();
+        var y = bounds.y();
+        var width = bounds.width();
+        var height = bounds.height();
+        var centerX = x + width / 2;
+        var centerY = y + height / 2;
+        graphics.fill(centerX, y, centerX + lineWidth, y + height, color);
+        graphics.fill(x, centerY, x + width, centerY + lineWidth, color);
+
+        graphics.pose().popPose();
     }
 
     /**
@@ -104,7 +163,6 @@ public class SignView extends UiComponent<SignView> {
         elementConfig.accept(view, element);
         // Add to the view
         add(view);
-        elementViews.put(element.id(), view);
     }
 
     /**
@@ -194,5 +252,22 @@ public class SignView extends UiComponent<SignView> {
     public void resetTextFieldCache() {
         clearMemo();
         clearMemoKeys();
+    }
+
+    /**
+     * Converts a point in local sign coordinates to screen coordinates.
+     *
+     * @param local the point in local sign coordinates
+     * @return the corresponding point in screen coordinates
+     */
+    public Point screenPositionOf(Point local) {
+        if (mainSignElement == null) {
+            throw new IllegalStateException("SignView has not been built yet.");
+        }
+        var bounds = mainSignElement.bounds();
+        return new Point(
+            bounds.x() + local.x() * DEFAULT_TEXTURE_RENDER_SCALE,
+            bounds.y() + bounds.height() - local.y() * DEFAULT_TEXTURE_RENDER_SCALE
+        );
     }
 }

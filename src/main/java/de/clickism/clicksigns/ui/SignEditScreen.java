@@ -21,7 +21,6 @@ import de.clickism.clickui.layout.Point;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -77,7 +76,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                     ),
 
                 // Center editor
-                // TODO: Make scrollable?
                 box()
                     .grow()
                     .alignCenter()
@@ -104,7 +102,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
         private int dragStartX = 0;
         private int dragStartY = 0;
-        private EditableSignElement draggedElement = null;
+        private EditableSignElement dragged = null;
 
         @Override
         protected void build() {
@@ -115,24 +113,38 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 // Sign view
                 memo(() -> new SignView(sign)
                     .ref(signViewRef)
-                    .elementConfig((uiElement, editableElement) -> {
+                    .elementConfig((uiElement, editable) -> {
                         uiElement
                             // Hover style
                             .style(style()
                                 .whenHovered(style()
                                     .borderColor(UiColor.RED))
-                                .when(context -> editableElement.equals(selected) ||
-                                                 editableElement.equals(draggedElement), style()
-                                    // TODO: Render origin
-                                    .borderColor(UiColor.GREEN)))
+                                .when(context -> editable.equals(selected) || editable.equals(dragged),
+                                    style()
+                                        // TODO: Render origin
+                                        .borderColor(UiColor.GREEN)
+                                        .addPostRenderHook((context, el) -> {
+                                            // Render origin point of element
+                                            var signElement = editable.current();
+                                            var localOrigin = new Point(signElement.localX(), signElement.localY());
+                                            var origin = signViewRef.get().screenPositionOf(localOrigin);
+                                            GuiUtils.renderPlusOnTop(
+                                                context.graphics(),
+                                                origin.x(),
+                                                origin.y(),
+                                                5,
+                                                UiColor.MAGENTA.color()
+                                            );
+                                        })))
                             // Update selected on click
                             .onClick(event -> {
-                                selected(editableElement);
+                                selected(editable);
                             })
                             .onDragStart(event -> {
-                                dragStartX = editableElement.current().localX();
-                                dragStartY = editableElement.current().localY();
-                                draggedElement = editableElement;
+                                dragStartX = editable.current().localX();
+                                dragStartY = editable.current().localY();
+                                dragged = editable;
+                                signViewRef.get().renderGuidelines(true);
                             })
                             // Drag controls
                             .onDrag(event -> {
@@ -143,9 +155,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 int newX = dragStartX + deltaX;
                                 int newY = dragStartY - deltaY;
 
-                                if (draggedElement == null) return;
+                                if (dragged == null) return;
 
-                                var currentElement = draggedElement.current();
+                                var currentElement = dragged.current();
                                 if (newX == currentElement.localX() && newY == currentElement.localY()) {
                                     // No change
                                     return;
@@ -153,9 +165,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
                                 // Replace the element in the sign with a new one at the new position
                                 sign.updateElement(
-                                    draggedElement.id(),
+                                    dragged.id(),
                                     element -> element.withPosition(newX, newY)
                                 );
+                            })
+                            .onDragEnd(event -> {
+                                dragged = null;
+                                signViewRef.get().renderGuidelines(false);
                             });
                     })),
                 box().height(16), // Spacer
