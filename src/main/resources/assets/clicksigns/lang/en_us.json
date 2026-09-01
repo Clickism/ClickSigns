@@ -15,7 +15,7 @@
   "clicksigns.editor.alignment": "Alignment",
   "clicksigns.editor.texture": "Texture",
   "clicksigns.editor.size": "Size",
-  "clicksigns.editor.element_properties": "Element Properties",
+  "clicksigns.editor.element_properties": "Element",
   "clicksigns.editor.size_display": "Size: %s x %s",
   "clicksigns.editor.sign_properties": "Sign Properties",
   "clicksigns.editor.sign_textures": "Sign Textures",
@@ -23,7 +23,9 @@
   "clicksigns.editor.tools": "Tools",
   "clicksigns.editor.other": "Other",
   "clicksigns.editor.export": "Export",
-  "clicksigns.editor.no_element_selected": "No Element Selected",
+
+  "clicksigns.editor.no_element_selected": "No Element Selected.",
+  "clicksigns.editor.click_to_select": "Click on an element to select it.",
 
   "clicksigns.editor.elements.add_symbol": "Add Symbol",
   "clicksigns.editor.elements.add_text": "Add Text",

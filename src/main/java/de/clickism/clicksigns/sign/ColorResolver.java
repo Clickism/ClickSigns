@@ -13,13 +13,13 @@ public class ColorResolver {
      * Default color provider with predefined colors.
      */
     private static final ColorResolver DEFAULT = ColorResolver.empty()
-            .defineRGB("text_light", 0xD0D0D0)
-            .defineRGB("text_dark", 0x292929)
-            .defineRGB("white", 0xFFFFFF)
-            .defineRGB("black", 0x292929)
-            .defineRGB("blue", 0x2739EB)
-            .defineRGB("brown", 0x844635)
-            .defineRGB("green", 0x009345);
+        .defineRGB("text_light", 0xD0D0D0)
+        .defineRGB("text_dark", 0x292929)
+        .defineRGB("white", 0xFFFFFF)
+        .defineRGB("black", 0x292929)
+        .defineRGB("blue", 0x2739EB)
+        .defineRGB("brown", 0x844635)
+        .defineRGB("green", 0x009345);
 
     /**
      * Bright red error color used as fallback
@@ -44,7 +44,7 @@ public class ColorResolver {
      * @param name the name of the color to resolve
      * @return the resolved Color, or a default error color if the name is not found
      */
-    public Color resolve(String name) {
+    public Color resolve(@Nullable String name) {
         try {
             return resolveOrThrow(name);
         } catch (IllegalArgumentException e) {
@@ -59,7 +59,10 @@ public class ColorResolver {
      * @return the resolved Color
      * @throws IllegalArgumentException if the name is not found in this resolver or any parent resolver
      */
-    public Color resolveOrThrow(String name) throws IllegalArgumentException {
+    public Color resolveOrThrow(@Nullable String name) throws IllegalArgumentException {
+        if (name == null) {
+            throw new IllegalArgumentException("Color name cannot be null.");
+        }
         // Try name
         var color = get(name);
         if (color != null) {
@@ -74,13 +77,53 @@ public class ColorResolver {
     }
 
     /**
+     * Resolves a color by name. If the name is not found, it returns the provided default color.
+     *
+     * @param name         the name of the color to resolve
+     * @param defaultColor the default color to return if the name is not found
+     * @return the resolved Color, or the provided default color if the name is not found
+     */
+    public Color resolveOrDefault(@Nullable String name, Color defaultColor) {
+        try {
+            return resolveOrThrow(name);
+        } catch (IllegalArgumentException e) {
+            return defaultColor;
+        }
+    }
+
+    /**
+     * Resolves a color by name. If the name is not found, it returns null.
+     *
+     * @param name the name of the color to resolve
+     * @return the resolved Color, or null if the name is not found
+     */
+    public @Nullable Color resolveOrNull(@Nullable String name) {
+        return resolveOrDefault(name, null);
+    }
+
+    /**
+     * Checks if a color with the given name can be resolved.
+     *
+     * @param name the name of the color to check
+     * @return true if the color can be resolved, false otherwise
+     */
+    public boolean isValidColor(@Nullable String name) {
+        try {
+            resolveOrThrow(name);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
      * Resolves a color by name and returns its ARGB integer value.
      * If the name is not found, it returns the ARGB value of a default error color (red).
      *
      * @param name the name of the color to resolve
      * @return the RGB integer value of the resolved color, or the RGB value of a default error color if the name is not found
      */
-    public int resolveInt(String name) {
+    public int resolveInt(@Nullable String name) {
         return resolve(name).getRGB();
     }
 

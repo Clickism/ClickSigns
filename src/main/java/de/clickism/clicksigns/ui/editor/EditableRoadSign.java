@@ -40,6 +40,7 @@ public class EditableRoadSign {
 
     public void frontSource(TextureSource frontSource) {
         this.frontSource = frontSource;
+        notifyListeners(new Change.Other());
     }
 
     public TextureSource backSource() {
@@ -48,6 +49,7 @@ public class EditableRoadSign {
 
     public void backSource(TextureSource backSource) {
         this.backSource = backSource;
+        notifyListeners(new Change.Other());
     }
 
     public Collection<EditableSignElement> elements() {
@@ -60,6 +62,7 @@ public class EditableRoadSign {
 
     public void alignment(Alignment alignment) {
         this.alignment = alignment;
+        notifyListeners(new Change.Other());
     }
 
     public @Nullable ResourceLocation templateId() {
@@ -68,6 +71,7 @@ public class EditableRoadSign {
 
     public void templateId(@Nullable ResourceLocation templateId) {
         this.templateId = templateId;
+        notifyListeners(new Change.Other());
     }
 
     public SignElement updateElement(UUID id, UnaryOperator<SignElement> updater) {
@@ -118,8 +122,11 @@ public class EditableRoadSign {
 
     public sealed interface Change {
         record ElementAdded(EditableSignElement element) implements Change {}
+
         record ElementUpdated(EditableSignElement element) implements Change {}
+
         record ElementRemoved(UUID id) implements Change {}
+
         record Other() implements Change {}
     }
 }

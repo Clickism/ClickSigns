@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
+//    public static final UiColor DEFAULT_BACKGROUND_COLOR = UiColor.BLACK.alpha(0.3f);
 
     private final Component title;
     private final Collection<TextureList.Entry> entries;
@@ -52,10 +53,10 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
                     .maxWidth(300)
                     .style(style()
                         .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .backgroundColor(UiColor.BLACK.alpha(0.5f))
+                        .backgroundColor(backgroundColor)
                     )
                     .children(
-                        new TextureList(entries, backgroundColor)
+                        new TextureList(entries)
                             .onTextureSelected(texture -> {
                                 onTextureSelected.accept(texture);
                                 close();

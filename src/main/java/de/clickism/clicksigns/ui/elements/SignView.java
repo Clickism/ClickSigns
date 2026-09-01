@@ -186,4 +186,13 @@ public class SignView extends UiComponent<SignView> {
         // Give in UI coordinates
         return new Rect(minX, minY, width, height);
     }
+
+    /**
+     * Resets the text field cache for all text elements in the sign view.
+     * This is useful when the underlying element's text has changed.
+     */
+    public void resetTextFieldCache() {
+        clearMemo();
+        clearMemoKeys();
+    }
 }

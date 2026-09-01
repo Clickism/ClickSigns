@@ -1,19 +1,34 @@
 package de.clickism.clicksigns.ui;
 
+import de.clickism.clicksigns.gui.GuiUtils;
+import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.*;
+import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
+import de.clickism.clickui.layout.Point;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class SignEditScreen extends UiScreen<SignEditScreen> {
@@ -55,16 +70,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 // Left panel
                 panel()
                     .children(
-                        // Scroll container
-                        box()
+                        new SignControls()
+                            .ref(signControlsRef)
                             .grow()
-                            .scrollable(true)
-                            .children(
-                                new SignControls()
-                                    .ref(signControlsRef)
-                                    .grow()
-                                    .crossAlign(Align.CENTER)
-                            )
+                            .crossAlign(Align.CENTER)
                     ),
 
                 // Center editor
@@ -83,16 +92,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 // Right panel
                 panel()
                     .children(
-                        // Scroll container
-                        box()
+                        new ElementControls()
+                            .ref(elementControlsRef)
                             .grow()
-                            .scrollable(true)
-                            .children(
-                                new ElementControls()
-                                    .ref(elementControlsRef)
-                                    .grow()
-                                    .crossAlign(Align.CENTER)
-                            )
+                            .crossAlign(Align.CENTER)
                     )
             );
     }
@@ -178,15 +181,150 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         protected void build() {
             childGap(4);
             children(
-                h4(t("clicksigns.editor.sign_properties")),
+                fancyHeader(t("clicksigns.editor.sign_properties")),
                 // Add texture selection
-                h5(t("clicksigns.editor.sign_textures")),
+                smallHeader(t("clicksigns.editor.sign_textures")),
 
+                box()
+                    .horizontal()
+                    .growWidth()
+                    .childGap(8)
+                    .children(
+                        box()
+                            .growWidth()
+                            .childGap(8)
+                            .children(
+                                smallHeader(l("Front")),
+                                textureButton(sign.frontSource(), newTexture -> {
+                                    sign.frontSource(newTexture.resizeToFit(sign.build()));
+                                })
+                            ),
+                        box()
+                            .growWidth()
+                            .childGap(8)
+                            .children(
+                                smallHeader(l("Back")),
+                                textureButton(sign.backSource(), newTexture -> {
+                                    sign.backSource(newTexture.resizeToFit(sign.build()));
+                                })
+                            )
+                    ),
                 // Add element controls
-                h5(t("clicksigns.editor.elements")),
+                smallHeader(t("clicksigns.editor.elements")),
+
+                button(t("+", "clicksigns.editor.elements.add_symbol"))
+                    .growWidth()
+                    .buttonColor(UiColor.GREEN)
+                    .onClick(event -> {
+                        var center = signCenter();
+                        var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
+                        var element = new SymbolElement(
+                            center.x(), center.y(), Alignment.CENTER,
+                            symbol
+                        );
+                        sign.addElement(element);
+                    }),
+                button(t("+", "clicksigns.editor.elements.add_text"))
+                    .growWidth()
+                    .buttonColor(UiColor.GREEN)
+                    .onClick(event -> {
+                        var center = signCenter();
+                        var element = new TextElement(
+                            center.x(), center.y(), Alignment.TEXT_RIGHT,
+                            "", 1.0f, "foreground", null
+                        );
+                        sign.addElement(element);
+                    }),
+                button(t("+", "clicksigns.editor.elements.add_plate"))
+                    .growWidth()
+                    .buttonColor(UiColor.GREEN)
+                    .onClick(event -> {
+                        var center = signCenter();
+                        var built = sign.build();
+                        var element = new PlateElement(
+                            center.x(), center.y(), Alignment.CENTER,
+                            built.frontSource().resize(8, 6),
+                            built.backSource().resize(8, 6)
+                        );
+                        sign.addElement(element);
+                    }),
                 // Add tools
-                h5(t("clicksigns.editor.tools"))
+                smallHeader(t("clicksigns.editor.tools")),
+                button(t("⏪", "clicksigns.editor.tools.reset_texts"))
+                    .growWidth()
+                    .buttonColor(UiColor.BLUE)
+                    .onClick(event -> {
+                        var elements = new ArrayList<>(sign.elements());
+                        for (var element : elements) {
+                            if (element.current() instanceof TextElement) {
+                                sign.updateElement(element.id(),
+                                    edited -> ((TextElement) edited).withText(""));
+                            }
+                        }
+                        signViewRef.get().resetTextFieldCache();
+                    }),
+                button(t("🗑", "clicksigns.editor.tools.remove_elements"))
+                    .growWidth()
+                    .buttonColor(UiColor.RED)
+                    .onClick(event -> {
+                        var elements = new ArrayList<>(sign.elements());
+                        for (var element : elements) {
+                            sign.removeElement(element.id());
+                        }
+                    }),
+                smallHeader(t("clicksigns.editor.export")),
+                button(t("📤", "clicksigns.editor.export_template"))
+                    .growWidth()
+                    .buttonColor(UiColor.CYAN)
+                    .onClick(event -> {
+                        // open the export screen here
+                    })
             );
+        }
+
+        private Point signCenter() {
+            var build = sign.build();
+            return new Point(build.width() / 2, build.height() / 2);
+        }
+
+        private UiElement<?> textureButton(TextureSource source, Consumer<TextureSource> onTextureSelected) {
+            var texture = source.resize(16, 16).resolve(ColorResolver.empty());
+            return image(texture.location(), 40, 40)
+                .keepAspectRatio(true)
+                .grow()
+                .style(style()
+                    .whenHovered(style()
+                        .borderColor(UiColor.RED)))
+                .onClick(event -> {
+                    event.playSound();
+                    if (GuiUtils.isLeftClick(event.button())) {
+                        // Cycle to next texture in the same category
+                        if (source instanceof TiledTextureSource tiled) {
+                            var tileSet = tiled.resolveTileSet();
+                            if (tileSet == null) return;
+                            var nextTileSet = tileSet.nextInCategory();
+                            var nextTexture = TiledTextureSource.unsized(nextTileSet.identifier());
+                            onTextureSelected.accept(nextTexture);
+                        }
+                    } else {
+                        // Open texture menu
+                        // TODO: Handle non-tile-set textures (e.g. custom textures)
+                        var entries = SignRegistries.TILE_SETS.all().stream()
+                            .map(tileSet -> new TextureList.Entry(
+                                new TiledTextureSource(tileSet.identifier(), 16, 16)
+                                    .resolve(tileSet.colorResolver()),
+                                tileSet.identifier(),
+                                // TODO: Handle uncategorized symbols
+                                tileSet.resolveCategory()
+                            ))
+                            .toList();
+
+                        new TextureSelectScreen(l("Select Texture"), entries)
+                            .onTextureSelected(entry -> {
+                                onTextureSelected.accept(TiledTextureSource.unsized(entry.identifier()));
+                            }).open();
+                    }
+                });
         }
     }
 
@@ -197,50 +335,93 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         @Override
         protected void build() {
             childGap(4);
-            add(h4(t("clicksigns.editor.element_properties")));
+            add(fancyHeader(t("clicksigns.editor.element_properties")));
 
             if (selected == null) {
                 // No element selecteed
+                add(box().height(8)); // Spacer
                 add(text(t("clicksigns.editor.no_element_selected"))
+                    .alignTextCenter()
                     .style(style()
-                        .alpha(0.5f)));
+                        .alpha(0.6f)));
+                add(box().height(8)); // Spacer
+                add(text(t("clicksigns.editor.click_to_select"))
+                    .alignTextCenter()
+                    .style(style()
+                        .alpha(0.6f)));
                 return;
             }
 
             // Text controls
             var current = selected.current();
             if (current instanceof TextElement text) {
-                add(h5("Color"));
+                add(smallHeader(l("Color")));
 
-                add(memo(selected.id() + "-fg", () -> textField()
-                    .tooltip("Text Color")
-                    .value(text.color())
-                    .onValueChanged(newColor -> {
+                var colorResolver = sign.build().colorResolver();
+                // Foreground color
+                add(
+                    memo(selected.id() + "-fg", () -> textField()
+                        .growWidth()
+                        .highlightInvalid(true)
+                        .tooltip("Text Color")
+                        .value(text.color())
+                        .onValueChanged(newColor -> {
+                            if (selected == null) return;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element).withColor(newColor));
+                        })
+                    )
+                        // Apply these after memo, so they are refreshed every rebuild
+                        .validator(colorResolver::isValidColor)
+                        .style(style()
+                            .textColor(UiColor.of(colorResolver.resolveOrDefault(text.color(), Color.WHITE))))
+                );
+
+                // Background color
+                add(
+                    memo(selected.id() + "-bg", () -> textField()
+                        .growWidth()
+                        .highlightInvalid(true)
+                        .tooltip("Background Color")
+                        .value(text.backgroundColor() == null
+                            ? ""
+                            : text.backgroundColor())
+                        .onValueChanged(newColor -> {
+                            if (selected == null) return;
+                            var newColorValue = newColor.isEmpty()
+                                ? null
+                                : newColor;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element).withBackgroundColor(newColorValue));
+                        })
+                    )
+                        // Apply these after memo, so they are refreshed every rebuild
+                        .validator(color -> {
+                            if (color == null || color.isEmpty()) return true;
+                            return colorResolver.isValidColor(color);
+                        })
+                        .style(style()
+                            .textColor(UiColor.of(colorResolver.resolveOrDefault(text.backgroundColor(), Color.WHITE))))
+                );
+
+                // Scale
+                add(smallHeader(l("Scale")));
+                add(memo(selected.id() + "-scale", () -> numberField()
+                    .growWidth()
+                    .allowDecimal(true)
+                    .value(text.scale())
+                    .onNumberChanged(newScale -> {
                         if (selected == null) return;
                         sign.updateElement(selected.id(),
-                            element -> ((TextElement) element).withColor(newColor));
-                    })
-                ));
-
-                add(memo(selected.id() + "-bg", () -> textField()
-                    .tooltip("Background Color")
-                    .value(text.backgroundColor() == null
-                        ? ""
-                        : text.backgroundColor())
-                    .onValueChanged(newColor -> {
-                        if (selected == null) return;
-                        var newColorValue = newColor.isEmpty()
-                            ? null
-                            : newColor;
-                        sign.updateElement(selected.id(),
-                            element -> ((TextElement) element).withBackgroundColor(newColorValue));
-                    })
-                ));
+                            element -> ((TextElement) element).withScale(newScale.floatValue()));
+                    })));
             }
 
             // Delete button
-            add(h5(t("clicksigns.editor.other")));
+            add(smallHeader(t("clicksigns.editor.other")));
             add(button(t("🗑", "clicksigns.editor.tools.remove_element"))
+                .growWidth()
+                .buttonColor(UiColor.RED)
                 .onClick(event -> {
                     if (selected == null) return;
                     sign.removeElement(selected.id());
@@ -248,14 +429,48 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         }
     }
 
-    private UiElement<?> panel() {
-        var panelWidth = 120;
+    private Box panel() {
+        var panelWidth = 130;
         return box()
+            .scrollable(true)
             .width(panelWidth)
             .growHeight()
             .padding(8)
             .style(style()
-                .backgroundColor(UiColor.BLACK_A70)
-                .borderColor(UiColor.LIGHT_GRAY).alpha(0.5f));
+                .backgroundColor(UiColor.BLACK_A40)
+                .borderColor(UiColor.WHITE_A30));
+    }
+
+    private Box fancyHeader(Component text) {
+        return box()
+            .padding(4)
+            .growWidth()
+            .alignCenter()
+            .style(style()
+                .borderColor(UiColor.WHITE_A30)
+                .backgroundColor(UiColor.WHITE_A10))
+            .children(
+                text(text)
+            );
+    }
+
+    private Box smallHeader(Component text) {
+        return box()
+            .growWidth()
+            .padding(8, 0, 0, 0)
+            .children(
+                box()
+                    .padding(3, 0, 2, 0)
+                    .growWidth()
+                    .alignCenter()
+                    .style(style()
+                        .borderColorBottom(UiColor.WHITE_A30)
+                        .backgroundColor(UiColor.WHITE.alpha(0.05f)))
+                    .children(
+                        text(text)
+                            .style(style()
+                                .fontScale(0.75f)
+                                .alpha(0.8f))
+                    ));
     }
 }

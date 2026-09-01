@@ -22,18 +22,15 @@ public class TextureList extends UiComponent<TextureList> {
     private final Map<Category<?>, List<Entry>> categoryToEntries;
 
     private Consumer<Entry> onTextureSelected = texture -> {};
-    private final UiColor backgroundColor;
 
     /**
      * Creates a new TextureList with the given entries.
      *
      * @param entries         the collection of entries to display in the list
-     * @param backgroundColor the background color of the texture list
      */
-    public TextureList(Collection<Entry> entries, UiColor backgroundColor) {
+    public TextureList(Collection<Entry> entries) {
         this.categoryToEntries = entries.stream()
             .collect(Collectors.groupingBy(Entry::category));
-        this.backgroundColor = backgroundColor;
     }
 
     /**
@@ -56,9 +53,7 @@ public class TextureList extends UiComponent<TextureList> {
             .grow()
             .scrollable(true)
             .padding(8)
-            .childGap(4)
-            .overrideStyle(Style.empty()
-                .backgroundColor(backgroundColor))
+            .childGap(8)
             .crossAlign(Align.CENTER);
         add(box);
 
@@ -67,7 +62,7 @@ public class TextureList extends UiComponent<TextureList> {
                 .padding(4)
                 .growWidth()
                 .alignCenter()
-                .overrideStyle(Style.empty()
+                .style(style()
                     .borderColor(UiColor.LIGHT_GRAY)
                     .backgroundColor(UiColor.BLACK_A80))
                 .children(
