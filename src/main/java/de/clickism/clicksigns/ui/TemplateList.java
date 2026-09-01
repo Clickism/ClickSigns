@@ -9,7 +9,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.reactivity.State;
-import de.clickism.clickui.style.BorderPosition;
+import de.clickism.clickui.style.Border;
 import de.clickism.clickui.style.Style;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -65,8 +65,8 @@ public class TemplateList extends UiComponent<TemplateList> {
                     .growWidth()
                     .alignCenter()
                     .overrideStyle(Style.empty()
-                        .border(UiColor.LIGHT_GRAY)
-                        .background(UiColor.BLACK_A50))
+                        .borderColor(UiColor.LIGHT_GRAY)
+                        .backgroundColor(UiColor.BLACK_A50))
                     .children(
                         text(name)
                     )
@@ -78,13 +78,13 @@ public class TemplateList extends UiComponent<TemplateList> {
             .padding(5, 12, 4, 12)
             .growWidth()
             .tooltip(new SignView(new EditableRoadSign(template.build())))
-            .style(s -> s
-                .whenHovered(h -> h
-                    .background(UiColor.WHITE_A30))
-                .when(context -> selected == template, l -> l
-                    .border(UiColor.WHITE)
-                    .borderPosition(BorderPosition.INSIDE)
-                    .background(UiColor.WHITE_A30)))
+            .style(style()
+                .whenHovered(style()
+                    .backgroundColor(UiColor.WHITE_A30))
+                .when(context -> selected == template, style()
+                    .borderColor(UiColor.WHITE)
+                    .borderPosition(Border.Position.INSIDE)
+                    .backgroundColor(UiColor.WHITE_A30)))
             .onClick(event -> {
                 selected = template;
                 onTemplateSelected.accept(template);

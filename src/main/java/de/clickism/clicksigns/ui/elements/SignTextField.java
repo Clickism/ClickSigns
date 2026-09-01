@@ -91,7 +91,7 @@ public class SignTextField extends TextField implements ElementProvider {
             ? null
             : colorResolver.resolve(element.backgroundColor());
         this.overrideStyle(Style.empty()
-            .background(UiColor.of(background)));
+            .backgroundColor(UiColor.of(background)));
     }
 
     @Override

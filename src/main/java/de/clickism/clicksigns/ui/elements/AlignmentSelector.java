@@ -55,8 +55,8 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
             var button = button(icon)
                 .width(BUTTON_SIZE)
                 .height(BUTTON_SIZE)
-                .style(s -> s
-                    .when(context -> !a.equals(currentAlignment), o -> o
+                .style(style()
+                    .when(context -> !a.equals(currentAlignment), style()
                         .alpha(GuiUtils.INACTIVE_ALPHA)))
                 .onClick(event -> {
                     alignment.update(a);

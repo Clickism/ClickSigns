@@ -55,7 +55,7 @@ public class TextureList extends UiComponent<TextureList> {
             .padding(8)
             .childGap(4)
             .overrideStyle(Style.empty()
-                .background(UiColor.WHITE))
+                .backgroundColor(UiColor.WHITE))
             .crossAlign(Align.CENTER);
         add(box);
 
@@ -65,8 +65,8 @@ public class TextureList extends UiComponent<TextureList> {
                 .growWidth()
                 .alignCenter()
                 .overrideStyle(Style.empty()
-                    .border(UiColor.LIGHT_GRAY)
-                    .background(UiColor.BLACK_A80))
+                    .borderColor(UiColor.LIGHT_GRAY)
+                    .backgroundColor(UiColor.BLACK_A80))
                 .children(
                     text(category.name())
                 ));
@@ -84,10 +84,10 @@ public class TextureList extends UiComponent<TextureList> {
                     row.add(
                         GuiUtils.imageOf(texture)
                             .tooltip(l("Click to select this texture"))
-                            .style(s -> s
-                                .whenHovered(h -> h
-                                    .border(UiColor.RED)
-                                    .background(UiColor.RED.alpha(0.1f))))
+                            .style(style()
+                                .whenHovered(style()
+                                    .borderColor(UiColor.RED)
+                                    .backgroundColor(UiColor.RED.alpha(0.1f))))
                             .onClick(event -> {
                                 onTextureSelected.accept(entry);
                             })

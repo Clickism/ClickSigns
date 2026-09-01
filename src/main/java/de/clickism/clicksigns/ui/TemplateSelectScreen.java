@@ -39,9 +39,9 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 // Top Bar
                 box()
                     .padding(8, 8)
-                    .style(s -> s
-                        .border(UiColor.LIGHT_GRAY)
-                        .background(UiColor.BLACK_A50))
+                    .style(style()
+                        .borderColor(UiColor.LIGHT_GRAY)
+                        .backgroundColor(UiColor.BLACK_A50))
                     .horizontal()
                     .growWidth()
                     .children(
@@ -52,16 +52,16 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                             .children(
                                 button(t("📦", "clicksigns.template.category.resource"))
                                     .grow()
-                                    .style(s -> s
-                                        .when(context -> showLocal.get(), l -> l
+                                    .style(style()
+                                        .when(context -> showLocal.get(), style()
                                             .alpha(GuiUtils.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(false);
                                     }),
                                 button(t("💾", "clicksigns.template.category.local"))
                                     .grow()
-                                    .style(s -> s
-                                        .when(context -> !showLocal.get(), l -> l
+                                    .style(style()
+                                        .when(context -> !showLocal.get(), style()
                                             .alpha(GuiUtils.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(true);
@@ -78,8 +78,8 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                         // Template List
                         box()
                             .grow()
-                            .style(s -> s
-                                .background(UiColor.BLACK_A30))
+                            .style(style()
+                                .backgroundColor(UiColor.BLACK_A30))
                             .children(
                                 new TemplateList()
                                     .ref(listRef)
@@ -140,7 +140,8 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
             var template = this.template.get();
             if (template == null) {
                 add(text("No template selected.")
-                    .style(s -> s.alpha(0.5f)));
+                    .style(style()
+                        .alpha(0.5f)));
                 return;
             }
             // Add preview
@@ -168,14 +169,14 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
             String value
         ) {
             return box()
-                .style(s -> s
-                    .background(UiColor.BLACK_A50))
+                .style(style()
+                    .backgroundColor(UiColor.BLACK_A50))
                 .padding(4)
                 .childGap(2)
                 // TODO: Text here not wrapping
                 .children(
                     text(label.copy().withStyle(ChatFormatting.GRAY))
-                        .style(s -> s
+                        .style(style()
                             .fontScale(0.7f)),
                     text(value)
                 );

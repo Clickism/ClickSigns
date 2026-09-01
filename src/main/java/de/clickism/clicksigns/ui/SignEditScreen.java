@@ -115,13 +115,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                     .elementConfig((uiElement, editableElement) -> {
                         uiElement
                             // Hover style
-                            .style(s -> s
-                                .whenHovered(h -> h
-                                    .border(UiColor.RED))
+                            .style(style()
+                                .whenHovered(style()
+                                    .borderColor(UiColor.RED))
                                 .when(context -> editableElement.equals(selected) ||
-                                                 editableElement.equals(draggedElement), l -> l
+                                                 editableElement.equals(draggedElement), style()
                                     // TODO: Render origin
-                                    .border(UiColor.GREEN)))
+                                    .borderColor(UiColor.GREEN)))
                             // Update selected on click
                             .onClick(event -> {
                                 selected(editableElement);
@@ -202,7 +202,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             if (selected == null) {
                 // No element selecteed
                 add(text(t("clicksigns.editor.no_element_selected"))
-                    .style(s -> s
+                    .style(style()
                         .alpha(0.5f)));
                 return;
             }
@@ -254,8 +254,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             .width(panelWidth)
             .growHeight()
             .padding(8)
-            .style(s -> s
-                .background(UiColor.BLACK_A70)
-                .border(UiColor.LIGHT_GRAY).alpha(0.5f));
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A70)
+                .borderColor(UiColor.LIGHT_GRAY).alpha(0.5f));
     }
 }

@@ -34,18 +34,18 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
             .children(
                 h4(title)
                     .padding(6, 12)
-                    .style(s -> s
-                        .border(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .background(UiColor.BLACK.alpha(0.5f))),
+                    .style(style()
+                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
+                        .backgroundColor(UiColor.BLACK.alpha(0.5f))),
                 box()
                     .grow()
                     .scrollable(false)
                     .maxHeight(400)
                     .crossAlign(Align.CENTER)
                     .maxWidth(300)
-                    .style(s -> s
-                        .border(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .background(UiColor.BLACK.alpha(0.5f))
+                    .style(style()
+                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
+                        .backgroundColor(UiColor.BLACK.alpha(0.5f))
                     )
                     .children(
                         new TextureList(entries)

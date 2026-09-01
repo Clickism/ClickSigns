@@ -23,6 +23,8 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
 /**
  * A UI component that displays a road sign with its texture and elements.
  */
+// TODO: Rename to Sign Editor
+// TODO: Add way to disable text input
 public class SignView extends UiComponent<SignView> {
     private final EditableRoadSign roadSign;
     // TODO: Guidelines

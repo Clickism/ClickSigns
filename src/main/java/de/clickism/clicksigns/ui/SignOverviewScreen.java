@@ -63,9 +63,9 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                     // Set up element logic
                     .elementConfig((uiElement, editableSignElement) -> {
                         // TODO: No hover style for plate?
-                        uiElement.style(s -> s
-                            .whenHovered(h -> h
-                                .border(UiColor.RED)));
+                        uiElement.style(style()
+                            .whenHovered(style()
+                                .borderColor(UiColor.RED)));
                         // Element specific config
                         var signElement = editableSignElement.current();
                         if (signElement instanceof TextElement) {
