@@ -90,7 +90,7 @@ public class SignTextField extends TextField implements ElementProvider {
         var background = element.backgroundColor() == null
             ? null
             : colorResolver.resolve(element.backgroundColor());
-        this.overrideStyle(Style.empty()
+        this.overrideStyle(style()
             .backgroundColor(UiColor.of(background)));
     }
 
@@ -142,26 +142,11 @@ public class SignTextField extends TextField implements ElementProvider {
 
     @Override
     public void render(RenderContext context) {
-        // Render background
-//        renderBackground(context);
         // Render the text field
         var pos = textPosition();
         renderWithScale(context, pos.x(), pos.y(), renderScale, renderScale, () -> {
             super.render(context);
         });
-    }
-
-    private void renderBackground(RenderContext context) {
-        if (element.backgroundColor() == null) return;
-        var background = colorResolver.resolveInt(element.backgroundColor());
-        var graphics = context.graphics();
-        var bounds = bounds();
-        // Render background with the resolved color
-        graphics.fill(
-            bounds.x(), bounds.y(),
-            bounds.x() + bounds.width(), bounds.y() + bounds.height(),
-            background
-        );
     }
 
     @Override

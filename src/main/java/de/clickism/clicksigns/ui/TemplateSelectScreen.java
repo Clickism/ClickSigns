@@ -7,6 +7,7 @@ import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.*;
 import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.style.Border;
 import net.minecraft.ChatFormatting;
 
 import java.util.function.Consumer;
@@ -40,7 +41,8 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 box()
                     .padding(8, 8)
                     .style(style()
-                        .borderColor(UiColor.LIGHT_GRAY)
+                        .borderPositionBottom(Border.Position.INSIDE)
+                        .borderColorBottom(UiColor.LIGHT_GRAY)
                         .backgroundColor(UiColor.BLACK_A50))
                     .horizontal()
                     .growWidth()
@@ -107,6 +109,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                         // Delete button
                                         showLocal.get()
                                             ? button(t("🗑", "clicksigns.template.delete"))
+                                            .buttonColor(UiColor.RED)
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Delete template
@@ -117,6 +120,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                             : box().growWidth(), // Spacer,
                                         // Apply button
                                         button(t("🛠", "clicksigns.template.apply"))
+                                            .buttonColor(UiColor.GREEN)
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Call callback and close screen
@@ -173,7 +177,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                     .backgroundColor(UiColor.BLACK_A50))
                 .padding(4)
                 .childGap(2)
-                // TODO: Text here not wrapping
+                .maxWidth(300)
                 .children(
                     text(label.copy().withStyle(ChatFormatting.GRAY))
                         .style(style()

@@ -144,16 +144,16 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                 button(t("📝", "clicksigns.text.change_template"))
                                     .growWidth()
                                     .onClick(event -> {
-                                        GuiUtils.openScreen(new TemplateMenuScreen(UiScreenHandler.current(), (template) -> {
-                                            // Change template
-                                            roadSign.loadSign(template.build());
-                                        }));
-                                    }),
-                                button("New Template Screen")
-                                    .onClick(e -> {
-                                        new TemplateSelectScreen().open();
+                                        new TemplateSelectScreen()
+                                            .onTemplateSelected(template -> {
+                                                // Change template
+                                                roadSign.loadSign(template.build());
+                                            })
+                                            .open();
                                     }),
                                 button("New Edit Screen")
+                                    .buttonColor(UiColor.BEIGE)
+                                    .growWidth()
                                     .onClick(e -> {
                                         new de.clickism.clicksigns.ui.SignEditScreen(roadSign.build())
                                             .onSignUpdate(roadSign::loadSign)

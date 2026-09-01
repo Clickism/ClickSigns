@@ -77,7 +77,11 @@ public class TemplateList extends UiComponent<TemplateList> {
         return text(template.identifier().getNamespace() + " : " + template.meta().name())
             .padding(5, 12, 4, 12)
             .growWidth()
-            .tooltip(new SignView(new EditableRoadSign(template.build())))
+            .tooltip(box()
+                .padding(4)
+                .children(
+                    new SignView(new EditableRoadSign(template.build()))
+                ))
             .style(style()
                 .whenHovered(style()
                     .backgroundColor(UiColor.WHITE_A30))
