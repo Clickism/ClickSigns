@@ -12,6 +12,7 @@ import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
+import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.*;
@@ -108,8 +109,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         protected void build() {
             childGap(8);
             var build = sign.build();
-            children(
+            children(box().childGap(16).growHeight().children(
                 // TODO: Resize controls!
+                box().growHeight(), // To center the sign view vertically
                 // Sign view
                 memo(() -> new SignView(sign)
                     .ref(signViewRef)
@@ -121,7 +123,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                     .borderColor(UiColor.RED))
                                 .when(context -> editable.equals(selected) || editable.equals(dragged),
                                     style()
-                                        // TODO: Render origin
                                         .borderColor(UiColor.GREEN)
                                         .addPostRenderHook((context, el) -> {
                                             // Render origin point of element
@@ -174,17 +175,36 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                                 signViewRef.get().renderGuidelines(false);
                             });
                     })),
-                box().height(16), // Spacer
-                // Show size
-                text("Size: %d x %d".formatted(build.width(), build.height())),
-                // Confirm button
-                button(ComponentUtil.confirmWithIcon())
-                    .onClick(event -> {
-                        // Callback and close
-                        onSignUpdate.accept(sign.build());
-                        close();
-                    })
-            );
+                box()
+                    .growWidth()
+                    .growHeight()
+                    .crossAlign(Align.CENTER)
+                    .children(
+                        box()
+                            .alignCenter()
+                            .padding(4)
+                            .childGap(8)
+                            .growWidth()
+                            // Make max width equivalent to 2 block signs
+                            .maxWidth(32 * DEFAULT_TEXTURE_RENDER_SCALE)
+                            .style(style()
+                                .backgroundColor(UiColor.BLACK_A50))
+                            .children(
+                                // Show size
+                                smallHeader(l("Size"))
+                                    .padding(0),
+                                text("%d x %d".formatted(build.width(), build.height())),
+                                // Confirm button
+                                button(ComponentUtil.confirmWithIcon())
+                                    .growWidth()
+                                    .onClick(event -> {
+                                        // Callback and close
+                                        onSignUpdate.accept(sign.build());
+                                        close();
+                                    })
+                            )
+                    )
+            ));
         }
     }
 
@@ -375,11 +395,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
                 var colorResolver = sign.build().colorResolver();
                 // Foreground color
+                var foregroundColor = UiColor.of(colorResolver.resolveOrDefault(text.color(), Color.WHITE));
                 add(
                     memo(selected.id() + "-fg", () -> textField()
                         .growWidth()
                         .highlightInvalid(true)
                         .tooltip("Text Color")
+                        .textShadow(false)
                         .value(text.color())
                         .onValueChanged(newColor -> {
                             if (selected == null) return;
@@ -390,15 +412,18 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                         // Apply these after memo, so they are refreshed every rebuild
                         .validator(colorResolver::isValidColor)
                         .style(style()
-                            .textColor(UiColor.of(colorResolver.resolveOrDefault(text.color(), Color.WHITE))))
+                            .textColor(foregroundColor)
+                            .backgroundColor(foregroundColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
                 );
 
                 // Background color
+                var backgroundColor = UiColor.of(colorResolver.resolveOrDefault(text.backgroundColor(), Color.WHITE));
                 add(
                     memo(selected.id() + "-bg", () -> textField()
                         .growWidth()
                         .highlightInvalid(true)
                         .tooltip("Background Color")
+                        .textShadow(false)
                         .value(text.backgroundColor() == null
                             ? ""
                             : text.backgroundColor())
@@ -417,7 +442,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             return colorResolver.isValidColor(color);
                         })
                         .style(style()
-                            .textColor(UiColor.of(colorResolver.resolveOrDefault(text.backgroundColor(), Color.WHITE))))
+                            .textColor(backgroundColor)
+                            .backgroundColor(backgroundColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
                 );
 
                 // Scale
@@ -432,6 +458,16 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             element -> ((TextElement) element).withScale(newScale.floatValue()));
                     })));
             }
+
+            // Add Alignment
+            add(smallHeader(l("Alignment")));
+            add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
+                .textOnly(current instanceof TextElement)
+                .onAlignmentChange(newAlignment -> {
+                    if (selected == null) return;
+                    sign.updateElement(selected.id(),
+                        element -> element.withAlignment(newAlignment));
+                })));
 
             // Delete button
             add(smallHeader(t("clicksigns.editor.other")));

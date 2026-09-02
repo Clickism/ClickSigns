@@ -87,6 +87,14 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     SignElement withPosition(int localX, int localY);
 
     /**
+     * Creates a new element with the given alignment, keeping the other properties the same.
+     *
+     * @param alignment the new alignment
+     * @return a new element with the given alignment, keeping the other properties the same
+     */
+    SignElement withAlignment(Alignment alignment);
+
+    /**
      * Writer for packets
      */
     FriendlyByteBuf.Writer<SignElement> PACKET_WRITER = (buf, element) -> {
