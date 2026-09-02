@@ -116,6 +116,20 @@ public class ColorResolver {
         }
     }
 
+    public String suggestColor(@Nullable String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        var closest = definedColors().stream()
+            .filter(name -> name.startsWith(value))
+            .min(Comparator.comparingInt(String::length))
+            .orElse("");
+        if (value.length() >= closest.length()) {
+            return "";
+        }
+        return closest.substring(value.length());
+    }
+
     /**
      * Resolves a color by name and returns its ARGB integer value.
      * If the name is not found, it returns the ARGB value of a default error color (red).

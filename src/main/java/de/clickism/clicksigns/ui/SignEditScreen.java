@@ -111,6 +111,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             var build = sign.build();
             children(box().childGap(16).growHeight().children(
                 // TODO: Resize controls!
+
+                // TODO: Decide if we want the sign view to be centered or partially.
                 box().growHeight(), // To center the sign view vertically
                 // Sign view
                 memo(() -> new SignView(sign)
@@ -410,6 +412,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                         })
                     )
                         // Apply these after memo, so they are refreshed every rebuild
+                        .suggest(colorResolver::suggestColor)
                         .validator(colorResolver::isValidColor)
                         .style(style()
                             .textColor(foregroundColor)
@@ -417,6 +420,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 );
 
                 // Background color
+                // TODO: Refactor into colorTextField
                 var backgroundColor = UiColor.of(colorResolver.resolveOrDefault(text.backgroundColor(), Color.WHITE));
                 add(
                     memo(selected.id() + "-bg", () -> textField()
@@ -437,6 +441,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                         })
                     )
                         // Apply these after memo, so they are refreshed every rebuild
+                        .suggest(colorResolver::suggestColor)
                         .validator(color -> {
                             if (color == null || color.isEmpty()) return true;
                             return colorResolver.isValidColor(color);
@@ -447,6 +452,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                 );
 
                 // Scale
+                // TODO: Text fields don't react to scale
                 add(smallHeader(l("Scale")));
                 add(memo(selected.id() + "-scale", () -> numberField()
                     .growWidth()
@@ -455,8 +461,12 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                     .onNumberChanged(newScale -> {
                         if (selected == null) return;
                         sign.updateElement(selected.id(),
+                            // TODO: Clamp scale to reasonable values
+                            // TODO: Add buttons to increase/decrease scale by 0.1
                             element -> ((TextElement) element).withScale(newScale.floatValue()));
-                    })));
+                        signViewRef.get().resetTextFieldCache();
+                    })
+                ));
             }
 
             // Add Alignment
