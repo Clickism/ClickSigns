@@ -44,13 +44,12 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
 
     public List<Alignment> alignmentValues() {
         return textOnly
-            ? List.of(Alignment.TOP_LEFT, Alignment.TOP_CENTER, Alignment.TOP_RIGHT)
+            ? List.of(Alignment.TEXT_LEFT, Alignment.TEXT_CENTER, Alignment.TEXT_RIGHT)
             : List.of(Alignment.values());
     }
 
     @Override
     protected void build() {
-        // TODO: Doesnt need to be reactive
         var currentAlignment = alignment.get();
         // Build the UI for the alignment selector here
         var grid = grid(3)

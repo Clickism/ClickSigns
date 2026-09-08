@@ -34,6 +34,6 @@ public enum Alignment {
      * @return offset
      */
     public Vector2f offset() {
-        return this.offset;
+        return new Vector2f(offset);
     }
 }
