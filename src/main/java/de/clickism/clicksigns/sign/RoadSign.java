@@ -2,7 +2,6 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -12,19 +11,13 @@ import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
-import de.clickism.clickui.layout.Rect;
-import de.clickism.clickui.layout.Size;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * Road sign class.
@@ -33,6 +26,7 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
  */
+// TODO: Clear definitions, maybe remove templateId?
 public record RoadSign(
     TextureSource frontSource,
     TextureSource backSource,
@@ -73,13 +67,7 @@ public record RoadSign(
      */
     public ColorResolver colorResolver() {
         // Use background's color resolver
-        if (frontSource instanceof TiledTextureSource tiled) {
-            var tileSet = tiled.resolveTileSet();
-            if (tileSet != null) {
-                return tileSet.colorResolver();
-            }
-        }
-        return ColorResolver.withDefault();
+        return frontSource.colorResolver();
     }
 
     /**
@@ -110,6 +98,13 @@ public record RoadSign(
         return frontTexture().height();
     }
 
+    /**
+     * Resizes the road sign to the specified width and height.
+     *
+     * @param width  the new width of the road sign
+     * @param height the new height of the road sign
+     * @return a new road sign with the updated size
+     */
     public RoadSign resized(int width, int height) {
         if (width == width() && height == height()) {
             // No need to resize
@@ -202,42 +197,6 @@ public record RoadSign(
      */
     public RoadSign withAlignment(Alignment alignment) {
         return new RoadSign(frontSource, backSource, elements, alignment, templateId);
-    }
-
-    /**
-     * Returns a collection of all symbol elements in the road sign.
-     *
-     * @return a collection of all symbol elements in the road sign.
-     */
-    public Collection<SymbolElement> symbolElements() {
-        return elements.stream()
-            .filter(e -> e instanceof SymbolElement)
-            .map(e -> (SymbolElement) e)
-            .toList();
-    }
-
-    /**
-     * Returns a collection of all text elements in the road sign.
-     *
-     * @return a collection of all text elements in the road sign.
-     */
-    public Collection<TextElement> textElements() {
-        return elements.stream()
-            .filter(e -> e instanceof TextElement)
-            .map(e -> (TextElement) e)
-            .toList();
-    }
-
-    /**
-     * Returns a collection of all plate elements in the road sign.
-     *
-     * @return a collection of all plate elements in the road sign.
-     */
-    public Collection<PlateElement> plateElements() {
-        return elements.stream()
-            .filter(e -> e instanceof PlateElement)
-            .map(e -> (PlateElement) e)
-            .toList();
     }
 
     /**

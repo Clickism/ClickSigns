@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.editor;
 
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -8,9 +9,17 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+/**
+ * Represents an editable road sign that can be modified and built into a road sign.
+ * <p>
+ * Uses {@link EditableSignElement} for its elements, allowing for modifications to individual elements,
+ * while maintaining their identities.
+ * <p>
+ * Changes to the properties or elements of the road sign can be tracked using
+ * {@link #onSignChanged(Runnable)}, which are notified whenever the sign changes.
+ */
 public class EditableRoadSign {
     private TextureSource frontSource;
     private TextureSource backSource;
@@ -18,19 +27,32 @@ public class EditableRoadSign {
     private Alignment alignment;
     private @Nullable ResourceLocation templateId;
 
-    private final List<Consumer<Change>> eventListeners = new ArrayList<>();
+    private final List<Runnable> listeners = new ArrayList<>();
 
+    /**
+     * Creates a new EditableRoadSign with the specified properties.
+     *
+     * @param roadSign the RoadSign to copy properties from
+     */
     public EditableRoadSign(RoadSign roadSign) {
-        this.loadSign(roadSign);
+        this.copyFrom(roadSign);
     }
 
-    public void addChangeListener(Consumer<Change> listener) {
-        eventListeners.add(listener);
+    /**
+     * Registers a listener that will be notified whenever the sign changes.
+     *
+     * @param listener the listener to register
+     */
+    public void onSignChanged(Runnable listener) {
+        listeners.add(listener);
     }
 
-    protected void notifyListeners(Change change) {
-        for (var listener : eventListeners) {
-            listener.accept(change);
+    /**
+     * Notifies all registered listeners that the sign has changed.
+     */
+    protected void notifyListeners() {
+        for (var callback : listeners) {
+            callback.run();
         }
     }
 
@@ -40,7 +62,7 @@ public class EditableRoadSign {
 
     public void frontSource(TextureSource frontSource) {
         this.frontSource = frontSource;
-        notifyListeners(new Change.Other());
+        notifyListeners();
     }
 
     public TextureSource backSource() {
@@ -49,7 +71,7 @@ public class EditableRoadSign {
 
     public void backSource(TextureSource backSource) {
         this.backSource = backSource;
-        notifyListeners(new Change.Other());
+        notifyListeners();
     }
 
     public Collection<EditableSignElement> elements() {
@@ -62,7 +84,7 @@ public class EditableRoadSign {
 
     public void alignment(Alignment alignment) {
         this.alignment = alignment;
-        notifyListeners(new Change.Other());
+        notifyListeners();
     }
 
     public @Nullable ResourceLocation templateId() {
@@ -71,62 +93,93 @@ public class EditableRoadSign {
 
     public void templateId(@Nullable ResourceLocation templateId) {
         this.templateId = templateId;
-        notifyListeners(new Change.Other());
+        notifyListeners();
     }
 
-    public SignElement updateElement(UUID id, UnaryOperator<SignElement> updater) {
+    public void updateElement(UUID id, UnaryOperator<SignElement> updater) {
         var editable = elements.get(id);
         if (editable != null) {
-            var value = editable.update(updater);
-            notifyListeners(new Change.ElementUpdated(editable));
-            return value;
+            editable.update(updater);
+            notifyListeners();
         }
-        return null;
     }
 
-    public SignElement removeElement(UUID id) {
-        notifyListeners(new Change.ElementRemoved(id));
-        var editable = elements.remove(id);
-        if (editable != null) {
-            return editable.current();
-        }
-        return null;
+    public void removeElement(UUID id) {
+        notifyListeners();
+        elements.remove(id);
     }
 
-    public SignElement addElement(SignElement element) {
+    public void addElement(SignElement element) {
         var editable = new EditableSignElement(element);
         elements.put(editable.id(), editable);
-        notifyListeners(new Change.ElementAdded(editable));
-        return editable.current();
+        notifyListeners();
     }
 
-    public void loadSign(RoadSign roadSign) {
+    /**
+     * Resizes the sign to the specified width and height.
+     *
+     * @param width  the new width of the sign
+     * @param height the new height of the sign
+     */
+    public void resize(int width, int height) {
+        copyFrom(build().resized(width, height));
+    }
+
+    /**
+     * Gets the color resolver the road sign.
+     *
+     * @return the color resolver for the road sign
+     */
+    public ColorResolver colorResolver() {
+        return frontSource.colorResolver();
+    }
+
+    /**
+     * Gets the width of the road sign.
+     *
+     * @return the width of the road sign in pixels
+     */
+    public int width() {
+        return frontSource.resolve(colorResolver()).width();
+    }
+
+    /**
+     * Gets the height of the road sign.
+     *
+     * @return the height of the road sign in pixels
+     */
+    public int height() {
+        return frontSource.resolve(colorResolver()).height();
+    }
+
+    /**
+     * Copies the properties and elements from the given RoadSign into this EditableRoadSign.
+     *
+     * @param roadSign the RoadSign to copy from
+     */
+    public void copyFrom(RoadSign roadSign) {
         this.frontSource = roadSign.frontSource();
         this.backSource = roadSign.backSource();
         this.alignment = roadSign.alignment();
         this.templateId = roadSign.templateId();
         this.elements.clear();
+        // Convert elements to editable elements
         for (SignElement element : roadSign.elements()) {
             var editable = new EditableSignElement(element);
             this.elements.put(editable.id(), editable);
         }
-        notifyListeners(new Change.Other());
+        notifyListeners();
     }
 
+    /**
+     * Builds a RoadSign instance from the current state of this EditableRoadSign.
+     *
+     * @return A new RoadSign instance with the current properties and elements.
+     */
     public RoadSign build() {
-        List<SignElement> elementList = elements.values().stream()
+        List<SignElement> fixedElements = elements.values().stream()
             .map(EditableSignElement::current)
             .toList();
-        return new RoadSign(frontSource, backSource, elementList, alignment, templateId);
-    }
-
-    public sealed interface Change {
-        record ElementAdded(EditableSignElement element) implements Change {}
-
-        record ElementUpdated(EditableSignElement element) implements Change {}
-
-        record ElementRemoved(UUID id) implements Change {}
-
-        record Other() implements Change {}
+        return new RoadSign(frontSource, backSource, fixedElements, alignment, templateId);
     }
 }

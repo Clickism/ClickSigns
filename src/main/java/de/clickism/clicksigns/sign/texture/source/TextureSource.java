@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
  * Represents a source for a texture, which can be resolved to obtain the actual texture.
  * This allows for lazy loading and generation of textures as needed.
  */
+// TODO: Move color resolver to the texture source, so all textures can define color resolvers?
 // TODO: Maybe texture source should be more like a pipeline, with a base texture and a list of transformations applied?
 public sealed interface TextureSource extends TypeKeyed permits StaticTextureSource, TiledTextureSource, ColorizedTextureSource {
     /**
@@ -29,6 +30,23 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
      * @return the resolved texture
      */
     Texture resolve(ColorResolver colorResolver);
+
+    /**
+     * Gets the color resolver defined for this texture source.
+     * <p>
+     * For example, a mostly white texture source may define a color resolver
+     * that maps "foreground" to black and "background" to white.
+     * <p>
+     * This should not be confused with the color resolver passed to the resolve method,
+     * which is meant to decide how to render this texture. This color resolver is meant
+     * for eaxmple for resolving other textures that are to be rendered on top of this texture,
+     * such as text or symbols.
+     *
+     * @return the color resolver for this texture source
+     */
+    default ColorResolver colorResolver() {
+        return ColorResolver.withDefault();
+    }
 
     /**
      * If the texture source supports resizing, returns a resized version of this texture source.

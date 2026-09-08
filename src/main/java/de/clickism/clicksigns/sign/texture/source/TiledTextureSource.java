@@ -82,6 +82,15 @@ public record TiledTextureSource(
         return true;
     }
 
+    @Override
+    public ColorResolver colorResolver() {
+        var tileSet = resolveTileSet();
+        if (tileSet != null) {
+            return tileSet.colorResolver();
+        }
+        return ColorResolver.withDefault();
+    }
+
     /**
      * Creates a new tiled texture source that has unknown size.
      * Meant to be used as a placeholder until {@link #resize(int, int)} is called.

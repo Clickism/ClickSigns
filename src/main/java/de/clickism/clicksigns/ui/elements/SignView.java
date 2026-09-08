@@ -48,9 +48,7 @@ public class SignView extends UiComponent<SignView> {
      */
     public SignView(EditableRoadSign roadSign) {
         this.roadSign = roadSign;
-        this.roadSign.addChangeListener(change -> {
-            this.invalidateTree();
-        });
+        this.roadSign.onSignChanged(this::invalidateTree);
     }
 
     /**

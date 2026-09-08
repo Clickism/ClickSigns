@@ -31,9 +31,10 @@ import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TE
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
+// TODO: Split into different classes
 public class SignEditScreen extends UiScreen<SignEditScreen> {
 
-    private EditableRoadSign sign;
+    private final EditableRoadSign sign;
     private @Nullable EditableSignElement selected = null;
 
     private Consumer<RoadSign> onSignUpdate = sign -> {};
@@ -45,7 +46,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
 
     public SignEditScreen(@NotNull RoadSign sign) {
         this.sign = new EditableRoadSign(sign);
-        this.sign.addChangeListener(change -> {
+        this.sign.onSignChanged(() -> {
             // Update the sign view and controls when the sign changes
             this.signControlsRef.get().invalidateTree();
             this.elementControlsRef.get().invalidateTree();
@@ -108,7 +109,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         @Override
         protected void build() {
             childGap(8);
-            var build = sign.build();
             children(box().childGap(16).growHeight().children(
                 // TODO: Resize controls!
 
@@ -192,10 +192,20 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             .style(style()
                                 .backgroundColor(UiColor.BLACK_A50))
                             .children(
-                                // Show size
                                 smallHeader(l("Size"))
                                     .padding(0),
-                                text("%d x %d".formatted(build.width(), build.height())),
+                                box()
+                                    .horizontal()
+                                    .alignCenter()
+                                    .childGap(4)
+                                    .children(
+                                        button("-").size(12)
+                                            .onClick(event -> {
+                                                // Decrease the size of the sign
+                                                sign.resize(sign.width() - 1, sign.height() - 1);
+                                            }),
+                                        text("%d x %d".formatted(sign.width(), sign.height()))
+                                    ),
                                 // Confirm button
                                 button(ComponentUtil.confirmWithIcon())
                                     .growWidth()
@@ -278,11 +288,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                     .buttonColor(UiColor.GREEN)
                     .onClick(event -> {
                         var center = signCenter();
-                        var built = sign.build();
                         var element = new PlateElement(
                             center.x(), center.y(), Alignment.CENTER,
-                            built.frontSource().resize(8, 6),
-                            built.backSource().resize(8, 6)
+                            sign.frontSource().resize(8, 6),
+                            sign.backSource().resize(8, 6)
                         );
                         sign.addElement(element);
                     }),
@@ -321,8 +330,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
         }
 
         private Point signCenter() {
-            var build = sign.build();
-            return new Point(build.width() / 2, build.height() / 2);
+            return new Point(sign.width() / 2, sign.height() / 2);
         }
 
         private UiElement<?> textureButton(TextureSource source, Consumer<TextureSource> onTextureSelected) {
@@ -395,7 +403,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             if (current instanceof TextElement text) {
                 add(smallHeader(l("Color")));
 
-                var colorResolver = sign.build().colorResolver();
+                var colorResolver = sign.colorResolver();
                 // Foreground color
                 var foregroundColor = UiColor.of(colorResolver.resolveOrDefault(text.color(), Color.WHITE));
                 add(
