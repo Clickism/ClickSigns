@@ -3,20 +3,20 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
-import de.clickism.clickui.*;
+import de.clickism.clickui.Ref;
+import de.clickism.clickui.UiColor;
+import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
@@ -38,6 +38,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
     private static final Size MIN_SIGN_SIZE = new Size(6, 6);
     private static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
+
+    private static final Size MIN_PLATE_SIZE = new Size(4, 4);
+    private static final Size MAX_PLATE_SIZE = MAX_SIGN_SIZE;
 
     private static final float MIN_TEXT_SCALE = 0.3f;
     private static final float MAX_TEXT_SCALE = 6.0f;
@@ -241,7 +244,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .childGap(8)
                             .children(
                                 smallHeader(l("Front")),
-                                textureButton(sign.frontSource(), newTexture -> {
+                                new TextureButton(sign.frontSource(), newTexture -> {
                                     sign.frontSource(newTexture.resizeToFit(sign.build()));
                                 })
                             ),
@@ -250,7 +253,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .childGap(8)
                             .children(
                                 smallHeader(l("Back")),
-                                textureButton(sign.backSource(), newTexture -> {
+                                new TextureButton(sign.backSource(), newTexture -> {
                                     sign.backSource(newTexture.resizeToFit(sign.build()));
                                 })
                             )
@@ -329,46 +332,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
         private Point signCenter() {
             return new Point(sign.width() / 2, sign.height() / 2);
-        }
-
-        private UiElement<?> textureButton(TextureSource source, Consumer<TextureSource> onTextureSelected) {
-            var texture = source.resize(16, 16).resolve(ColorResolver.empty());
-            return image(texture.location(), 40, 40)
-                .keepAspectRatio(true)
-                .grow()
-                .style(style()
-                    .whenHovered(style()
-                        .borderColor(UiColor.RED)))
-                .onClick(event -> {
-                    event.playSound();
-                    if (GuiUtils.isLeftClick(event.button())) {
-                        // Cycle to next texture in the same category
-                        if (source instanceof TiledTextureSource tiled) {
-                            var tileSet = tiled.resolveTileSet();
-                            if (tileSet == null) return;
-                            var nextTileSet = tileSet.nextInCategory();
-                            var nextTexture = TiledTextureSource.unsized(nextTileSet.identifier());
-                            onTextureSelected.accept(nextTexture);
-                        }
-                    } else {
-                        // Open texture menu
-                        // TODO: Handle non-tile-set textures (e.g. custom textures)
-                        var entries = SignRegistries.TILE_SETS.all().stream()
-                            .map(tileSet -> new TextureList.Entry(
-                                new TiledTextureSource(tileSet.identifier(), 16, 16)
-                                    .resolve(tileSet.colorResolver()),
-                                tileSet.identifier(),
-                                // TODO: Handle uncategorized symbols
-                                tileSet.resolveCategory()
-                            ))
-                            .toList();
-
-                        new TextureSelectScreen(l("Select Texture"), entries)
-                            .onTextureSelected(entry -> {
-                                onTextureSelected.accept(TiledTextureSource.unsized(entry.identifier()));
-                            }).open();
-                    }
-                });
         }
     }
 
@@ -474,9 +437,66 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 ));
             }
 
+            // Plate controls
+            if (current instanceof PlateElement plate) {
+                add(smallHeader(l("Plate Textures")));
+                add(box()
+                    .horizontal()
+                    .growWidth()
+                    .childGap(8)
+                    .children(
+                        box()
+                            .growWidth()
+                            .childGap(8)
+                            .children(
+                                smallHeader(l("Front")),
+                                new TextureButton(plate.front(), newTexture -> {
+                                    if (selected == null) return;
+                                    sign.updateElement(selected.id(),
+                                        element -> ((PlateElement) element).withFront(newTexture.resizeToFit(element.signSize())));
+                                })
+                            ),
+                        box()
+                            .growWidth()
+                            .childGap(8)
+                            .children(
+                                smallHeader(l("Back")),
+                                new TextureButton(plate.back(), newTexture -> {
+                                    if (selected == null) return;
+                                    sign.updateElement(selected.id(),
+                                        element -> ((PlateElement) element).withBack(newTexture.resizeToFit(element.signSize())));
+                                })
+                            )
+                    )
+                );
+                add(smallHeader(l("Plate Size")));
+                add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.signSize())
+                    .minSize(MIN_PLATE_SIZE)
+                    .maxSize(MAX_PLATE_SIZE)
+                    .onSizeChanged(newSize -> {
+                        if (selected == null) return;
+                        sign.updateElement(selected.id(),
+                            element -> {
+                                var plateElement = (PlateElement) element;
+                                var newFront = plateElement.front().resizeToFit(newSize);
+                                var newBack = plateElement.back().resizeToFit(newSize);
+                                return plateElement.withFront(newFront).withBack(newBack);
+                            });
+                    })
+                ));
+            }
+
+            // Symbol controls
+            if (current instanceof SymbolElement symbol) {
+                add(smallHeader(l("Symbol")));
+                // TODO: Symbol selection button
+                // TODO: Color replacement? Even better, make texture edit screen
+            }
+
             // Add Alignment
             add(smallHeader(l("Alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
+                .alignment(current.alignment())
                 .textOnly(current instanceof TextElement)
                 .onAlignmentChange(newAlignment -> {
                     if (selected == null) return;
