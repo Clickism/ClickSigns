@@ -52,6 +52,7 @@ public record TextElement(
         return calculateSignDimension(GuiUtils.font().lineHeight);
     }
 
+    // TODO: Fix text not aligned properly? (I think only in UI)
     private int calculateSignDimension(int dimension) {
         return Mth.ceil(
             dimension // Dimension of text in blocks

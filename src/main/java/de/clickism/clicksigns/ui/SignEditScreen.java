@@ -120,7 +120,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         @Override
         protected void build() {
             childGap(8);
-            children(box().childGap(16).growHeight().children(
+            children(box().childGap(16).growHeight().alignCenter().children(
                 // TODO: Decide if we want the sign view to be centered or partially.
                 box().growHeight(), // To center the sign view vertically
                 // Sign view
