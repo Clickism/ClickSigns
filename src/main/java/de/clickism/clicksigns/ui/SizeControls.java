@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
-public class SizeControls extends UiComponent<SizeControls> implements Headers {
+public class SizeControls extends UiComponent<SizeControls> implements FancyHeaders {
     private final State<Size> size;
 
     private Consumer<Size> onSizeChanged = size -> {};

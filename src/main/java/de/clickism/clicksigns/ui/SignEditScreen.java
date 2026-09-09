@@ -20,6 +20,7 @@ import de.clickism.clickui.*;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,10 +34,13 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 // TODO: Split into different classes
 public class SignEditScreen extends UiScreen<SignEditScreen>
-    implements Headers {
+    implements FancyHeaders {
 
     private static final Size MIN_SIGN_SIZE = new Size(6, 6);
     private static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
+
+    private static final float MIN_TEXT_SCALE = 0.3f;
+    private static final float MAX_TEXT_SCALE = 6.0f;
 
     private final EditableRoadSign sign;
     private @Nullable EditableSignElement selected = null;
@@ -114,8 +118,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         protected void build() {
             childGap(8);
             children(box().childGap(16).growHeight().children(
-                // TODO: Resize controls!
-
                 // TODO: Decide if we want the sign view to be centered or partially.
                 box().growHeight(), // To center the sign view vertically
                 // Sign view
@@ -456,7 +458,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 );
 
                 // Scale
-                // TODO: Text fields don't react to scale
                 add(smallHeader(l("Scale")));
                 add(memo(selected.id() + "-scale", () -> numberField()
                     .growWidth()
@@ -464,10 +465,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .value(text.scale())
                     .onNumberChanged(newScale -> {
                         if (selected == null) return;
+                        var clamped = Mth.clamp(newScale.floatValue(), MIN_TEXT_SCALE, MAX_TEXT_SCALE);
                         sign.updateElement(selected.id(),
-                            // TODO: Clamp scale to reasonable values
                             // TODO: Add buttons to increase/decrease scale by 0.1
-                            element -> ((TextElement) element).withScale(newScale.floatValue()));
+                            element -> ((TextElement) element).withScale(clamped));
                         signViewRef.get().resetTextFieldCache();
                     })
                 ));

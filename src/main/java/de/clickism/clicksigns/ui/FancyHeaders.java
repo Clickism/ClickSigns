@@ -5,7 +5,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.Box;
 import net.minecraft.network.chat.Component;
 
-public interface Headers extends UiBuilder {
+public interface FancyHeaders extends UiBuilder {
     default Box fancyHeader(Component text) {
         return box()
             .padding(4)
