@@ -15,11 +15,11 @@ import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
+import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.*;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,11 @@ import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 // TODO: Split into different classes
-public class SignEditScreen extends UiScreen<SignEditScreen> {
+public class SignEditScreen extends UiScreen<SignEditScreen>
+    implements Headers {
+
+    private static final Size MIN_SIGN_SIZE = new Size(6, 6);
+    private static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
 
     private final EditableRoadSign sign;
     private @Nullable EditableSignElement selected = null;
@@ -186,26 +190,18 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
                             .alignCenter()
                             .padding(4)
                             .childGap(8)
-                            .growWidth()
-                            // Make max width equivalent to 2 block signs
-                            .maxWidth(32 * DEFAULT_TEXTURE_RENDER_SCALE)
+                            // Make width equivalent to 2 block signs
+                            .width(32 * DEFAULT_TEXTURE_RENDER_SCALE)
                             .style(style()
                                 .backgroundColor(UiColor.BLACK_A50))
                             .children(
-                                smallHeader(l("Size"))
-                                    .padding(0),
-                                box()
-                                    .horizontal()
-                                    .alignCenter()
-                                    .childGap(4)
-                                    .children(
-                                        button("-").size(12)
-                                            .onClick(event -> {
-                                                // Decrease the size of the sign
-                                                sign.resize(sign.width() - 1, sign.height() - 1);
-                                            }),
-                                        text("%d x %d".formatted(sign.width(), sign.height()))
-                                    ),
+                                // Sign controls
+                                new SizeControls(new Size(sign.width(), sign.height()))
+                                    .minSize(MIN_SIGN_SIZE)
+                                    .maxSize(MAX_SIGN_SIZE)
+                                    .onSizeChanged(newSize -> {
+                                        sign.resize(newSize.width(), newSize.height());
+                                    }),
                                 // Confirm button
                                 button(ComponentUtil.confirmWithIcon())
                                     .growWidth()
@@ -509,38 +505,5 @@ public class SignEditScreen extends UiScreen<SignEditScreen> {
             .style(style()
                 .backgroundColor(UiColor.BLACK_A40)
                 .borderColor(UiColor.WHITE_A30));
-    }
-
-    private Box fancyHeader(Component text) {
-        return box()
-            .padding(4)
-            .growWidth()
-            .alignCenter()
-            .style(style()
-                .borderColor(UiColor.WHITE_A30)
-                .backgroundColor(UiColor.WHITE_A10))
-            .children(
-                text(text)
-            );
-    }
-
-    private Box smallHeader(Component text) {
-        return box()
-            .growWidth()
-            .padding(8, 0, 0, 0)
-            .children(
-                box()
-                    .padding(3, 0, 2, 0)
-                    .growWidth()
-                    .alignCenter()
-                    .style(style()
-                        .borderColorBottom(UiColor.WHITE_A30)
-                        .backgroundColor(UiColor.WHITE.alpha(0.05f)))
-                    .children(
-                        text(text)
-                            .style(style()
-                                .fontScale(0.75f)
-                                .alpha(0.8f))
-                    ));
     }
 }
