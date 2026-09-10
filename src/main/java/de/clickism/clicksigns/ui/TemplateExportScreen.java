@@ -91,7 +91,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                             text(t("clicksigns.template.include_texts"))
                         ),
                     button(t("💾", "clicksigns.editor.export.save_template"))
-                        .buttonColor(UiColor.CYAN)
+                        .buttonColor(UiColor.TEAL)
                         .disabled(!isValid.get())
                         .growWidth()
                         .onClick(event -> {
@@ -103,7 +103,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                             event.screen().close();
                         }),
                     button(t("📄", "clicksigns.editor.export.copy_json"))
-                        .buttonColor(UiColor.CYAN)
+                        .buttonColor(UiColor.TEAL)
                         .disabled(!isValid.get())
                         .growWidth()
                         .onClick(event -> {

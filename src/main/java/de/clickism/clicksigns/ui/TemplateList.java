@@ -14,6 +14,8 @@ import de.clickism.clickui.style.Style;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
@@ -25,6 +27,10 @@ public class TemplateList extends UiComponent<TemplateList> {
     private Consumer<Template> onTemplateSelected = template -> {};
     private @Nullable Template selected = null;
 
+    private final List<Template> templates = new ArrayList<>();
+
+    private boolean reloadedLocal = false;
+
     @Override
     protected void build() {
         // Scrollable box
@@ -33,14 +39,21 @@ public class TemplateList extends UiComponent<TemplateList> {
             .scrollable(true);
         add(box);
 
+        if (showLocal.get() && !reloadedLocal) {
+            reloadedLocal = true;
+            // Reload local templates to ensure they are up to date
+            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload();
+        }
+
+        templates.clear();
         if (showLocal.get()) {
             // Add local templates
-            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload local templates to ensure they are up to date
             var localTemplates = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates();
             if (!localTemplates.isEmpty()) {
                 box.add(category(t("clicksigns.template.category.local")));
                 localTemplates.forEach(template -> {
                     box.add(entry(template));
+                    templates.add(template);
                 });
             }
         } else {
@@ -50,9 +63,14 @@ public class TemplateList extends UiComponent<TemplateList> {
                 box.add(category(l(category.name())));
                 category.resolveEntries().forEach(template -> {
                     box.add(entry(template));
+                    templates.add(template);
                 });
             });
         }
+    }
+
+    public List<Template> templates() {
+        return templates;
     }
 
     private UiElement<?> category(Component name) {
@@ -103,5 +121,9 @@ public class TemplateList extends UiComponent<TemplateList> {
     public TemplateList showLocal(boolean showLocal) {
         this.showLocal.update(showLocal);
         return this;
+    }
+
+    public void selected(@Nullable Template template) {
+        this.selected = template;
     }
 }

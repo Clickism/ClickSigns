@@ -14,10 +14,12 @@ import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
+import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Road sign overview screen.
@@ -25,7 +27,8 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  * Provides an easy way to edit the texts of a road sign, its alignment,
  * change its template, and open the editor.
  */
-public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
+public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements FancyHeaders {
+    public static final int PANEL_HEIGHT = 92;
 
     private final BlockPos blockPos;
     private final EditableRoadSign roadSign;
@@ -81,23 +84,30 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                 // Container
                 box()
                     .horizontal()
-                    .childGap(16)
+                    .childGap(8)
+                    .growWidth()
                     .children(
                         // Spacer
-                        box().width(AlignmentSelector.TOTAL_SIZE),
+                        box().growWidth(),
 
                         // Button container
                         box()
                             .alignCenter()
-                            .childGap(8)
-                            .width(128)
+                            .childGap(4)
+                            .height(PANEL_HEIGHT)
+                            .width((int) (2 * BLOCK_PIXELS * TEXTURE_RENDER_SCALE)) // 2 Blocks
+                            .padding(4)
+                            .style(style()
+                                .backgroundColor(UiColor.BLACK_A50))
                             .children(
                                 // Spacer
-                                box().height(8),
+                                // TODO: Better name, translate
+                                smallHeader(l("Sign Options")).padding(0),
                                 // Buttons
                                 // Confirm button
                                 button(t("✔", "clicksigns.text.confirm"))
                                     .growWidth()
+                                    .buttonColor(UiColor.LIME)
                                     .onClick(event -> {
                                         // Send packet
                                         Platform.network().sendToServer(
@@ -109,6 +119,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                 // Template button
                                 button(t("📝", "clicksigns.text.change_template"))
                                     .growWidth()
+                                    .buttonColor(UiColor.ORANGE)
                                     .onClick(event -> {
                                         new TemplateSelectScreen()
                                             .onTemplateSelected(template -> {
@@ -119,6 +130,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                     }),
                                 // Edit button
                                 button(t("✎", "clicksigns.text.edit"))
+                                    .buttonColor(UiColor.TEAL)
                                     .growWidth()
                                     .onClick(e -> {
                                         new SignEditScreen(roadSign.build())
@@ -129,17 +141,21 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
 
                         // Alignment
                         box()
+                            .growWidth()
                             .children(
-                                // Header
-                                text(t("clicksigns.text.alignment").copy()
-                                    .withStyle(ChatFormatting.UNDERLINE, ChatFormatting.GRAY))
-                                    .height(16) // Also use as spacer
-                                    .growWidth()
-                                    .alignTextCenter(),
-                                // Selector
-                                new AlignmentSelector()
-                                    .alignment(roadSign.alignment())
-                                    .onAlignmentChange(roadSign::alignment)
+                                box()
+                                    .padding(4)
+                                    .childGap(4)
+                                    .style(style()
+                                        .backgroundColor(UiColor.BLACK_A50))
+                                    .children(
+                                        // Header
+                                        smallHeader(t("clicksigns.text.alignment")).padding(0),
+                                        // Selector
+                                        new AlignmentSelector()
+                                            .alignment(roadSign.alignment())
+                                            .onAlignmentChange(roadSign::alignment)
+                                    )
                             )
                     )
             );

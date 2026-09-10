@@ -6,40 +6,70 @@ import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.style.Border;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * A UI component that allows the user to select an alignment from a set of predefined options.
+ */
 public class AlignmentSelector extends UiComponent<AlignmentSelector> {
-    private static final int BUTTON_SIZE = 20;
-    private static final int CHILD_GAP = 8;
-    public static final int TOTAL_SIZE = BUTTON_SIZE * 3 + CHILD_GAP * 2;
-
     private static final String DIRECTIONAL_ICON = "→";
     private static final String CENTER_ICON = "•";
+
     private final State<Alignment> alignment = state(Alignment.TOP_RIGHT);
     private boolean textOnly = false;
     private Consumer<Alignment> onAlignmentChange = alignment -> {};
 
+    /**
+     * Returns the current alignment.
+     *
+     * @return the current alignment
+     */
     public Alignment alignment() {
         return alignment.get();
     }
 
+    /**
+     * Sets the current alignment and updates the UI.
+     *
+     * @param alignment the new alignment
+     * @return this AlignmentSelector for method chaining
+     */
     public AlignmentSelector alignment(Alignment alignment) {
         this.alignment.update(alignment);
         return this;
     }
 
+    /**
+     * Sets a listener that will be called whenever the alignment changes.
+     *
+     * @param listener the listener to call when the alignment changes
+     * @return this AlignmentSelector for method chaining
+     */
     public AlignmentSelector onAlignmentChange(Consumer<Alignment> listener) {
         this.onAlignmentChange = listener;
         return this;
     }
 
+    /**
+     * Sets whether the alignment selector should only show text alignments.
+     *
+     * @param textOnly true to only show text alignments, false to show all alignments
+     * @return this AlignmentSelector for method chaining
+     */
     public AlignmentSelector textOnly(boolean textOnly) {
         this.textOnly = textOnly;
+        this.invalidateTree();
         return this;
     }
 
+    /**
+     * Returns the list of alignments to display based on the textOnly flag.
+     *
+     * @return the list of alignments to display
+     */
     public List<Alignment> alignmentValues() {
         return textOnly
             ? List.of(Alignment.TEXT_LEFT, Alignment.TEXT_CENTER, Alignment.TEXT_RIGHT)
@@ -51,15 +81,21 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
         var currentAlignment = alignment.get();
         // Build the UI for the alignment selector here
         var grid = grid(3)
-            .childGap(CHILD_GAP);
+            .childGap(4);
         add(grid);
         for (Alignment a : alignmentValues()) {
             var button = button("") // Leave empty as we custom render the icon
-                .width(BUTTON_SIZE)
-                .height(BUTTON_SIZE)
+                .defaultBackground(false)
+                .size(20)
                 .style(style()
+                    .backgroundColor(UiColor.BLACK)
+                    .when(context -> a.equals(currentAlignment), style()
+                        .borderPosition(Border.Position.INSIDE)
+                        .borderColor(UiColor.WHITE))
+                    .when(context -> !a.equals(currentAlignment), style()
+                        .alpha(UiConstants.INACTIVE_ALPHA))
                     .addPostRenderHook((context, el) -> {
-                        // Calculat center of the button
+                        // Calculate center of the button
                         var bounds = el.bounds();
                         var centerX = bounds.x() + bounds.width() / 2;
                         var centerY = bounds.y() + bounds.height() / 2;
@@ -93,9 +129,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
                         );
                         // Pop pose
                         graphics.pose().popPose();
-                    })
-                    .when(context -> !a.equals(currentAlignment), style()
-                        .alpha(UiConstants.INACTIVE_ALPHA)))
+                    }))
                 .onClick(event -> {
                     alignment.update(a);
                     onAlignmentChange.accept(a);

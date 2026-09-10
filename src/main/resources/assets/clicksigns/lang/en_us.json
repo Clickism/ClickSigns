@@ -6,7 +6,7 @@
 
   "clicksigns.select_texture.tooltip": "§f§lClick §rto cycle texture\n§f§lRight click §rto open texture menu",
   "clicksigns.overview.symbol.tooltip": "§f§lClick §rto cycle symbol\n§f§lRight click §rto open symbol menu",
-  "clicksigns.overview.text.tooltip": "§lClick §rto edit text\n§lRight+Click §rto change variant",
+  "clicksigns.overview.text.tooltip": "§lClick §rto edit text",
 
   "clicksigns.element.symbol": "Symbol",
   "clicksigns.element.text": "Text",
@@ -16,7 +16,6 @@
   "clicksigns.editor.texture": "Texture",
   "clicksigns.editor.size": "Size",
   "clicksigns.editor.element_properties": "Element",
-  "clicksigns.editor.size_display": "Size: %s x %s",
   "clicksigns.editor.sign_properties": "Sign Properties",
   "clicksigns.editor.sign_textures": "Sign Textures",
   "clicksigns.editor.elements": "Elements",

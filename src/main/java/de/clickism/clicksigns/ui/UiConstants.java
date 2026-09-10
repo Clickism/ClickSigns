@@ -11,7 +11,7 @@ public class UiConstants {
     /**
      * The scale at which each pixel of the texture is rendered.
      */
-    public static final int DEFAULT_TEXTURE_RENDER_SCALE = 4;
+    public static final int TEXTURE_RENDER_SCALE = 4;
 
     private UiConstants() {
         // Utility class

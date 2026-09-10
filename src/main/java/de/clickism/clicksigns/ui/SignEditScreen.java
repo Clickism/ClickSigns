@@ -28,7 +28,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -130,9 +130,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         @Override
         protected void build() {
             childGap(8);
-            children(box().childGap(16).growHeight().alignCenter().children(
+            children(box().childGap(8).growHeight().alignCenter().children(
                 // TODO: Decide if we want the sign view to be centered or partially.
-                box().growHeight(), // To center the sign view vertically
                 // Sign view
                 memo(() -> new SignView(sign)
                     .ref(signViewRef)
@@ -171,8 +170,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             // Drag controls
                             .onDrag(event -> {
                                 // Get the delta in sign space
-                                int deltaX = (int) (event.totalDeltaX() / DEFAULT_TEXTURE_RENDER_SCALE);
-                                int deltaY = (int) (event.totalDeltaY() / DEFAULT_TEXTURE_RENDER_SCALE);
+                                int deltaX = (int) (event.totalDeltaX() / TEXTURE_RENDER_SCALE);
+                                int deltaY = (int) (event.totalDeltaY() / TEXTURE_RENDER_SCALE);
 
                                 int newX = dragStartX + deltaX;
                                 int newY = dragStartY - deltaY;
@@ -197,16 +196,15 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             });
                     })),
                 box()
-                    .growWidth()
-                    .growHeight()
-                    .crossAlign(Align.CENTER)
+                    // Use panel height from overview screen to keep alignment consistent
+                    .height(SignOverviewScreen.PANEL_HEIGHT)
                     .children(
                         box()
                             .alignCenter()
                             .padding(4)
                             .childGap(8)
                             // Make width equivalent to 2 block signs
-                            .width(32 * DEFAULT_TEXTURE_RENDER_SCALE)
+                            .width(32 * TEXTURE_RENDER_SCALE)
                             .style(style()
                                 .backgroundColor(UiColor.BLACK_A50))
                             .children(
@@ -273,7 +271,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 button(t("+", "clicksigns.editor.elements.add_symbol"))
                     .growWidth()
-                    .buttonColor(UiColor.GREEN)
+                    .buttonColor(UiColor.LIME)
                     .onClick(event -> {
                         var center = signCenter();
                         var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
@@ -285,7 +283,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     }),
                 button(t("+", "clicksigns.editor.elements.add_text"))
                     .growWidth()
-                    .buttonColor(UiColor.GREEN)
+                    .buttonColor(UiColor.LIME)
                     .onClick(event -> {
                         var center = signCenter();
                         var element = new TextElement(
@@ -296,7 +294,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     }),
                 button(t("+", "clicksigns.editor.elements.add_plate"))
                     .growWidth()
-                    .buttonColor(UiColor.GREEN)
+                    .buttonColor(UiColor.LIME)
                     .onClick(event -> {
                         var center = signCenter();
                         var element = new PlateElement(
@@ -310,7 +308,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 smallHeader(t("clicksigns.editor.tools")),
                 button(t("⏪", "clicksigns.editor.tools.reset_texts"))
                     .growWidth()
-                    .buttonColor(UiColor.BLUE)
+                    .buttonColor(UiColor.ORANGE)
                     .onClick(event -> {
                         var elements = new ArrayList<>(sign.elements());
                         for (var element : elements) {
@@ -323,7 +321,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     }),
                 button(t("🗑", "clicksigns.editor.tools.remove_elements"))
                     .growWidth()
-                    .buttonColor(UiColor.RED)
+                    .buttonColor(UiColor.MAROON)
                     .onClick(event -> {
                         var elements = new ArrayList<>(sign.elements());
                         for (var element : elements) {
@@ -333,7 +331,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 smallHeader(t("clicksigns.editor.export")),
                 button(t("📤", "clicksigns.editor.export_template"))
                     .growWidth()
-                    .buttonColor(UiColor.CYAN)
+                    .buttonColor(UiColor.TEAL)
                     .onClick(event -> {
                         new TemplateExportScreen(sign).open();
                     })
@@ -531,7 +529,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             add(smallHeader(t("clicksigns.editor.other")));
             add(button(t("🗑", "clicksigns.editor.tools.remove_element"))
                 .growWidth()
-                .buttonColor(UiColor.RED)
+                .buttonColor(UiColor.MAROON)
                 .onClick(event -> {
                     if (selected == null) return;
                     sign.removeElement(selected.id());

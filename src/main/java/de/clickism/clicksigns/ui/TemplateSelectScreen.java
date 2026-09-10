@@ -32,6 +32,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
 
         Consumer<Template> updateSelected = (selected) -> {
             this.selected = selected;
+            listRef.get().selected(selected);
             infoRef.get().template.update(selected);
         };
 
@@ -53,6 +54,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                             .childGap(8)
                             .children(
                                 button(t("📦", "clicksigns.template.category.resource"))
+                                    .tooltip(t("clicksigns.template.category.resource.tooltip"))
                                     .grow()
                                     .style(style()
                                         .when(context -> showLocal.get(), style()
@@ -61,6 +63,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                         showLocal.update(false);
                                     }),
                                 button(t("💾", "clicksigns.template.category.local"))
+                                    .tooltip(t("clicksigns.template.category.local.tooltip"))
                                     .grow()
                                     .style(style()
                                         .when(context -> !showLocal.get(), style()
@@ -109,18 +112,28 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                         // Delete button
                                         showLocal.get()
                                             ? button(t("🗑", "clicksigns.template.delete"))
-                                            .buttonColor(UiColor.RED)
+                                            .buttonColor(UiColor.MAROON)
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Delete template
                                                 ClickSigns.LOCAL_TEMPLATE_MANAGER.deleteTemplate(selected);
-                                                updateSelected.accept(null);
-                                                listRef.get().invalidateTree(); // Invalidate list
+                                                // Find the next template to select
+                                                var templateList = listRef.get();
+                                                var templates = templateList.templates();
+                                                var index = templates.indexOf(selected);
+                                                var nextIndex = index < templates.size() - 1
+                                                    ? index + 1
+                                                    : index - 1;
+                                                var nextTemplate = nextIndex >= 0 && nextIndex < templates.size()
+                                                    ? templates.get(nextIndex)
+                                                    : null;
+                                                updateSelected.accept(nextTemplate);
+                                                templateList.invalidateTree(); // Invalidate list
                                             })
                                             : box().growWidth(), // Spacer,
                                         // Apply button
                                         button(t("🛠", "clicksigns.template.apply"))
-                                            .buttonColor(UiColor.GREEN)
+                                            .buttonColor(UiColor.LIME)
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Call callback and close screen
