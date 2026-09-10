@@ -504,42 +504,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .onClick(event -> {
                         event.playSound();
                         if (selected == null) return;
-                        // TODO: Refactor
-                        // Left click
-                        if (GuiUtils.isLeftClick(event.button())) {
-                            // Cycle to next symbol in the same category
-                            var nextSymbol = symbol.symbol().nextInCategory();
-                            sign.updateElement(
-                                selected.id(),
-                                element -> ((SymbolElement) element).withSymbol(nextSymbol)
-                            );
-                        }
-                        // Right click
-                        if (GuiUtils.isRightClick(event.button())) {
-                            // Open symbol menu
-                            var colorResolver = sign.colorResolver();
-                            var entries = SignRegistries.SYMBOLS.all().stream()
-                                .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
-                                    s.texture().resolve(colorResolver),
-                                    s.identifier(),
-                                    // TODO: Handle uncategorized symbols
-                                    s.resolveCategory()
-                                ))
-                                .toList();
-
-                            // Find sign background primary color
-                            var backgroundColor = UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver()));
-                            new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
-                                .onTextureSelected(entry -> {
-                                    if (selected == null) return;
-                                    var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
-                                    if (newSymbol == null) return;
-                                    sign.updateElement(
-                                        selected.id(),
-                                        element -> ((SymbolElement) element).withSymbol(newSymbol)
-                                    );
-                                }).open();
-                        }
+                        SymbolView.handleSymbolChange(sign, selected, event);
                     }));
             }
 

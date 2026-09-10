@@ -14,6 +14,7 @@ import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
+import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
@@ -75,48 +76,12 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                         // Element specific config
                         if (signElement instanceof TextElement) {
                             uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
-                        } else if (signElement instanceof SymbolElement symbol) {
+                        } else if (signElement instanceof SymbolElement) {
                             uiElement
                                 .tooltip(t("clicksigns.overview.symbol.tooltip"))
                                 .onClick(event -> {
                                     event.playSound();
-                                    // TODO: Refactor
-                                    // Left click
-                                    if (GuiUtils.isLeftClick(event.button())) {
-                                        // Cycle to next symbol in the same category
-                                        var nextSymbol = symbol.symbol().nextInCategory();
-                                        roadSign.updateElement(
-                                            editableSignElement.id(),
-                                            element -> ((SymbolElement) element).withSymbol(nextSymbol)
-                                        );
-                                    }
-                                    // Right click
-                                    if (GuiUtils.isRightClick(event.button())) {
-                                        // Open symbol menu
-                                        var built = roadSign.build();
-                                        var colorResolver = built.colorResolver();
-                                        var entries = SignRegistries.SYMBOLS.all().stream()
-                                            .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
-                                                s.texture().resolve(colorResolver),
-                                                s.identifier(),
-                                                // TODO: Handle uncategorized symbols
-                                                s.resolveCategory()
-                                            ))
-                                            .toList();
-
-                                        // Find sign background primary color
-                                        var backgroundColor = UiUtil.primaryColorOf(roadSign.frontSource().resolve(colorResolver));
-
-                                        new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
-                                            .onTextureSelected(entry -> {
-                                                var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
-                                                if (newSymbol == null) return;
-                                                roadSign.updateElement(
-                                                    editableSignElement.id(),
-                                                    element -> ((SymbolElement) element).withSymbol(newSymbol)
-                                                );
-                                            }).open();
-                                    }
+                                    SymbolView.handleSymbolChange(roadSign, editableSignElement, event);
                                 });
                         }
                     }),
