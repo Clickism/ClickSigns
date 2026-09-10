@@ -35,6 +35,29 @@ public record RoadSign(
     @Nullable ResourceLocation templateId
 ) implements PixelSized {
     /**
+     * The default alignment for road signs when no alignment is set.
+     */
+    public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
+    /**
+     * The default symbol texture.
+     */
+    public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
+    /**
+     * The default road sign to use when no road sign is set.
+     */
+    public static RoadSign DEFAULT = new RoadSign(
+        new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
+        new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
+        List.of(
+            new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
+            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
+            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
+        ),
+        DEFAULT_ALIGNMENT,
+        ClickSigns.identifier("test")
+    );
+    /**
      * Writer for packets
      */
     public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
@@ -84,29 +107,6 @@ public record RoadSign(
         var templateId = tag.getResourceLocation("template").orElse(null);
         return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
     };
-    /**
-     * The default alignment for road signs when no alignment is set.
-     */
-    public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
-    /**
-     * The default symbol texture.
-     */
-    public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
-    /**
-     * The default road sign to use when no road sign is set.
-     */
-    public static RoadSign DEFAULT = new RoadSign(
-        new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
-        new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
-        List.of(
-            new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
-        ),
-        DEFAULT_ALIGNMENT,
-        ClickSigns.identifier("test")
-    );
 
     /**
      * Gets the color resolver for this road sign.
