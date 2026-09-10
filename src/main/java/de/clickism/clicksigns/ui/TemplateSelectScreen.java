@@ -4,6 +4,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
+import de.clickism.clicksigns.ui.elements.SignTextField;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.*;
 import de.clickism.clickui.reactivity.State;
@@ -149,7 +150,13 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 return;
             }
             // Add preview
-            add(new SignView(new EditableRoadSign(template.build())));
+            add(new SignView(new EditableRoadSign(template.build()))
+                .elementConfig((uiElement, signElement) -> {
+                    if (uiElement instanceof SignTextField textField) {
+                        // Disable input for the preview
+                        textField.allowInput(false);
+                    }
+                }));
             // Add template meta
             var meta = template.meta();
             add(box()
