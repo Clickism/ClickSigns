@@ -2,9 +2,7 @@ package de.clickism.clicksigns.ui.editor;
 
 import de.clickism.clicksigns.sign.element.SignElement;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 public class EditableSignElement {

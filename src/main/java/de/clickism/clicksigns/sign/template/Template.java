@@ -15,12 +15,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public record Template(
-        Meta meta,
-        Sign sign,
-        // Other data
-        // TODO: Maybe remove identifier at all? or make it nullable. Not needed for local templates
-        ResourceLocation identifier,
-        @Nullable ResourceLocation categoryId
+    Meta meta,
+    Sign sign,
+    // Other data
+    // TODO: Maybe remove identifier at all? or make it nullable. Not needed for local templates
+    ResourceLocation identifier,
+    @Nullable ResourceLocation categoryId
 ) implements Categorized<Template> {
     /**
      * Builds a road sign based on this template.
@@ -31,6 +31,11 @@ public record Template(
         return sign.build(identifier);
     }
 
+    @Override
+    public CategorizedRegistry<Template> registry() {
+        return SignRegistries.RESOURCE_TEMPLATES;
+    }
+
     /**
      * Metadata for a sign template.
      *
@@ -39,9 +44,9 @@ public record Template(
      * @param author      the author of the template
      */
     public record Meta(
-            String name,
-            @Nullable String description,
-            @Nullable String author
+        String name,
+        @Nullable String description,
+        @Nullable String author
     ) {
         /**
          * Creates a placeholder meta instance with default values.
@@ -66,11 +71,11 @@ public record Template(
      * @param elements the list of sign elements for the sign
      */
     public record Sign(
-            int width,
-            int height,
-            TextureSource front,
-            TextureSource back,
-            List<SignElement> elements
+        int width,
+        int height,
+        TextureSource front,
+        TextureSource back,
+        List<SignElement> elements
     ) implements PixelSized {
         /**
          * Builds a road sign based on this sign data.
@@ -80,17 +85,12 @@ public record Template(
          */
         private RoadSign build(ResourceLocation identifier) {
             return new RoadSign(
-                    front.resize(width, height),
-                    back.resize(width, height),
-                    elements,
-                    RoadSign.DEFAULT_ALIGNMENT,
-                    identifier
+                front.resize(width, height),
+                back.resize(width, height),
+                elements,
+                RoadSign.DEFAULT_ALIGNMENT,
+                identifier
             );
         }
-    }
-
-    @Override
-    public CategorizedRegistry<Template> registry() {
-        return SignRegistries.RESOURCE_TEMPLATES;
     }
 }

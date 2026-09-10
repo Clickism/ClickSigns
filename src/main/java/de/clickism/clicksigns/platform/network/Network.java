@@ -11,48 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
  */
 public abstract class Network {
     /**
-     * Sends the given packet to the server.
-     *
-     * @param packet The packet to be sent
-     */
-    public abstract void sendToServer(Packet packet);
-
-    /**
-     * Sends the given packet to the given player.
-     *
-     * @param player The player to send the packet to
-     * @param packet The packet to be sent
-     */
-    public abstract void sendToPlayer(ServerPlayer player, Packet packet);
-
-    /**
-     * Sends the given packet to all players.
-     *
-     * @param packet The packet to be sent
-     */
-    public abstract void sendToAllInLevel(ServerLevel level, Packet packet);
-
-    /**
-     * Registers the network handlers.
-     * Should be called during mod initialization.
-     */
-    public abstract void register();
-
-    /**
-     * Handles a packet received on the server side.
-     *
-     * @param packet the packet to be handled
-     * @param server the server instance
-     * @param player the player who sent the packet
-     * @param <T>    the type of the packet
-     */
-    @SuppressWarnings("unchecked")
-    protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
-        var type = (PacketType<T>) packet.type();
-        server.execute(() -> type.serverHandler().handle(packet, player));
-    }
-
-    /**
      * Handles a packet received on the client side.
      *
      * @param packet the packet to be handled
@@ -97,5 +55,47 @@ public abstract class Network {
         }
         // Read packet data
         return type.reader().apply(buf);
+    }
+
+    /**
+     * Sends the given packet to the server.
+     *
+     * @param packet The packet to be sent
+     */
+    public abstract void sendToServer(Packet packet);
+
+    /**
+     * Sends the given packet to the given player.
+     *
+     * @param player The player to send the packet to
+     * @param packet The packet to be sent
+     */
+    public abstract void sendToPlayer(ServerPlayer player, Packet packet);
+
+    /**
+     * Sends the given packet to all players.
+     *
+     * @param packet The packet to be sent
+     */
+    public abstract void sendToAllInLevel(ServerLevel level, Packet packet);
+
+    /**
+     * Registers the network handlers.
+     * Should be called during mod initialization.
+     */
+    public abstract void register();
+
+    /**
+     * Handles a packet received on the server side.
+     *
+     * @param packet the packet to be handled
+     * @param server the server instance
+     * @param player the player who sent the packet
+     * @param <T>    the type of the packet
+     */
+    @SuppressWarnings("unchecked")
+    protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
+        var type = (PacketType<T>) packet.type();
+        server.execute(() -> type.serverHandler().handle(packet, player));
     }
 }

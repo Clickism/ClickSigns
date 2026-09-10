@@ -21,13 +21,12 @@ import java.util.function.UnaryOperator;
  * {@link #onSignChanged(Runnable)}, which are notified whenever the sign changes.
  */
 public class EditableRoadSign {
+    private final Map<UUID, EditableSignElement> elements = new LinkedHashMap<>();
+    private final List<Runnable> listeners = new ArrayList<>();
     private TextureSource frontSource;
     private TextureSource backSource;
-    private final Map<UUID, EditableSignElement> elements = new LinkedHashMap<>();
     private Alignment alignment;
     private @Nullable ResourceLocation templateId;
-
-    private final List<Runnable> listeners = new ArrayList<>();
 
     /**
      * Creates a new EditableRoadSign with the specified properties.
@@ -151,7 +150,7 @@ public class EditableRoadSign {
     public int height() {
         return frontSource.resolve(colorResolver()).height();
     }
-    
+
     /**
      * Copies the properties and elements from the given RoadSign into this EditableRoadSign.
      *

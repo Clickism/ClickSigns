@@ -16,12 +16,11 @@ public enum Alignment {
     BOTTOM_CENTER(0, -1),
     BOTTOM_RIGHT(1, -1);
 
-    private final Vector2f offset;
-
     // Text alignments
     public static final Alignment TEXT_LEFT = TOP_LEFT;
     public static final Alignment TEXT_CENTER = TOP_CENTER;
     public static final Alignment TEXT_RIGHT = TOP_RIGHT;
+    private final Vector2f offset;
 
     Alignment(float offsetX, float offsetY) {
         this.offset = new Vector2f(offsetX, offsetY);

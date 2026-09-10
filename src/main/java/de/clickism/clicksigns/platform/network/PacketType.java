@@ -15,11 +15,11 @@ import net.minecraft.server.level.ServerPlayer;
  * @param <T>           the type of payload of the packet
  */
 public record PacketType<T extends Packet>(
-        ResourceLocation id,
-        FriendlyByteBuf.Writer<T> writer,
-        FriendlyByteBuf.Reader<T> reader,
-        ServerHandler<T> serverHandler,
-        ClientHandler<T> clientHandler
+    ResourceLocation id,
+    FriendlyByteBuf.Writer<T> writer,
+    FriendlyByteBuf.Reader<T> reader,
+    ServerHandler<T> serverHandler,
+    ClientHandler<T> clientHandler
 ) {
     /**
      * Interface for handling packets on the server side.

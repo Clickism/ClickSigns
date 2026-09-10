@@ -8,7 +8,6 @@ import de.clickism.clicksigns.sign.reload.SymbolListener;
 import de.clickism.clicksigns.sign.reload.TemplateListener;
 import de.clickism.clicksigns.sign.reload.TileSetListener;
 import de.clickism.clicksigns.sign.template.local.LocalTemplateManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

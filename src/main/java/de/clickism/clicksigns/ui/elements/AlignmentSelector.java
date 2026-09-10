@@ -17,10 +17,8 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
 
     private static final String DIRECTIONAL_ICON = "→";
     private static final String CENTER_ICON = "•";
-
-    private boolean textOnly = false;
-
     private final State<Alignment> alignment = state(Alignment.TOP_RIGHT);
+    private boolean textOnly = false;
     private Consumer<Alignment> onAlignmentChange = alignment -> {};
 
     public Alignment alignment() {

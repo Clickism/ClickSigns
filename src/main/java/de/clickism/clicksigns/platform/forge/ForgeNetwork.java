@@ -20,10 +20,10 @@ public class ForgeNetwork extends Network {
 
     private static final int PROTOCOL_VERSION = 1;
     private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ClickSigns.identifier("main"),
-            () -> String.valueOf(PROTOCOL_VERSION),
-            version -> true,
-            version -> true
+        ClickSigns.identifier("main"),
+        () -> String.valueOf(PROTOCOL_VERSION),
+        version -> true,
+        version -> true
     );
 
     private ForgeNetwork() {
@@ -33,23 +33,23 @@ public class ForgeNetwork extends Network {
     @Override
     public void register() {
         CHANNEL.registerMessage(0, ForgePacket.class,
-                // Encoder
-                (packet, buf) -> buf.writeBytes(writePacket(packet.packet())),
-                // Decoder
-                (buf) -> new ForgePacket(readPacket(buf)),
-                // Handler
-                (packet, ctx) -> {
-                    var context = ctx.get();
-                    var player = context.getSender();
-                    context.enqueueWork(() -> {
-                        if (player != null) {
-                            handleServer(packet.packet(), player.server, player);
-                        } else {
-                            handleClient(packet.packet());
-                        }
-                    });
-                    context.setPacketHandled(true);
+            // Encoder
+            (packet, buf) -> buf.writeBytes(writePacket(packet.packet())),
+            // Decoder
+            (buf) -> new ForgePacket(readPacket(buf)),
+            // Handler
+            (packet, ctx) -> {
+                var context = ctx.get();
+                var player = context.getSender();
+                context.enqueueWork(() -> {
+                    if (player != null) {
+                        handleServer(packet.packet(), player.server, player);
+                    } else {
+                        handleClient(packet.packet());
+                    }
                 });
+                context.setPacketHandled(true);
+            });
     }
 
     @Override

@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.*;
+import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -26,15 +26,25 @@ public final class RoadSignRenderer extends Renderer {
      * Creates a new road sign renderer for the given block entity and rendering context.
      */
     public RoadSignRenderer(
-            @NotNull RoadSign roadSign,
-            Direction direction,
-            PoseStack stack,
-            MultiBufferSource source,
-            int light
+        @NotNull RoadSign roadSign,
+        Direction direction,
+        PoseStack stack,
+        MultiBufferSource source,
+        int light
     ) {
         super(stack, source, light);
         this.direction = direction;
         this.roadSign = roadSign;
+    }
+
+    /**
+     * Converts local sign coordinates to render coordinates.
+     */
+    private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
+        // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture
+        float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
+        float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
+        return new Vector2f(-renderX, renderY);
     }
 
     public void render() {
@@ -97,15 +107,5 @@ public final class RoadSignRenderer extends Renderer {
         stack.mulPose(new Quaternionf().rotateY(rotation));
         // Move back so the sign is flush with the block face
         stack.translate(0, 0, .5);
-    }
-
-    /**
-     * Converts local sign coordinates to render coordinates.
-     */
-    private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
-        // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture
-        float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
-        float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
-        return new Vector2f(-renderX, renderY);
     }
 }

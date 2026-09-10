@@ -1,9 +1,9 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;
@@ -11,8 +11,8 @@ import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
 import net.minecraft.util.Mth;
 
-import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 // TODO: Refactor and come up with clear rendering guidelines for sign elements and text element outline, border, etc.
@@ -25,12 +25,10 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 public class SignTextField extends TextField implements ElementProvider {
     private static final int MIN_WIDTH = 4;
     private static final int BACKGROUND_PADDING = 3;
-
-    private TextElement element;
-    private ColorResolver colorResolver;
-
     // TODO: Refactor renderScale?
     private final float renderScale;
+    private TextElement element;
+    private ColorResolver colorResolver;
 
     /**
      * Creates a new SignTextField for the given TextElement and ColorResolver.

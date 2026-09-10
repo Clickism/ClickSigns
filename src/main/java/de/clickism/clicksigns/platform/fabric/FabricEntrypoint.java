@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.platform.fabric;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;

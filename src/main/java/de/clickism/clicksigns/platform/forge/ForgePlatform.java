@@ -14,8 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,13 +34,13 @@ public class ForgePlatform implements Platform {
     public static final ForgePlatform INSTANCE = new ForgePlatform();
 
     private static final DeferredRegister<Item> ITEMS_REGISTRY =
-            DeferredRegister.create(ForgeRegistries.ITEMS, ClickSigns.MOD_ID);
+        DeferredRegister.create(ForgeRegistries.ITEMS, ClickSigns.MOD_ID);
 
     private static final DeferredRegister<Block> BLOCKS_REGISTRY =
-            DeferredRegister.create(ForgeRegistries.BLOCKS, ClickSigns.MOD_ID);
+        DeferredRegister.create(ForgeRegistries.BLOCKS, ClickSigns.MOD_ID);
 
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY =
-            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
+        DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ClickSigns.MOD_ID);
 
     private final List<TabEntry> tabEntries = new ArrayList<>();
     private final List<ReloadListener> reloadListeners = new ArrayList<>();
@@ -70,9 +68,9 @@ public class ForgePlatform implements Platform {
 
     @Override
     public <T extends Item> Supplier<T> registerItem(
-            String name,
-            Item.Properties settings,
-            ItemFactory<T> itemSupplier
+        String name,
+        Item.Properties settings,
+        ItemFactory<T> itemSupplier
     ) {
         var holder = ITEMS_REGISTRY.register(name, () -> itemSupplier.create(settings));
         return () -> holder.get();
@@ -80,9 +78,9 @@ public class ForgePlatform implements Platform {
 
     @Override
     public <T extends Block> Supplier<T> registerBlock(
-            String name,
-            BlockBehaviour.Properties settings,
-            BlockFactory<T> blockSupplier
+        String name,
+        BlockBehaviour.Properties settings,
+        BlockFactory<T> blockSupplier
     ) {
         var holder = BLOCKS_REGISTRY.register(name, () -> blockSupplier.create(settings));
         return () -> holder.get();
@@ -90,17 +88,17 @@ public class ForgePlatform implements Platform {
 
     @Override
     public <T extends Block> Supplier<T> registerBlockWithItem(
-            String name,
-            BlockBehaviour.Properties settings,
-            BlockFactory<T> blockSupplier
+        String name,
+        BlockBehaviour.Properties settings,
+        BlockFactory<T> blockSupplier
     ) {
         var block = registerBlock(name, settings, blockSupplier);
 
         ITEMS_REGISTRY.register(name, () ->
-                new BlockItem(
-                        block.get(),
-                        new Item.Properties()
-                )
+            new BlockItem(
+                block.get(),
+                new Item.Properties()
+            )
         );
 
         return block;
@@ -108,13 +106,13 @@ public class ForgePlatform implements Platform {
 
     @Override
     public <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(
-            String name,
-            BlockEntityFactory<T> factory,
-            Supplier<Block> block
+        String name,
+        BlockEntityFactory<T> factory,
+        Supplier<Block> block
     ) {
         return BLOCK_ENTITY_TYPE_REGISTRY.register(
-                name,
-                () -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
+            name,
+            () -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
         );
     }
 
@@ -139,8 +137,8 @@ public class ForgePlatform implements Platform {
     public void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         var tab = event.getTabKey();
         tabEntries.stream()
-                .filter(entry -> entry.tab.equals(tab))
-                .forEach(entry -> event.accept(entry.item.get()));
+            .filter(entry -> entry.tab.equals(tab))
+            .forEach(entry -> event.accept(entry.item.get()));
     }
 
     /**

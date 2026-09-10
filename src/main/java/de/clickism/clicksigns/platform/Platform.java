@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Supplier;
 
-import static net.minecraft.world.item.Item.*;
+import static net.minecraft.world.item.Item.Properties;
 
 /**
  * Platform wrapper interface
@@ -54,42 +54,49 @@ public interface Platform {
      * Registers a new item
      */
     <T extends Item> Supplier<T> registerItem(
-            String name,
-            Properties settings,
-            ItemFactory<T> itemSupplier
+        String name,
+        Properties settings,
+        ItemFactory<T> itemSupplier
     );
 
     /**
      * Registers a new block
      */
     <T extends Block> Supplier<T> registerBlock(
-            String name,
-            BlockBehaviour.Properties settings,
-            BlockFactory<T> blockSupplier
+        String name,
+        BlockBehaviour.Properties settings,
+        BlockFactory<T> blockSupplier
     );
 
     /**
      * Registers a new block and its item
      */
     <T extends Block> Supplier<T> registerBlockWithItem(
-            String name,
-            BlockBehaviour.Properties settings,
-            BlockFactory<T> blockSupplier
+        String name,
+        BlockBehaviour.Properties settings,
+        BlockFactory<T> blockSupplier
     );
 
     /**
      * Registers a new block entity type
      */
     <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(
-            String name,
-            BlockEntityFactory<T> blockEntitySupplier,
-            Supplier<Block> block
+        String name,
+        BlockEntityFactory<T> blockEntitySupplier,
+        Supplier<Block> block
     );
 
     /**
      * Adds an item to a creative tab
      */
     void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item);
+
+    /**
+     * Adds a reload listener to the resource manager
+     *
+     * @param listener Reload listener to add
+     */
+    void addReloadListener(ReloadListener listener);
 
     /**
      * Factory for creating items
@@ -129,12 +136,5 @@ public interface Platform {
          */
         T create(BlockPos pos, BlockState state);
     }
-
-    /**
-     * Adds a reload listener to the resource manager
-     *
-     * @param listener Reload listener to add
-     */
-    void addReloadListener(ReloadListener listener);
 
 }

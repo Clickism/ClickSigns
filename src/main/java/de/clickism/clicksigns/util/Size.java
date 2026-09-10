@@ -7,8 +7,8 @@ package de.clickism.clicksigns.util;
  * @param height height in pixels
  */
 public record Size(
-        int width,
-        int height
+    int width,
+    int height
 ) implements PixelSized {
     public Size withWidth(int newWidth) {
         return new Size(newWidth, this.height);

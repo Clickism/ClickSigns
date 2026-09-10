@@ -17,9 +17,9 @@ public class ClickSignsBlocks {
      * Road sign block
      */
     public static final Supplier<Block> ROAD_SIGN = Platform.get().registerBlockWithItem(
-            "road_sign",
-            BlockBehaviour.Properties.copy(Blocks.STONE),
-            RoadSignBlock::new
+        "road_sign",
+        BlockBehaviour.Properties.copy(Blocks.STONE),
+        RoadSignBlock::new
     );
 
     public static void initialize() {

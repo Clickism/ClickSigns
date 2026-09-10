@@ -49,6 +49,25 @@ public class TextRenderer extends Renderer {
     }
 
     /**
+     * Multiplies the RGB components of the given ARGB color
+     *
+     * @param color  the ARGB color to multiply
+     * @param factor the factor to multiply the RGB components by
+     * @return the resulting ARGB color with the same alpha and multiplied RGB components
+     */
+    private static int multiplyColor(int color, float factor) {
+        int a = FastColor.ARGB32.alpha(color);
+        int r = (int) (FastColor.ARGB32.red(color) * factor);
+        int g = (int) (FastColor.ARGB32.green(color) * factor);
+        int b = (int) (FastColor.ARGB32.blue(color) * factor);
+        // Keep within bounds just in case
+        r = Mth.clamp(r, 0, 0xFF);
+        g = Mth.clamp(g, 0, 0xFF);
+        b = Mth.clamp(b, 0, 0xFF);
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    /**
      * Renders the given text at the center (0, 0) with the given z index and color.
      *
      * @param text            the text to render
@@ -59,14 +78,14 @@ public class TextRenderer extends Renderer {
      * @param zIndex          the z index to render at, higher values will render on top
      */
     public void render(
-            String text,
-            int color,
-            int backgroundColor,
-            float textScale,
-            float x,
-            float y,
-            int zIndex,
-            Alignment alignment
+        String text,
+        int color,
+        int backgroundColor,
+        float textScale,
+        float x,
+        float y,
+        int zIndex,
+        Alignment alignment
     ) {
         if (text.isEmpty()) return;
         stack.pushPose();
@@ -91,22 +110,24 @@ public class TextRenderer extends Renderer {
         float textX = -textWidth / 2f;
         float textY = -textHeight / 2f;
         // Center withing padded background
-        float paddingX = backgroundColor != 0 ? TEXT_PADDING_X / BLOCK_PIXELS : 0;
+        float paddingX = backgroundColor != 0
+            ? TEXT_PADDING_X / BLOCK_PIXELS
+            : 0;
         textX += paddingX / TEXT_RENDER_SCALE;
         // Draw text
         color = multiplyColor(color, COLOR_DARKEN_FACTOR); // Darken color to match texture colors
         font.drawInBatch(
-                text,
-                // Apply text offset
-                textX, textY,
-                // Apply color
-                color,
-                false, // No shadow
-                stack.last().pose(),
-                source,
-                Font.DisplayMode.NORMAL,
-                0, // No background color
-                light
+            text,
+            // Apply text offset
+            textX, textY,
+            // Apply color
+            color,
+            false, // No shadow
+            stack.last().pose(),
+            source,
+            Font.DisplayMode.NORMAL,
+            0, // No background color
+            light
         );
         // Finish rendering
         stack.popPose();
@@ -132,24 +153,5 @@ public class TextRenderer extends Renderer {
         backgroundColor = multiplyColor(backgroundColor, COLOR_DARKEN_FACTOR);
         // Render background
         textureRenderer.renderColor(backgroundColor, blockWidth, blockHeight, x, y, -1, Alignment.CENTER);
-    }
-
-    /**
-     * Multiplies the RGB components of the given ARGB color
-     *
-     * @param color  the ARGB color to multiply
-     * @param factor the factor to multiply the RGB components by
-     * @return the resulting ARGB color with the same alpha and multiplied RGB components
-     */
-    private static int multiplyColor(int color, float factor) {
-        int a = FastColor.ARGB32.alpha(color);
-        int r = (int) (FastColor.ARGB32.red(color) * factor);
-        int g = (int) (FastColor.ARGB32.green(color) * factor);
-        int b = (int) (FastColor.ARGB32.blue(color) * factor);
-        // Keep within bounds just in case
-        r = Mth.clamp(r, 0, 0xFF);
-        g = Mth.clamp(g, 0, 0xFF);
-        b = Mth.clamp(b, 0, 0xFF);
-        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 }

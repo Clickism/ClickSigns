@@ -5,11 +5,11 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 
 public record PlateElement(
-        int localX,
-        int localY,
-        Alignment alignment,
-        TextureSource front,
-        TextureSource back
+    int localX,
+    int localY,
+    Alignment alignment,
+    TextureSource front,
+    TextureSource back
 ) implements SignElement {
     /**
      * Type key

@@ -16,17 +16,17 @@ import org.jetbrains.annotations.Nullable;
  * @param texture    texture source for the symbol's texture
  */
 public record Symbol(
-        ResourceLocation identifier,
-        TextureSource texture,
-        @Nullable ResourceLocation categoryId
+    ResourceLocation identifier,
+    TextureSource texture,
+    @Nullable ResourceLocation categoryId
 ) implements Categorized<Symbol> {
     /**
      * Error symbol to be used as fallback
      */
     public static final Symbol ERROR_SYMBOL = new Symbol(
-            ClickSigns.identifier("error_symbol"),
-            new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
-            null
+        ClickSigns.identifier("error_symbol"),
+        new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
+        null
     );
 
     /**

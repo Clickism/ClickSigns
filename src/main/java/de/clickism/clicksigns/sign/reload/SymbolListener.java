@@ -32,10 +32,10 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
 
     @Override
     protected void processResource(
-            ResourceLocation location,
-            Resource resource,
-            @Nullable ResourceLocation categoryId,
-            @Nullable CategoryJson category
+        ResourceLocation location,
+        Resource resource,
+        @Nullable ResourceLocation categoryId,
+        @Nullable CategoryJson category
     ) {
         TextureSource source;
         if (category != null && category.replaceColor != null) {
@@ -58,9 +58,9 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
             included.resolveEntries().forEach(symbol -> {
                 // Create symbol with modified id to avoid conflicts
                 var newSymbol = new Symbol(
-                        symbol.identifierForCategory(symbol.identifier(), categoryId),
-                        symbol.texture(),
-                        categoryId
+                    symbol.identifierForCategory(symbol.identifier(), categoryId),
+                    symbol.texture(),
+                    categoryId
                 );
                 // Register new symbol
                 SignRegistries.SYMBOLS.register(newSymbol);
@@ -76,9 +76,9 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
      * @param includeCategories included list of other categories
      */
     protected record CategoryJson(
-            String name,
-            @Nullable List<ResourceLocation> includeCategories,
-            @Nullable SymbolListener.ReplaceColorJson replaceColor
+        String name,
+        @Nullable List<ResourceLocation> includeCategories,
+        @Nullable SymbolListener.ReplaceColorJson replaceColor
     ) {
     }
 
@@ -89,8 +89,8 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
      * @param to   color to replace with.
      */
     protected record ReplaceColorJson(
-            @Nullable String from,
-            String to
+        @Nullable String from,
+        String to
     ) {
     }
 }

@@ -90,9 +90,9 @@ public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWrit
         if (!tag.contains(key, Tag.TAG_LIST)) return Optional.empty();
         var list = tag.getList(key, Tag.TAG_COMPOUND);
         var collection = list.stream()
-                .filter(element -> element instanceof CompoundTag)
-                .map(element -> reader.read(new NbtReaderWriterImpl((CompoundTag) element)))
-                .toList();
+            .filter(element -> element instanceof CompoundTag)
+            .map(element -> reader.read(new NbtReaderWriterImpl((CompoundTag) element)))
+            .toList();
         return Optional.of(collection);
     }
 

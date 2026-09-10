@@ -1,8 +1,6 @@
 package de.clickism.clicksigns.block;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
-import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.overview.SignOverviewScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,31 +42,31 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     @Override
     public @NotNull VoxelShape getCollisionShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        @NotNull BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         return getShape(state, level, pos, context);
     }
 
     @Override
     public @NotNull VoxelShape getOcclusionShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos
+        @NotNull BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos
     ) {
         return Shapes.empty();
     }
 
     @Override
     public @NotNull InteractionResult use(
-            @NotNull BlockState state,
-            @NotNull Level level,
-            @NotNull BlockPos pos,
-            @NotNull Player player,
-            @NotNull InteractionHand hand,
-            @NotNull BlockHitResult hit
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull InteractionHand hand,
+        @NotNull BlockHitResult hit
     ) {
         if (!level.isClientSide) return InteractionResult.SUCCESS;
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
@@ -82,10 +80,10 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     @Override
     public @NotNull VoxelShape getShape(
-            BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         // Return shape based on facing direction
         var facing = state.getValue(HORIZONTAL_FACING);

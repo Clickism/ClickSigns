@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
  * @param toColor     the color to replace with
  */
 public record ColorizedTextureSource(
-        ResourceLocation baseTexture,
-        @Nullable String fromColor,
-        String toColor
+    ResourceLocation baseTexture,
+    @Nullable String fromColor,
+    String toColor
 ) implements TextureSource {
     /**
      * Type key
@@ -30,7 +30,9 @@ public record ColorizedTextureSource(
 
     @Override
     public Texture resolve(ColorResolver colorResolver) {
-        var from = fromColor != null ? colorResolver.resolve(fromColor) : null;
+        var from = fromColor != null
+            ? colorResolver.resolve(fromColor)
+            : null;
         var to = colorResolver.resolve(toColor);
         var texture = new ColorReplacer(baseTexture, from, to).getOrGenerate();
         if (texture == null) return ERROR_TEXTURE;

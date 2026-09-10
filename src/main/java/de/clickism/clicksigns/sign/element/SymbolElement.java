@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.sign.Alignment;
 
 /**
  * Symbol element on a road sign.
@@ -13,11 +13,12 @@ import de.clickism.clicksigns.sign.Alignment;
  * @param symbol    symbol to display
  */
 // TODO: Add scale?
+// TODO: Add color replacement data here somewhere? make pipeline?
 public record SymbolElement(
-        int localX,
-        int localY,
-        Alignment alignment,
-        Symbol symbol
+    int localX,
+    int localY,
+    Alignment alignment,
+    Symbol symbol
 ) implements SignElement {
     /**
      * Type key

@@ -14,8 +14,8 @@ import java.util.concurrent.CompletableFuture;
 class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     public ModBlockTagProvider(
-            FabricDataOutput output,
-            CompletableFuture<HolderLookup.Provider> registriesFuture
+        FabricDataOutput output,
+        CompletableFuture<HolderLookup.Provider> registriesFuture
     ) {
         super(output, registriesFuture);
     }
@@ -23,6 +23,6 @@ class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
         getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ClickSignsBlocks.ROAD_SIGN.get());
+            .add(ClickSignsBlocks.ROAD_SIGN.get());
     }
 }

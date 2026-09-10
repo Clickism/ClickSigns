@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign;
 
-import de.clickism.clicksigns.registry.*;
+import de.clickism.clicksigns.registry.Categorized;
+import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
@@ -72,8 +73,8 @@ public class Category<T extends Categorized<T>> {
      */
     public List<T> resolveEntries() {
         return entries.stream()
-                .map(registry::get)
-                .toList();
+            .map(registry::get)
+            .toList();
     }
 
     @Override

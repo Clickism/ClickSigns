@@ -98,10 +98,10 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      */
     public Map<Category<T>, Collection<T>> categoryToEntries() {
         return categories.values().stream()
-                .collect(Collectors.toMap(
-                        category -> category,
-                        Category::resolveEntries
-                ));
+            .collect(Collectors.toMap(
+                category -> category,
+                Category::resolveEntries
+            ));
     }
 
     /**
@@ -113,12 +113,12 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      */
     public <K> Map<Category<T>, Collection<K>> categoryToEntriesAndThen(Function<T, K> entryMapper) {
         return categories.values().stream()
-                .collect(Collectors.toMap(
-                        category -> category,
-                        category -> category.resolveEntries().stream()
-                                .map(entryMapper)
-                                .toList()
-                ));
+            .collect(Collectors.toMap(
+                category -> category,
+                category -> category.resolveEntries().stream()
+                    .map(entryMapper)
+                    .toList()
+            ));
     }
 
     /**

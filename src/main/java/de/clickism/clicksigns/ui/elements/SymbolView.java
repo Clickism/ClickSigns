@@ -1,10 +1,10 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.TextureSelectScreen;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
@@ -23,17 +23,6 @@ public class SymbolView extends UiComponent<SymbolView>
     public SymbolView(SymbolElement element, ColorResolver colorResolver) {
         this.element = element;
         this.colorResolver = colorResolver;
-    }
-
-    @Override
-    protected void build() {
-        var texture = element.symbol().texture().resolve(colorResolver);
-        add(UiUtil.imageOf(texture));
-    }
-
-    @Override
-    public SignElement element() {
-        return element;
     }
 
     /**
@@ -89,5 +78,16 @@ public class SymbolView extends UiComponent<SymbolView>
                     );
                 }).open();
         }
+    }
+
+    @Override
+    protected void build() {
+        var texture = element.symbol().texture().resolve(colorResolver);
+        add(UiUtil.imageOf(texture));
+    }
+
+    @Override
+    public SignElement element() {
+        return element;
     }
 }

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Parser for sign elements from JSON objects.
- *
+ * <p>
  * TODO: Fix, texture sources are not fully encodable in json!
  */
 public class SignElementParser implements JsonHandler {
@@ -70,32 +70,32 @@ public class SignElementParser implements JsonHandler {
     private Object toSignElementJson(SignElement element, boolean includeTexts) {
         if (element instanceof TextElement textElement) {
             return new TextElementJson(
-                    nullIfDefault(textElement.alignment(), TextElementJson.DEFAULT_ALIGNMENT),
-                    new Position(textElement.localX(), textElement.localY()),
-                    // Only include the text if includeTexts is true, otherwise set it to null
-                    includeTexts
-                            ? nullIfDefault(textElement.text(), TextElementJson.DEFAULT_TEXT)
-                            : null,
-                    nullIfDefault(textElement.scale(), TextElementJson.DEFAULT_SCALE),
-                    nullIfDefault(textElement.color(), TextElementJson.DEFAULT_COLOR),
-                    textElement.backgroundColor()
+                nullIfDefault(textElement.alignment(), TextElementJson.DEFAULT_ALIGNMENT),
+                new Position(textElement.localX(), textElement.localY()),
+                // Only include the text if includeTexts is true, otherwise set it to null
+                includeTexts
+                    ? nullIfDefault(textElement.text(), TextElementJson.DEFAULT_TEXT)
+                    : null,
+                nullIfDefault(textElement.scale(), TextElementJson.DEFAULT_SCALE),
+                nullIfDefault(textElement.color(), TextElementJson.DEFAULT_COLOR),
+                textElement.backgroundColor()
             );
         }
         if (element instanceof SymbolElement symbolElement) {
             return new SymbolElementJson(
-                    symbolElement.symbol().identifier(),
-                    nullIfDefault(symbolElement.alignment(), SymbolElementJson.DEFAULT_ALIGNMENT),
-                    new Position(symbolElement.localX(), symbolElement.localY())
+                symbolElement.symbol().identifier(),
+                nullIfDefault(symbolElement.alignment(), SymbolElementJson.DEFAULT_ALIGNMENT),
+                new Position(symbolElement.localX(), symbolElement.localY())
             );
         }
         if (element instanceof PlateElement plateElement) {
             return new PlateElementJson(
-                    nullIfDefault(plateElement.alignment(), PlateElementJson.DEFAULT_ALIGNMENT),
-                    new Position(plateElement.localX(), plateElement.localY()),
-                    plateElement.front().resolve(ColorResolver.empty()).width(),
-                    plateElement.front().resolve(ColorResolver.empty()).height(),
-                    TextureSource.textureLocationOf(plateElement.front()),
-                    TextureSource.textureLocationOf(plateElement.back())
+                nullIfDefault(plateElement.alignment(), PlateElementJson.DEFAULT_ALIGNMENT),
+                new Position(plateElement.localX(), plateElement.localY()),
+                plateElement.front().resolve(ColorResolver.empty()).width(),
+                plateElement.front().resolve(ColorResolver.empty()).height(),
+                TextureSource.textureLocationOf(plateElement.front()),
+                TextureSource.textureLocationOf(plateElement.back())
             );
         }
         throw new IllegalArgumentException("Unknown sign element type: " + element.getClass().getName());
@@ -123,9 +123,9 @@ public class SignElementParser implements JsonHandler {
      * @param position  the local position of the symbol
      */
     private record SymbolElementJson(
-            ResourceLocation symbol,
-            @Nullable Alignment alignment,
-            @Nullable Position position
+        ResourceLocation symbol,
+        @Nullable Alignment alignment,
+        @Nullable Position position
     ) {
         private static final Alignment DEFAULT_ALIGNMENT = Alignment.CENTER;
 
@@ -133,12 +133,16 @@ public class SignElementParser implements JsonHandler {
          * Converts the JSON object to a symbol element object
          */
         SymbolElement toSymbolElement() {
-            var pos = position != null ? position : new Position(0, 0);
+            var pos = position != null
+                ? position
+                : new Position(0, 0);
             return new SymbolElement(
-                    pos.x,
-                    pos.y,
-                    alignment != null ? alignment : DEFAULT_ALIGNMENT,
-                    SignRegistries.SYMBOLS.get(symbol)
+                pos.x,
+                pos.y,
+                alignment != null
+                    ? alignment
+                    : DEFAULT_ALIGNMENT,
+                SignRegistries.SYMBOLS.get(symbol)
             );
         }
     }
@@ -154,12 +158,12 @@ public class SignElementParser implements JsonHandler {
      * @param backgroundColor the color of the text background, as a hex string or a color name, or null for no background
      */
     private record TextElementJson(
-            @Nullable Alignment alignment,
-            @Nullable Position position,
-            String text,
-            @Nullable Float scale,
-            @Nullable String color,
-            @Nullable String backgroundColor
+        @Nullable Alignment alignment,
+        @Nullable Position position,
+        String text,
+        @Nullable Float scale,
+        @Nullable String color,
+        @Nullable String backgroundColor
     ) {
         private static final Alignment DEFAULT_ALIGNMENT = Alignment.TOP_RIGHT;
         private static final String DEFAULT_TEXT = "";
@@ -170,15 +174,25 @@ public class SignElementParser implements JsonHandler {
          * Converts the JSON object to a text element object
          */
         private TextElement toTextElement() {
-            var pos = position != null ? position : new Position(0, 0);
+            var pos = position != null
+                ? position
+                : new Position(0, 0);
             return new TextElement(
-                    pos.x,
-                    pos.y,
-                    alignment != null ? alignment : DEFAULT_ALIGNMENT,
-                    text != null ? text : DEFAULT_TEXT,
-                    scale != null ? scale : DEFAULT_SCALE,
-                    color != null ? color : DEFAULT_COLOR,
-                    backgroundColor
+                pos.x,
+                pos.y,
+                alignment != null
+                    ? alignment
+                    : DEFAULT_ALIGNMENT,
+                text != null
+                    ? text
+                    : DEFAULT_TEXT,
+                scale != null
+                    ? scale
+                    : DEFAULT_SCALE,
+                color != null
+                    ? color
+                    : DEFAULT_COLOR,
+                backgroundColor
             );
         }
     }
@@ -194,12 +208,12 @@ public class SignElementParser implements JsonHandler {
      * @param back      the back texture of the plate
      */
     private record PlateElementJson(
-            @Nullable Alignment alignment,
-            @Nullable Position position,
-            int width,
-            int height,
-            ResourceLocation front,
-            ResourceLocation back
+        @Nullable Alignment alignment,
+        @Nullable Position position,
+        int width,
+        int height,
+        ResourceLocation front,
+        ResourceLocation back
     ) {
         private static final Alignment DEFAULT_ALIGNMENT = Alignment.CENTER;
 
@@ -207,13 +221,17 @@ public class SignElementParser implements JsonHandler {
          * Converts the JSON object to a plate element object
          */
         private PlateElement toPlateElement() {
-            var pos = position != null ? position : new Position(0, 0);
+            var pos = position != null
+                ? position
+                : new Position(0, 0);
             return new PlateElement(
-                    pos.x,
-                    pos.y,
-                    alignment != null ? alignment : DEFAULT_ALIGNMENT,
-                    TextureSource.parse(front, width, height),
-                    TextureSource.parse(back, width, height)
+                pos.x,
+                pos.y,
+                alignment != null
+                    ? alignment
+                    : DEFAULT_ALIGNMENT,
+                TextureSource.parse(front, width, height),
+                TextureSource.parse(back, width, height)
             );
         }
     }

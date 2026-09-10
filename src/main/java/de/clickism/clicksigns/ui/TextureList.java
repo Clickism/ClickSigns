@@ -24,7 +24,7 @@ public class TextureList extends UiComponent<TextureList> {
     /**
      * Creates a new TextureList with the given entries.
      *
-     * @param entries         the collection of entries to display in the list
+     * @param entries the collection of entries to display in the list
      */
     public TextureList(Collection<Entry> entries) {
         this.categoryToEntries = entries.stream()

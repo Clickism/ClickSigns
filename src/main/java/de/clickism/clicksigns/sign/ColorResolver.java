@@ -39,6 +39,45 @@ public class ColorResolver {
     }
 
     /**
+     * Converts a Color to a hex string in the format #AARRGGBB.
+     *
+     * @param color the color to convert
+     * @return the hex string representation of the color
+     */
+    public static String toHexString(Color color) {
+        return String.format("#%02X%02X%02X%02X", color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    /**
+     * Creates a new ColorResolver with the given parent resolver. The parent resolver will be used as a fallback when resolving colors.
+     *
+     * @param parent the parent ColorResolver to delegate to if a color is not found in the new resolver
+     * @return a new ColorResolver with the specified parent resolver
+     */
+    public static ColorResolver withParent(ColorResolver parent) {
+        return new ColorResolver(parent);
+    }
+
+    /**
+     * Creates a new ColorResolver with the default color provider as its parent.
+     * This allows using the predefined colors and adding custom colors on top.
+     *
+     * @return a new ColorResolver with the default color provider as its parent
+     */
+    public static ColorResolver withDefault() {
+        return new ColorResolver(DEFAULT);
+    }
+
+    /**
+     * Creates a new ColorResolver with no parent resolver.
+     *
+     * @return a new ColorResolver with no parent resolver
+     */
+    public static ColorResolver empty() {
+        return new ColorResolver(null);
+    }
+
+    /**
      * Resolves a color by name. If the name is not found, it returns a default error color (red).
      *
      * @param name the name of the color to resolve
@@ -257,44 +296,5 @@ public class ColorResolver {
         } catch (IllegalArgumentException ignored) {
             // Fail silently
         }
-    }
-
-    /**
-     * Converts a Color to a hex string in the format #AARRGGBB.
-     *
-     * @param color the color to convert
-     * @return the hex string representation of the color
-     */
-    public static String toHexString(Color color) {
-        return String.format("#%02X%02X%02X%02X", color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-    /**
-     * Creates a new ColorResolver with the given parent resolver. The parent resolver will be used as a fallback when resolving colors.
-     *
-     * @param parent the parent ColorResolver to delegate to if a color is not found in the new resolver
-     * @return a new ColorResolver with the specified parent resolver
-     */
-    public static ColorResolver withParent(ColorResolver parent) {
-        return new ColorResolver(parent);
-    }
-
-    /**
-     * Creates a new ColorResolver with the default color provider as its parent.
-     * This allows using the predefined colors and adding custom colors on top.
-     *
-     * @return a new ColorResolver with the default color provider as its parent
-     */
-    public static ColorResolver withDefault() {
-        return new ColorResolver(DEFAULT);
-    }
-
-    /**
-     * Creates a new ColorResolver with no parent resolver.
-     *
-     * @return a new ColorResolver with no parent resolver
-     */
-    public static ColorResolver empty() {
-        return new ColorResolver(null);
     }
 }

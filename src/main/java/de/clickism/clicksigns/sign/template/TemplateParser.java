@@ -23,9 +23,9 @@ public class TemplateParser implements JsonHandler {
      * @return the parsed template object
      */
     public Template parse(
-            JsonObject json,
-            ResourceLocation location,
-            ResourceLocation categoryId
+        JsonObject json,
+        ResourceLocation location,
+        ResourceLocation categoryId
     ) {
         var templateJson = fromJsonOrThrow(json, TemplateJson.class);
         return templateJson.parse(location, categoryId);
@@ -41,13 +41,13 @@ public class TemplateParser implements JsonHandler {
      */
     public JsonObject toJson(Template.Meta meta, RoadSign roadSign, boolean includeTexts) {
         var signJson = new TemplateJson.SignJson(
-                roadSign.width(),
-                roadSign.height(),
-                TextureSource.textureLocationOf(roadSign.frontSource()),
-                TextureSource.textureLocationOf(roadSign.backSource()),
-                roadSign.elements().stream()
-                        .map(element -> ELEMENT_PARSER.toJson(element, includeTexts))
-                        .toList()
+            roadSign.width(),
+            roadSign.height(),
+            TextureSource.textureLocationOf(roadSign.frontSource()),
+            TextureSource.textureLocationOf(roadSign.backSource()),
+            roadSign.elements().stream()
+                .map(element -> ELEMENT_PARSER.toJson(element, includeTexts))
+                .toList()
         );
         var templateJson = new TemplateJson(meta, signJson);
         return toJsonObject(templateJson);
@@ -60,18 +60,18 @@ public class TemplateParser implements JsonHandler {
      * @param sign sign data for the template
      */
     private record TemplateJson(
-            Template.Meta meta,
-            SignJson sign
+        Template.Meta meta,
+        SignJson sign
     ) {
         /**
          * Converts the JSON into a template object
          */
         private Template parse(ResourceLocation id, ResourceLocation categoryId) {
             return new Template(
-                    meta,
-                    sign.parse(),
-                    id,
-                    categoryId
+                meta,
+                sign.parse(),
+                id,
+                categoryId
             );
         }
 
@@ -85,11 +85,11 @@ public class TemplateParser implements JsonHandler {
          * @param elements the list of sign elements for the sign
          */
         private record SignJson(
-                int width,
-                int height,
-                ResourceLocation front,
-                ResourceLocation back,
-                List<JsonObject> elements
+            int width,
+            int height,
+            ResourceLocation front,
+            ResourceLocation back,
+            List<JsonObject> elements
         ) {
             /**
              * Converts the JSON into a sign object
@@ -98,14 +98,14 @@ public class TemplateParser implements JsonHandler {
              */
             private Template.Sign parse() {
                 var parsedElements = elements.stream()
-                        .map(ELEMENT_PARSER::parse)
-                        .toList();
+                    .map(ELEMENT_PARSER::parse)
+                    .toList();
                 return new Template.Sign(
-                        width,
-                        height,
-                        TextureSource.parse(front, width, height),
-                        TextureSource.parse(back, width, height),
-                        parsedElements
+                    width,
+                    height,
+                    TextureSource.parse(front, width, height),
+                    TextureSource.parse(back, width, height),
+                    parsedElements
                 );
             }
         }

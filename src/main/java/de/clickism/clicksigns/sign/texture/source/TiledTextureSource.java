@@ -1,18 +1,13 @@
 package de.clickism.clicksigns.sign.texture.source;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.generator.CachedTextureGenerator;
 import de.clickism.clicksigns.sign.texture.generator.TextureTiler;
 import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 /**
  * Texture source that generates a texture by tiling a given tileset to fit the specified dimensions.
@@ -30,6 +25,17 @@ public record TiledTextureSource(
      * Type key
      */
     public static final String TYPE = "tiled";
+
+    /**
+     * Creates a new tiled texture source that has unknown size.
+     * Meant to be used as a placeholder until {@link #resize(int, int)} is called.
+     *
+     * @param tileSetId the resource location of the tileset to use for tiling
+     * @return a new TiledTextureSource with the specified tileset and unknown size
+     */
+    public static TiledTextureSource unsized(ResourceLocation tileSetId) {
+        return new TiledTextureSource(tileSetId, 0, 0);
+    }
 
     @Override
     public String typeKey() {
@@ -65,17 +71,6 @@ public record TiledTextureSource(
             return tileSet.colorResolver();
         }
         return ColorResolver.withDefault();
-    }
-
-    /**
-     * Creates a new tiled texture source that has unknown size.
-     * Meant to be used as a placeholder until {@link #resize(int, int)} is called.
-     *
-     * @param tileSetId the resource location of the tileset to use for tiling
-     * @return a new TiledTextureSource with the specified tileset and unknown size
-     */
-    public static TiledTextureSource unsized(ResourceLocation tileSetId) {
-        return new TiledTextureSource(tileSetId, 0, 0);
     }
 
     /**

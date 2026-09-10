@@ -76,10 +76,10 @@ public abstract class CategorizedReloadListener<C> implements SignReloadListener
      * @param category   the category of the resource, or null if the resource does not belong to a category
      */
     protected abstract void processResource(
-            ResourceLocation location,
-            Resource resource,
-            @Nullable ResourceLocation categoryId,
-            @Nullable C category
+        ResourceLocation location,
+        Resource resource,
+        @Nullable ResourceLocation categoryId,
+        @Nullable C category
     );
 
     /**

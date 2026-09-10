@@ -36,6 +36,15 @@ public record TextElement(
      */
     public static final String TYPE = "text";
 
+    /**
+     * Creates a new TextElement with the given parameters.
+     */
+    public TextElement(int localX, int localY, Alignment alignment, String text, float scale, Color color, @Nullable Color backgroundColor) {
+        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null
+            ? toHexString(backgroundColor)
+            : null);
+    }
+
     @Override
     public String typeKey() {
         return TYPE;
@@ -59,15 +68,6 @@ public record TextElement(
             * TEXT_RENDER_SCALE // Apply render scale
             * this.scale() // Apply scale
         );
-    }
-
-    /**
-     * Creates a new TextElement with the given parameters.
-     */
-    public TextElement(int localX, int localY, Alignment alignment, String text, float scale, Color color, @Nullable Color backgroundColor) {
-        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null
-            ? toHexString(backgroundColor)
-            : null);
     }
 
     /**

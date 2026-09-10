@@ -28,16 +28,16 @@ public class FabricNetwork extends Network {
     @Override
     public void register() {
         ServerPlayNetworking.registerGlobalReceiver(
-                CHANNEL,
-                (server, player, handler, buf, responseSender) -> {
-                    handleServer(readPacket(buf), server, player);
-                }
+            CHANNEL,
+            (server, player, handler, buf, responseSender) -> {
+                handleServer(readPacket(buf), server, player);
+            }
         );
         ClientPlayNetworking.registerGlobalReceiver(
-                CHANNEL,
-                (client, handler, buf, responseSender) -> {
-                    handleClient(readPacket(buf));
-                }
+            CHANNEL,
+            (client, handler, buf, responseSender) -> {
+                handleClient(readPacket(buf));
+            }
         );
     }
 

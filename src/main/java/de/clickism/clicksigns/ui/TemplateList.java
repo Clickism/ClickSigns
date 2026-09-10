@@ -21,8 +21,8 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class TemplateList extends UiComponent<TemplateList> {
 
-    private Consumer<Template> onTemplateSelected = template -> {};
     private final State<Boolean> showLocal = state(false);
+    private Consumer<Template> onTemplateSelected = template -> {};
     private @Nullable Template selected = null;
 
     @Override

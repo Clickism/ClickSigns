@@ -30,10 +30,10 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
 
     @Override
     protected void processResource(
-            ResourceLocation location,
-            Resource resource,
-            @Nullable ResourceLocation categoryId,
-            @Nullable CategoryJson category
+        ResourceLocation location,
+        Resource resource,
+        @Nullable ResourceLocation categoryId,
+        @Nullable CategoryJson category
     ) {
         var json = fromJsonOrThrow(resource, JsonObject.class);
         var template = TEMPLATE_PARSER.parse(json, location, categoryId);
@@ -46,7 +46,7 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
      * @param name name of the category
      */
     protected record CategoryJson(
-            String name
+        String name
     ) {
     }
 }

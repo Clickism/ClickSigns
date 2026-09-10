@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,10 +49,10 @@ public class LocalTemplateManager {
 
     public void deleteTemplate(Template template) {
         var path = templates.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(template))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+            .filter(entry -> entry.getValue().equals(template))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
         if (path != null) {
             try {
                 loader.deleteTemplate(path);

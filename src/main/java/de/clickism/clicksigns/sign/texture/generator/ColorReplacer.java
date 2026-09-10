@@ -34,15 +34,31 @@ public class ColorReplacer extends CachedTextureGenerator {
      */
     public ColorReplacer(ResourceLocation texture, @Nullable Color fromColor, Color toColor) {
         this.texture = texture;
-        this.fromColor = fromColor != null ? fromColor.getRGB() : null;
+        this.fromColor = fromColor != null
+            ? fromColor.getRGB()
+            : null;
         this.toColor = toColor.getRGB();
+    }
+
+    private static int stripAlpha(int color) {
+        return color & 0x00FFFFFF;
+    }
+
+    private static int argbToAbrg(int argb) {
+        int alpha = FastColor.ARGB32.alpha(argb);
+        int red = FastColor.ARGB32.red(argb);
+        int green = FastColor.ARGB32.green(argb);
+        int blue = FastColor.ARGB32.blue(argb);
+        return FastColor.ABGR32.color(alpha, blue, green, red);
     }
 
     @Override
     protected DynamicTexture generate() throws Exception {
         var image = openImage(texture);
         var toColorNoAlpha = argbToAbrg(stripAlpha(toColor));
-        var fromColorNoAlpha = fromColor != null ? argbToAbrg(stripAlpha(fromColor)) : null;
+        var fromColorNoAlpha = fromColor != null
+            ? argbToAbrg(stripAlpha(fromColor))
+            : null;
         for (int x = 0; x < image.getWidth(); x++) {
             for (int y = 0; y < image.getHeight(); y++) {
                 int pixel = image.getPixelRGBA(x, y);
@@ -59,21 +75,11 @@ public class ColorReplacer extends CachedTextureGenerator {
         return new DynamicTexture(image);
     }
 
-    private static int stripAlpha(int color) {
-        return color & 0x00FFFFFF;
-    }
-
-    private static int argbToAbrg(int argb) {
-        int alpha = FastColor.ARGB32.alpha(argb);
-        int red = FastColor.ARGB32.red(argb);
-        int green = FastColor.ARGB32.green(argb);
-        int blue = FastColor.ARGB32.blue(argb);
-        return FastColor.ABGR32.color(alpha, blue, green, red);
-    }
-
     @Override
     protected String key() {
-        var from = fromColor != null ? fromColor : "";
+        var from = fromColor != null
+            ? fromColor
+            : "";
         return keySafe(texture) + "__" + from + "__" + toColor;
     }
 }

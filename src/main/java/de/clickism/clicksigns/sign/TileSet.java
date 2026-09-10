@@ -1,9 +1,8 @@
 package de.clickism.clicksigns.sign;
 
+import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.registry.Categorized;
-import de.clickism.clicksigns.registry.Identifiable;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,13 +18,13 @@ import org.jetbrains.annotations.Nullable;
  * @param isBack        whether this tileset is for the back of the sign
  */
 public record TileSet(
-        String name,
-        ResourceLocation identifier,
-        @Nullable ResourceLocation categoryId,
-        int cornerSize,
-        int centerSize,
-        ColorResolver colorResolver,
-        boolean isBack
+    String name,
+    ResourceLocation identifier,
+    @Nullable ResourceLocation categoryId,
+    int cornerSize,
+    int centerSize,
+    ColorResolver colorResolver,
+    boolean isBack
 ) implements Categorized<TileSet> {
     /**
      * Tiles a given coordinate:

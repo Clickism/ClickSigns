@@ -11,13 +11,34 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntUnaryOperator;
 
 /**
  * Abstract class for generating and caching textures.
  */
 public abstract class CachedTextureGenerator {
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
+
+    /**
+     * Opens an image from the given resource location, trying multiple methods to find it.
+     *
+     * @param location the resource location of the image to open
+     * @return a NativeImage representing the opened image
+     * @throws Exception if the image cannot be found or read using any of the methods
+     */
+    protected static NativeImage openImage(ResourceLocation location) throws Exception {
+        // Try resource manager
+        var minecraft = Minecraft.getInstance();
+        try {
+            return NativeImage.read(minecraft.getResourceManager().open(location));
+        } catch (Exception ignored) {
+        }
+        // Try dynamic texture
+        var texture = minecraft.getTextureManager().getTexture(location);
+        if (texture instanceof DynamicTexture dynamic) {
+            return dynamic.getPixels();
+        }
+        throw new IllegalArgumentException("Failed to open image at location " + location);
+    }
 
     /**
      * Generates a texture if it is not already cached and returns it.
@@ -78,28 +99,6 @@ public abstract class CachedTextureGenerator {
      * @return a unique string key representing this texture generator
      */
     protected abstract String key();
-
-    /**
-     * Opens an image from the given resource location, trying multiple methods to find it.
-     *
-     * @param location the resource location of the image to open
-     * @return a NativeImage representing the opened image
-     * @throws Exception if the image cannot be found or read using any of the methods
-     */
-    protected static NativeImage openImage(ResourceLocation location) throws Exception {
-        // Try resource manager
-        var minecraft = Minecraft.getInstance();
-        try {
-            return NativeImage.read(minecraft.getResourceManager().open(location));
-        } catch (Exception ignored) {
-        }
-        // Try dynamic texture
-        var texture = minecraft.getTextureManager().getTexture(location);
-        if (texture instanceof DynamicTexture dynamic) {
-            return dynamic.getPixels();
-        }
-        throw new IllegalArgumentException("Failed to open image at location " + location);
-    }
 
     /**
      * Normalizes a resource location to be used as a cache key by replacing colons with double underscores.

@@ -13,10 +13,8 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
 
     private final Component title;
     private final Collection<TextureList.Entry> entries;
-
-    private Consumer<TextureList.Entry> onTextureSelected = entry -> {};
-
     private final UiColor backgroundColor;
+    private Consumer<TextureList.Entry> onTextureSelected = entry -> {};
 
     public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries, UiColor backgroundColor) {
         this.title = title;

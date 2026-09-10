@@ -46,14 +46,12 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
     private static final float MAX_TEXT_SCALE = 6.0f;
 
     private final EditableRoadSign sign;
-    private @Nullable EditableSignElement selected = null;
-
-    private Consumer<RoadSign> onSignUpdate = sign -> {};
-
     private final Ref<SignView> signViewRef = ref();
     private final Ref<SignControls> signControlsRef = ref();
     private final Ref<SignEditor> signEditorRef = ref();
     private final Ref<ElementControls> elementControlsRef = ref();
+    private @Nullable EditableSignElement selected = null;
+    private Consumer<RoadSign> onSignUpdate = sign -> {};
 
     public SignEditScreen(@NotNull RoadSign sign) {
         this.sign = new EditableRoadSign(sign);
@@ -109,6 +107,18 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .crossAlign(Align.CENTER)
                     )
             );
+    }
+
+    private Box panel() {
+        var panelWidth = 130;
+        return box()
+            .scrollable(true)
+            .width(panelWidth)
+            .growHeight()
+            .padding(8)
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A40)
+                .borderColor(UiColor.WHITE_A30));
     }
 
     private class SignEditor extends UiComponent<SignEditor> {
@@ -527,17 +537,5 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     sign.removeElement(selected.id());
                 }));
         }
-    }
-
-    private Box panel() {
-        var panelWidth = 130;
-        return box()
-            .scrollable(true)
-            .width(panelWidth)
-            .growHeight()
-            .padding(8)
-            .style(style()
-                .backgroundColor(UiColor.BLACK_A40)
-                .borderColor(UiColor.WHITE_A30));
     }
 }

@@ -41,15 +41,15 @@ public interface SignReloadListener extends ReloadListener {
      * @return a map of namespace:directory to category
      */
     default <C> Map<ResourceLocation, C> loadAndRegisterCategories(
-            ResourceManager manager,
-            String subDirectory,
-            Class<C> categoryClass,
-            BiConsumer<ResourceLocation, C> registerer
+        ResourceManager manager,
+        String subDirectory,
+        Class<C> categoryClass,
+        BiConsumer<ResourceLocation, C> registerer
     ) {
         Map<ResourceLocation, C> directoryToCategory = new HashMap<>();
         manager.listResources(
-                fromRoot(subDirectory),
-                identifier -> isCategoryPath(identifier.getPath())
+            fromRoot(subDirectory),
+            identifier -> isCategoryPath(identifier.getPath())
         ).forEach((location, resource) -> {
             var directory = stripFileName(location.getPath());
             var category = fromJsonOrNull(resource, categoryClass);
@@ -150,13 +150,13 @@ public interface SignReloadListener extends ReloadListener {
      * @param consumer     consumer to apply to each resource
      */
     default void forEachResource(
-            ResourceManager manager,
-            String subDirectory,
-            String suffix,
-            BiConsumer<ResourceLocation, Resource> consumer) {
+        ResourceManager manager,
+        String subDirectory,
+        String suffix,
+        BiConsumer<ResourceLocation, Resource> consumer) {
         manager.listResources(
-                fromRoot(subDirectory),
-                identifier -> identifier.getPath().endsWith(suffix)
+            fromRoot(subDirectory),
+            identifier -> identifier.getPath().endsWith(suffix)
         ).forEach((location, resource) -> {
             try {
                 consumer.accept(location, resource);

@@ -10,9 +10,6 @@ import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 /**
  * Represents a source for a texture, which can be resolved to obtain the actual texture.
@@ -25,6 +22,139 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
      * The error texture to use when loading or generating a texture fails.
      */
     Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16, null);
+    /**
+     * Writer for packets
+     */
+    FriendlyByteBuf.Writer<TextureSource> PACKET_WRITER = (buf, texture) -> {
+        var type = texture.typeKey();
+        buf.writeUtf(type);
+        if (texture instanceof TiledTextureSource tiled) {
+            // Tiled texture
+            buf.writeResourceLocation(tiled.tileSetId());
+            buf.writeInt(tiled.width());
+            buf.writeInt(tiled.height());
+        } else if (texture instanceof StaticTextureSource staticTextureSource) {
+            // Static texture
+            buf.writeResourceLocation(staticTextureSource.location());
+        } else if (texture instanceof ColorizedTextureSource colorized) {
+            // Colorized texture
+            buf.writeResourceLocation(colorized.baseTexture());
+            buf.writeNullable(colorized.fromColor(), FriendlyByteBuf::writeUtf);
+            buf.writeUtf(colorized.toColor());
+        } else {
+            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
+        }
+    };
+    /**
+     * Reader for packets
+     */
+    FriendlyByteBuf.Reader<TextureSource> PACKET_READER = (buf) -> {
+        var type = buf.readUtf();
+        return switch (type) {
+            case TiledTextureSource.TYPE -> {
+                var tileSetId = buf.readResourceLocation();
+                var pixelWidth = buf.readInt();
+                var pixelHeight = buf.readInt();
+                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
+            }
+            case ColorizedTextureSource.TYPE -> {
+                var baseTexture = buf.readResourceLocation();
+                var fromColor = buf.readNullable(FriendlyByteBuf::readUtf);
+                var toColor = buf.readUtf();
+                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
+            }
+            case StaticTextureSource.TYPE -> {
+                var location = buf.readResourceLocation();
+                yield new StaticTextureSource(location);
+            }
+            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
+        };
+    };
+    /**
+     * Writer for NBT
+     */
+    NbtWriter.Writer<TextureSource> NBT_WRITER = (tag, texture) -> {
+        var typeKey = texture.typeKey();
+        tag.putString("type", typeKey);
+        if (texture instanceof TiledTextureSource tiled) {
+            // Tiled texture
+            tag.putResourceLocation("tileSet", tiled.tileSetId());
+            tag.putInt("width", tiled.width());
+            tag.putInt("height", tiled.height());
+        } else if (texture instanceof StaticTextureSource staticTextureSource) {
+            // Static texture
+            tag.putResourceLocation("location", staticTextureSource.location());
+        } else if (texture instanceof ColorizedTextureSource colorized) {
+            // Colorized texture
+            tag.putResourceLocation("baseTexture", colorized.baseTexture());
+            if (colorized.fromColor() != null) {
+                tag.putString("fromColor", colorized.fromColor());
+            }
+            tag.putString("toColor", colorized.toColor());
+        } else {
+            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
+        }
+    };
+    /**
+     * Reader for NBT
+     */
+    NbtReader.Reader<TextureSource> NBT_READER = (tag) -> {
+        var type = tag.getString("type").orElseThrow();
+        return switch (type) {
+            case TiledTextureSource.TYPE -> {
+                var tileSetId = tag.getResourceLocation("tileSet").orElseThrow();
+                var pixelWidth = tag.getInt("width").orElseThrow();
+                var pixelHeight = tag.getInt("height").orElseThrow();
+                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
+            }
+            case ColorizedTextureSource.TYPE -> {
+                var baseTexture = tag.getResourceLocation("baseTexture").orElseThrow();
+                var fromColor = tag.getString("fromColor").orElse(null);
+                var toColor = tag.getString("toColor").orElseThrow();
+                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
+            }
+            case StaticTextureSource.TYPE -> {
+                var location = tag.getResourceLocation("location").orElseThrow();
+                yield new StaticTextureSource(location);
+            }
+            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
+        };
+    };
+
+    /**
+     * Parses the given texture identifier as tileset or static texture.
+     * <p>
+     * Only support static or tiled textures for templates!
+     *
+     * @param location the texture identifier to parse
+     * @param width    the width of the texture in pixels
+     * @param height   the height of the texture in pixels
+     * @return texture source
+     */
+    static TextureSource parse(ResourceLocation location, int width, int height) {
+        if (SignRegistries.TILE_SETS.has(location)) {
+            return new TiledTextureSource(location, width, height);
+        }
+        return new StaticTextureSource(location);
+    }
+
+    /**
+     * Gets the texture location of the given texture source.
+     * <p>
+     * Only support static or tiled textures for templates!
+     *
+     * @param source the texture source to get the location of
+     * @return the texture location of the source
+     */
+    static ResourceLocation textureLocationOf(TextureSource source) {
+        if (source instanceof StaticTextureSource staticSource) {
+            return staticSource.location();
+        }
+        if (source instanceof TiledTextureSource tiledSource) {
+            return tiledSource.tileSetId();
+        }
+        throw new IllegalArgumentException("Unsupported texture source type: " + source.getClass().getName());
+    }
 
     /**
      * Resolves the texture from this source, loading or generating it as necessary.
@@ -81,142 +211,4 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
     default TextureSource resizeToFit(PixelSized sized) {
         return resize(sized.width(), sized.height());
     }
-
-    /**
-     * Parses the given texture identifier as tileset or static texture.
-     * <p>
-     * Only support static or tiled textures for templates!
-     *
-     * @param location the texture identifier to parse
-     * @param width    the width of the texture in pixels
-     * @param height   the height of the texture in pixels
-     * @return texture source
-     */
-    static TextureSource parse(ResourceLocation location, int width, int height) {
-        if (SignRegistries.TILE_SETS.has(location)) {
-            return new TiledTextureSource(location, width, height);
-        }
-        return new StaticTextureSource(location);
-    }
-
-    /**
-     * Gets the texture location of the given texture source.
-     * <p>
-     * Only support static or tiled textures for templates!
-     *
-     * @param source the texture source to get the location of
-     * @return the texture location of the source
-     */
-    static ResourceLocation textureLocationOf(TextureSource source) {
-        if (source instanceof StaticTextureSource staticSource) {
-            return staticSource.location();
-        }
-        if (source instanceof TiledTextureSource tiledSource) {
-            return tiledSource.tileSetId();
-        }
-        throw new IllegalArgumentException("Unsupported texture source type: " + source.getClass().getName());
-    }
-
-
-    /**
-     * Writer for packets
-     */
-    FriendlyByteBuf.Writer<TextureSource> PACKET_WRITER = (buf, texture) -> {
-        var type = texture.typeKey();
-        buf.writeUtf(type);
-        if (texture instanceof TiledTextureSource tiled) {
-            // Tiled texture
-            buf.writeResourceLocation(tiled.tileSetId());
-            buf.writeInt(tiled.width());
-            buf.writeInt(tiled.height());
-        } else if (texture instanceof StaticTextureSource staticTextureSource) {
-            // Static texture
-            buf.writeResourceLocation(staticTextureSource.location());
-        } else if (texture instanceof ColorizedTextureSource colorized) {
-            // Colorized texture
-            buf.writeResourceLocation(colorized.baseTexture());
-            buf.writeNullable(colorized.fromColor(), FriendlyByteBuf::writeUtf);
-            buf.writeUtf(colorized.toColor());
-        } else {
-            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
-        }
-    };
-
-    /**
-     * Reader for packets
-     */
-    FriendlyByteBuf.Reader<TextureSource> PACKET_READER = (buf) -> {
-        var type = buf.readUtf();
-        return switch (type) {
-            case TiledTextureSource.TYPE -> {
-                var tileSetId = buf.readResourceLocation();
-                var pixelWidth = buf.readInt();
-                var pixelHeight = buf.readInt();
-                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
-            }
-            case ColorizedTextureSource.TYPE -> {
-                var baseTexture = buf.readResourceLocation();
-                var fromColor = buf.readNullable(FriendlyByteBuf::readUtf);
-                var toColor = buf.readUtf();
-                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
-            }
-            case StaticTextureSource.TYPE -> {
-                var location = buf.readResourceLocation();
-                yield new StaticTextureSource(location);
-            }
-            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
-        };
-    };
-
-    /**
-     * Writer for NBT
-     */
-    NbtWriter.Writer<TextureSource> NBT_WRITER = (tag, texture) -> {
-        var typeKey = texture.typeKey();
-        tag.putString("type", typeKey);
-        if (texture instanceof TiledTextureSource tiled) {
-            // Tiled texture
-            tag.putResourceLocation("tileSet", tiled.tileSetId());
-            tag.putInt("width", tiled.width());
-            tag.putInt("height", tiled.height());
-        } else if (texture instanceof StaticTextureSource staticTextureSource) {
-            // Static texture
-            tag.putResourceLocation("location", staticTextureSource.location());
-        } else if (texture instanceof ColorizedTextureSource colorized) {
-            // Colorized texture
-            tag.putResourceLocation("baseTexture", colorized.baseTexture());
-            if (colorized.fromColor() != null) {
-                tag.putString("fromColor", colorized.fromColor());
-            }
-            tag.putString("toColor", colorized.toColor());
-        } else {
-            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
-        }
-    };
-
-    /**
-     * Reader for NBT
-     */
-    NbtReader.Reader<TextureSource> NBT_READER = (tag) -> {
-        var type = tag.getString("type").orElseThrow();
-        return switch (type) {
-            case TiledTextureSource.TYPE -> {
-                var tileSetId = tag.getResourceLocation("tileSet").orElseThrow();
-                var pixelWidth = tag.getInt("width").orElseThrow();
-                var pixelHeight = tag.getInt("height").orElseThrow();
-                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
-            }
-            case ColorizedTextureSource.TYPE -> {
-                var baseTexture = tag.getResourceLocation("baseTexture").orElseThrow();
-                var fromColor = tag.getString("fromColor").orElse(null);
-                var toColor = tag.getString("toColor").orElseThrow();
-                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
-            }
-            case StaticTextureSource.TYPE -> {
-                var location = tag.getResourceLocation("location").orElseThrow();
-                yield new StaticTextureSource(location);
-            }
-            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
-        };
-    };
 }

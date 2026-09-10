@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

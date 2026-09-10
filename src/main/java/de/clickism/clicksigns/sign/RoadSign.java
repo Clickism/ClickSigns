@@ -35,15 +35,63 @@ public record RoadSign(
     @Nullable ResourceLocation templateId
 ) implements PixelSized {
     /**
+     * Writer for packets
+     */
+    public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
+        TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
+        TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
+        buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
+        buf.writeInt(sign.alignment().ordinal());
+        buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
+    };
+    /**
+     * Reader for packets
+     */
+    public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
+        var front = TextureSource.PACKET_READER.apply(buf);
+        var back = TextureSource.PACKET_READER.apply(buf);
+        var elements = buf.readList(SignElement.PACKET_READER);
+        var alignment = Alignment.values()[buf.readInt()];
+        var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
+        return new RoadSign(front, back, elements, alignment, templateId);
+    };
+    /**
+     * Writer for NBT
+     */
+    public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
+        var front = tag.createWriter();
+        var back = tag.createWriter();
+        TextureSource.NBT_WRITER.write(front, sign.frontSource());
+        TextureSource.NBT_WRITER.write(back, sign.backSource());
+        tag.putCompound("front", front.asCompoundTag());
+        tag.putCompound("back", back.asCompoundTag());
+        tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
+        tag.putString("alignment", sign.alignment().name());
+        if (sign.templateId != null) {
+            tag.putResourceLocation("template", sign.templateId);
+        }
+    };
+    /**
+     * Reader for NBT
+     */
+    public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
+        var frontCompound = tag.getCompound("front").orElseThrow();
+        var backCompound = tag.getCompound("back").orElseThrow();
+        var front = TextureSource.NBT_READER.read(frontCompound);
+        var back = TextureSource.NBT_READER.read(backCompound);
+        var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
+        var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
+        var templateId = tag.getResourceLocation("template").orElse(null);
+        return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
+    };
+    /**
      * The default alignment for road signs when no alignment is set.
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
-
     /**
      * The default symbol texture.
      */
     public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
-
     /**
      * The default road sign to use when no road sign is set.
      */
@@ -198,58 +246,4 @@ public record RoadSign(
     public RoadSign withAlignment(Alignment alignment) {
         return new RoadSign(frontSource, backSource, elements, alignment, templateId);
     }
-
-    /**
-     * Writer for packets
-     */
-    public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
-        TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
-        TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
-        buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
-        buf.writeInt(sign.alignment().ordinal());
-        buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
-    };
-
-    /**
-     * Reader for packets
-     */
-    public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
-        var front = TextureSource.PACKET_READER.apply(buf);
-        var back = TextureSource.PACKET_READER.apply(buf);
-        var elements = buf.readList(SignElement.PACKET_READER);
-        var alignment = Alignment.values()[buf.readInt()];
-        var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
-        return new RoadSign(front, back, elements, alignment, templateId);
-    };
-
-    /**
-     * Writer for NBT
-     */
-    public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
-        var front = tag.createWriter();
-        var back = tag.createWriter();
-        TextureSource.NBT_WRITER.write(front, sign.frontSource());
-        TextureSource.NBT_WRITER.write(back, sign.backSource());
-        tag.putCompound("front", front.asCompoundTag());
-        tag.putCompound("back", back.asCompoundTag());
-        tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
-        tag.putString("alignment", sign.alignment().name());
-        if (sign.templateId != null) {
-            tag.putResourceLocation("template", sign.templateId);
-        }
-    };
-
-    /**
-     * Reader for NBT
-     */
-    public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
-        var frontCompound = tag.getCompound("front").orElseThrow();
-        var backCompound = tag.getCompound("back").orElseThrow();
-        var front = TextureSource.NBT_READER.read(frontCompound);
-        var back = TextureSource.NBT_READER.read(backCompound);
-        var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
-        var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
-        var templateId = tag.getResourceLocation("template").orElse(null);
-        return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
-    };
 }

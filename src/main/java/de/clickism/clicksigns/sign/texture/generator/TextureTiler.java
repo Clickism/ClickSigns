@@ -25,32 +25,6 @@ public class TextureTiler extends CachedTextureGenerator {
         this.height = height;
     }
 
-    @Override
-    public DynamicTexture generate() throws Exception {
-        var image = openImage(tileSet.identifier());
-        assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
-
-        var tiledImage = new NativeImage(width, height, false);
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                // Get tiled pixel
-                int pixel = image.getPixelRGBA(
-                        tileSet.tileCoordinate(x, width),
-                        tileSet.tileCoordinate(y, height)
-                );
-                tiledImage.setPixelRGBA(x, y, pixel);
-            }
-        }
-
-        return new DynamicTexture(tiledImage);
-    }
-
-    @Override
-    public String key() {
-        return keySafe(tileSet.identifier()) + "_" + width + "x" + height;
-    }
-
     /**
      * Asserts that a given image has the correct dimensions for the provided corner and center sizes.
      *
@@ -64,10 +38,36 @@ public class TextureTiler extends CachedTextureGenerator {
         int imageHeight = image.getHeight();
         if (imageWidth != totalSize || imageHeight != totalSize) {
             throw new IllegalArgumentException(
-                    "TileSet image does not match expected dimensions! " +
-                    "Expected: " + totalSize + "x" + totalSize +
-                    ", but got: " + imageWidth + "x" + imageHeight
+                "TileSet image does not match expected dimensions! " +
+                "Expected: " + totalSize + "x" + totalSize +
+                ", but got: " + imageWidth + "x" + imageHeight
             );
         }
+    }
+
+    @Override
+    public DynamicTexture generate() throws Exception {
+        var image = openImage(tileSet.identifier());
+        assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
+
+        var tiledImage = new NativeImage(width, height, false);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Get tiled pixel
+                int pixel = image.getPixelRGBA(
+                    tileSet.tileCoordinate(x, width),
+                    tileSet.tileCoordinate(y, height)
+                );
+                tiledImage.setPixelRGBA(x, y, pixel);
+            }
+        }
+
+        return new DynamicTexture(tiledImage);
+    }
+
+    @Override
+    public String key() {
+        return keySafe(tileSet.identifier()) + "_" + width + "x" + height;
     }
 }

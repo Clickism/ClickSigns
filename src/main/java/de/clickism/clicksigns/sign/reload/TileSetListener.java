@@ -30,10 +30,10 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
 
     @Override
     protected void processResource(
-            ResourceLocation location,
-            Resource resource,
-            @Nullable ResourceLocation categoryId,
-            @Nullable CategoryJson category
+        ResourceLocation location,
+        Resource resource,
+        @Nullable ResourceLocation categoryId,
+        @Nullable CategoryJson category
     ) {
         var textureLocation = replaceExtension(location, TILESET_EXTENSION, ".png");
         var tileSetJson = fromJsonOrThrow(resource, TileSetJson.class);
@@ -49,10 +49,10 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
      * @param centerSize size of the center tiles in pixels
      */
     private record TileSetJson(
-            String name,
-            int cornerSize,
-            int centerSize,
-            @Nullable Map<String, String> colors
+        String name,
+        int cornerSize,
+        int centerSize,
+        @Nullable Map<String, String> colors
     ) {
         TileSet toTileSet(ResourceLocation location, boolean isBack, @Nullable ResourceLocation categoryId) {
             var resolver = ColorResolver.withDefault();
@@ -60,12 +60,12 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
                 colors.forEach(resolver::tryParseAndDefine);
             }
             return new TileSet(
-                    name,
-                    location,
-                    categoryId, cornerSize,
-                    centerSize,
-                    resolver,
-                    isBack
+                name,
+                location,
+                categoryId, cornerSize,
+                centerSize,
+                resolver,
+                isBack
             );
         }
     }
@@ -76,8 +76,8 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
      * @param name name of the category
      */
     protected record CategoryJson(
-            String name,
-            @Nullable Boolean isBack
+        String name,
+        @Nullable Boolean isBack
     ) {
     }
 }

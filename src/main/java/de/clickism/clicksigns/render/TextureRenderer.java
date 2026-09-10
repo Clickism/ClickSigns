@@ -74,13 +74,13 @@ public class TextureRenderer extends Renderer {
      * Renders a quad with the given texture buffer and coordinates
      */
     private void render(
-            VertexConsumer buffer,
-            float x, float y,
-            float blockWidth,
-            float blockHeight,
-            float zIndex,
-            Alignment alignment,
-            int color
+        VertexConsumer buffer,
+        float x, float y,
+        float blockWidth,
+        float blockHeight,
+        float zIndex,
+        Alignment alignment,
+        int color
     ) {
         stack.pushPose();
         // Apply alignment and z index offset
@@ -112,11 +112,15 @@ public class TextureRenderer extends Renderer {
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
         var isXAxis = renderDirection.getAxis() == Direction.Axis.X;
         buffer.vertex(pose.pose(), x, y, 0)
-                .color(color)
-                .uv(u, v)
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(light)
-                .normal(pose.normal(), isXAxis ? 1 : 0, 0, isXAxis ? 0 : 1)
-                .endVertex();
+            .color(color)
+            .uv(u, v)
+            .overlayCoords(OverlayTexture.NO_OVERLAY)
+            .uv2(light)
+            .normal(pose.normal(), isXAxis
+                ? 1
+                : 0, 0, isXAxis
+                ? 0
+                : 1)
+            .endVertex();
     }
 }

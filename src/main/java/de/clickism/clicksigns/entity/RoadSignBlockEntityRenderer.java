@@ -20,12 +20,12 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
 
     @Override
     public void render(
-            RoadSignBlockEntity entity,
-            float tickDelta,
-            PoseStack stack,
-            MultiBufferSource source,
-            int light,
-            int overlay
+        RoadSignBlockEntity entity,
+        float tickDelta,
+        PoseStack stack,
+        MultiBufferSource source,
+        int light,
+        int overlay
     ) {
         // Use road sign renderer
         var roadSign = entity.roadSign();
