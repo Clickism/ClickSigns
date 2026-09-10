@@ -6,10 +6,12 @@ import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntUnaryOperator;
 
 /**
  * Abstract class for generating and caching textures.
@@ -35,7 +37,16 @@ public abstract class CachedTextureGenerator {
                 ClickSigns.LOGGER.error("Failed to get pixels for generated texture with key {}", k);
                 return null;
             }
-            return new Texture(location, pixels.getWidth(), pixels.getHeight());
+            // Calculate primary color from the center pixel of the texture
+            int pixel = pixels.getPixelRGBA(pixels.getWidth() / 2, pixels.getHeight() / 2);
+            // Convert RGBA to ARGB
+            int argb = FastColor.ARGB32.color(
+                FastColor.ABGR32.alpha(pixel),
+                FastColor.ABGR32.red(pixel),
+                FastColor.ABGR32.green(pixel),
+                FastColor.ABGR32.blue(pixel)
+            );
+            return new Texture(location, pixels.getWidth(), pixels.getHeight(), argb);
         });
     }
 
@@ -75,7 +86,7 @@ public abstract class CachedTextureGenerator {
      * @return a NativeImage representing the opened image
      * @throws Exception if the image cannot be found or read using any of the methods
      */
-    public static NativeImage openImage(ResourceLocation location) throws Exception {
+    protected static NativeImage openImage(ResourceLocation location) throws Exception {
         // Try resource manager
         var minecraft = Minecraft.getInstance();
         try {

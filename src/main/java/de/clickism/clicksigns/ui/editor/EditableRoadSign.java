@@ -151,7 +151,7 @@ public class EditableRoadSign {
     public int height() {
         return frontSource.resolve(colorResolver()).height();
     }
-
+    
     /**
      * Copies the properties and elements from the given RoadSign into this EditableRoadSign.
      *

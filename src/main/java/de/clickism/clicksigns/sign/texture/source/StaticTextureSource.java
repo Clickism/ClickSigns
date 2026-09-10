@@ -38,7 +38,7 @@ public record StaticTextureSource(
     public Texture resolve(ColorResolver colorResolver) {
         try {
             var size = loadSize(location);
-            return new Texture(location, size.width(), size.height());
+            return new Texture(location, size.width(), size.height(), null);
         } catch (Exception e) {
             // Error silently since called quite often
             return ERROR_TEXTURE;

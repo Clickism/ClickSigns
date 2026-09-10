@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 /**
  * Texture source that generates a texture by tiling a given tileset to fit the specified dimensions.
  *
@@ -41,32 +43,6 @@ public record TiledTextureSource(
         var texture = new TextureTiler(tileSet, width, height).getOrGenerate();
         if (texture == null) return ERROR_TEXTURE;
         return texture;
-    }
-
-    /**
-     * Returns the color of the pixel at the center of the generated texture,
-     * or null if the texture could not be generated or the tileset is not found.
-     *
-     * @return the color of the center pixel in ARGB format, or null if not available
-     */
-    public @Nullable Integer primaryColor() {
-        var tileSet = resolveTileSet();
-        if (tileSet == null) return null;
-        try (var image = CachedTextureGenerator.openImage(tileSet.identifier())) {
-            int centerX = image.getWidth() / 2;
-            int centerY = image.getHeight() / 2;
-
-            int pixel = image.getPixelRGBA(centerX, centerY);
-            // Convert RGBA to ARGB
-            return FastColor.ARGB32.color(
-                FastColor.ABGR32.alpha(pixel),
-                FastColor.ABGR32.red(pixel),
-                FastColor.ABGR32.green(pixel),
-                FastColor.ABGR32.blue(pixel)
-            );
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     @Override

@@ -7,10 +7,12 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
+import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.Ref;
@@ -491,6 +493,54 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 add(smallHeader(l("Symbol")));
                 // TODO: Symbol selection button
                 // TODO: Color replacement? Even better, make texture edit screen
+                add(new SymbolView(symbol, sign.colorResolver())
+                    .padding(4)
+                    .style(style()
+                        .borderColor(UiColor.GRAY)
+                        .backgroundColor(UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver())))
+                        .whenHovered(style()
+                            .borderColor(UiColor.RED)))
+                    .tooltip(t("clicksigns.overview.symbol.tooltip"))
+                    .onClick(event -> {
+                        event.playSound();
+                        if (selected == null) return;
+                        // TODO: Refactor
+                        // Left click
+                        if (GuiUtils.isLeftClick(event.button())) {
+                            // Cycle to next symbol in the same category
+                            var nextSymbol = symbol.symbol().nextInCategory();
+                            sign.updateElement(
+                                selected.id(),
+                                element -> ((SymbolElement) element).withSymbol(nextSymbol)
+                            );
+                        }
+                        // Right click
+                        if (GuiUtils.isRightClick(event.button())) {
+                            // Open symbol menu
+                            var colorResolver = sign.colorResolver();
+                            var entries = SignRegistries.SYMBOLS.all().stream()
+                                .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
+                                    s.texture().resolve(colorResolver),
+                                    s.identifier(),
+                                    // TODO: Handle uncategorized symbols
+                                    s.resolveCategory()
+                                ))
+                                .toList();
+
+                            // Find sign background primary color
+                            var backgroundColor = UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver()));
+                            new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
+                                .onTextureSelected(entry -> {
+                                    if (selected == null) return;
+                                    var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
+                                    if (newSymbol == null) return;
+                                    sign.updateElement(
+                                        selected.id(),
+                                        element -> ((SymbolElement) element).withSymbol(newSymbol)
+                                    );
+                                }).open();
+                        }
+                    }));
             }
 
             // Add Alignment

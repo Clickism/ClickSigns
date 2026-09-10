@@ -10,6 +10,9 @@ import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Represents a source for a texture, which can be resolved to obtain the actual texture.
@@ -21,7 +24,7 @@ public sealed interface TextureSource extends TypeKeyed permits StaticTextureSou
     /**
      * The error texture to use when loading or generating a texture fails.
      */
-    Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16);
+    Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16, null);
 
     /**
      * Resolves the texture from this source, loading or generating it as necessary.

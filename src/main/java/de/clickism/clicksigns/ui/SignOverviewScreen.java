@@ -7,6 +7,7 @@ import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
@@ -19,6 +20,8 @@ import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.UiScreenHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+
+import java.util.Optional;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -62,12 +65,14 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                     .ref(signViewRef)
                     // Set up element logic
                     .elementConfig((uiElement, editableSignElement) -> {
-                        // TODO: No hover style for plate?
-                        uiElement.style(style()
-                            .whenHovered(style()
-                                .borderColor(UiColor.RED)));
-                        // Element specific config
                         var signElement = editableSignElement.current();
+                        if (!(signElement instanceof PlateElement)) {
+                            // No hover style for plate
+                            uiElement.style(style()
+                                .whenHovered(style()
+                                    .borderColor(UiColor.RED)));
+                        }
+                        // Element specific config
                         if (signElement instanceof TextElement) {
                             uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
                         } else if (signElement instanceof SymbolElement symbol) {
@@ -100,13 +105,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                             .toList();
 
                                         // Find sign background primary color
-                                        var backgroundColor = UiColor.BLACK_A50;
-                                        if (built.frontSource() instanceof TiledTextureSource tiled) {
-                                            var primary = tiled.primaryColor();
-                                            if (primary != null) {
-                                                backgroundColor = UiColor.rgba(primary);
-                                            }
-                                        }
+                                        var backgroundColor = UiUtil.primaryColorOf(roadSign.frontSource().resolve(colorResolver));
 
                                         new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
                                             .onTextureSelected(entry -> {
