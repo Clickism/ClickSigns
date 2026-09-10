@@ -327,7 +327,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .growWidth()
                     .buttonColor(UiColor.CYAN)
                     .onClick(event -> {
-                        // open the export screen here
+                        new TemplateExportScreen(sign).open();
                     })
             );
         }
