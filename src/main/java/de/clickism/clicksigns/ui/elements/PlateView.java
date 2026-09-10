@@ -1,12 +1,12 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clickui.UiComponent;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 
 public class PlateView extends UiComponent<PlateView>
     implements ElementProvider {

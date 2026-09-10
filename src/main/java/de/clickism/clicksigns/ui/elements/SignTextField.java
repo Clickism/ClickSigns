@@ -1,18 +1,17 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
-import de.clickism.clickui.style.Style;
 import net.minecraft.util.Mth;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -63,7 +62,7 @@ public class SignTextField extends TextField implements ElementProvider {
             this.invalidateLayout();
         });
         // Set up height
-        var font = GuiUtils.font();
+        var font = UiUtil.font();
         this.height(Mth.ceil(font.lineHeight * renderScale) + 2);
         // Set up padding
         int padding = 0;
@@ -109,7 +108,7 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected int currentWidth() {
         var text = textToShow();
-        var font = GuiUtils.font();
+        var font = UiUtil.font();
         float width = font.width(text);
         if (listening()) {
             width += font.width("_");
@@ -130,14 +129,14 @@ public class SignTextField extends TextField implements ElementProvider {
     protected int textColor(boolean placeholder) {
         var color = colorResolver.resolveInt(element.color());
         if (placeholder) {
-            color = GuiUtils.colorWithMultipliedAlpha(color, 0.5f);
+            color = UiColor.rgba(color).multiplyAlpha(0.5f).color();
         }
         return color;
     }
 
     @Override
     protected float textHeight() {
-        return GuiUtils.font().lineHeight * renderScale;
+        return UiUtil.font().lineHeight * renderScale;
     }
 
     @Override
@@ -168,7 +167,7 @@ public class SignTextField extends TextField implements ElementProvider {
         graphics.drawString(font, text, x, y, color, false); // No shadow
         // Render suggestion
         var suggestionX = x + font.width(text);
-        var suggestionColor = GuiUtils.colorWithMultipliedAlpha(color, 0.5f);
+        var suggestionColor = UiColor.rgba(color).multiplyAlpha(0.5f).color();
         graphics.drawString(font, sugestion, suggestionX, y, suggestionColor, false); // No shadow
 
         // Render underline

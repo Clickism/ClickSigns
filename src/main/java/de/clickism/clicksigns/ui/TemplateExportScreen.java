@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
@@ -114,7 +113,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                                 includeTexts.get().checked()
                             );
                             var string = GSON.toJson(json);
-                            GuiUtils.copyToClipboard(string);
+                            UiUtil.copyToClipboard(string);
                         })
                 )
         );

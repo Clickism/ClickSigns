@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.ui.elements;
 
 import com.mojang.math.Axis;
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.reactivity.State;
@@ -97,7 +97,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
                         graphics.pose().popPose();
                     })
                     .when(context -> !a.equals(currentAlignment), style()
-                        .alpha(GuiUtils.INACTIVE_ALPHA)))
+                        .alpha(UiConstants.INACTIVE_ALPHA)))
                 .onClick(event -> {
                     alignment.update(a);
                     onAlignmentChange.accept(a);

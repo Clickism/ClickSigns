@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.SignTextField;
@@ -57,7 +56,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                     .grow()
                                     .style(style()
                                         .when(context -> showLocal.get(), style()
-                                            .alpha(GuiUtils.INACTIVE_ALPHA)))
+                                            .alpha(UiConstants.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(false);
                                     }),
@@ -65,7 +64,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                     .grow()
                                     .style(style()
                                         .when(context -> !showLocal.get(), style()
-                                            .alpha(GuiUtils.INACTIVE_ALPHA)))
+                                            .alpha(UiConstants.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(true);
                                     })

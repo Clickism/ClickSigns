@@ -1,13 +1,11 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
@@ -30,7 +28,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -142,7 +140,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                             var signElement = editable.current();
                                             var localOrigin = new Point(signElement.localX(), signElement.localY());
                                             var origin = signViewRef.get().screenPositionOf(localOrigin);
-                                            GuiUtils.renderPlusOnTop(
+                                            UiUtil.renderPlusOnTop(
                                                 context.graphics(),
                                                 origin.x(),
                                                 origin.y(),

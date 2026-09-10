@@ -1,10 +1,10 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clickui.UiColor;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
-import static de.clickism.clicksigns.gui.widget.texture.TextureWidget.DEFAULT_TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.DEFAULT_TEXTURE_RENDER_SCALE;
 
 /**
  * A UI component that displays a road sign with its texture and elements.
@@ -89,7 +89,7 @@ public class SignView extends UiComponent<SignView> {
         var maxBounds = maxRelativeBounds();
         // Add main texture
         var texture = roadSign.build().frontTexture();
-        var mainSignElement = GuiUtils.imageOf(texture)
+        var mainSignElement = UiUtil.imageOf(texture)
             .relative(-maxBounds.x(), -maxBounds.y());
         this.mainSignElement = mainSignElement;
         add(mainSignElement);

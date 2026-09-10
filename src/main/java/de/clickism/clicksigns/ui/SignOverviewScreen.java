@@ -1,16 +1,12 @@
 package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
-import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.edit.SignEditScreen;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
@@ -18,13 +14,9 @@ import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
-import de.clickism.clickui.UiScreenHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 
-import java.util.Optional;
-
-import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
@@ -125,20 +117,13 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> {
                                             })
                                             .open();
                                     }),
-                                button("New Edit Screen")
-                                    .buttonColor(UiColor.BEIGE)
-                                    .growWidth()
-                                    .onClick(e -> {
-                                        new de.clickism.clicksigns.ui.SignEditScreen(roadSign.build())
-                                            .onSignUpdate(roadSign::copyFrom)
-                                            .open();
-                                    }),
                                 // Edit button
                                 button(t("✎", "clicksigns.text.edit"))
                                     .growWidth()
-                                    .onClick(event -> {
-                                        // Open Editor
-                                        GuiUtils.openScreen(new SignEditScreen(roadSign.build(), roadSign::copyFrom, UiScreenHandler.current()));
+                                    .onClick(e -> {
+                                        new SignEditScreen(roadSign.build())
+                                            .onSignUpdate(roadSign::copyFrom)
+                                            .open();
                                     })
                             ),
 

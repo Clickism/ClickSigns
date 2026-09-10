@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -33,7 +32,7 @@ public class TextureButton extends UiComponent<TextureButton> {
                     .borderColor(UiColor.RED)))
             .onClick(event -> {
                 event.playSound();
-                if (GuiUtils.isLeftClick(event.button())) {
+                if (event.isLeftClick()) {
                     // Cycle to next texture in the same category
                     if (source instanceof TiledTextureSource tiled) {
                         var tileSet = tiled.resolveTileSet();

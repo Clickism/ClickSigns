@@ -1,12 +1,11 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.ui.UiUtil;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.UUID;
 
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.sign.ColorResolver.toHexString;
@@ -44,12 +43,12 @@ public record TextElement(
 
     @Override
     public int signWidth() {
-        return calculateSignDimension(GuiUtils.font().width(text));
+        return calculateSignDimension(UiUtil.font().width(text));
     }
 
     @Override
     public int signHeight() {
-        return calculateSignDimension(GuiUtils.font().lineHeight);
+        return calculateSignDimension(UiUtil.font().lineHeight);
     }
 
     // TODO: Fix text not aligned properly? (I think only in UI)
@@ -139,6 +138,6 @@ public record TextElement(
      * @return the gui width of the text.
      */
     public float guiWidthOf(String string) {
-        return GuiUtils.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.scale();
+        return UiUtil.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.scale();
     }
 }

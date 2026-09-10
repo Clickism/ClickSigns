@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.ui.elements;
 
-import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.util.ElementProvider;
+import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
@@ -29,7 +28,7 @@ public class SymbolView extends UiComponent<SymbolView>
     @Override
     protected void build() {
         var texture = element.symbol().texture().resolve(colorResolver);
-        add(GuiUtils.imageOf(texture));
+        add(UiUtil.imageOf(texture));
     }
 
     @Override
@@ -57,7 +56,7 @@ public class SymbolView extends UiComponent<SymbolView>
         var current = symbolElement.current();
         if (!(current instanceof SymbolElement symbol)) return;
 
-        if (GuiUtils.isLeftClick(event.button())) {
+        if (event.isLeftClick()) {
             // Cycle to next symbol in the same category
             var nextSymbol = symbol.symbol().nextInCategory();
             sign.updateElement(
@@ -65,8 +64,8 @@ public class SymbolView extends UiComponent<SymbolView>
                 element -> ((SymbolElement) element).withSymbol(nextSymbol)
             );
         }
-        // Right click
-        if (GuiUtils.isRightClick(event.button())) {
+
+        if (event.isRightClick()) {
             // Open symbol menu
             var colorResolver = sign.colorResolver();
             var entries = SignRegistries.SYMBOLS.all().stream()

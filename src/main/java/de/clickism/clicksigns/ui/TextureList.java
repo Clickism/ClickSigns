@@ -1,12 +1,10 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clicksigns.gui.GuiUtils;
 import de.clickism.clicksigns.sign.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
-import de.clickism.clickui.style.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -80,7 +78,7 @@ public class TextureList extends UiComponent<TextureList> {
                 var texture = entry.texture();
                 for (int i = 0; i < 1; i++) {
                     row.add(
-                        GuiUtils.imageOf(texture)
+                        UiUtil.imageOf(texture)
                             .tooltip(l("Click to select this texture"))
                             .style(style()
                                 .whenHovered(style()
