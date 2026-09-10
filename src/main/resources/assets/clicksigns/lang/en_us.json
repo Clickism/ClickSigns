@@ -64,7 +64,9 @@
   "clicksigns.template.category.local": "Local Templates",
   "clicksigns.template.category.local.tooltip": "Local templates are stored on your computer (.minecraft/sign_templates). You can save your signs as templates in the editor and find them here.",
   "clicksigns.template.category.resource": "Resource Templates",
-    "clicksigns.template.category.resource.tooltip": "Resource templates are loaded from resource packs or are built into the mod.",
+  "clicksigns.template.category.resource.tooltip": "Resource templates are loaded from resource packs or are built into the mod.",
+
+  "clicksigns.category.uncategorized": "Uncategorized",
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"

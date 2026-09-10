@@ -44,12 +44,10 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
     /**
      * Tile set json format for tile set definitions.
      *
-     * @param name       name of the tile set
      * @param cornerSize size of the corner tiles in pixels
      * @param centerSize size of the center tiles in pixels
      */
     private record TileSetJson(
-        String name,
         int cornerSize,
         int centerSize,
         @Nullable Map<String, String> colors
@@ -60,7 +58,6 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
                 colors.forEach(resolver::tryParseAndDefine);
             }
             return new TileSet(
-                name,
                 location,
                 categoryId, cornerSize,
                 centerSize,

@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.registry;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.Category;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
  * A registry for categorized entries. Extends the basic {@link Registry} with support for categories.
@@ -23,7 +26,6 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * Map from category id to category
      */
     protected final Map<ResourceLocation, Category<T>> categories = new HashMap<>();
-    // TODO: Handle uncategorized
 
     /**
      * Creates a new categorized registry with no default entry.
@@ -39,6 +41,19 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      */
     public CategorizedRegistry(T defaultEntry) {
         super(defaultEntry);
+    }
+
+    /**
+     * Gets the uncategorized category, which is a special category for entries that do not belong to any other category.
+     *
+     * @return a new uncategorized category
+     */
+    public Category<T> uncategorized() {
+        return new Category<>(
+            ClickSigns.identifier("uncategorized"),
+            t("clicksigns.category.uncategorized").getString(),
+            this
+        );
     }
 
     @Override
@@ -68,8 +83,18 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param id the identifier of the category to get
      * @return the category with the given identifier, or null if it doesn't exist
      */
-    public @Nullable Category<T> getCategory(ResourceLocation id) {
+    public @Nullable Category<T> getCategoryOrNull(ResourceLocation id) {
         return categories.get(id);
+    }
+
+    /**
+     * Gets the category with the given identifier, or the uncategorized category if it doesn't exist.
+     *
+     * @param id the identifier of the category to get
+     * @return the category with the given identifier, or the uncategorized category if it doesn't exist
+     */
+    public Category<T> getCategoryOrUncategorized(ResourceLocation id) {
+        return categories.getOrDefault(id, uncategorized());
     }
 
     /**

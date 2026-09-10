@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -8,6 +9,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
  * Represents a category of symbols.

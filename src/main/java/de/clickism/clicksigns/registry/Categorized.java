@@ -31,8 +31,8 @@ public interface Categorized<T extends Identifiable & Categorized<T>> extends Id
      *
      * @return the resolved category, or null if it doesn't belong to any category or the category doesn't exist
      */
-    default @Nullable Category<T> resolveCategory() {
-        return registry().getCategory(categoryId());
+    default Category<T> resolveCategory() {
+        return registry().getCategoryOrUncategorized(categoryId());
     }
 
     /**

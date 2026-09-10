@@ -6,6 +6,8 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +47,6 @@ public class TextureList extends UiComponent<TextureList> {
     @Override
     protected void build() {
         // TODO: Fix multiple screens are opened?
-        // TODO: Use tileset as a backgroudn to give better idea about symbols
         // Scrollable box
         var box = box()
             .grow()
@@ -100,6 +101,6 @@ public class TextureList extends UiComponent<TextureList> {
      * @param identifier the identifier of the texture, i.E. tile set name
      * @param category   the category of the texture
      */
-    public record Entry(Texture texture, ResourceLocation identifier, Category<?> category) {
+    public record Entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category) {
     }
 }

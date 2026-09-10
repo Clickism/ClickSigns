@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a tileset
  *
- * @param name          name of the tileset to display
  * @param identifier    the identifier and resource location of the tileset texture
  * @param categoryId    optional category id for this tileset, used for grouping tilesets in the sign editor
  * @param cornerSize    size of the corners in pixels
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  * @param isBack        whether this tileset is for the back of the sign
  */
 public record TileSet(
-    String name,
     ResourceLocation identifier,
     @Nullable ResourceLocation categoryId,
     int cornerSize,

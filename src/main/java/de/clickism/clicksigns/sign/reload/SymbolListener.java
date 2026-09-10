@@ -53,7 +53,7 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
         // Resolves included symbols for all categories and registers them with modified identifiers to avoid conflicts.
         if (category.includeCategories == null) return;
         category.includeCategories.forEach(includedId -> {
-            var included = SignRegistries.SYMBOLS.getCategory(includedId);
+            var included = SignRegistries.SYMBOLS.getCategoryOrNull(includedId);
             if (included == null) return;
             included.resolveEntries().forEach(symbol -> {
                 // Create symbol with modified id to avoid conflicts
