@@ -17,6 +17,14 @@ import de.clickism.clickui.reactivity.State;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
+/**
+ * Represents a screen for exporting a road sign as a template.
+ * <p>
+ * This screen allows the user to input metadata for the template, such as name, description, and author,
+ * and provides options to include texts in the exported template.
+ * <p>
+ * The template can then be saved to the local template manager or copied as JSON to the clipboard.
+ */
 public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
     implements FancyHeaders, JsonHandler {
 
@@ -29,6 +37,11 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
 
     private final EditableRoadSign roadSign;
 
+    /**
+     * Creates a new instance of the TemplateExportScreen with the specified EditableRoadSign.
+     *
+     * @param roadSign the EditableRoadSign to be exported as a template
+     */
     public TemplateExportScreen(EditableRoadSign roadSign) {
         this.roadSign = roadSign;
     }
