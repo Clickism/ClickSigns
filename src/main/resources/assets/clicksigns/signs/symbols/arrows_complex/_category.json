@@ -1,8 +1,5 @@
 {
   "name": "Arrows Complex",
-  "includeCategories": [
-    "clicksigns:signs/symbols/arrows"
-  ],
   "replaceColor": {
     "to": "foreground"
   }

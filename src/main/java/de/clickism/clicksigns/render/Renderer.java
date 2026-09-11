@@ -8,6 +8,7 @@ import org.joml.Quaternionf;
 /**
  * Utility class for common rendering logic
  */
+// TODO: Render order based on element index, and fix detached plate elements being z-offset
 public abstract class Renderer {
     /**
      * The offset to apply to the Z coordinate when rendering to prevent z-fighting

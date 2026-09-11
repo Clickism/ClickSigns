@@ -20,9 +20,11 @@ import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 // TODO: Split into different classes
+// TODO: Info button instead of too many tooltips
 public class SignEditScreen extends UiScreen<SignEditScreen>
     implements FancyHeaders {
 
@@ -50,7 +53,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
     private final Ref<SignControls> signControlsRef = ref();
     private final Ref<SignEditor> signEditorRef = ref();
     private final Ref<ElementControls> elementControlsRef = ref();
+
     private @Nullable EditableSignElement selected = null;
+    private @Nullable EditableSignElement copied = null;
+
     private Consumer<RoadSign> onSignUpdate = sign -> {};
 
     public SignEditScreen(@NotNull RoadSign sign) {
@@ -130,71 +136,78 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         @Override
         protected void build() {
             childGap(8);
-            children(box().childGap(8).growHeight().alignCenter().children(
+            children(box().childGap(8).grow().alignCenter().children(
                 // TODO: Decide if we want the sign view to be centered or partially.
                 // Sign view
-                memo(() -> new SignView(sign)
-                    .ref(signViewRef)
-                    .elementConfig((uiElement, editable) -> {
-                        uiElement
-                            // Hover style
-                            .style(style()
-                                .whenHovered(style()
-                                    .borderColor(UiColor.RED))
-                                .when(context -> editable.equals(selected) || editable.equals(dragged),
-                                    style()
-                                        .borderColor(UiColor.GREEN)
-                                        .addPostRenderHook((context, el) -> {
-                                            // Render origin point of element
-                                            var signElement = editable.current();
-                                            var localOrigin = new Point(signElement.localX(), signElement.localY());
-                                            var origin = signViewRef.get().screenPositionOf(localOrigin);
-                                            UiUtil.renderPlusOnTop(
-                                                context.graphics(),
-                                                origin.x(),
-                                                origin.y(),
-                                                5,
-                                                UiColor.MAGENTA.color()
-                                            );
-                                        })))
-                            // Update selected on click
-                            .onClick(event -> {
-                                selected(editable);
-                            })
-                            .onDragStart(event -> {
-                                dragStartX = editable.current().localX();
-                                dragStartY = editable.current().localY();
-                                dragged = editable;
-                                signViewRef.get().renderGuidelines(true);
-                            })
-                            // Drag controls
-                            .onDrag(event -> {
-                                // Get the delta in sign space
-                                int deltaX = (int) (event.totalDeltaX() / TEXTURE_RENDER_SCALE);
-                                int deltaY = (int) (event.totalDeltaY() / TEXTURE_RENDER_SCALE);
+                box()
+                    .padding(1)
+                    .growWidth()
+                    .alignCenter()
+                    .scrollable(true)
+                    .children(
+                        memo(() -> new SignView(sign)
+                            .ref(signViewRef)
+                            .elementConfig((uiElement, editable) -> {
+                                uiElement
+                                    // Hover style
+                                    .style(style()
+                                        .whenHovered(style()
+                                            .borderColor(UiColor.RED))
+                                        .when(context -> editable.equals(selected) || editable.equals(dragged),
+                                            style()
+                                                .borderColor(UiColor.GREEN)
+                                                .addPostRenderHook((context, el) -> {
+                                                    // Render origin point of element
+                                                    var signElement = editable.current();
+                                                    var localOrigin = new Point(signElement.localX(), signElement.localY());
+                                                    var origin = signViewRef.get().screenPositionOf(localOrigin);
+                                                    UiUtil.renderPlusOnTop(
+                                                        context.graphics(),
+                                                        origin.x(),
+                                                        origin.y(),
+                                                        5,
+                                                        UiColor.MAGENTA.color()
+                                                    );
+                                                })))
+                                    // Update selected on click
+                                    .onClick(event -> {
+                                        selected(editable);
+                                    })
+                                    .onDragStart(event -> {
+                                        dragStartX = editable.current().localX();
+                                        dragStartY = editable.current().localY();
+                                        dragged = editable;
+                                        signViewRef.get().renderGuidelines(true);
+                                    })
+                                    // Drag controls
+                                    .onDrag(event -> {
+                                        // Get the delta in sign space
+                                        int deltaX = (int) (event.totalDeltaX() / TEXTURE_RENDER_SCALE);
+                                        int deltaY = (int) (event.totalDeltaY() / TEXTURE_RENDER_SCALE);
 
-                                int newX = dragStartX + deltaX;
-                                int newY = dragStartY - deltaY;
+                                        int newX = dragStartX + deltaX;
+                                        int newY = dragStartY - deltaY;
 
-                                if (dragged == null) return;
+                                        if (dragged == null) return;
 
-                                var currentElement = dragged.current();
-                                if (newX == currentElement.localX() && newY == currentElement.localY()) {
-                                    // No change
-                                    return;
-                                }
+                                        var currentElement = dragged.current();
+                                        if (newX == currentElement.localX() && newY == currentElement.localY()) {
+                                            // No change
+                                            return;
+                                        }
 
-                                // Replace the element in the sign with a new one at the new position
-                                sign.updateElement(
-                                    dragged.id(),
-                                    element -> element.withPosition(newX, newY)
-                                );
-                            })
-                            .onDragEnd(event -> {
-                                dragged = null;
-                                signViewRef.get().renderGuidelines(false);
-                            });
-                    })),
+                                        // Replace the element in the sign with a new one at the new position
+                                        sign.updateElement(
+                                            dragged.id(),
+                                            element -> element.withPosition(newX, newY)
+                                        );
+                                    })
+                                    .onDragEnd(event -> {
+                                        dragged = null;
+                                        signViewRef.get().renderGuidelines(false);
+                                    });
+                            }))
+                    ),
                 box()
                     // Use panel height from overview screen to keep alignment consistent
                     .height(SignOverviewScreen.PANEL_HEIGHT)
@@ -234,6 +247,37 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      * such as textures or adding elements.
      */
     private class SignControls extends UiComponent<SignControls> {
+        private SignControls() {
+            onKeyPress(event -> {
+                // Duplicate selected element with Ctrl+D
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
+                    spawnElementNearSelected(selected);
+                    event.consume();
+                }
+                // Copy selected element with Ctrl+C
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_C) {
+                    if (selected != null) {
+                        copied = selected;
+                        event.consume();
+                    }
+                }
+                // Paste copied element with Ctrl+V
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_V) {
+                    spawnElementNearSelected(copied);
+                    event.consume();
+                }
+                // Delete selected element with Delete key
+                if (event.code() == GLFW.GLFW_KEY_DELETE) {
+                    // Don't use the delete key for text elements
+                    if (selected != null && !(selected.current() instanceof TextElement)) {
+                        sign.removeElement(selected.id());
+                        selected(null);
+                        event.consume();
+                    }
+                }
+            });
+        }
+
         @Override
         protected void build() {
             childGap(4);
@@ -336,6 +380,18 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         new TemplateExportScreen(sign).open();
                     })
             );
+        }
+
+        private void spawnElementNearSelected(@Nullable EditableSignElement element) {
+            if (selected == null || element == null) return;
+            var currentSelected = selected.current();
+            var newElement = element.current().withPosition(
+                // Position the new element offset from the selected element, so they don't overlap
+                currentSelected.localX() + currentSelected.signWidth() / 2,
+                currentSelected.localY() + currentSelected.signHeight() / 2
+            );
+            var editable = sign.addElement(newElement);
+            selected(editable);
         }
 
         private Point signCenter() {

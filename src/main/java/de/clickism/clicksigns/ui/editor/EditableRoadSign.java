@@ -108,10 +108,11 @@ public class EditableRoadSign {
         elements.remove(id);
     }
 
-    public void addElement(SignElement element) {
+    public EditableSignElement addElement(SignElement element) {
         var editable = new EditableSignElement(element);
         elements.put(editable.id(), editable);
         notifyListeners();
+        return editable;
     }
 
     /**
