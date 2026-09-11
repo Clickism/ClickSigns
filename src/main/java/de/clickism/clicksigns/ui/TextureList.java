@@ -7,7 +7,6 @@ import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +14,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
 public class TextureList extends UiComponent<TextureList> {
@@ -22,15 +22,17 @@ public class TextureList extends UiComponent<TextureList> {
     private final Map<Category<?>, List<Entry>> categoryToEntries;
 
     private Consumer<Entry> onTextureSelected = texture -> {};
+    private final float textureScale;
 
     /**
      * Creates a new TextureList with the given entries.
      *
      * @param entries the collection of entries to display in the list
      */
-    public TextureList(Collection<Entry> entries) {
+    public TextureList(Collection<Entry> entries, float textureScale) {
         this.categoryToEntries = entries.stream()
             .collect(Collectors.groupingBy(Entry::category));
+        this.textureScale = textureScale;
     }
 
     /**
@@ -79,7 +81,7 @@ public class TextureList extends UiComponent<TextureList> {
                 var texture = entry.texture();
                 for (int i = 0; i < 1; i++) {
                     row.add(
-                        UiUtil.imageOf(texture)
+                        UiUtil.imageOf(texture, textureScale)
                             .tooltip(l("Click to select this texture"))
                             .style(style()
                                 .whenHovered(style()

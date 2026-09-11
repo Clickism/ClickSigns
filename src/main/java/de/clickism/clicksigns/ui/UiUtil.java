@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
 public class UiUtil {
     private UiUtil() {
@@ -89,10 +89,21 @@ public class UiUtil {
      * @return the created Image
      */
     public static Image imageOf(Texture texture) {
+        return imageOf(texture, UI_SCALE);
+    }
+
+    /**
+     * Creates an Image from a Texture, scaling it by the given scale factor.
+     *
+     * @param texture the texture to create an image from
+     * @param scale   the scale factor to apply to the texture's dimensions
+     * @return the created Image
+     */
+    public static Image imageOf(Texture texture, float scale) {
         return new Image(
             texture.location(),
-            texture.width() * TEXTURE_RENDER_SCALE,
-            texture.height() * TEXTURE_RENDER_SCALE
+            (int) (texture.width() * scale),
+            (int) (texture.height() * scale)
         );
     }
 }

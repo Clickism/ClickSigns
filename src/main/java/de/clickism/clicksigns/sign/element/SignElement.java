@@ -81,7 +81,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         var type = element.typeKey();
         tag.putString("type", type);
         tag.putInt("x", element.x());
-        tag.putInt("x", element.y());
+        tag.putInt("y", element.y());
         tag.putString("alignment", element.alignment().name());
         if (element instanceof TextElement text) {
             tag.putFloat("scale", text.scale());
@@ -109,13 +109,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      */
     NbtReader.Reader<SignElement> NBT_READER = (tag) -> {
         var type = tag.getString("type");
-        // TODO: Remove localX and localY checks, only used for compat whilst developing
-        int localX = tag.getInt("x")
-            .or(() -> tag.getInt("localX"))
-            .orElseThrow();
-        int localY = tag.getInt("y")
-            .or(() -> tag.getInt("localY"))
-            .orElseThrow();
+        int localX = tag.getInt("x").orElseThrow();
+        int localY = tag.getInt("y").orElseThrow();
         Alignment alignment = Alignment.valueOf(tag.getString("alignment").orElseThrow());
         return switch (type.orElseThrow()) {
             case TextElement.TYPE -> {

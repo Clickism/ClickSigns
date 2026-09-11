@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clickui.UiComponent;
 
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
 public class PlateView extends UiComponent<PlateView>
     implements ElementProvider {
@@ -24,8 +24,8 @@ public class PlateView extends UiComponent<PlateView>
         var texture = element.front().resolve(colorResolver);
         add(image(
             texture.location(),
-            texture.width() * TEXTURE_RENDER_SCALE,
-            texture.height() * TEXTURE_RENDER_SCALE
+            texture.width() * UI_SCALE,
+            texture.height() * UI_SCALE
         ));
     }
 

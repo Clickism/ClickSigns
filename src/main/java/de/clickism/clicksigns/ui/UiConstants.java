@@ -9,9 +9,9 @@ public class UiConstants {
      */
     public static final float INACTIVE_ALPHA = .3f;
     /**
-     * The scale at which each pixel of the texture is rendered.
+     * The scale at which the road sign is rendered.
      */
-    public static final int TEXTURE_RENDER_SCALE = 4;
+    public static final int UI_SCALE = 4;
 
     private UiConstants() {
         // Utility class

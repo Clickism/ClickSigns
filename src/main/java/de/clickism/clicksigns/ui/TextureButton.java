@@ -49,12 +49,13 @@ public class TextureButton extends UiComponent<TextureButton> {
                             new TiledTextureSource(tileSet.identifier(), 16, 16)
                                 .resolve(tileSet.colorResolver()),
                             tileSet.identifier(),
-                            // TODO: Handle uncategorized symbols
                             tileSet.resolveCategory()
                         ))
                         .toList();
 
                     new TextureSelectScreen(l("Select Texture"), entries)
+                        // TODO: Confirm this also works well for non-tile-set textures
+                        .textureScale(2) // Smaller scale for tilesets
                         .onTextureSelected(entry -> {
                             onTextureSelected.accept(TiledTextureSource.unsized(entry.identifier()));
                         }).open();

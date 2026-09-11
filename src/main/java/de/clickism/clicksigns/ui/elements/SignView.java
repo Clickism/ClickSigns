@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
 /**
  * A UI component that displays a road sign with its texture and elements.
@@ -179,11 +179,11 @@ public class SignView extends UiComponent<SignView> {
      * @return a Point representing the position of the SignElement relative to the maximum bounds
      */
     private Point elementPosition(SignElement element, Rect maxBounds) {
-        float x = element.alignedX() * TEXTURE_RENDER_SCALE;
+        float x = element.alignedX() * UI_SCALE;
         // Y position is inverted
         float signHeight = this.roadSign.build().height();
         float y = (signHeight - element.alignedY()
-                   - element.signHeight()) * TEXTURE_RENDER_SCALE;
+                   - element.signHeight()) * UI_SCALE;
         return new Point((int) x - maxBounds.x(), (int) y - maxBounds.y());
     }
 
@@ -239,13 +239,13 @@ public class SignView extends UiComponent<SignView> {
             maxY = Mth.ceil(Math.max(maxY, element.alignedY() + element.signHeight()));
         }
 
-        int width = Mth.ceil((maxX - minX) * TEXTURE_RENDER_SCALE);
-        int height = Mth.ceil((maxY - minY) * TEXTURE_RENDER_SCALE);
+        int width = Mth.ceil((maxX - minX) * UI_SCALE);
+        int height = Mth.ceil((maxY - minY) * UI_SCALE);
 
-        minX = Mth.floor(minX * TEXTURE_RENDER_SCALE);
+        minX = Mth.floor(minX * UI_SCALE);
         // Convert to UI coord
-        minY = sign.height() * TEXTURE_RENDER_SCALE
-               - Mth.floor(maxY * TEXTURE_RENDER_SCALE);
+        minY = sign.height() * UI_SCALE
+               - Mth.floor(maxY * UI_SCALE);
 
         // Give in UI coordinates
         return new Rect(minX, minY, width, height);
@@ -272,8 +272,8 @@ public class SignView extends UiComponent<SignView> {
         }
         var bounds = mainSignElement.bounds();
         return new Point(
-            bounds.x() + local.x() * TEXTURE_RENDER_SCALE,
-            bounds.y() + bounds.height() - local.y() * TEXTURE_RENDER_SCALE
+            bounds.x() + local.x() * UI_SCALE,
+            bounds.y() + bounds.height() - local.y() * UI_SCALE
         );
     }
 }

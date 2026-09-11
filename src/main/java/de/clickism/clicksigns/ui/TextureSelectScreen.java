@@ -9,12 +9,11 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
-//    public static final UiColor DEFAULT_BACKGROUND_COLOR = UiColor.BLACK.alpha(0.3f);
-
     private final Component title;
     private final Collection<TextureList.Entry> entries;
     private final UiColor backgroundColor;
     private Consumer<TextureList.Entry> onTextureSelected = entry -> {};
+    private float textureScale = UiConstants.UI_SCALE;
 
     public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries, UiColor backgroundColor) {
         this.title = title;
@@ -28,6 +27,12 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
 
     public TextureSelectScreen onTextureSelected(Consumer<TextureList.Entry> onTextureSelected) {
         this.onTextureSelected = onTextureSelected;
+        return this;
+    }
+
+    public TextureSelectScreen textureScale(float textureScale) {
+        this.textureScale = textureScale;
+        invalidateTree();
         return this;
     }
 
@@ -54,7 +59,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
                         .backgroundColor(backgroundColor)
                     )
                     .children(
-                        new TextureList(entries)
+                        new TextureList(entries, textureScale)
                             .onTextureSelected(texture -> {
                                 onTextureSelected.accept(texture);
                                 close();

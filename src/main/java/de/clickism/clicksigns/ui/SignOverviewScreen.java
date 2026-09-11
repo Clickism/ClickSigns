@@ -16,7 +16,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import net.minecraft.core.BlockPos;
 
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
@@ -95,7 +95,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                             .alignCenter()
                             .childGap(4)
                             .height(PANEL_HEIGHT)
-                            .width((int) (2 * BLOCK_PIXELS * TEXTURE_RENDER_SCALE)) // 2 Blocks
+                            .width((int) (2 * BLOCK_PIXELS * UI_SCALE)) // 2 Blocks
                             .padding(4)
                             .style(style()
                                 .backgroundColor(UiColor.BLACK_A50))

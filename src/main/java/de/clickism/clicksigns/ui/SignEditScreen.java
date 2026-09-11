@@ -30,7 +30,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -182,8 +182,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                     // Drag controls
                                     .onDrag(event -> {
                                         // Get the delta in sign space
-                                        int deltaX = (int) (event.totalDeltaX() / TEXTURE_RENDER_SCALE);
-                                        int deltaY = (int) (event.totalDeltaY() / TEXTURE_RENDER_SCALE);
+                                        int deltaX = (int) (event.totalDeltaX() / UI_SCALE);
+                                        int deltaY = (int) (event.totalDeltaY() / UI_SCALE);
 
                                         int newX = dragStartX + deltaX;
                                         int newY = dragStartY - deltaY;
@@ -217,7 +217,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .padding(4)
                             .childGap(8)
                             // Make width equivalent to 2 block signs
-                            .width(32 * TEXTURE_RENDER_SCALE)
+                            .width(32 * UI_SCALE)
                             .style(style()
                                 .backgroundColor(UiColor.BLACK_A50))
                             .children(

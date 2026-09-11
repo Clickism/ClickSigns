@@ -12,7 +12,7 @@ import de.clickism.clickui.render.RenderContext;
 import net.minecraft.util.Mth;
 
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
-import static de.clickism.clicksigns.ui.UiConstants.TEXTURE_RENDER_SCALE;
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 // TODO: Refactor and come up with clear rendering guidelines for sign elements and text element outline, border, etc.
@@ -42,7 +42,7 @@ public class SignTextField extends TextField implements ElementProvider {
         this.renderScale = BLOCK_PIXELS
                            * TEXT_RENDER_SCALE
                            * element.scale()
-                           * TEXTURE_RENDER_SCALE;
+                           * UI_SCALE;
         this.scrolling(false);
         // TODO: Translate
         this.placeholder("Text");

@@ -92,7 +92,7 @@ public final class RoadSignRenderer extends Renderer {
                 var colliding = signRect.intersects(plateRect);
                 // Render in front of the road sign texture if colliding
                 var zIndex = colliding
-                    ? 3
+                    ? 2
                     : 1;
                 textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, zIndex, plate.alignment());
 
