@@ -3,15 +3,16 @@ package de.clickism.clicksigns.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
-import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import org.joml.Vector2f;
+
+import java.awt.*;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -39,14 +40,20 @@ public final class RoadSignRenderer extends Renderer {
 
     /**
      * Converts local sign coordinates to render coordinates.
+     * <p>
+     * Here, the origin of the sign (0, 0) is at the center of the sign, and the coordinates are in pixels.
      */
-    private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
+    private static Vec2 toRenderCoordinates(Texture texture, float localX, float localY) {
         // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture
         float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
         float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
-        return new Vector2f(-renderX, renderY);
+        // Flip x coordinate, becuase x is flipped because of the direction matrix
+        return new Vec2(-renderX, renderY);
     }
 
+    /**
+     * Renders the road sign with its elements and textures.
+     */
     public void render() {
         stack.pushPose();
         // Face the direction of the road sign
@@ -60,15 +67,17 @@ public final class RoadSignRenderer extends Renderer {
         textureRenderer.renderTexture(frontTexture, 1);
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
+        var signRect = new Rectangle(0, 0, frontTexture.width(), frontTexture.height());
+        // Render elements
         roadSign.elements().forEach(element -> {
             var renderCoords = toRenderCoordinates(frontTexture, element.localX(), element.localY());
-            // Render element
             var colorResolver = roadSign.colorResolver();
+            // Render based on element type
             if (element instanceof SymbolElement symbol) {
-                // Render each element on top of the road sign
                 var texture = symbol.symbol().texture().resolve(roadSign.colorResolver());
                 textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 3, symbol.alignment());
             } else if (element instanceof TextElement text) {
+                // Render text elements
                 int color = colorResolver.resolveInt(text.color());
                 int backgroundColor = 0;
                 if (text.backgroundColor() != null) {
@@ -76,24 +85,36 @@ public final class RoadSignRenderer extends Renderer {
                 }
                 textRenderer.render(text.text(), color, backgroundColor, text.scale(), renderCoords.x, renderCoords.y, 4, text.alignment());
             } else if (element instanceof PlateElement plate) {
+                // Render plate elements
                 var texture = plate.front().resolve(roadSign.colorResolver());
-                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 2, plate.alignment());
+                // Check if the plate is colliding with the road sign texture, if so, render in front the road sign texture
+                var plateRect = new Rectangle((int) plate.alignedX(), (int) plate.alignedY(), texture.width(), texture.height());
+                var colliding = signRect.intersects(plateRect);
+                var zIndex = colliding
+                    ? 3
+                    : 1; // Render in front of the road sign texture if colliding
+                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, zIndex, plate.alignment());
+
+                // Render back of plate
+                stack.pushPose();
+                stack.mulPose(FLIP);
+
+                var flippedX = roadSign.width() - element.localX(); // Flip X coordinate for back rendering
+                var backCoords = toRenderCoordinates(roadSign.backTexture(), flippedX, element.localY());
+                var backTexture = plate.back().resolve(roadSign.colorResolver());
+                // Render behind actual back, incase the back texture is inside the sign bounds
+                var backZIndex = colliding
+                    ? 1
+                    : 2;
+                textureRenderer.renderTexture(backTexture, backCoords.x, backCoords.y, backZIndex, plate.alignment());
+
+                stack.popPose();
             }
         });
 
-        // Render back
+        // Render back of the road sign
         stack.mulPose(FLIP);
         textureRenderer.renderTexture(roadSign.backTexture(), 2); // Render back texture more in front
-
-        // Render backs of plates
-        for (SignElement element : roadSign.elements()) {
-            if (!(element instanceof PlateElement plate)) continue;
-            var flippedX = roadSign.width() - element.localX(); // Flip X coordinate for back rendering
-            var renderCoords = toRenderCoordinates(roadSign.backTexture(), flippedX, element.localY());
-            var texture = plate.back().resolve(roadSign.colorResolver());
-            // Render behind actual back, incase the back texture is inside the sign bounds
-            textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 1, plate.alignment());
-        }
 
         // Finish rendering
         stack.popPose();
