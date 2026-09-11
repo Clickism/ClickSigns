@@ -28,7 +28,7 @@ public record Template(
      * @return a new RoadSign instance based on this template and the specified dimensions
      */
     public RoadSign build() {
-        return sign.build(identifier);
+        return sign.build();
     }
 
     @Override
@@ -80,16 +80,14 @@ public record Template(
         /**
          * Builds a road sign based on this sign data.
          *
-         * @param identifier the resource location identifier for the road sign
          * @return a new RoadSign instance based on this sign data and the specified dimensions
          */
-        private RoadSign build(ResourceLocation identifier) {
+        private RoadSign build() {
             return new RoadSign(
                 front.resize(width, height),
                 back.resize(width, height),
                 elements,
-                RoadSign.DEFAULT_ALIGNMENT,
-                identifier
+                RoadSign.DEFAULT_ALIGNMENT
             );
         }
     }

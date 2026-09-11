@@ -11,6 +11,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
@@ -40,6 +41,9 @@ legacyForge {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
+        isChanging = true
+    })
 }
 
 sourceSets {

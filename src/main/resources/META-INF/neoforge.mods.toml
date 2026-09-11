@@ -23,3 +23,10 @@ side="BOTH"
 [[dependencies.clicksigns]]
 modId = "minecraft"
 type = "required"
+
+[[dependencies.clicksigns]]
+modId="clickui"
+type="required"
+versionRange="*"
+side="BOTH"
+ordering="AFTER"

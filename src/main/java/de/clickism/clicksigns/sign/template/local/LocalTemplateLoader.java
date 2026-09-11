@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.template.local;
 
 import com.google.gson.JsonObject;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
@@ -22,6 +23,12 @@ public class LocalTemplateLoader implements JsonHandler {
 
     public LocalTemplateLoader(Path root) {
         this.root = root;
+        // Ensure the root directory exists
+        try {
+            Files.createDirectories(root);
+        } catch (IOException e) {
+            ClickSigns.LOGGER.error("Failed to create local template root directory: {}", root, e);
+        }
     }
 
     public void processAll(BiConsumer<Path, Template> consumer) throws IOException {

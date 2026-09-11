@@ -26,8 +26,6 @@ public class EditableRoadSign {
     private TextureSource frontSource;
     private TextureSource backSource;
     private Alignment alignment;
-    private @Nullable ResourceLocation templateId;
-
     /**
      * Creates a new EditableRoadSign with the specified properties.
      *
@@ -83,15 +81,6 @@ public class EditableRoadSign {
 
     public void alignment(Alignment alignment) {
         this.alignment = alignment;
-        notifyListeners();
-    }
-
-    public @Nullable ResourceLocation templateId() {
-        return templateId;
-    }
-
-    public void templateId(@Nullable ResourceLocation templateId) {
-        this.templateId = templateId;
         notifyListeners();
     }
 
@@ -161,7 +150,6 @@ public class EditableRoadSign {
         this.frontSource = roadSign.frontSource();
         this.backSource = roadSign.backSource();
         this.alignment = roadSign.alignment();
-        this.templateId = roadSign.templateId();
         this.elements.clear();
         // Convert elements to editable elements
         for (SignElement element : roadSign.elements()) {
@@ -180,6 +168,6 @@ public class EditableRoadSign {
         List<SignElement> fixedElements = elements.values().stream()
             .map(EditableSignElement::current)
             .toList();
-        return new RoadSign(frontSource, backSource, fixedElements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, fixedElements, alignment);
     }
 }
