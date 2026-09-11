@@ -5,8 +5,8 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 
 public record PlateElement(
-    int localX,
-    int localY,
+    int x,
+    int y,
     Alignment alignment,
     TextureSource front,
     TextureSource back
@@ -37,14 +37,14 @@ public record PlateElement(
     }
 
     public PlateElement withAlignment(Alignment alignment) {
-        return new PlateElement(localX(), localY(), alignment, front(), back());
+        return new PlateElement(x(), y(), alignment, front(), back());
     }
 
     public PlateElement withFront(TextureSource front) {
-        return new PlateElement(localX(), localY(), alignment(), front, back());
+        return new PlateElement(x(), y(), alignment(), front, back());
     }
 
     public PlateElement withBack(TextureSource back) {
-        return new PlateElement(localX(), localY(), alignment(), front(), back);
+        return new PlateElement(x(), y(), alignment(), front(), back);
     }
 }

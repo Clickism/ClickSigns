@@ -70,7 +70,7 @@ public final class RoadSignRenderer extends Renderer {
         var signRect = new Rectangle(0, 0, frontTexture.width(), frontTexture.height());
         // Render elements
         roadSign.elements().forEach(element -> {
-            var renderCoords = toRenderCoordinates(frontTexture, element.localX(), element.localY());
+            var renderCoords = toRenderCoordinates(frontTexture, element.x(), element.y());
             var colorResolver = roadSign.colorResolver();
             // Render based on element type
             if (element instanceof SymbolElement symbol) {
@@ -90,17 +90,18 @@ public final class RoadSignRenderer extends Renderer {
                 // Check if the plate is colliding with the road sign texture, if so, render in front the road sign texture
                 var plateRect = new Rectangle((int) plate.alignedX(), (int) plate.alignedY(), texture.width(), texture.height());
                 var colliding = signRect.intersects(plateRect);
+                // Render in front of the road sign texture if colliding
                 var zIndex = colliding
                     ? 3
-                    : 1; // Render in front of the road sign texture if colliding
+                    : 1;
                 textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, zIndex, plate.alignment());
 
                 // Render back of plate
                 stack.pushPose();
                 stack.mulPose(FLIP);
 
-                var flippedX = roadSign.width() - element.localX(); // Flip X coordinate for back rendering
-                var backCoords = toRenderCoordinates(roadSign.backTexture(), flippedX, element.localY());
+                var flippedX = roadSign.width() - element.x(); // Flip X coordinate for back rendering
+                var backCoords = toRenderCoordinates(roadSign.backTexture(), flippedX, element.y());
                 var backTexture = plate.back().resolve(roadSign.colorResolver());
                 // Render behind actual back, incase the back texture is inside the sign bounds
                 var backZIndex = colliding

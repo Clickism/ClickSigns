@@ -14,8 +14,8 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * Text element on a road sign.
  *
- * @param localX          local X coordinate
- * @param localY          local Y coordinate
+ * @param x          local X coordinate
+ * @param y          local Y coordinate
  * @param alignment       alignment of the text
  * @param text            text to display
  * @param scale           scale of the text, where 1.0 is the default size
@@ -23,8 +23,8 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * @param backgroundColor RGBA color of the text background, or 0 for no background
  */
 public record TextElement(
-    int localX,
-    int localY,
+    int x,
+    int y,
     Alignment alignment,
     String text,
     float scale,
@@ -77,7 +77,7 @@ public record TextElement(
      * @return a new text element with the given text, keeping the other properties the same
      */
     public TextElement withText(String text) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
     }
 
     /**
@@ -87,7 +87,7 @@ public record TextElement(
      * @return a new text element with the given color, keeping the other properties the same
      */
     public TextElement withColor(String color) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
     }
 
     /**
@@ -97,7 +97,7 @@ public record TextElement(
      * @return a new text element with the given background color, keeping the other properties the same
      */
     public TextElement withBackgroundColor(@Nullable String backgroundColor) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
     }
 
     /**
@@ -107,7 +107,7 @@ public record TextElement(
      * @return a new text element with the given scale, keeping the other properties the same
      */
     public TextElement withScale(float scale) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
     }
 
     /**
@@ -128,7 +128,7 @@ public record TextElement(
      * @return a new text element with the given alignment, keeping the other properties the same
      */
     public TextElement withAlignment(Alignment alignment) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
     }
 
     /**

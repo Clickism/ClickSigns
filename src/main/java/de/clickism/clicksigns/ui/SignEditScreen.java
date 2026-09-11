@@ -159,7 +159,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                                 .addPostRenderHook((context, el) -> {
                                                     // Render origin point of element
                                                     var signElement = editable.current();
-                                                    var localOrigin = new Point(signElement.localX(), signElement.localY());
+                                                    var localOrigin = new Point(signElement.x(), signElement.y());
                                                     var origin = signViewRef.get().screenPositionOf(localOrigin);
                                                     UiUtil.renderPlusOnTop(
                                                         context.graphics(),
@@ -174,8 +174,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                         selected(editable);
                                     })
                                     .onDragStart(event -> {
-                                        dragStartX = editable.current().localX();
-                                        dragStartY = editable.current().localY();
+                                        dragStartX = editable.current().x();
+                                        dragStartY = editable.current().y();
                                         dragged = editable;
                                         signViewRef.get().renderGuidelines(true);
                                     })
@@ -191,7 +191,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                         if (dragged == null) return;
 
                                         var currentElement = dragged.current();
-                                        if (newX == currentElement.localX() && newY == currentElement.localY()) {
+                                        if (newX == currentElement.x() && newY == currentElement.y()) {
                                             // No change
                                             return;
                                         }
@@ -387,8 +387,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             var currentSelected = selected.current();
             var newElement = element.current().withPosition(
                 // Position the new element offset from the selected element, so they don't overlap
-                currentSelected.localX() + currentSelected.signWidth() / 2,
-                currentSelected.localY() + currentSelected.signHeight() / 2
+                currentSelected.x() + currentSelected.signWidth() / 2,
+                currentSelected.y() + currentSelected.signHeight() / 2
             );
             var editable = sign.addElement(newElement);
             selected(editable);

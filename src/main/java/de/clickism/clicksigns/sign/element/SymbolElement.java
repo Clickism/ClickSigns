@@ -7,16 +7,16 @@ import de.clickism.clicksigns.sign.Symbol;
 /**
  * Symbol element on a road sign.
  *
- * @param localX    local X coordinate
- * @param localY    local Y coordinate
+ * @param x    local X coordinate
+ * @param y    local Y coordinate
  * @param alignment alignment of the symbol
  * @param symbol    symbol to display
  */
 // TODO: Add scale?
 // TODO: Add color replacement data here somewhere? make pipeline?
 public record SymbolElement(
-    int localX,
-    int localY,
+    int x,
+    int y,
     Alignment alignment,
     Symbol symbol
 ) implements SignElement {
@@ -47,7 +47,7 @@ public record SymbolElement(
      * @return a new symbol element with the given symbol, keeping the other properties the same
      */
     public SymbolElement withSymbol(Symbol symbol) {
-        return new SymbolElement(localX(), localY(), alignment(), symbol);
+        return new SymbolElement(x(), y(), alignment(), symbol);
     }
 
     /**
@@ -68,6 +68,6 @@ public record SymbolElement(
      * @return a new symbol element with the given alignment, keeping the other properties the same
      */
     public SymbolElement withAlignment(Alignment alignment) {
-        return new SymbolElement(localX(), localY(), alignment, symbol);
+        return new SymbolElement(x(), y(), alignment, symbol);
     }
 }

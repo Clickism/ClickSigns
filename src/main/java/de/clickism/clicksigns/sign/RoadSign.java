@@ -20,19 +20,49 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Road sign class.
+ * Represents a road sign with a front texture, back texture, and elements.
+ *
+ * <h3>Overview</h3>
+ *
+ * <h4>Textures</h4>
+ * The front texture is the main texture of the road sign, and is used for calculating the size of the sign.
+ * The back texture is just used for rendering.
+ *
+ * <h4>Alignment</h4>
+ * The alignment of the road sign determines how the road sign is aligned relative to the block it is placed on.
+ * Unlike how element alignments work, it will always try to cover the block if possible, and align the rest of the sign.
+ *
+ * <h4>Elements</h4>
+ * The elements of the road sign are used for rendering symbols, texts, etc. on the road sign.
+ * Their render order is determined by their type, that means all elements of the same type will render in the same
+ * z-index. With the order being: (Sign Texture) -> Plate -> Symbol -> Text.
+ *
+ * <h3>Coordinate System</h3>
+ * The coordinate system of the road sign starts with <strong>(0, 0) in the bottom left corner</strong> of the road sign,
+ * with the x-axis going to the right and the y-axis going up. The coordinates are in pixels.
+ * <p>
+ * <strong>Note:</strong> This is different from how the UI coordinate system works,
+ * which has (0, 0) in the top left corner and the y-axis going down.
+ * So the conversion should be handled properly when rendering the road sign in the UI.
+ * <p>
+ * Element coordinates are restricted to integer values, but after alignment, they can be floating point values.
+ * In which case, they should be rendered as precisely as possible, without rounding, which goes for both the UI
+ * and the road sign rendering.
+ * <p>
+ * Text elements are a special case, because they have a scale alongside different style options.
+ * For more information, refer to the {@link TextElement} class.
  *
  * @param frontSource texture of the road sign
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
+ * @param alignment  alignment of the road sign
  */
 // TODO: Clear definitions, maybe remove templateId?
 public record RoadSign(
     TextureSource frontSource,
     TextureSource backSource,
     List<SignElement> elements,
-    Alignment alignment,
-    @Nullable ResourceLocation templateId
+    Alignment alignment
 ) implements PixelSized {
     /**
      * The default alignment for road signs when no alignment is set.
@@ -54,8 +84,7 @@ public record RoadSign(
             new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
             new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
         ),
-        DEFAULT_ALIGNMENT,
-        ClickSigns.identifier("test")
+        DEFAULT_ALIGNMENT
     );
     /**
      * Writer for packets
@@ -65,7 +94,6 @@ public record RoadSign(
         TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
         buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
         buf.writeInt(sign.alignment().ordinal());
-        buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
     };
     /**
      * Reader for packets
@@ -75,8 +103,7 @@ public record RoadSign(
         var back = TextureSource.PACKET_READER.apply(buf);
         var elements = buf.readList(SignElement.PACKET_READER);
         var alignment = Alignment.values()[buf.readInt()];
-        var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
-        return new RoadSign(front, back, elements, alignment, templateId);
+        return new RoadSign(front, back, elements, alignment);
     };
     /**
      * Writer for NBT
@@ -90,9 +117,6 @@ public record RoadSign(
         tag.putCompound("back", back.asCompoundTag());
         tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
         tag.putString("alignment", sign.alignment().name());
-        if (sign.templateId != null) {
-            tag.putResourceLocation("template", sign.templateId);
-        }
     };
     /**
      * Reader for NBT
@@ -104,8 +128,7 @@ public record RoadSign(
         var back = TextureSource.NBT_READER.read(backCompound);
         var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
         var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
-        var templateId = tag.getResourceLocation("template").orElse(null);
-        return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
+        return new RoadSign(front, back, new ArrayList<>(elements), alignment);
     };
 
     /**
@@ -172,7 +195,7 @@ public record RoadSign(
      * @return a new road sign with the updated texture
      */
     public RoadSign withFront(TextureSource frontSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -184,7 +207,7 @@ public record RoadSign(
      * @return a new road sign with the updated back texture
      */
     public RoadSign withBack(TextureSource backSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -194,7 +217,7 @@ public record RoadSign(
      * @return a new road sign with the updated elements
      */
     public RoadSign withElements(Collection<SignElement> elements) {
-        return new RoadSign(frontSource, backSource, new ArrayList<>(elements), alignment, templateId);
+        return new RoadSign(frontSource, backSource, new ArrayList<>(elements), alignment);
     }
 
     /**
@@ -244,6 +267,6 @@ public record RoadSign(
      * @return a new road sign with the updated alignment
      */
     public RoadSign withAlignment(Alignment alignment) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 }

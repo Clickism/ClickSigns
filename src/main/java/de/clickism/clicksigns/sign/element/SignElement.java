@@ -10,7 +10,10 @@ import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
- * An element that can be placed on a road sign.
+ * Represents an element of a road sign.
+ * <p>
+ * Elements are positioned using the sign's coordinate system, where (0, 0) is the bottom left corner of the sign.
+ * For more information, see {@link de.clickism.clicksigns.sign.RoadSign}.
  */
 public sealed interface SignElement extends TypeKeyed permits PlateElement, SymbolElement, TextElement {
     /**
@@ -19,8 +22,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     FriendlyByteBuf.Writer<SignElement> PACKET_WRITER = (buf, element) -> {
         var type = element.typeKey();
         buf.writeUtf(type);
-        buf.writeInt(element.localX());
-        buf.writeInt(element.localY());
+        buf.writeInt(element.x());
+        buf.writeInt(element.y());
         buf.writeInt(element.alignment().ordinal());
         if (element instanceof TextElement text) {
             buf.writeFloat(text.scale());
@@ -77,8 +80,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     NbtWriter.Writer<SignElement> NBT_WRITER = (tag, element) -> {
         var type = element.typeKey();
         tag.putString("type", type);
-        tag.putInt("localX", element.localX());
-        tag.putInt("localY", element.localY());
+        tag.putInt("x", element.x());
+        tag.putInt("x", element.y());
         tag.putString("alignment", element.alignment().name());
         if (element instanceof TextElement text) {
             tag.putFloat("scale", text.scale());
@@ -106,8 +109,13 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      */
     NbtReader.Reader<SignElement> NBT_READER = (tag) -> {
         var type = tag.getString("type");
-        int localX = tag.getInt("localX").orElseThrow();
-        int localY = tag.getInt("localY").orElseThrow();
+        // TODO: Remove localX and localY checks, only used for compat whilst developing
+        int localX = tag.getInt("x")
+            .or(() -> tag.getInt("localX"))
+            .orElseThrow();
+        int localY = tag.getInt("y")
+            .or(() -> tag.getInt("localY"))
+            .orElseThrow();
         Alignment alignment = Alignment.valueOf(tag.getString("alignment").orElseThrow());
         return switch (type.orElseThrow()) {
             case TextElement.TYPE -> {
@@ -136,36 +144,48 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     };
 
     /**
-     * Gets the local X coordinate of this element.
-     * Local coordinates are relative to the bottom-left corner of the road sign, with (0, 0) being the bottom-left corner.
+     * Gets the X coordinate of this element.
      *
-     * @return Local X coordinate
+     * @return X coordinate
      */
-    int localX();
+    int x();
 
     /**
-     * Gets the local Y coordinate of this element.
-     * Local coordinates are relative to the bottom-left corner of the road sign, with (0, 0) being the bottom-left corner.
+     * Gets the Y coordinate of this element.
      *
-     * @return Local Y coordinate
+     * @return Y coordinate
      */
-    int localY();
+    int y();
 
+    /**
+     * Gets the width of this element in sign space.
+     *
+     * @return Width of this element in sign space
+     */
     int signWidth();
 
+    /**
+     * Gets the height of this element in sign space.
+     *
+     * @return Height of this element in sign space
+     */
     int signHeight();
 
+    /**
+     * Gets the size of this element in sign space.
+     * @return Size of this element in sign space
+     */
     default Size signSize() {
         return new Size(signWidth(), signHeight());
     }
 
     /**
-     * Returns the aligned X coordinate of this element in sign space.
+     * Returns the aligned X coordinate of this element in sign space, which is a floating point number.
      *
      * @return The aligned X coordinate of this element in sign space
      */
     default float alignedX() {
-        float x = localX();
+        float x = x();
         float width = signWidth();
         // Center origin
         x -= width / 2f;
@@ -176,12 +196,12 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     }
 
     /**
-     * Returns the aligned Y coordinate of this element in sign space.
+     * Returns the aligned Y coordinate of this element in sign space, which is a floating point number.
      *
      * @return The aligned Y coordinate of this element in sign space
      */
     default float alignedY() {
-        float y = localY();
+        float y = y();
         float height = signHeight();
         // Center origin
         y -= height / 2f;
@@ -192,8 +212,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     }
 
     /**
-     * Gets the alignment of this element.
-     * The alignment determines how the element should be positioned.
+     * Gets the alignment of this element. The alignment determines how the element should be positioned.
      *
      * @return the alignment of this element
      */

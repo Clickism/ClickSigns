@@ -71,7 +71,7 @@ public class SignElementParser implements JsonHandler {
         if (element instanceof TextElement textElement) {
             return new TextElementJson(
                 nullIfDefault(textElement.alignment(), TextElementJson.DEFAULT_ALIGNMENT),
-                new Position(textElement.localX(), textElement.localY()),
+                new Position(textElement.x(), textElement.y()),
                 // Only include the text if includeTexts is true, otherwise set it to null
                 includeTexts
                     ? nullIfDefault(textElement.text(), TextElementJson.DEFAULT_TEXT)
@@ -85,13 +85,13 @@ public class SignElementParser implements JsonHandler {
             return new SymbolElementJson(
                 symbolElement.symbol().identifier(),
                 nullIfDefault(symbolElement.alignment(), SymbolElementJson.DEFAULT_ALIGNMENT),
-                new Position(symbolElement.localX(), symbolElement.localY())
+                new Position(symbolElement.x(), symbolElement.y())
             );
         }
         if (element instanceof PlateElement plateElement) {
             return new PlateElementJson(
                 nullIfDefault(plateElement.alignment(), PlateElementJson.DEFAULT_ALIGNMENT),
-                new Position(plateElement.localX(), plateElement.localY()),
+                new Position(plateElement.x(), plateElement.y()),
                 plateElement.front().resolve(ColorResolver.empty()).width(),
                 plateElement.front().resolve(ColorResolver.empty()).height(),
                 TextureSource.textureLocationOf(plateElement.front()),
