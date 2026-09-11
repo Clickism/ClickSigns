@@ -10,7 +10,9 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.UiColor;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -71,15 +73,25 @@ public final class RoadSignRenderer extends Renderer {
         // Render the side edges connecting front and back
         int sideColor = UiColor.GRAY.color();
         var thickness = 1 / BLOCK_PIXELS; // 1 pixel thickness
-        textureRenderer.renderSides(
-            sideColor,
-            frontTexture.blockWidth(),
-            frontTexture.blockHeight(),
-            thickness,
-            0, 0,
-            1,
-            Alignment.CENTER // Since already applied
+
+        var buffer = source.getBuffer(RenderType.entityCutoutNoCull(ResourceLocation.tryBuild(
+            ResourceLocation.DEFAULT_NAMESPACE,
+            "textures/misc/white.png")));
+        SilhouetteExtruder.renderSilhouetteSides(
+            buffer, stack.last(), light,
+            frontTexture.location(), frontTexture.blockWidth(), frontTexture.blockHeight(),
+            thickness, sideColor
         );
+
+//        textureRenderer.renderSides(
+//            sideColor,
+//            frontTexture.blockWidth(),
+//            frontTexture.blockHeight(),
+//            thickness,
+//            0, 0,
+//            1,
+//            Alignment.CENTER // Since already applied
+//        );
 
         var textRenderer = new TextRenderer(stack, source, light, direction);
         var signRect = new Rectangle(0, 0, frontTexture.width(), frontTexture.height());
