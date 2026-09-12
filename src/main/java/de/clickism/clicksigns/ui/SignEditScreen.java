@@ -36,6 +36,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 // TODO: Split into different classes
 // TODO: Info button instead of too many tooltips
+// TODO: Ability to select multiple elements and move them together/copy etc.
 public class SignEditScreen extends UiScreen<SignEditScreen>
     implements FancyHeaders {
 
@@ -230,6 +231,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                     }),
                                 // Confirm button
                                 button(ComponentUtil.confirmWithIcon())
+                                    .buttonColor(UiColor.LIME)
                                     .growWidth()
                                     .onClick(event -> {
                                         // Callback and close
@@ -503,6 +505,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
             // Plate controls
             if (current instanceof PlateElement plate) {
+                // TODO: Make plates by default match the sign's textures. But allow decoupling them.
                 add(smallHeader(l("Plate Textures")));
                 add(box()
                     .horizontal()

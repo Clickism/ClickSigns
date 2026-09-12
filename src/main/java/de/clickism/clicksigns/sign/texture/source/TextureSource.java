@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 // TODO: Move color resolver to the texture source, so all textures can define color resolvers?
 // TODO: Maybe texture source should be more like a pipeline, with a base texture and a list of transformations applied?
 // TODO: Way to replace colors in tiled textures, and way to define a tileset as having multiple base variations of default colors? Maybe.
+// TODO: Way to dynamically generate backs, as in cut them off based on the front texture's shape/transparency?
 public sealed interface TextureSource extends TypeKeyed permits StaticTextureSource, TiledTextureSource, ColorizedTextureSource {
     /**
      * The error texture to use when loading or generating a texture fails.

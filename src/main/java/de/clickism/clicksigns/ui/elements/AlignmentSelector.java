@@ -5,7 +5,9 @@ import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.style.Border;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
     private static final String DIRECTIONAL_ICON = "→";
     private static final String CENTER_ICON = "•";
 
-    private final State<Alignment> alignment = state(Alignment.TOP_RIGHT);
+    private final State<Alignment> selected = state(Alignment.TOP_RIGHT);
     private boolean textOnly = false;
     private Consumer<Alignment> onAlignmentChange = alignment -> {};
 
@@ -28,7 +30,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
      * @return the current alignment
      */
     public Alignment alignment() {
-        return alignment.get();
+        return selected.get();
     }
 
     /**
@@ -38,7 +40,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
      * @return this AlignmentSelector for method chaining
      */
     public AlignmentSelector alignment(Alignment alignment) {
-        this.alignment.update(alignment);
+        this.selected.update(alignment);
         return this;
     }
 
@@ -72,69 +74,81 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
      */
     public List<Alignment> alignmentValues() {
         return textOnly
-            ? List.of(Alignment.TEXT_LEFT, Alignment.TEXT_CENTER, Alignment.TEXT_RIGHT)
-            : List.of(Alignment.values());
+            ? Alignment.textAlignments()
+            : Alignment.all();
     }
 
     @Override
     protected void build() {
-        var currentAlignment = alignment.get();
+        var currentAlignment = selected.get();
         // Build the UI for the alignment selector here
         var grid = grid(3)
             .childGap(4);
         add(grid);
-        for (Alignment a : alignmentValues()) {
+        for (Alignment alignment : alignmentValues()) {
             var button = button("") // Leave empty as we custom render the icon
                 .defaultBackground(false)
                 .size(20)
                 .style(style()
                     .backgroundColor(UiColor.BLACK)
-                    .when(context -> a.equals(currentAlignment), style()
+                    .when(context -> alignment.equals(currentAlignment), style()
                         .borderPosition(Border.Position.INSIDE)
                         .borderColor(UiColor.WHITE))
-                    .when(context -> !a.equals(currentAlignment), style()
+                    .when(context -> !alignment.equals(currentAlignment), style()
                         .alpha(UiConstants.INACTIVE_ALPHA))
+                    // Custom render the icon via render hook
                     .addPostRenderHook((context, el) -> {
-                        // Calculate center of the button
-                        var bounds = el.bounds();
-                        var centerX = bounds.x() + bounds.width() / 2;
-                        var centerY = bounds.y() + bounds.height() / 2;
-
-                        // Get the angle of the alignment offset
-                        var alignmentOffset = a.offset();
-                        if (textOnly) {
-                            alignmentOffset.y = 0; // Ignore vertical offset for text only mode
-                        }
-                        var degrees = (int) Math.toDegrees(Math.atan2(-alignmentOffset.y, alignmentOffset.x));
-
-                        // Rotate the graphics context around the center of the button
-                        var graphics = context.graphics();
-                        graphics.pose().pushPose();
-                        graphics.pose().rotateAround(Axis.ZP.rotationDegrees(degrees), centerX, centerY, 0);
-                        // Draw the icon
-                        var icon = (a == Alignment.CENTER || (textOnly && a == Alignment.TEXT_CENTER))
-                            ? CENTER_ICON
-                            : DIRECTIONAL_ICON;
-                        // Draw the icon centered in the button
-                        var font = context.font();
-                        var iconWidth = font.width(icon);
-                        var iconHeight = font.lineHeight;
-                        graphics.drawString(
-                            font,
-                            icon,
-                            centerX - iconWidth / 2,
-                            centerY - iconHeight / 2,
-                            UiColor.WHITE.color(),
-                            false // No shadow since looksa bit weird when rotated
-                        );
-                        // Pop pose
-                        graphics.pose().popPose();
+                        renderIcon(context, el.bounds(), alignment);
                     }))
                 .onClick(event -> {
-                    alignment.update(a);
-                    onAlignmentChange.accept(a);
+                    selected.update(alignment);
+                    onAlignmentChange.accept(alignment);
                 });
             grid.add(button);
         }
+    }
+
+    /**
+     * Renders the icon for the given alignment within the specified bounds.
+     *
+     * @param context   the render context
+     * @param bounds    the bounds within which to render the icon
+     * @param alignment the alignment for which to render the icon
+     */
+    private void renderIcon(RenderContext context, Rect bounds, Alignment alignment) {
+        var centerX = bounds.x() + bounds.width() / 2;
+        var centerY = bounds.y() + bounds.height() / 2;
+
+        // Get the angle of the alignment offset
+        var alignmentOffset = alignment.offset();
+        if (textOnly) {
+            alignmentOffset.y = 0; // Ignore vertical offset for text only mode
+        }
+        var degrees = (int) Math.toDegrees(Math.atan2(-alignmentOffset.y, alignmentOffset.x));
+
+        // Rotate the graphics context around the center of the button
+        var graphics = context.graphics();
+        graphics.pose().pushPose();
+        graphics.pose().rotateAround(Axis.ZP.rotationDegrees(degrees), centerX, centerY, 0);
+        // Draw the icon
+        var isCenter = alignment == Alignment.CENTER || (textOnly && alignment == Alignment.TEXT_CENTER);
+        var icon = isCenter
+            ? CENTER_ICON
+            : DIRECTIONAL_ICON;
+        // Draw the icon centered in the button
+        var font = context.font();
+        var iconWidth = font.width(icon);
+        var iconHeight = font.lineHeight;
+        graphics.drawString(
+            font,
+            icon,
+            // Draw in center
+            centerX - iconWidth / 2,
+            centerY - iconHeight / 2,
+            UiColor.WHITE.color(),
+            false // No shadow since looksa bit weird when rotated
+        );
+        // Pop pose
+        graphics.pose().popPose();
     }
 }
