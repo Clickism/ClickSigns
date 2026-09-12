@@ -59,6 +59,25 @@ public enum Alignment {
     }
 
     /**
+     * Returns the alignment with the X coordinate flipped.
+     *
+     * @return the flipped alignment
+     */
+    public Alignment flipX() {
+        return switch (this) {
+            case TOP_LEFT -> TOP_RIGHT;
+            case TOP_CENTER -> TOP_CENTER;
+            case TOP_RIGHT -> TOP_LEFT;
+            case CENTER_LEFT -> CENTER_RIGHT;
+            case CENTER -> CENTER;
+            case CENTER_RIGHT -> CENTER_LEFT;
+            case BOTTOM_LEFT -> BOTTOM_RIGHT;
+            case BOTTOM_CENTER -> BOTTOM_CENTER;
+            case BOTTOM_RIGHT -> BOTTOM_LEFT;
+        };
+    }
+
+    /**
      * Returns a list of all alignments.
      *
      * @return list of all alignments
