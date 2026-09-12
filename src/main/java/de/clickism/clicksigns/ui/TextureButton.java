@@ -20,6 +20,7 @@ public class TextureButton extends UiComponent<TextureButton> {
         this.onTextureSelected = onTextureSelected;
     }
 
+    // TODO: Tooltip
     @Override
     protected void build() {
         var texture = source.resize(16, 16).resolve(ColorResolver.empty());
