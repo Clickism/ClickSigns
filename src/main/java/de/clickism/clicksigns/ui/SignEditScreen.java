@@ -36,6 +36,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 // TODO: Split into different classes
 // TODO: Info button instead of too many tooltips
+// TODO: Ability to select multiple elements and move them together/copy etc.
 public class SignEditScreen extends UiScreen<SignEditScreen>
     implements FancyHeaders {
 
