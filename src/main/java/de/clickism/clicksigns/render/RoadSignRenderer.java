@@ -1,8 +1,6 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
@@ -72,7 +70,7 @@ public final class RoadSignRenderer extends Renderer {
         textureRenderer.renderTexture(frontTexture, 1);
         // Render the side edges connecting front and back
         int sideColor = UiColor.GRAY.color();
-        var thickness = 1 / BLOCK_PIXELS; // 1 pixel thickness
+        var thickness = .5f / BLOCK_PIXELS; // 1 pixel thickness
 
         var buffer = source.getBuffer(RenderType.entityCutoutNoCull(ResourceLocation.tryBuild(
             ResourceLocation.DEFAULT_NAMESPACE,
