@@ -57,7 +57,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
     private final Ref<ElementControls> elementControlsRef = ref();
 
     private @Nullable EditableSignElement selected = null;
-    private @Nullable EditableSignElement copied = null;
+    private static @Nullable EditableSignElement copied = null;
 
     private Consumer<RoadSign> onSignUpdate = sign -> {};
 
@@ -250,6 +250,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      * such as textures or adding elements.
      */
     private class SignControls extends UiComponent<SignControls> {
+        // TODO: Can't paste into text fields in the right panel, because we capture
         private SignControls() {
             onKeyPress(event -> {
                 // Duplicate selected element with Ctrl+D
@@ -334,7 +335,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .onClick(event -> {
                         var center = signCenter();
                         var element = new TextElement(
-                            center.x(), center.y(), Alignment.TEXT_RIGHT,
+                            center.x(), center.y(), Alignment.TEXT_CENTER,
                             "", 1.0f, TextStyle.DEFAULT
                         );
                         sign.addElement(element);
@@ -386,13 +387,19 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         }
 
         private void spawnElementNearSelected(@Nullable EditableSignElement element) {
-            if (selected == null || element == null) return;
-            var currentSelected = selected.current();
-            var newElement = element.current().withPosition(
-                // Position the new element offset from the selected element, so they don't overlap
-                (int) (currentSelected.x() + currentSelected.width() / 2),
-                (int) (currentSelected.y() + currentSelected.height() / 2)
-            );
+            if (element == null) return;
+            Point position;
+            if (selected == null) {
+                position = signCenter();
+            } else {
+                var currentSelected = selected.current();
+                position = new Point(
+                    // Position the new element offset from the selected element, so they don't overlap
+                    (int) (currentSelected.x() + currentSelected.width() / 2),
+                    (int) (currentSelected.y() + currentSelected.height() / 2)
+                );
+            }
+            var newElement = element.current().withPosition(position.x(), position.y());
             var editable = sign.addElement(newElement);
             selected(editable);
         }
@@ -641,7 +648,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             add(smallHeader(l("Alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
-                .textOnly(current instanceof TextElement)
+                // TODO: Decide if good to limit to text alignment only
                 .onAlignmentChange(newAlignment -> {
                     if (selected == null) return;
                     sign.updateElement(selected.id(),

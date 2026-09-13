@@ -87,10 +87,10 @@ public record TextElement(
      * @return the total size of the text element as a Size object
      */
     public Size textSize() {
-        var backgroundSize = backgroundSize();
+        var padded = paddedSize();
         return new Size(
-            backgroundSize.width() + backgroundOffset() * 2,
-            backgroundSize.height() + backgroundOffset() * 2
+            padded.width() + backgroundOffset() * 2,
+            padded.height() + backgroundOffset() * 2
         );
     }
 
@@ -114,15 +114,14 @@ public record TextElement(
     }
 
     /**
-     * Calculates the size of the background of the text element in text space,
-     * taking into account padding and outline.
+     * Calculates the padded size of the text element in text space.
      *
-     * @return the size of the background as a Size object
+     * @return the padded size of the text element as a Size object
      */
-    public Size backgroundSize() {
+    public Size paddedSize() {
         int width = Util.font().width(text);
         int height = Util.font().lineHeight;
-        if (style.isBackgroundShown()) {
+        if (style.isPaddingShown()) {
             width += style.paddingX() * 2;
             height += style.paddingY() * 2;
         }

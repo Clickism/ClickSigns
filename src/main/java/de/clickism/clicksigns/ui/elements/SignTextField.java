@@ -22,6 +22,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * <p>
  * Handles rendering of the text with scaling and background color, and custom styling.
  */
+// TODO: Add support for newlines!
 public class SignTextField extends TextField implements ElementProvider {
     private static final int MIN_WIDTH = 4;
     private final float renderScale;
@@ -168,7 +169,7 @@ public class SignTextField extends TextField implements ElementProvider {
         }
         var element = elementToShow();
         var bounds = bounds();
-        var background = element.backgroundSize();
+        var background = element.paddedSize();
         var x = bounds.x() + element.backgroundOffset();
         var y = bounds.y() + element.backgroundOffset();
         var color = colorResolver.resolveInt(element.style().backgroundColor().orElseThrow());
@@ -193,7 +194,7 @@ public class SignTextField extends TextField implements ElementProvider {
         }
         var element = elementToShow();
         var bounds = bounds();
-        var background = element.backgroundSize();
+        var background = element.paddedSize();
         var thickness = element.style().outlineWidth();
         var color = colorResolver.resolveInt(element.style().outlineColor().orElseThrow());
         // Render outline

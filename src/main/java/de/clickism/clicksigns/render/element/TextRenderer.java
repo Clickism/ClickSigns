@@ -4,12 +4,10 @@ import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clickui.UiColor;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FastColor;
 
-import static de.clickism.clicksigns.util.Constants.BLOCK_PIXEL;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 public class TextRenderer implements ElementRenderer<TextElement> {
@@ -96,7 +94,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      */
     private void renderStyle(TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
-        var background = element.backgroundSize();
+        var background = element.paddedSize();
         var outlineWidth = style.isOutlineShown() ? style.outlineWidth() : 0;
         // Render background
         style.backgroundColor()
