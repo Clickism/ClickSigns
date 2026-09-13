@@ -7,15 +7,15 @@ import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;
+import de.clickism.clickui.layout.Point;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
+import de.clickism.clickui.util.Util;
 import net.minecraft.util.Mth;
 
 import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
-
-// TODO: Refactor and come up with clear rendering guidelines for sign elements and text element outline, border, etc.
 
 /**
  * A specialized TextField for editing the text of a SignElement.
@@ -24,8 +24,6 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  */
 public class SignTextField extends TextField implements ElementProvider {
     private static final int MIN_WIDTH = 4;
-    private static final int BACKGROUND_PADDING = 3;
-    // TODO: Refactor renderScale?
     private final float renderScale;
     private TextElement element;
     private ColorResolver colorResolver;
@@ -48,7 +46,8 @@ public class SignTextField extends TextField implements ElementProvider {
         this.placeholder("Text");
         this.value(element.text());
         // Set up style
-        updateStyle();
+        this.overrideStyle(style()
+            .backgroundColor(null));
         // Set up listeners so that width is recalculated when needed
         this.onValueChanged(value -> {
             this.invalidateLayout();
@@ -59,43 +58,25 @@ public class SignTextField extends TextField implements ElementProvider {
         this.onFocusExit(event -> {
             this.invalidateLayout();
         });
-        // Set up height
-        var font = UiUtil.font();
-        this.height(Mth.ceil(font.lineHeight * renderScale) + 1); // +1 for underline
         // Set up padding
-        int padding = 0;
-        if (element.style().backgroundColor().isPresent()) {
-            padding = Mth.ceil(BACKGROUND_PADDING * element.scale());
-        }
-        this.padding(0, padding, 0, padding);
+        this.padding(0);
     }
 
     public SignTextField textElement(TextElement element) {
         this.element = element;
-        updateStyle();
         return this;
     }
 
     public SignTextField colorResolver(ColorResolver colorResolver) {
         this.colorResolver = colorResolver;
-        updateStyle();
         return this;
-    }
-
-    private void updateStyle() {
-        // Set up style
-        var background = element.style().backgroundColor()
-            .map(colorResolver::resolve)
-            .orElse(null);
-        this.overrideStyle(style()
-            .backgroundColor(UiColor.of(background)));
     }
 
     @Override
     public Size intrinsicSize() {
         return new Size(
             currentWidth(),
-            Mth.ceil(textHeight() + 2)
+            Mth.ceil(textHeight())
         );
     }
 
@@ -106,16 +87,15 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected int currentWidth() {
         var text = textToShow();
-        var font = UiUtil.font();
-        float width = font.width(text);
         if (listening()) {
-            width += font.width("_");
+            text += "_";
         }
-        width *= renderScale;
+        // Use another element to calculate width
+        int width = element.withText(text).width();
         if (width < MIN_WIDTH) {
             width = MIN_WIDTH;
         }
-        return Mth.ceil(width);
+        return width * UI_SCALE;
     }
 
     @Override
@@ -134,16 +114,87 @@ public class SignTextField extends TextField implements ElementProvider {
 
     @Override
     protected float textHeight() {
-        return UiUtil.font().lineHeight * renderScale;
+        return element.height() * UI_SCALE;
+    }
+
+    @Override
+    protected Point textPosition() {
+        var bounds = bounds();
+        var x = bounds.x();
+        var y = bounds.y();
+        // Apply text offset
+        var textOffset = element.textOffset();
+        float offsetX = textOffset.x;
+        // Flip y to convert to UI space
+        float offsetY = element.textSize().height() - textOffset.y - Util.font().lineHeight;
+        // Add text offset
+        x += (int) offsetX;
+        y += (int) offsetY;
+        return new Point(x, y);
     }
 
     @Override
     public void render(RenderContext context) {
         // Render the text field
-        var pos = textPosition();
-        renderWithScale(context, pos.x(), pos.y(), renderScale, renderScale, () -> {
+        var bounds = bounds();
+        // Apply render scale
+        renderWithScale(context, bounds.x(), bounds.y(), renderScale, renderScale, () -> {
+            // Render background
+            renderBackground(context);
+            // Render outline
+            renderOutline(context);
+            // Render text and highlight
             super.render(context);
         });
+    }
+
+    /**
+     * Renders the background of the text field based on the style of the associated TextElement.
+     *
+     * @param context The render context used for rendering.
+     */
+    private void renderBackground(RenderContext context) {
+        if (!element.style().isBackgroundShown()) {
+            return;
+        }
+        var bounds = bounds();
+        var background = element.backgroundSize();
+        var x = bounds.x() + element.backgroundOffset();
+        var y = bounds.y() + element.backgroundOffset();
+        var color = colorResolver.resolveInt(element.style().backgroundColor().orElseThrow());
+        // Fill background
+        context.graphics().fill(
+            x,
+            y,
+            x + background.width(),
+            y + background.height(),
+            color
+        );
+    }
+
+    /**
+     * Renders the outline of the text field if the outline is enabled in the style.
+     *
+     * @param context The render context used for rendering.
+     */
+    private void renderOutline(RenderContext context) {
+        if (!element.style().isOutlineShown()) {
+            return;
+        }
+        var bounds = bounds();
+        var background = element.backgroundSize();
+        var thickness = element.style().outlineWidth();
+        var color = colorResolver.resolveInt(element.style().outlineColor().orElseThrow());
+        // Render outline
+        UiUtil.renderOutline(
+            context.graphics(),
+            bounds.x(),
+            bounds.y(),
+            background.width() + thickness * 2,
+            background.height() + thickness * 2,
+            thickness,
+            color
+        );
     }
 
     @Override
@@ -160,8 +211,8 @@ public class SignTextField extends TextField implements ElementProvider {
     protected void renderText(RenderContext context, String text, int x, int y, boolean placeholder, String sugestion) {
         var color = textColor(placeholder);
         var graphics = context.graphics();
-        // Render the main text
         var font = context.font();
+        // Render the main text
         graphics.drawString(font, text, x, y, color, false); // No shadow
         // Render suggestion
         var suggestionX = x + font.width(text);

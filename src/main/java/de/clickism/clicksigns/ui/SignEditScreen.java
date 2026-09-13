@@ -490,6 +490,64 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .backgroundColor(backgroundColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
                 );
 
+                // Outline color
+                var outlineColor = UiColor.of(colorResolver.resolveOrDefault(style.outlineColor().orElse(null), Color.WHITE));
+                add(
+                    memo(selected.id() + "-outline", () -> textField()
+                        .growWidth()
+                        .highlightInvalid(true)
+                        .tooltip("Outline Color")
+                        .textShadow(false)
+                        .value(style.outlineColor().orElse(""))
+                        .onValueChanged(newColor -> {
+                            if (selected == null) return;
+                            var newColorValue = newColor.isEmpty()
+                                ? null
+                                : newColor;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element)
+                                    .withStyle(s ->
+                                        s.withOutlineColor(newColorValue)));
+                        })
+                    )
+                        // Apply these after memo, so they are refreshed every rebuild
+                        .suggest(colorResolver::suggestColor)
+                        .validator(color -> {
+                            if (color == null || color.isEmpty()) return true;
+                            return colorResolver.isValidColor(color);
+                        })
+                        .style(style()
+                            .textColor(outlineColor)
+                            .backgroundColor(outlineColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
+                );
+
+                // Outline Width
+                add(smallHeader(l("Outline Width")));
+                add(memo(selected.id() + "-outline-width", () -> numberField()
+                    .growWidth()
+                    .allowDecimal(true)
+                    .value(style.outlineWidth())
+                    .onNumberChanged(newWidth -> {
+                        if (selected == null) return;
+                        int clamped = Mth.clamp(newWidth.intValue(), 0, 10);
+                        sign.updateElement(selected.id(),
+                            element -> ((TextElement) element).withStyle(s -> s.withOutlineWidth(clamped)));
+                    })
+                ));
+
+                // Padding
+                add(smallHeader(l("Padding")));
+                add(memo(selected.id() + "-padding", () -> new SizeControls(new Size(style.paddingX(), style.paddingY()))
+                    .minSize(new Size(0, 0))
+                    .maxSize(new Size(20, 20))
+                    .onSizeChanged(newPadding -> {
+                        if (selected == null) return;
+                        sign.updateElement(selected.id(),
+                            element -> ((TextElement) element).withStyle(s -> s
+                                .withPaddingX(newPadding.width())
+                                .withPaddingY(newPadding.height())));
+                    })));
+
                 // Scale
                 add(smallHeader(l("Scale")));
                 add(memo(selected.id() + "-scale", () -> numberField()
@@ -581,7 +639,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             add(smallHeader(l("Alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
-                .textOnly(current instanceof TextElement)
+                .textOnly(false)
                 .onAlignmentChange(newAlignment -> {
                     if (selected == null) return;
                     sign.updateElement(selected.id(),

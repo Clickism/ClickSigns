@@ -73,6 +73,36 @@ public class UiUtil {
     }
 
     /**
+     * Renders an outline around a rectangle.
+     *
+     * @param graphics     the GuiGraphics to render with
+     * @param x            the x position of the top-left corner of the rectangle
+     * @param y            the y position of the top-left corner of the rectangle
+     * @param width        the width of the rectangle
+     * @param height       the height of the rectangle
+     * @param outlineWidth the width of the outline
+     * @param color        the color of the outline
+     */
+    public static void renderOutline(
+        GuiGraphics graphics,
+        int x,
+        int y,
+        int width,
+        int height,
+        int outlineWidth,
+        int color
+    ) {
+        // Top
+        graphics.fill(x, y, x + width, y + outlineWidth, color);
+        // Bottom
+        graphics.fill(x, y + height - outlineWidth, x + width, y + height, color);
+        // Left
+        graphics.fill(x, y + outlineWidth, x + outlineWidth, y + height - outlineWidth, color);
+        // Right
+        graphics.fill(x + width - outlineWidth, y + outlineWidth, x + width, y + height - outlineWidth, color);
+    }
+
+    /**
      * Copies the given text to the system clipboard.
      *
      * @param text the text to copy

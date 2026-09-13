@@ -65,6 +65,33 @@ public record TextStyle(
     }
 
     /**
+     * Checks if the text style has a background or outline color, indicating that padding should be shown.
+     *
+     * @return true if the text style has a background or outline color, false otherwise
+     */
+    public boolean isPaddingShown() {
+        return isBackgroundShown() || isOutlineShown();
+    }
+
+    /**
+     * Checks if the text style's outline is visible
+     *
+     * @return true if the text style has an outline color and a positive outline width, false otherwise
+     */
+    public boolean isOutlineShown() {
+        return outlineColor.isPresent() && outlineWidth > 0;
+    }
+
+    /**
+     * Checks if the text style's background is visible
+     *
+     * @return true if the text style has a background color, false otherwise
+     */
+    public boolean isBackgroundShown() {
+        return backgroundColor.isPresent();
+    }
+
+    /**
      * Creates a new text style with the given color, keeping the other properties the same.
      *
      * @param newColor the new RGBA color of the text

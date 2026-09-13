@@ -4,20 +4,17 @@ import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clickui.UiColor;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FastColor;
 
+import static de.clickism.clicksigns.util.Constants.BLOCK_PIXEL;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 public class TextRenderer implements ElementRenderer<TextElement> {
-    // TODO: Adjust text scale, so that it's a bit nicer
-    //  .022f
+    // TODO: Adjust text scale, so that it's a bit nicer?
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
-    /**
-     * Offset text by 1 pixel so that the actual text is more centered in the line.
-     */
-    public static final float TEXT_RENDER_OFFSET_Y = 1f;
     private static final float COLOR_DARKEN_FACTOR = 0.74f;
 
     /**
@@ -41,49 +38,20 @@ public class TextRenderer implements ElementRenderer<TextElement> {
 
     @Override
     public void render(TextElement element, RenderContext context, RoadSign roadSign) {
-        // Render text
         var text = element.text();
         if (text.isEmpty()) {
             return;
         }
-
-        var font = Util.font();
         var scale = TEXT_RENDER_SCALE * element.scale();
+        // Apply scale
         context.withScale(scale, () -> {
-            // Render background
-            var style = element.style();
-            style.backgroundColor()
-                .map(roadSign.colorResolver()::resolveInt)
-                .ifPresent(color -> {
-                    var textWidth = font.width(text);
-                    var textHeight = font.lineHeight;
-                    var width = textWidth + style.paddingX() * 2;
-                    var height = textHeight + style.paddingY() * 2;
-                    var multipliedColor = multiplyColor(color, COLOR_DARKEN_FACTOR); // Darken background color to match texture colors
-                    context.withTranslation(-style.paddingX(), -style.paddingY(), 0, () -> {
-                        context.textureRenderer().renderColor(
-                            multipliedColor,
-                            width,
-                            height
-                        );
-                    });
-                });
+            // Render background and outline
+            renderStyle(element, context, roadSign);
             // Render text
-            context.withTextTransform(font, () -> {
-                var color = roadSign.colorResolver().resolveInt(style.color());
-                // TODO: Find better way to match colors?
-                color = multiplyColor(color, COLOR_DARKEN_FACTOR); // Darken text color to match texture colors
-                font.drawInBatch(
-                    text,
-                    0, TEXT_RENDER_OFFSET_Y,
-                    color,
-                    false,
-                    context.stack().last().pose(),
-                    context.source(),
-                    Font.DisplayMode.POLYGON_OFFSET,
-                    0, // No background
-                    context.light()
-                );
+            var textPos = element.textOffset();
+            context.withTranslation(textPos.x, textPos.y, 0, () -> {
+                // Render text
+                renderText(element, context, roadSign);
             });
         });
     }
@@ -91,5 +59,71 @@ public class TextRenderer implements ElementRenderer<TextElement> {
     @Override
     public int renderLayer() {
         return RenderLayers.TEXT;
+    }
+
+    /**
+     * Renders the text of the text element.
+     *
+     * @param element  the text element to render
+     * @param context  the render context
+     * @param roadSign the road sign being rendered
+     */
+    private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
+        var color = roadSign.colorResolver().resolveInt(element.style().color());
+        // TODO: Find better way to match colors?
+        var font = Util.font();
+        context.withTextTransform(font, () -> {
+            font.drawInBatch(
+                element.text(),
+                0, 0,
+                multiplyColor(color, COLOR_DARKEN_FACTOR),
+                false,
+                context.stack().last().pose(),
+                context.source(),
+                Font.DisplayMode.POLYGON_OFFSET,
+                0, // No background
+                context.light()
+            );
+        });
+    }
+
+    /**
+     * Renders the background and outline of the text element.
+     *
+     * @param element  the text element to render
+     * @param context  the render context
+     * @param roadSign the road sign being rendered
+     */
+    private void renderStyle(TextElement element, RenderContext context, RoadSign roadSign) {
+        var style = element.style();
+        var background = element.backgroundSize();
+        var outlineWidth = style.isOutlineShown() ? style.outlineWidth() : 0;
+        // Render background
+        style.backgroundColor()
+            .map(roadSign.colorResolver()::resolveInt)
+            .ifPresent(color -> {
+                context.withTranslation(outlineWidth, outlineWidth, 0, () -> {
+                    context.textureRenderer().renderColor(
+                        multiplyColor(color, COLOR_DARKEN_FACTOR),
+                        background.width(),
+                        background.height()
+                    );
+                });
+            });
+
+        // Render outline
+        style.outlineColor()
+            .map(roadSign.colorResolver()::resolveInt)
+            .ifPresent(color -> {
+                var thickness = style.outlineWidth();
+                if (thickness <= 0) return;
+                // Darken background color to match texture colors
+                context.textureRenderer().renderOutline(
+                    multiplyColor(color, COLOR_DARKEN_FACTOR),
+                    background.width() + thickness * 2,
+                    background.height() + thickness * 2,
+                    thickness
+                );
+            });
     }
 }

@@ -2,7 +2,10 @@ package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.ui.UiUtil;
+import de.clickism.clicksigns.util.Size;
+import de.clickism.clickui.util.Util;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.function.Function;
 
@@ -39,22 +42,105 @@ public record TextElement(
 
     @Override
     public int width() {
-        return calculateSignDimension(UiUtil.font().width(text));
+        return Mth.ceil(textSpaceToSignSpace(textSize().width()));
     }
 
+    // TODO: Should be kept as float?
     @Override
     public int height() {
-        return calculateSignDimension(UiUtil.font().lineHeight);
+        return Mth.ceil(textSpaceToSignSpace(textSize().height()));
     }
 
+    /**
+     * Calculates the dimension of the sign element in pixels.
+     *
+     * @param dimension dimension of the text in blocks
+     * @param padding   padding of the text in pixels, in the given dimension
+     * @return the dimension of the sign element in pixels
+     */
     // TODO: Fix text not aligned properly? (I think only in UI)
-    private int calculateSignDimension(int dimension) {
-        return Mth.ceil(
-            dimension // Dimension of text in blocks
-            * BLOCK_PIXELS // Convert to pixels
-            * TEXT_RENDER_SCALE // Apply render scale
-            * this.scale() // Apply scale
+    private int calculateSignDimension(int dimension, int padding) {
+        int result = dimension;
+        // If there is a background color, add padding to the dimension
+        if (style.isPaddingShown()) {
+            result += padding * 2;
+            if (style.isOutlineShown()) {
+                result += style.outlineWidth() * 2;
+            }
+        }
+        return Mth.ceil(textSpaceToSignSpace(result));
+    }
+
+    /**
+     * Converts a dimension in text space to sign space, taking into account
+     * the block pixels, text render scale, and element scale.
+     *
+     * @param textSpace dimension in text space
+     * @return dimension in sign space
+     */
+    private float textSpaceToSignSpace(int textSpace) {
+        return textSpace * BLOCK_PIXELS * TEXT_RENDER_SCALE * scale;
+    }
+
+    /**
+     * Returns the total size of the text element, including background
+     * and padding, in text space.
+     *
+     * @return the total size of the text element as a Size object
+     */
+    public Size textSize() {
+        var backgroundSize = backgroundSize();
+        return new Size(
+            backgroundSize.width() + backgroundOffset() * 2,
+            backgroundSize.height() + backgroundOffset() * 2
         );
+    }
+
+    /**
+     * Calculates the offset of the text within the text element, taking into account padding and outline in text space.
+     *
+     * @return the position of the text as a Vec2
+     */
+    public Vec2 textOffset() {
+        float offsetX = 0;
+        float offsetY = -1; // Offset by -1 to center visually
+        if (style.isPaddingShown()) {
+            offsetX += style.paddingX();
+            offsetY += style.paddingY();
+            if (style.isOutlineShown()) {
+                offsetX += style.outlineWidth();
+                offsetY += style.outlineWidth();
+            }
+        }
+        return new Vec2(offsetX, offsetY);
+    }
+
+    /**
+     * Calculates the size of the background of the text element in text space,
+     * taking into account padding and outline.
+     *
+     * @return the size of the background as a Size object
+     */
+    public Size backgroundSize() {
+        int width = Util.font().width(text);
+        int height = Util.font().lineHeight;
+        if (style.isBackgroundShown()) {
+            width += style.paddingX() * 2;
+            height += style.paddingY() * 2;
+        }
+        return new Size(width, height);
+    }
+
+    /**
+     * Calculates the offset of the background of the text element in text space,
+     * taking into account whether the outline is shown.
+     *
+     * @return the offset of the background as an integer
+     */
+    public int backgroundOffset() {
+        return style.isOutlineShown()
+            ? style.outlineWidth()
+            : 0;
     }
 
     /**

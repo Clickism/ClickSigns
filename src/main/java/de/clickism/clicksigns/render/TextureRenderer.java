@@ -43,6 +43,17 @@ public class TextureRenderer {
         render(buffer, blockWidth, blockHeight, color);
     }
 
+    public void renderOutline(int color, float blockWidth, float blockHeight, float thickness) {
+        // Top
+        renderColor(color, blockWidth, thickness);
+        // Bottom
+        context.withTranslation(0, blockHeight - thickness, 0, () -> renderColor(color, blockWidth, thickness));
+        // Left
+        context.withTranslation(0, 0, 0, () -> renderColor(color, thickness, blockHeight));
+        // Right
+        context.withTranslation(blockWidth - thickness, 0, 0, () -> renderColor(color, thickness, blockHeight));
+    }
+
     /**
      * Renders a quad with the given texture buffer,
      * from (0,0) to (blockWidth, blockHeight), with the given color.
