@@ -96,7 +96,7 @@ public final class RoadSignRenderer {
     }
 
     private void renderBack() {
-        context.withFlip(roadSign.width(), () -> {
+        context.withFlip(roadSign.blockWidth(), () -> {
             var backTexture = roadSign.backTexture();
             context.textureRenderer().renderTexture(backTexture);
         });
