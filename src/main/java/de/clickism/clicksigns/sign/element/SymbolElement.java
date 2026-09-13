@@ -31,12 +31,12 @@ public record SymbolElement(
     }
 
     @Override
-    public int width() {
+    public float width() {
         return symbol.texture().resolve(ColorResolver.empty()).width();
     }
 
     @Override
-    public int height() {
+    public float height() {
         return symbol.texture().resolve(ColorResolver.empty()).height();
     }
 
@@ -53,12 +53,12 @@ public record SymbolElement(
     /**
      * Creates a new symbol element with the given position, keeping the other properties the same.
      *
-     * @param localX local X coordinate
-     * @param localY local Y coordinate
+     * @param x local X coordinate
+     * @param y local Y coordinate
      * @return a new symbol element with the given position, keeping the other properties the same
      */
-    public SymbolElement withPosition(int localX, int localY) {
-        return new SymbolElement(localX, localY, alignment(), symbol);
+    public SymbolElement withPosition(int x, int y) {
+        return new SymbolElement(x, y, alignment(), symbol);
     }
 
     /**

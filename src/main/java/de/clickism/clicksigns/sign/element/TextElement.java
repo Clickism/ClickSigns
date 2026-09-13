@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.util.Util;
 import net.minecraft.util.Mth;
@@ -41,14 +40,13 @@ public record TextElement(
     }
 
     @Override
-    public int width() {
-        return Mth.ceil(textSpaceToSignSpace(textSize().width()));
+    public float width() {
+        return textSpaceToSignSpace(textSize().width());
     }
 
-    // TODO: Should be kept as float?
     @Override
-    public int height() {
-        return Mth.ceil(textSpaceToSignSpace(textSize().height()));
+    public float height() {
+        return textSpaceToSignSpace(textSize().height());
     }
 
     /**
@@ -166,13 +164,13 @@ public record TextElement(
     /**
      * Creates a new text element with the given position, keeping the other properties the same.
      *
-     * @param localX local X coordinate
-     * @param localY local Y coordinate
+     * @param x local X coordinate
+     * @param y local Y coordinate
      * @return a new text element with the given position, keeping the other properties the same
      */
     @Override
-    public TextElement withPosition(int localX, int localY) {
-        return new TextElement(localX, localY, alignment, text, scale, style);
+    public TextElement withPosition(int x, int y) {
+        return new TextElement(x, y, alignment, text, scale, style);
     }
 
     /**

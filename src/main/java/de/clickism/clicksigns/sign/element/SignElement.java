@@ -193,23 +193,14 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      *
      * @return Width of this element in sign space
      */
-    int width();
+    float width();
 
     /**
      * Gets the height of this element in sign space.
      *
      * @return Height of this element in sign space
      */
-    int height();
-
-    /**
-     * Gets the size of this element in sign space.
-     *
-     * @return Size of this element in sign space
-     */
-    default Size signSize() {
-        return new Size(width(), height());
-    }
+    float height();
 
     /**
      * Returns the aligned X coordinate of this element in sign space, which is a floating point number.
@@ -253,11 +244,11 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     /**
      * Creates a new element with the given local coordinates, keeping the other properties the same.
      *
-     * @param localX local X coordinate
-     * @param localY local Y coordinate
+     * @param x local X coordinate
+     * @param y local Y coordinate
      * @return a new element with the given local coordinates, keeping the other properties the same
      */
-    SignElement withPosition(int localX, int localY);
+    SignElement withPosition(int x, int y);
 
     /**
      * Creates a new element with the given alignment, keeping the other properties the same.

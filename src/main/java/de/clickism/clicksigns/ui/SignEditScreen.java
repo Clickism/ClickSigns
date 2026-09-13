@@ -390,8 +390,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             var currentSelected = selected.current();
             var newElement = element.current().withPosition(
                 // Position the new element offset from the selected element, so they don't overlap
-                currentSelected.x() + currentSelected.width() / 2,
-                currentSelected.y() + currentSelected.height() / 2
+                (int) (currentSelected.x() + currentSelected.width() / 2),
+                (int) (currentSelected.y() + currentSelected.height() / 2)
             );
             var editable = sign.addElement(newElement);
             selected(editable);
@@ -582,7 +582,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 new TextureButton(plate.front(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
-                                        element -> ((PlateElement) element).withFront(newTexture.resizeToFit(element.signSize())));
+                                        element -> ((PlateElement) element)
+                                            .withFront(newTexture.resizeToFit(((PlateElement) element).size())));
                                 })
                             ),
                         box()
@@ -593,13 +594,14 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 new TextureButton(plate.back(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
-                                        element -> ((PlateElement) element).withBack(newTexture.resizeToFit(element.signSize())));
+                                        element -> ((PlateElement) element)
+                                            .withBack(newTexture.resizeToFit(((PlateElement) element).size())));
                                 })
                             )
                     )
                 );
                 add(smallHeader(l("Plate Size")));
-                add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.signSize())
+                add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.size())
                     .minSize(MIN_PLATE_SIZE)
                     .maxSize(MAX_PLATE_SIZE)
                     .onSizeChanged(newSize -> {

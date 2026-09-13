@@ -2,7 +2,6 @@ package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 
@@ -56,14 +55,14 @@ public final class RenderContext {
      * Executes the given action, where the pose stack is rotated 180 deg,
      * around the center of the given plane.
      *
-     * @param plane  the plane to use
-     * @param action the action to execute
+     * @param blockWidth the width of the plane in blocks
+     * @param action     the action to execute
      */
-    public void withFlip(PixelSized plane, Runnable action) {
+    public void withFlip(float blockWidth, Runnable action) {
         withPose(() -> {
-            stack.translate(plane.blockWidth() / 2, 0, 0);
+            stack.translate(blockWidth / 2, 0, 0);
             stack.mulPose(Axis.YP.rotationDegrees(180));
-            stack.translate(-plane.blockWidth() / 2, 0, 0);
+            stack.translate(-blockWidth / 2, 0, 0);
             action.run();
         });
     }

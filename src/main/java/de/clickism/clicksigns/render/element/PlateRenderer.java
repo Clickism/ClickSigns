@@ -13,8 +13,9 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
         var frontTexture = element.front().resolve(roadSign.colorResolver());
         context.textureRenderer().renderTexture(frontTexture);
         // Render back
+        // TODO: Is this even correct?
         var backTexture = element.back().resolve(roadSign.colorResolver());
-        context.withFlip(element, () -> {
+        context.withFlip(element.width(), () -> {
             context.textureRenderer().renderTexture(backTexture);
         });
     }

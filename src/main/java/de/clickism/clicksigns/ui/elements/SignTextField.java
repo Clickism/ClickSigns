@@ -75,7 +75,7 @@ public class SignTextField extends TextField implements ElementProvider {
     @Override
     public Size intrinsicSize() {
         return new Size(
-            currentWidth(),
+            Mth.ceil(currentWidth()),
             Mth.ceil(textHeight())
         );
     }
@@ -85,13 +85,13 @@ public class SignTextField extends TextField implements ElementProvider {
      *
      * @return The calculated width of the text field in pixels.
      */
-    protected int currentWidth() {
+    protected float currentWidth() {
         var text = textToShow();
         if (listening()) {
             text += "_";
         }
         // Use another element to calculate width
-        int width = element.withText(text).width();
+        float width = element.withText(text).width();
         if (width < MIN_WIDTH) {
             width = MIN_WIDTH;
         }
