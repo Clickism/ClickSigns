@@ -121,14 +121,10 @@ public final class RoadSignRenderer extends Renderer {
                     ? 2
                     : 1;
                 textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, zIndex, plate.alignment());
-                textureRenderer.renderSides(
-                    sideColor,
-                    texture.blockWidth(),
-                    texture.blockHeight(),
-                    thickness,
-                    renderCoords.x, renderCoords.y,
-                    zIndex,
-                    plate.alignment() // Since already applied
+                SilhouetteExtruder.renderSilhouetteSides(
+                    buffer, stack.last(), light,
+                    texture.location(), texture.blockWidth(), texture.blockHeight(),
+                    thickness, sideColor
                 );
 
                 // Render back of plate
@@ -143,7 +139,7 @@ public final class RoadSignRenderer extends Renderer {
                 var backZIndex = colliding
                     ? -2
                     : -1;
-                textureRenderer.renderTexture(backTexture, backCoords.x, backCoords.y, backZIndex, plate.alignment());
+                textureRenderer.renderTexture(backTexture, backCoords.x, backCoords.y, backZIndex, plate.alignment().flipX());
 
                 stack.popPose();
             }

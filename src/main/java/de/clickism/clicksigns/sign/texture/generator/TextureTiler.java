@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.texture.generator;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.sign.TileSet;
+import de.clickism.clicksigns.util.TextureUtil;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
 /**
@@ -46,24 +47,25 @@ public class TextureTiler extends CachedTextureGenerator {
     }
 
     @Override
-    public DynamicTexture generate() throws Exception {
-        var image = openImage(tileSet.identifier());
-        assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
+    public DynamicTexture generate() throws RuntimeException {
+        return TextureUtil.processTexture(tileSet.identifier(), image -> {
+            assertCorrectSize(image, tileSet.cornerSize(), tileSet.centerSize());
 
-        var tiledImage = new NativeImage(width, height, false);
+            var tiledImage = new NativeImage(width, height, false);
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                // Get tiled pixel
-                int pixel = image.getPixelRGBA(
-                    tileSet.tileCoordinate(x, width),
-                    tileSet.tileCoordinate(y, height)
-                );
-                tiledImage.setPixelRGBA(x, y, pixel);
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    // Get tiled pixel
+                    int pixel = image.getPixelRGBA(
+                        tileSet.tileCoordinate(x, width),
+                        tileSet.tileCoordinate(y, height)
+                    );
+                    tiledImage.setPixelRGBA(x, y, pixel);
+                }
             }
-        }
 
-        return new DynamicTexture(tiledImage);
+            return new DynamicTexture(tiledImage);
+        });
     }
 
     @Override

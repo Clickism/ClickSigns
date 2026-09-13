@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.texture.generator;
 
+import de.clickism.clicksigns.util.TextureUtil;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
@@ -53,26 +54,27 @@ public class ColorReplacer extends CachedTextureGenerator {
     }
 
     @Override
-    protected DynamicTexture generate() throws Exception {
-        var image = openImage(texture);
-        var toColorNoAlpha = argbToAbrg(stripAlpha(toColor));
-        var fromColorNoAlpha = fromColor != null
-            ? argbToAbrg(stripAlpha(fromColor))
-            : null;
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                int pixel = image.getPixelRGBA(x, y);
-                int alpha = (pixel >> 24) & 0xFF;
-                // Skip if replacing from color and no color
-                if (fromColorNoAlpha != null && fromColorNoAlpha != stripAlpha(pixel)) continue;
-                // Skip if pixel is invisible
-                if (alpha == 0) continue;
-                // Apply color while preserving alpha
-                int newPixel = toColorNoAlpha | (alpha << 24);
-                image.setPixelRGBA(x, y, newPixel);
+    protected DynamicTexture generate() throws RuntimeException {
+        return TextureUtil.processTexture(texture, image -> {
+            var toColorNoAlpha = argbToAbrg(stripAlpha(toColor));
+            var fromColorNoAlpha = fromColor != null
+                ? argbToAbrg(stripAlpha(fromColor))
+                : null;
+            for (int x = 0; x < image.getWidth(); x++) {
+                for (int y = 0; y < image.getHeight(); y++) {
+                    int pixel = image.getPixelRGBA(x, y);
+                    int alpha = (pixel >> 24) & 0xFF;
+                    // Skip if replacing from color and no color
+                    if (fromColorNoAlpha != null && fromColorNoAlpha != stripAlpha(pixel)) continue;
+                    // Skip if pixel is invisible
+                    if (alpha == 0) continue;
+                    // Apply color while preserving alpha
+                    int newPixel = toColorNoAlpha | (alpha << 24);
+                    image.setPixelRGBA(x, y, newPixel);
+                }
             }
-        }
-        return new DynamicTexture(image);
+            return new DynamicTexture(image);
+        });
     }
 
     @Override

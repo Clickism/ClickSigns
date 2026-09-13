@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.sign.texture.generator;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.Minecraft;
@@ -17,28 +16,6 @@ import java.util.Map;
  */
 public abstract class CachedTextureGenerator {
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
-
-    /**
-     * Opens an image from the given resource location, trying multiple methods to find it.
-     *
-     * @param location the resource location of the image to open
-     * @return a NativeImage representing the opened image
-     * @throws Exception if the image cannot be found or read using any of the methods
-     */
-    protected static NativeImage openImage(ResourceLocation location) throws Exception {
-        // Try resource manager
-        var minecraft = Minecraft.getInstance();
-        try {
-            return NativeImage.read(minecraft.getResourceManager().open(location));
-        } catch (Exception ignored) {
-        }
-        // Try dynamic texture
-        var texture = minecraft.getTextureManager().getTexture(location);
-        if (texture instanceof DynamicTexture dynamic) {
-            return dynamic.getPixels();
-        }
-        throw new IllegalArgumentException("Failed to open image at location " + location);
-    }
 
     /**
      * Generates a texture if it is not already cached and returns it.
