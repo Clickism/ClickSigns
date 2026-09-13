@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui;
 
-import de.clickism.clicksigns.sign.Category;
+import de.clickism.clicksigns.registry.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
 public class TextureList extends UiComponent<TextureList> {

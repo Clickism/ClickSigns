@@ -1,8 +1,7 @@
-package de.clickism.clicksigns.sign.template.local;
+package de.clickism.clicksigns.sign.template;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.template.Template;
 import net.minecraft.client.Minecraft;
 
 import java.nio.file.Path;

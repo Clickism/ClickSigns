@@ -1,10 +1,8 @@
-package de.clickism.clicksigns.sign.template.local;
+package de.clickism.clicksigns.sign.template;
 
 import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.template.Template;
-import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
 

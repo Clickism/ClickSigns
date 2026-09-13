@@ -1,8 +1,5 @@
-package de.clickism.clicksigns.sign;
+package de.clickism.clicksigns.registry;
 
-import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.registry.Categorized;
-import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
