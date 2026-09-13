@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.render.RoadSignRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,7 +34,11 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
             roadSign = RoadSign.DEFAULT;
         }
         var direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
-        var renderer = new RoadSignRenderer(roadSign, direction, stack, source, light);
+        var renderer = new RoadSignRenderer(
+            new RenderContext(stack, source, light),
+            roadSign,
+            direction
+        );
         renderer.render();
     }
 }

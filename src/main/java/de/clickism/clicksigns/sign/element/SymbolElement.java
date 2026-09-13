@@ -31,12 +31,12 @@ public record SymbolElement(
     }
 
     @Override
-    public int signWidth() {
+    public int width() {
         return symbol.texture().resolve(ColorResolver.empty()).width();
     }
 
     @Override
-    public int signHeight() {
+    public int height() {
         return symbol.texture().resolve(ColorResolver.empty()).height();
     }
 

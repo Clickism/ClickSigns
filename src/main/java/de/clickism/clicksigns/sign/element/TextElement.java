@@ -6,7 +6,7 @@ import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 
-import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
+import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
@@ -38,12 +38,12 @@ public record TextElement(
     }
 
     @Override
-    public int signWidth() {
+    public int width() {
         return calculateSignDimension(UiUtil.font().width(text));
     }
 
     @Override
-    public int signHeight() {
+    public int height() {
         return calculateSignDimension(UiUtil.font().lineHeight);
     }
 

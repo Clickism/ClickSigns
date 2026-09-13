@@ -3,14 +3,16 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.util.PixelSized;
 
 public record PlateElement(
     int x,
     int y,
     Alignment alignment,
+    // TODO: Rename frontSource and backSource to match roadSign
     TextureSource front,
     TextureSource back
-) implements SignElement {
+) implements SignElement, PixelSized {
     /**
      * Type key
      */
@@ -22,12 +24,12 @@ public record PlateElement(
     }
 
     @Override
-    public int signWidth() {
+    public int width() {
         return front.resolve(ColorResolver.empty()).width();
     }
 
     @Override
-    public int signHeight() {
+    public int height() {
         return front.resolve(ColorResolver.empty()).height();
     }
 

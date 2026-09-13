@@ -183,7 +183,7 @@ public class SignView extends UiComponent<SignView> {
         // Y position is inverted
         float signHeight = this.roadSign.build().height();
         float y = (signHeight - element.alignedY()
-                   - element.signHeight()) * UI_SCALE;
+                   - element.height()) * UI_SCALE;
         return new Point((int) x - maxBounds.x(), (int) y - maxBounds.y());
     }
 
@@ -235,8 +235,8 @@ public class SignView extends UiComponent<SignView> {
         for (var element : sign.elements()) {
             minX = Mth.floor(Math.min(minX, element.alignedX()));
             minY = Mth.floor(Math.min(minY, element.alignedY()));
-            maxX = Mth.ceil(Math.max(maxX, element.alignedX() + element.signWidth()));
-            maxY = Mth.ceil(Math.max(maxY, element.alignedY() + element.signHeight()));
+            maxX = Mth.ceil(Math.max(maxX, element.alignedX() + element.width()));
+            maxY = Mth.ceil(Math.max(maxY, element.alignedY() + element.height()));
         }
 
         int width = Mth.ceil((maxX - minX) * UI_SCALE);

@@ -25,7 +25,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     // Shapes for each facing direction
-    private static final double THICKNESS = 0.03;
+    public static final double THICKNESS = 0.03;
     private static final VoxelShape NORTH_SHAPE = Shapes.box(0, 0, 0, 1, 1, THICKNESS);
     private static final VoxelShape SOUTH_SHAPE = NORTH_SHAPE.move(0, 0, 1 - THICKNESS);
     private static final VoxelShape WEST_SHAPE = Shapes.box(0, 0, 0, THICKNESS, 1, 1);

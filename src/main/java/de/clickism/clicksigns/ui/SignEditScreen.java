@@ -390,8 +390,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             var currentSelected = selected.current();
             var newElement = element.current().withPosition(
                 // Position the new element offset from the selected element, so they don't overlap
-                currentSelected.x() + currentSelected.signWidth() / 2,
-                currentSelected.y() + currentSelected.signHeight() / 2
+                currentSelected.x() + currentSelected.width() / 2,
+                currentSelected.y() + currentSelected.height() / 2
             );
             var editable = sign.addElement(newElement);
             selected(editable);

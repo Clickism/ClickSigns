@@ -2,125 +2,89 @@ package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.texture.Texture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
-
-import java.awt.*;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Texture renderer utility class
  */
-public class TextureRenderer extends Renderer {
-    private static final Color DEFAULT_COLOR = Color.WHITE;
+public class TextureRenderer {
+    private static final ResourceLocation WHITE_TEXTURE = new ResourceLocation("textures/misc/white.png");
 
-    private final Direction renderDirection;
+    private final RenderContext context;
 
-    /**
-     * Create a new texture renderer with the given rendering context.
-     */
-    public TextureRenderer(PoseStack stack, MultiBufferSource source, int light, Direction renderDirection) {
-        super(stack, source, light);
-        this.renderDirection = renderDirection;
+    public TextureRenderer(RenderContext context) {
+        this.context = context;
     }
 
     /**
-     * Renders the given texture at the center (0, 0) with the given z index.
+     * Renders a texture from (0,0) to (texture.blockWidth(), texture.blockHeight())
      *
      * @param texture the texture to render
-     * @param zIndex  the z index to render at, higher values will render on top
      */
-    public void renderTexture(Texture texture, int zIndex) {
-        renderTexture(texture, 0, 0, zIndex, Alignment.CENTER);
-    }
-
-    /**
-     * Renders the given texture at the given coordinates (offset from center (0, 0)) and z index.
-     * Renders in the center by default.
-     * Will align the rendered texture based on the given alignment.
-     *
-     * @param texture   the texture to render
-     * @param x         the x offset to translate by (in blocks)
-     * @param y         the y offset to translate by (in blocks)
-     * @param zIndex    the z index to render at, higher values will render on top
-     * @param alignment the alignment to render the texture with
-     */
-    public void renderTexture(Texture texture, float x, float y, int zIndex, Alignment alignment) {
+    public void renderTexture(Texture texture) {
         var textureLocation = texture.location();
-        var buffer = source.getBuffer(RenderType.entityTranslucentCull(textureLocation));
-        render(buffer, x, y, texture.blockWidth(), texture.blockHeight(), zIndex, alignment, DEFAULT_COLOR.getRGB());
+        var buffer = context.source().getBuffer(RenderType.entityTranslucentCull(textureLocation));
+        render(buffer, texture.blockWidth(), texture.blockHeight(), 0xFFFFFFFF);
     }
 
     /**
-     * Renders the given color as a quad at the given coordinates (offset from center (0, 0)) and z index.
-     * Renders in the center by default.
-     * Will align the rendered quad based on the given alignment.
+     * Renders a quad with the given color from (0,0) to (blockWidth, blockHeight)
      *
-     * @param color     the color to render
-     * @param x         the x offset to translate by (in blocks)
-     * @param y         the y offset to translate by (in blocks)
-     * @param zIndex    the z index to render at, higher values will render on top
-     * @param alignment the alignment to render the quad with
+     * @param color       the color to render the quad with
+     * @param blockWidth  the width of the quad in blocks
+     * @param blockHeight the height of the quad in blocks
      */
-    public void renderColor(int color, float blockWidth, float blockHeight, float x, float y, float zIndex, Alignment alignment) {
-        var buffer = source.getBuffer(RenderType.textBackground());
-        render(buffer, x, y, blockWidth, blockHeight, zIndex, alignment, color);
+    public void renderColor(int color, float blockWidth, float blockHeight) {
+        // TODO: Maybe use the white texture instead?
+        var buffer = context.source().getBuffer(RenderType.textBackground());
+        render(buffer, blockWidth, blockHeight, color);
     }
 
     /**
-     * Renders a quad with the given texture buffer and coordinates
+     * Renders a quad with the given texture buffer,
+     * from (0,0) to (blockWidth, blockHeight), with the given color.
      */
     private void render(
         VertexConsumer buffer,
-        float x, float y,
         float blockWidth,
         float blockHeight,
-        float zIndex,
-        Alignment alignment,
         int color
     ) {
-        stack.pushPose();
-        // Apply alignment and z index offset
-        align(x, y, blockWidth, blockHeight, zIndex, alignment);
-        // Get image buffer and pose
-        var pose = stack.last();
-        // Calculate width and height for vertex positions
-        float halfWidth = blockWidth / 2f;
-        float halfHeight = blockHeight / 2f;
         // Add quad
-        quad(buffer, pose, -halfWidth, -halfHeight, halfWidth, halfHeight, color);
-        // Finish pose
-        stack.popPose();
+        quad(
+            buffer,
+            context.stack().last(),
+            0, 0,
+            blockWidth,
+            blockHeight,
+            color
+        );
     }
 
     /**
      * Creates a quad with the given vertex positions
      */
     private void quad(VertexConsumer buffer, PoseStack.Pose pose, float x1, float y1, float x2, float y2, int color) {
-        vertex(buffer, pose, x1, y1, 1, 1, color); // Bottom left
-        vertex(buffer, pose, x1, y2, 1, 0, color); // Top left
-        vertex(buffer, pose, x2, y2, 0, 0, color); // Top right
-        vertex(buffer, pose, x2, y1, 0, 1, color); // Bottom right
+        vertex(buffer, pose, x1, y1, 0, 1, color); // Bottom left
+        vertex(buffer, pose, x2, y1, 1, 1, color); // Bottom right
+        vertex(buffer, pose, x2, y2, 1, 0, color); // Top right
+        vertex(buffer, pose, x1, y2, 0, 0, color); // Top left
     }
 
     /**
      * Creates a vertex with the given positions and UV coordinates
      */
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
-        var isXAxis = renderDirection.getAxis() == Direction.Axis.X;
         buffer.vertex(pose.pose(), x, y, 0)
             .color(color)
             .uv(u, v)
             .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(light)
-            .normal(pose.normal(), isXAxis
-                ? 1
-                : 0, 0, isXAxis
-                ? 0
-                : 1)
+            .uv2(context.light())
+            // Texture is facing towards -Z
+            .normal(pose.normal(), 0, 0, -1)
             .endVertex();
     }
 }

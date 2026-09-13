@@ -80,8 +80,9 @@ public class SignElementParser implements JsonHandler {
                     nullIfDefault(textElement.style().color(), TextElementJson.DEFAULT_COLOR),
                     textElement.style().backgroundColor().orElse(null),
                     textElement.style().outlineColor().orElse(null),
-                    nullIfDefault(textElement.style().outlinePadding(), TextStyle.DEFAULT.outlinePadding()),
-                    nullIfDefault(textElement.style().outlineWidth(), TextStyle.DEFAULT.outlineWidth())
+                    nullIfDefault(textElement.style().outlineWidth(), TextStyle.DEFAULT.outlineWidth()),
+                    nullIfDefault(textElement.style().paddingX(), TextStyle.DEFAULT.paddingX()),
+                    nullIfDefault(textElement.style().paddingY(), TextStyle.DEFAULT.paddingY())
                 )
             );
         }
@@ -189,15 +190,17 @@ public class SignElementParser implements JsonHandler {
          * @param color           the color of the text
          * @param backgroundColor the background color of the text
          * @param outlineColor    the outline color of the text
-         * @param outlinePadding  the padding of the outline
          * @param outlineWidth    the width of the outline
+         * @param paddingX        the horizontal padding of the text
+         * @param paddingY        the vertical padding of the text
          */
         private record TextStyleJson(
             @Nullable String color,
             @Nullable String backgroundColor,
             @Nullable String outlineColor,
-            @Nullable Integer outlinePadding,
-            @Nullable Integer outlineWidth
+            @Nullable Integer outlineWidth,
+            @Nullable Integer paddingX,
+            @Nullable Integer paddingY
         ) {
             /**
              * Converts the JSON object to a text style object
@@ -207,8 +210,9 @@ public class SignElementParser implements JsonHandler {
                     orDefault(color, TextStyle.DEFAULT.color()),
                     orDefault(backgroundColor, TextStyle.DEFAULT.backgroundColor().orElse(null)),
                     orDefault(outlineColor, TextStyle.DEFAULT.outlineColor().orElse(null)),
-                    orDefault(outlinePadding, TextStyle.DEFAULT.outlinePadding()),
-                    orDefault(outlineWidth, TextStyle.DEFAULT.outlineWidth())
+                    orDefault(outlineWidth, TextStyle.DEFAULT.outlineWidth()),
+                    orDefault(paddingX, TextStyle.DEFAULT.paddingX()),
+                    orDefault(paddingY, TextStyle.DEFAULT.paddingY())
                 );
             }
         }

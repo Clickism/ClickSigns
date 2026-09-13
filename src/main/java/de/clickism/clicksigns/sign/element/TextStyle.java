@@ -11,15 +11,17 @@ import java.util.Optional;
  * @param color           the RGBA color of the text
  * @param backgroundColor the RGBA color of the text background, or null for no background
  * @param outlineColor    the RGBA color of the text outline, or null for no outline
- * @param outlinePadding  the padding of the text outline, in pixels
- * @param outlineWidth    the width of the text outline, in pixels
+ * @param outlineWidth    the width of the text outline, in text pixels
+ * @param paddingX        the horizontal padding of the text, in text pixels
+ * @param paddingY        the vertical padding of the text, in text pixels
  */
 public record TextStyle(
     String color,
     Optional<String> backgroundColor,
     Optional<String> outlineColor,
-    int outlinePadding,
-    int outlineWidth
+    int outlineWidth,
+    int paddingX,
+    int paddingY
 ) {
     /**
      * Default text style.
@@ -29,6 +31,7 @@ public record TextStyle(
         Optional.empty(),
         Optional.empty(),
         // TODO: Decide on how outline and background is rendered
+        1,
         2,
         1
     );
@@ -39,22 +42,25 @@ public record TextStyle(
      * @param color           the RGBA color of the text
      * @param backgroundColor the RGBA color of the text background, or null for no background
      * @param outlineColor    the RGBA color of the text outline, or null for no outline
-     * @param outlinePadding  the padding of the text outline, in pixels
-     * @param outlineWidth    the width of the text outline, in pixels
+     * @param outlineWidth    the width of the text outline, in text pixels
+     * @param paddingX        the horizontal padding of the text, in text pixels
+     * @param paddingY        the vertical padding of the text, in text pixels
      */
     public TextStyle(
         @NotNull String color,
         @Nullable String backgroundColor,
         @Nullable String outlineColor,
-        int outlinePadding,
-        int outlineWidth
+        int outlineWidth,
+        int paddingX,
+        int paddingY
     ) {
         this(
             color,
             Optional.ofNullable(backgroundColor),
             Optional.ofNullable(outlineColor),
-            outlinePadding,
-            outlineWidth
+            outlineWidth,
+            paddingX,
+            paddingY
         );
     }
 
@@ -65,7 +71,7 @@ public record TextStyle(
      * @return a new text style with the updated color
      */
     public TextStyle withColor(@NotNull String newColor) {
-        return new TextStyle(newColor, backgroundColor, outlineColor, outlinePadding, outlineWidth);
+        return new TextStyle(newColor, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY);
     }
 
     /**
@@ -75,7 +81,7 @@ public record TextStyle(
      * @return a new text style with the updated background color
      */
     public TextStyle withBackgroundColor(@Nullable String newBackgroundColor) {
-        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlinePadding, outlineWidth);
+        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY);
     }
 
     /**
@@ -85,17 +91,7 @@ public record TextStyle(
      * @return a new text style with the updated outline color
      */
     public TextStyle withOutlineColor(@Nullable String newOutlineColor) {
-        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlinePadding, outlineWidth);
-    }
-
-    /**
-     * Creates a new text style with the given outline padding, keeping the other properties the same.
-     *
-     * @param newOutlinePadding the new padding of the text outline, in pixels
-     * @return a new text style with the updated outline padding
-     */
-    public TextStyle withOutlinePadding(int newOutlinePadding) {
-        return new TextStyle(color, backgroundColor, outlineColor, newOutlinePadding, outlineWidth);
+        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY);
     }
 
     /**
@@ -105,6 +101,26 @@ public record TextStyle(
      * @return a new text style with the updated outline width
      */
     public TextStyle withOutlineWidth(int newOutlineWidth) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlinePadding, newOutlineWidth);
+        return new TextStyle(color, backgroundColor, outlineColor, newOutlineWidth, paddingX, paddingY);
+    }
+
+    /**
+     * Creates a new text style with the given horizontal padding, keeping the other properties the same.
+     *
+     * @param newPaddingX the new horizontal padding of the text, in pixels
+     * @return a new text style with the updated horizontal padding
+     */
+    public TextStyle withPaddingX(int newPaddingX) {
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, newPaddingX, paddingY);
+    }
+
+    /**
+     * Creates a new text style with the given vertical padding, keeping the other properties the same.
+     *
+     * @param newPaddingY the new vertical padding of the text, in pixels
+     * @return a new text style with the updated vertical padding
+     */
+    public TextStyle withPaddingY(int newPaddingY) {
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY);
     }
 }

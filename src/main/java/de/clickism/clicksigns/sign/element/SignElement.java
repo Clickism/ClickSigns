@@ -9,8 +9,6 @@ import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.Optional;
-
 /**
  * Represents an element of a road sign.
  * <p>
@@ -35,8 +33,9 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             buf.writeUtf(style.color());
             buf.writeNullable(style.backgroundColor().orElse(null), FriendlyByteBuf::writeUtf);
             buf.writeNullable(style.outlineColor().orElse(null), FriendlyByteBuf::writeUtf);
-            buf.writeInt(style.outlinePadding());
             buf.writeInt(style.outlineWidth());
+            buf.writeInt(style.paddingX());
+            buf.writeInt(style.paddingY());
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
             // TODO: Texture source written but not read
@@ -64,14 +63,16 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var color = buf.readUtf();
                 var backgroundColor = buf.readNullable(FriendlyByteBuf::readUtf);
                 var outlineColor = buf.readNullable(FriendlyByteBuf::readUtf);
-                var outlinePadding = buf.readInt();
                 var outlineWidth = buf.readInt();
+                var paddingX = buf.readInt();
+                var paddingY = buf.readInt();
                 var style = new TextStyle(
                     color,
                     backgroundColor,
                     outlineColor,
-                    outlinePadding,
-                    outlineWidth
+                    outlineWidth,
+                    paddingX,
+                    paddingY
                 );
                 yield new TextElement(localX, localY, alignment, text, scale, style);
             }
@@ -107,8 +108,9 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             styleTag.putString("color", style.color());
             styleTag.putString("backgroundColor", style.backgroundColor().orElse(null));
             styleTag.putString("outlineColor", style.outlineColor().orElse(null));
-            styleTag.putInt("outlinePadding", style.outlinePadding());
             styleTag.putInt("outlineWidth", style.outlineWidth());
+            styleTag.putInt("paddingX", style.paddingX());
+            styleTag.putInt("paddingY", style.paddingY());
             tag.putCompound("style", styleTag.asCompoundTag());
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
@@ -141,14 +143,16 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var color = styleTag.getString("color").orElseThrow();
                 var backgroundColor = styleTag.getString("backgroundColor").orElse(null);
                 var outlineColor = styleTag.getString("outlineColor").orElse(null);
-                var outlinePadding = styleTag.getInt("outlinePadding").orElseThrow();
                 var outlineWidth = styleTag.getInt("outlineWidth").orElseThrow();
+                var paddingX = styleTag.getInt("paddingX").orElseThrow();
+                var paddingY = styleTag.getInt("paddingY").orElseThrow();
                 var style = new TextStyle(
                     color,
                     backgroundColor,
                     outlineColor,
-                    outlinePadding,
-                    outlineWidth
+                    outlineWidth,
+                    paddingX,
+                    paddingY
                 );
                 yield new TextElement(localX, localY, alignment, text, scale, style);
             }
@@ -189,14 +193,14 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      *
      * @return Width of this element in sign space
      */
-    int signWidth();
+    int width();
 
     /**
      * Gets the height of this element in sign space.
      *
      * @return Height of this element in sign space
      */
-    int signHeight();
+    int height();
 
     /**
      * Gets the size of this element in sign space.
@@ -204,7 +208,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      * @return Size of this element in sign space
      */
     default Size signSize() {
-        return new Size(signWidth(), signHeight());
+        return new Size(width(), height());
     }
 
     /**
@@ -214,7 +218,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      */
     default float alignedX() {
         float x = x();
-        float width = signWidth();
+        float width = width();
         // Center origin
         x -= width / 2f;
         // Align
@@ -230,7 +234,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
      */
     default float alignedY() {
         float y = y();
-        float height = signHeight();
+        float height = height();
         // Center origin
         y -= height / 2f;
         // Align

@@ -11,7 +11,7 @@ import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
 import net.minecraft.util.Mth;
 
-import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
+import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -61,13 +61,13 @@ public class SignTextField extends TextField implements ElementProvider {
         });
         // Set up height
         var font = UiUtil.font();
-        this.height(Mth.ceil(font.lineHeight * renderScale) + 2);
+        this.height(Mth.ceil(font.lineHeight * renderScale) + 1); // +1 for underline
         // Set up padding
         int padding = 0;
         if (element.style().backgroundColor().isPresent()) {
             padding = Mth.ceil(BACKGROUND_PADDING * element.scale());
         }
-        this.padding(1, padding, 0, padding);
+        this.padding(0, padding, 0, padding);
     }
 
     public SignTextField textElement(TextElement element) {
