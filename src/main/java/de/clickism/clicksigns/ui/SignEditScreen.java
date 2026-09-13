@@ -641,7 +641,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             add(smallHeader(l("Alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
-                .textOnly(false)
+                .textOnly(current instanceof TextElement)
                 .onAlignmentChange(newAlignment -> {
                     if (selected == null) return;
                     sign.updateElement(selected.id(),

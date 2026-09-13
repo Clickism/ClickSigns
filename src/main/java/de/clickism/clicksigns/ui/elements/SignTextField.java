@@ -75,8 +75,8 @@ public class SignTextField extends TextField implements ElementProvider {
     @Override
     public Size intrinsicSize() {
         return new Size(
-            Mth.ceil(currentWidth()),
-            Mth.ceil(textHeight())
+            Mth.floor(currentWidth()),
+            Mth.floor(textHeight())
         );
     }
 
@@ -86,16 +86,25 @@ public class SignTextField extends TextField implements ElementProvider {
      * @return The calculated width of the text field in pixels.
      */
     protected float currentWidth() {
-        var text = textToShow();
-        if (listening()) {
-            text += "_";
-        }
-        // Use another element to calculate width
-        float width = element.withText(text).width();
+        float width = elementToShow().width();
         if (width < MIN_WIDTH) {
             width = MIN_WIDTH;
         }
         return width * UI_SCALE;
+    }
+
+    /**
+     * Returns the TextElement to be shown in the text field, appending the cursor
+     * if the field is currently listening for input.
+     *
+     * @return The TextElement to be displayed in the text field.
+     */
+    protected TextElement elementToShow() {
+        var text = textToShow();
+        if (listening()) {
+            text += "_";
+        }
+        return element.withText(text);
     }
 
     @Override
@@ -157,6 +166,7 @@ public class SignTextField extends TextField implements ElementProvider {
         if (!element.style().isBackgroundShown()) {
             return;
         }
+        var element = elementToShow();
         var bounds = bounds();
         var background = element.backgroundSize();
         var x = bounds.x() + element.backgroundOffset();
@@ -181,6 +191,7 @@ public class SignTextField extends TextField implements ElementProvider {
         if (!element.style().isOutlineShown()) {
             return;
         }
+        var element = elementToShow();
         var bounds = bounds();
         var background = element.backgroundSize();
         var thickness = element.style().outlineWidth();
