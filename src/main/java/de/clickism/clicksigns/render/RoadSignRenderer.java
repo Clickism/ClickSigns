@@ -105,6 +105,7 @@ public final class RoadSignRenderer {
         context.stack().pushPose();
         // Set up the transformatiosn for the road sign based on its direction and alignment
         setupTransform();
+        context.pushZ(RenderLayers.SIGN_FRONT);
 
         // Render the front texture of the road sign
         renderFront();
