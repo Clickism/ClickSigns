@@ -25,7 +25,6 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 // TODO: Add support for newlines!
 public class SignTextField extends TextField implements ElementProvider {
     private static final int MIN_WIDTH = 4;
-    private final float renderScale;
     private TextElement element;
     private ColorResolver colorResolver;
 
@@ -38,10 +37,6 @@ public class SignTextField extends TextField implements ElementProvider {
     public SignTextField(TextElement element, ColorResolver colorResolver) {
         this.element = element;
         this.colorResolver = colorResolver;
-        this.renderScale = BLOCK_PIXELS
-                           * TEXT_RENDER_SCALE
-                           * element.scale()
-                           * UI_SCALE;
         this.scrolling(false);
         // TODO: Translate
         this.placeholder("Text");
@@ -65,6 +60,7 @@ public class SignTextField extends TextField implements ElementProvider {
 
     public SignTextField textElement(TextElement element) {
         this.element = element;
+        this.invalidateLayout();
         return this;
     }
 
@@ -148,6 +144,7 @@ public class SignTextField extends TextField implements ElementProvider {
         // Render the text field
         var bounds = bounds();
         // Apply render scale
+        var renderScale = renderScale();
         renderWithScale(context, bounds.x(), bounds.y(), renderScale, renderScale, () -> {
             // Render background
             renderBackground(context);
@@ -263,5 +260,18 @@ public class SignTextField extends TextField implements ElementProvider {
         runnable.run();
         // Pop pose
         graphics.pose().popPose();
+    }
+
+    /**
+     * Calculates the render scale for the text field based on the block pixels,
+     * text render scale, element scale, and UI scale.
+     *
+     * @return The calculated render scale.
+     */
+    private float renderScale() {
+        return BLOCK_PIXELS
+               * TEXT_RENDER_SCALE
+               * element.scale()
+               * UI_SCALE;
     }
 }

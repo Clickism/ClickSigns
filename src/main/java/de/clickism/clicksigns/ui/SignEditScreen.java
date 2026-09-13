@@ -2,6 +2,7 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
@@ -14,15 +15,11 @@ import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
-import de.clickism.clickui.Ref;
-import de.clickism.clickui.UiColor;
-import de.clickism.clickui.UiComponent;
-import de.clickism.clickui.UiScreen;
+import de.clickism.clickui.*;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -47,8 +44,11 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
     private static final Size MIN_PLATE_SIZE = new Size(4, 4);
     private static final Size MAX_PLATE_SIZE = MAX_SIGN_SIZE;
 
-    private static final float MIN_TEXT_SCALE = 0.3f;
-    private static final float MAX_TEXT_SCALE = 6.0f;
+    private static final int MIN_TEXT_PT = 3;
+    private static final int MAX_TEXT_PT = 72;
+
+    private static final int MAX_OUTLINE_WIDTH = 10;
+    private static final int MAX_PADDING = 20;
 
     private final EditableRoadSign sign;
     private final Ref<SignView> signViewRef = ref();
@@ -227,6 +227,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 new SizeControls(new Size(sign.width(), sign.height()))
                                     .minSize(MIN_SIGN_SIZE)
                                     .maxSize(MAX_SIGN_SIZE)
+                                    .changeAmount(8)
+                                    .fineChangeAmount(1)
+                                    .unit(l("px"))
                                     .onSizeChanged(newSize -> {
                                         sign.resize(newSize.width(), newSize.height());
                                     }),
@@ -289,26 +292,25 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 fancyHeader(t("clicksigns.editor.sign_properties")),
                 // Add texture selection
                 smallHeader(t("clicksigns.editor.sign_textures")),
-
                 box()
                     .horizontal()
                     .growWidth()
-                    .childGap(8)
+                    .childGap(4)
                     .children(
                         box()
                             .growWidth()
-                            .childGap(8)
+                            .childGap(2)
                             .children(
-                                smallHeader(l("Front")),
+                                smallHeader(l("Front")).padding(0),
                                 new TextureButton(sign.frontSource(), newTexture -> {
                                     sign.frontSource(newTexture.resizeToFit(sign.build()));
                                 })
                             ),
                         box()
                             .growWidth()
-                            .childGap(8)
+                            .childGap(4)
                             .children(
-                                smallHeader(l("Back")),
+                                smallHeader(l("Back")).padding(0),
                                 new TextureButton(sign.backSource(), newTexture -> {
                                     sign.backSource(newTexture.resizeToFit(sign.build()));
                                 })
@@ -436,138 +438,116 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             // Text controls
             var current = selected.current();
             if (current instanceof TextElement text) {
-                add(smallHeader(l("Color")));
-
+                add(smallHeader(l("Text Color")));
                 var colorResolver = sign.colorResolver();
                 // Foreground color
                 var style = text.style();
-                var foregroundColor = UiColor.of(colorResolver.resolveOrDefault(style.color(), Color.WHITE));
-                add(
-                    memo(selected.id() + "-fg", () -> textField()
-                        .growWidth()
-                        .highlightInvalid(true)
-                        .tooltip("Text Color")
-                        .textShadow(false)
-                        .value(style.color())
-                        .onValueChanged(newColor -> {
-                            if (selected == null) return;
-                            sign.updateElement(selected.id(),
-                                element -> ((TextElement) element)
-                                    .withStyle(s ->
-                                        s.withColor(newColor)));
-                        })
-                    )
-                        // Apply these after memo, so they are refreshed every rebuild
-                        .suggest(colorResolver::suggestColor)
-                        .validator(colorResolver::isValidColor)
-                        .style(style()
-                            .textColor(foregroundColor)
-                            .backgroundColor(foregroundColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
-                );
-
-                // Background color
-                // TODO: Refactor into colorTextField
-                var backgroundColor = UiColor.of(colorResolver.resolveOrDefault(style.backgroundColor().orElse(null), Color.WHITE));
-                add(
-                    memo(selected.id() + "-bg", () -> textField()
-                        .growWidth()
-                        .highlightInvalid(true)
-                        .tooltip("Background Color")
-                        .textShadow(false)
-                        .value(style.backgroundColor().orElse(""))
-                        .onValueChanged(newColor -> {
-                            if (selected == null) return;
-                            var newColorValue = newColor.isEmpty()
-                                ? null
-                                : newColor;
-                            sign.updateElement(selected.id(),
-                                element -> ((TextElement) element)
-                                    .withStyle(s ->
-                                        s.withBackgroundColor(newColorValue)));
-                        })
-                    )
-                        // Apply these after memo, so they are refreshed every rebuild
-                        .suggest(colorResolver::suggestColor)
-                        .validator(color -> {
-                            if (color == null || color.isEmpty()) return true;
-                            return colorResolver.isValidColor(color);
-                        })
-                        .style(style()
-                            .textColor(backgroundColor)
-                            .backgroundColor(backgroundColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
-                );
-
-                // Outline color
-                var outlineColor = UiColor.of(colorResolver.resolveOrDefault(style.outlineColor().orElse(null), Color.WHITE));
-                add(
-                    memo(selected.id() + "-outline", () -> textField()
-                        .growWidth()
-                        .highlightInvalid(true)
-                        .tooltip("Outline Color")
-                        .textShadow(false)
-                        .value(style.outlineColor().orElse(""))
-                        .onValueChanged(newColor -> {
-                            if (selected == null) return;
-                            var newColorValue = newColor.isEmpty()
-                                ? null
-                                : newColor;
-                            sign.updateElement(selected.id(),
-                                element -> ((TextElement) element)
-                                    .withStyle(s ->
-                                        s.withOutlineColor(newColorValue)));
-                        })
-                    )
-                        // Apply these after memo, so they are refreshed every rebuild
-                        .suggest(colorResolver::suggestColor)
-                        .validator(color -> {
-                            if (color == null || color.isEmpty()) return true;
-                            return colorResolver.isValidColor(color);
-                        })
-                        .style(style()
-                            .textColor(outlineColor)
-                            .backgroundColor(outlineColor.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)))
-                );
-
-                // Outline Width
-                add(smallHeader(l("Outline Width")));
-                add(memo(selected.id() + "-outline-width", () -> numberField()
-                    .growWidth()
-                    .allowDecimal(true)
-                    .value(style.outlineWidth())
-                    .onNumberChanged(newWidth -> {
+                add(colorField(
+                    selected.id() + "-fg",
+                    null,
+                    style.color(),
+                    colorResolver,
+                    newColor -> {
                         if (selected == null) return;
-                        int clamped = Mth.clamp(newWidth.intValue(), 0, 10);
                         sign.updateElement(selected.id(),
-                            element -> ((TextElement) element).withStyle(s -> s.withOutlineWidth(clamped)));
-                    })
+                            element -> ((TextElement) element)
+                                .withStyle(s ->
+                                    s.withColor(newColor)));
+                    }
                 ));
 
-                // Padding
-                add(smallHeader(l("Padding")));
-                add(memo(selected.id() + "-padding", () -> new SizeControls(new Size(style.paddingX(), style.paddingY()))
-                    .minSize(new Size(0, 0))
-                    .maxSize(new Size(20, 20))
-                    .onSizeChanged(newPadding -> {
+                // Background color
+                add(smallHeader(l("Background Color")).padding(0));
+                add(colorField(
+                    selected.id() + "-bg",
+                    null,
+                    style.backgroundColor().orElse(""),
+                    colorResolver,
+                    newColor -> {
                         if (selected == null) return;
+                        var newColorValue = newColor.isEmpty()
+                            ? null
+                            : newColor;
                         sign.updateElement(selected.id(),
-                            element -> ((TextElement) element).withStyle(s -> s
-                                .withPaddingX(newPadding.width())
-                                .withPaddingY(newPadding.height())));
-                    })));
+                            element -> ((TextElement) element)
+                                .withStyle(s ->
+                                    s.withBackgroundColor(newColorValue)));
+                    }
+                ));
+
+
+                add(smallHeader(l("Outline Color")));
+                // Outline color
+                add(colorField(
+                    selected.id() + "-outline",
+                    null,
+                    style.outlineColor().orElse(""),
+                    colorResolver,
+                    newColor -> {
+                        if (selected == null) return;
+                        var newColorValue = newColor.isEmpty()
+                            ? null
+                            : newColor;
+                        sign.updateElement(selected.id(),
+                            element -> ((TextElement) element)
+                                .withStyle(s ->
+                                    s.withOutlineColor(newColorValue)));
+                    }
+                ));
+
+                // Outline Width
+                if (style.outlineColor().isPresent()) {
+                    add(smallHeader(l("Outline Width")).padding(0));
+                    add(memo(selected.id() + "-outline-width", () -> new NumberControl()
+                        .value(style.outlineWidth())
+                        .unit(l("pt"))
+                        .minValue(1) // Don't allow 0
+                        .maxValue(MAX_OUTLINE_WIDTH)
+                        .onValueChanged(newWidth -> {
+                            if (selected == null) return;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element)
+                                    .withStyle(s -> s.withOutlineWidth(newWidth)));
+                        })
+                    ));
+                }
+
+                // Padding
+                if (style.isPaddingShown()) {
+                    add(smallHeader(l("Text Padding")));
+                    add(memo(selected.id() + "-padding", () -> new SizeControls(new Size(style.paddingX(), style.paddingY()))
+                        .minSize(new Size(0, 0))
+                        .maxSize(new Size(MAX_PADDING, MAX_PADDING))
+                        .widthHeader(l("Horizontal"))
+                        .heightHeader(l("Vertical"))
+                        .unit(t("pt"))
+                        .changeAmount(1)
+                        .fineChangeAmount(0)
+                        .onSizeChanged(newPadding -> {
+                            if (selected == null) return;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element).withStyle(s -> s
+                                    .withPaddingX(newPadding.width())
+                                    .withPaddingY(newPadding.height())));
+                        })));
+                }
 
                 // Scale
-                add(smallHeader(l("Scale")));
-                add(memo(selected.id() + "-scale", () -> numberField()
-                    .growWidth()
-                    .allowDecimal(true)
-                    .value(text.scale())
-                    .onNumberChanged(newScale -> {
+                add(smallHeader(l("Font Size")));
+                // TODO: Convert to work based on pt, so that by default 9pt and can go down to 3pt.
+                add(memo(selected.id() + "-font-size", () -> new NumberControl()
+                    .unit(l("pt"))
+                    .changeAmount(1)
+                    .fastChangeAmount(4)
+                    .minValue(MIN_TEXT_PT)
+                    .maxValue(MAX_TEXT_PT)
+                    .value((int) (text.scale() * 9f)) // Convert scale to pt
+                    .onValueChanged(newPt -> {
                         if (selected == null) return;
-                        var clamped = Mth.clamp(newScale.floatValue(), MIN_TEXT_SCALE, MAX_TEXT_SCALE);
+                        var newScale = ((float) newPt) / 9f; // Convert pt to scale
                         sign.updateElement(selected.id(),
-                            // TODO: Add buttons to increase/decrease scale by 0.1
-                            element -> ((TextElement) element).withScale(clamped));
-                        signViewRef.get().resetTextFieldCache();
+                            element -> ((TextElement) element)
+                                .withScale(newScale));
                     })
                 ));
             }
@@ -579,13 +559,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 add(box()
                     .horizontal()
                     .growWidth()
-                    .childGap(8)
+                    .childGap(4)
                     .children(
                         box()
                             .growWidth()
-                            .childGap(8)
+                            .childGap(4)
                             .children(
-                                smallHeader(l("Front")),
+                                smallHeader(l("Front")).padding(0),
                                 new TextureButton(plate.front(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
@@ -595,9 +575,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             ),
                         box()
                             .growWidth()
-                            .childGap(8)
+                            .childGap(4)
                             .children(
-                                smallHeader(l("Back")),
+                                smallHeader(l("Back")).padding(0),
                                 new TextureButton(plate.back(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
@@ -665,5 +645,43 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     sign.removeElement(selected.id());
                 }));
         }
+    }
+
+    /**
+     * Creates a color input box with validation and suggestions.
+     *
+     * @param id             The unique identifier for the UI element.
+     * @param tooltip        The tooltip text to display on hover.
+     * @param value          The initial color value as a string.
+     * @param colorResolver  The ColorResolver to validate and suggest colors.
+     * @param onValueChanged A consumer that handles changes to the color value.
+     * @return A configured UiElement representing the color input box.
+     */
+    private UiElement<?> colorField(
+        String id,
+        String tooltip,
+        String value,
+        ColorResolver colorResolver,
+        Consumer<String> onValueChanged
+    ) {
+        var color = UiColor.of(colorResolver.resolveOrDefault(value, Color.WHITE));
+        return memo(id, () ->
+            textField()
+                .growWidth()
+                .highlightInvalid(true)
+                .tooltip(tooltip)
+                .textShadow(false)
+                .value(value)
+                .onValueChanged(onValueChanged))
+            .suggest(colorResolver::suggestColor)
+            .validator(string -> {
+                if (string.isEmpty()) return true;
+                return colorResolver.isValidColor(string);
+            })
+            .style(style()
+                .textColor(color)
+                .backgroundColor(
+                    color.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)
+                ));
     }
 }

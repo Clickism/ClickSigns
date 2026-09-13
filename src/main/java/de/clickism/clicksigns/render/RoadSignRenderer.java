@@ -18,6 +18,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 /**
  * Road sign renderer
  */
+// TODO: Fix normals/lighting issues. Some directions are darker than others which looks off
 public final class RoadSignRenderer {
     // TODO: Move to render layers or constants
     public static final float Z_FIGHTING_OFFSET = 0.001f;
