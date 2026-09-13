@@ -78,11 +78,10 @@ public final class RoadSignRenderer extends Renderer {
                 textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 3, symbol.alignment());
             } else if (element instanceof TextElement text) {
                 // Render text elements
-                int color = colorResolver.resolveInt(text.color());
-                int backgroundColor = 0;
-                if (text.backgroundColor() != null) {
-                    backgroundColor = colorResolver.resolveInt(text.backgroundColor());
-                }
+                int color = colorResolver.resolveInt(text.style().color());
+                int backgroundColor = text.style().backgroundColor()
+                    .map(colorResolver::resolveInt)
+                    .orElse(0);
                 textRenderer.render(text.text(), color, backgroundColor, text.scale(), renderCoords.x, renderCoords.y, 4, text.alignment());
             } else if (element instanceof PlateElement plate) {
                 // Render plate elements

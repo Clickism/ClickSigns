@@ -4,14 +4,13 @@ import com.google.gson.JsonObject;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
-import de.clickism.clicksigns.sign.element.PlateElement;
-import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Parser for sign elements from JSON objects.
@@ -77,8 +76,13 @@ public class SignElementParser implements JsonHandler {
                     ? nullIfDefault(textElement.text(), TextElementJson.DEFAULT_TEXT)
                     : null,
                 nullIfDefault(textElement.scale(), TextElementJson.DEFAULT_SCALE),
-                nullIfDefault(textElement.color(), TextElementJson.DEFAULT_COLOR),
-                textElement.backgroundColor()
+                new TextElementJson.TextStyleJson(
+                    nullIfDefault(textElement.style().color(), TextElementJson.DEFAULT_COLOR),
+                    textElement.style().backgroundColor().orElse(null),
+                    textElement.style().outlineColor().orElse(null),
+                    nullIfDefault(textElement.style().outlinePadding(), TextStyle.DEFAULT.outlinePadding()),
+                    nullIfDefault(textElement.style().outlineWidth(), TextStyle.DEFAULT.outlineWidth())
+                )
             );
         }
         if (element instanceof SymbolElement symbolElement) {
@@ -99,12 +103,6 @@ public class SignElementParser implements JsonHandler {
             );
         }
         throw new IllegalArgumentException("Unknown sign element type: " + element.getClass().getName());
-    }
-
-    private <T> @Nullable T nullIfDefault(@Nullable T value, T defaultValue) {
-        if (value == null) return null;
-        if (value.equals(defaultValue)) return null;
-        return value;
     }
 
     /**
@@ -139,9 +137,7 @@ public class SignElementParser implements JsonHandler {
             return new SymbolElement(
                 pos.x,
                 pos.y,
-                alignment != null
-                    ? alignment
-                    : DEFAULT_ALIGNMENT,
+                orDefault(alignment, DEFAULT_ALIGNMENT),
                 SignRegistries.SYMBOLS.get(symbol)
             );
         }
@@ -150,20 +146,18 @@ public class SignElementParser implements JsonHandler {
     /**
      * Json format for a text element.
      *
-     * @param alignment       the alignment of the text
-     * @param position        the local position of the text
-     * @param text            the placeholder text to display
-     * @param scale           the scale of the text
-     * @param color           the color of the text, as a hex string or a color name
-     * @param backgroundColor the color of the text background, as a hex string or a color name, or null for no background
+     * @param alignment the alignment of the text
+     * @param position  the local position of the text
+     * @param text      the placeholder text to display
+     * @param scale     the scale of the text
+     * @param style     the style of the text
      */
     private record TextElementJson(
         @Nullable Alignment alignment,
         @Nullable Position position,
         String text,
         @Nullable Float scale,
-        @Nullable String color,
-        @Nullable String backgroundColor
+        @Nullable TextStyleJson style
     ) {
         private static final Alignment DEFAULT_ALIGNMENT = Alignment.TOP_RIGHT;
         private static final String DEFAULT_TEXT = "";
@@ -180,20 +174,43 @@ public class SignElementParser implements JsonHandler {
             return new TextElement(
                 pos.x,
                 pos.y,
-                alignment != null
-                    ? alignment
-                    : DEFAULT_ALIGNMENT,
-                text != null
-                    ? text
-                    : DEFAULT_TEXT,
-                scale != null
-                    ? scale
-                    : DEFAULT_SCALE,
-                color != null
-                    ? color
-                    : DEFAULT_COLOR,
-                backgroundColor
+                orDefault(alignment, DEFAULT_ALIGNMENT),
+                orDefault(text, DEFAULT_TEXT),
+                orDefault(scale, DEFAULT_SCALE),
+                Optional.ofNullable(style)
+                    .map(TextStyleJson::toTextStyle)
+                    .orElse(TextStyle.DEFAULT)
             );
+        }
+
+        /**
+         * Json format for a text style.
+         *
+         * @param color           the color of the text
+         * @param backgroundColor the background color of the text
+         * @param outlineColor    the outline color of the text
+         * @param outlinePadding  the padding of the outline
+         * @param outlineWidth    the width of the outline
+         */
+        private record TextStyleJson(
+            @Nullable String color,
+            @Nullable String backgroundColor,
+            @Nullable String outlineColor,
+            @Nullable Integer outlinePadding,
+            @Nullable Integer outlineWidth
+        ) {
+            /**
+             * Converts the JSON object to a text style object
+             */
+            private TextStyle toTextStyle() {
+                return new TextStyle(
+                    orDefault(color, TextStyle.DEFAULT.color()),
+                    orDefault(backgroundColor, TextStyle.DEFAULT.backgroundColor().orElse(null)),
+                    orDefault(outlineColor, TextStyle.DEFAULT.outlineColor().orElse(null)),
+                    orDefault(outlinePadding, TextStyle.DEFAULT.outlinePadding()),
+                    orDefault(outlineWidth, TextStyle.DEFAULT.outlineWidth())
+                );
+            }
         }
     }
 
@@ -227,13 +244,38 @@ public class SignElementParser implements JsonHandler {
             return new PlateElement(
                 pos.x,
                 pos.y,
-                alignment != null
-                    ? alignment
-                    : DEFAULT_ALIGNMENT,
+                orDefault(alignment, DEFAULT_ALIGNMENT),
                 TextureSource.parse(front, width, height),
                 TextureSource.parse(back, width, height)
             );
         }
     }
 
+    /**
+     * Returns the value if it is not null, otherwise returns the default value.
+     *
+     * @param value        the value to check for null
+     * @param defaultValue the default value to return if the value is null
+     * @param <T>          the type of the value
+     * @return the value if it is not null, otherwise the default value
+     */
+    public static <T> T orDefault(@Nullable T value, T defaultValue) {
+        return value != null
+            ? value
+            : defaultValue;
+    }
+
+    /**
+     * Returns null if the value is equal to the default value, otherwise returns the value.
+     *
+     * @param value        the value to check for equality with the default value
+     * @param defaultValue the default value to compare against
+     * @param <T>          the type of the value
+     * @return null if the value is equal to the default value, otherwise the value
+     */
+    private static <T> @Nullable T nullIfDefault(@Nullable T value, T defaultValue) {
+        if (value == null) return null;
+        if (value.equals(defaultValue)) return null;
+        return value;
+    }
 }

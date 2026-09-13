@@ -64,7 +64,7 @@ public class SignTextField extends TextField implements ElementProvider {
         this.height(Mth.ceil(font.lineHeight * renderScale) + 2);
         // Set up padding
         int padding = 0;
-        if (element.backgroundColor() != null) {
+        if (element.style().backgroundColor().isPresent()) {
             padding = Mth.ceil(BACKGROUND_PADDING * element.scale());
         }
         this.padding(1, padding, 0, padding);
@@ -84,9 +84,9 @@ public class SignTextField extends TextField implements ElementProvider {
 
     private void updateStyle() {
         // Set up style
-        var background = element.backgroundColor() == null
-            ? null
-            : colorResolver.resolve(element.backgroundColor());
+        var background = element.style().backgroundColor()
+            .map(colorResolver::resolve)
+            .orElse(null);
         this.overrideStyle(style()
             .backgroundColor(UiColor.of(background)));
     }
@@ -125,7 +125,7 @@ public class SignTextField extends TextField implements ElementProvider {
 
     @Override
     protected int textColor(boolean placeholder) {
-        var color = colorResolver.resolveInt(element.color());
+        var color = colorResolver.resolveInt(element.style().color());
         if (placeholder) {
             color = UiColor.rgba(color).multiplyAlpha(0.5f).color();
         }

@@ -5,6 +5,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.element.TextStyle;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
@@ -80,9 +81,9 @@ public record RoadSign(
         new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
         List.of(
             new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
+            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT),
+            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT),
+            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT)
         ),
         DEFAULT_ALIGNMENT
     );

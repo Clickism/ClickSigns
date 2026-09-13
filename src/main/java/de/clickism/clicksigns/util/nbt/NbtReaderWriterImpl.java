@@ -10,6 +10,10 @@ import java.util.Optional;
 public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWriter {
     @Override
     public void putString(String key, String value) {
+        if (value == null) {
+            tag.remove(key);
+            return;
+        }
         tag.putString(key, value);
     }
 
@@ -76,6 +80,10 @@ public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWrit
 
     @Override
     public <T> void putCollection(String key, Iterable<T> collection, Writer<T> writer) {
+        if (collection == null) {
+            tag.remove(key);
+            return;
+        }
         var list = new ListTag();
         for (T item : collection) {
             CompoundTag itemTag = new CompoundTag();
@@ -98,6 +106,10 @@ public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWrit
 
     @Override
     public void putCompound(String key, CompoundTag compoundTag) {
+        if (compoundTag == null) {
+            tag.remove(key);
+            return;
+        }
         tag.put(key, compoundTag);
     }
 

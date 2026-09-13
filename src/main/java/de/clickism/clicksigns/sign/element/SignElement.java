@@ -9,6 +9,8 @@ import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.Optional;
+
 /**
  * Represents an element of a road sign.
  * <p>
@@ -27,14 +29,19 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         buf.writeInt(element.alignment().ordinal());
         if (element instanceof TextElement text) {
             buf.writeFloat(text.scale());
-            buf.writeUtf(text.color());
-            var backgroundColor = text.backgroundColor() != null
-                ? text.backgroundColor()
-                : "";
-            buf.writeUtf(backgroundColor);
             buf.writeUtf(text.text());
+            // Write text style
+            var style = text.style();
+            buf.writeUtf(style.color());
+            buf.writeNullable(style.backgroundColor().orElse(null), FriendlyByteBuf::writeUtf);
+            buf.writeNullable(style.outlineColor().orElse(null), FriendlyByteBuf::writeUtf);
+            buf.writeInt(style.outlinePadding());
+            buf.writeInt(style.outlineWidth());
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
+            // TODO: Texture source written but not read
+            // TODO: Should symbols have id, or should they be identified based on their texture source's root?, would have to make
+            // texture source more like a pipeline
             TextureSource.PACKET_WRITER.accept(buf, symbol.symbol().texture());
         } else if (element instanceof PlateElement plate) {
             TextureSource.PACKET_WRITER.accept(buf, plate.front());
@@ -52,13 +59,21 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         return switch (type) {
             case TextElement.TYPE -> {
                 var scale = buf.readFloat();
-                var color = buf.readUtf();
-                var backgroundColor = buf.readUtf();
-                if (backgroundColor.isEmpty()) {
-                    backgroundColor = null;
-                }
                 var text = buf.readUtf();
-                yield new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+                // Read text style
+                var color = buf.readUtf();
+                var backgroundColor = buf.readNullable(FriendlyByteBuf::readUtf);
+                var outlineColor = buf.readNullable(FriendlyByteBuf::readUtf);
+                var outlinePadding = buf.readInt();
+                var outlineWidth = buf.readInt();
+                var style = new TextStyle(
+                    color,
+                    backgroundColor,
+                    outlineColor,
+                    outlinePadding,
+                    outlineWidth
+                );
+                yield new TextElement(localX, localY, alignment, text, scale, style);
             }
             case SymbolElement.TYPE -> {
                 var id = buf.readResourceLocation();
@@ -85,11 +100,16 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         tag.putString("alignment", element.alignment().name());
         if (element instanceof TextElement text) {
             tag.putFloat("scale", text.scale());
-            tag.putString("color", text.color());
-            if (text.backgroundColor() != null) {
-                tag.putString("backgroundColor", text.backgroundColor());
-            }
             tag.putString("text", text.text());
+            // Write text style
+            var styleTag = tag.createWriter();
+            var style = text.style();
+            styleTag.putString("color", style.color());
+            styleTag.putString("backgroundColor", style.backgroundColor().orElse(null));
+            styleTag.putString("outlineColor", style.outlineColor().orElse(null));
+            styleTag.putInt("outlinePadding", style.outlinePadding());
+            styleTag.putInt("outlineWidth", style.outlineWidth());
+            tag.putCompound("style", styleTag.asCompoundTag());
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
             var textureTag = tag.createWriter();
@@ -115,10 +135,22 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         return switch (type.orElseThrow()) {
             case TextElement.TYPE -> {
                 var scale = tag.getFloat("scale").orElseThrow();
-                var color = tag.getString("color").orElseThrow();
-                var backgroundColor = tag.getString("backgroundColor").orElse(null);
                 var text = tag.getString("text").orElseThrow();
-                yield new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+                // Read text style
+                var styleTag = tag.getCompound("style").orElseThrow();
+                var color = styleTag.getString("color").orElseThrow();
+                var backgroundColor = styleTag.getString("backgroundColor").orElse(null);
+                var outlineColor = styleTag.getString("outlineColor").orElse(null);
+                var outlinePadding = styleTag.getInt("outlinePadding").orElseThrow();
+                var outlineWidth = styleTag.getInt("outlineWidth").orElseThrow();
+                var style = new TextStyle(
+                    color,
+                    backgroundColor,
+                    outlineColor,
+                    outlinePadding,
+                    outlineWidth
+                );
+                yield new TextElement(localX, localY, alignment, text, scale, style);
             }
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
@@ -168,6 +200,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
 
     /**
      * Gets the size of this element in sign space.
+     *
      * @return Size of this element in sign space
      */
     default Size signSize() {

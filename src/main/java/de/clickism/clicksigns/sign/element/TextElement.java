@@ -3,24 +3,21 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.ui.UiUtil;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.util.function.Function;
 
 import static de.clickism.clicksigns.render.TextRenderer.TEXT_RENDER_SCALE;
-import static de.clickism.clicksigns.sign.ColorResolver.toHexString;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Text element on a road sign.
  *
- * @param x          local X coordinate
- * @param y          local Y coordinate
- * @param alignment       alignment of the text
- * @param text            text to display
- * @param scale           scale of the text, where 1.0 is the default size
- * @param color           RGBA color of the text
- * @param backgroundColor RGBA color of the text background, or 0 for no background
+ * @param x         local X coordinate
+ * @param y         local Y coordinate
+ * @param alignment alignment of the text
+ * @param text      text to display
+ * @param scale     scale of the text, where 1.0 is the default size
+ * @param style     style of the text
  */
 public record TextElement(
     int x,
@@ -28,22 +25,12 @@ public record TextElement(
     Alignment alignment,
     String text,
     float scale,
-    String color,
-    @Nullable String backgroundColor
+    TextStyle style
 ) implements SignElement {
     /**
      * Type key
      */
     public static final String TYPE = "text";
-
-    /**
-     * Creates a new TextElement with the given parameters.
-     */
-    public TextElement(int localX, int localY, Alignment alignment, String text, float scale, Color color, @Nullable Color backgroundColor) {
-        this(localX, localY, alignment, text, scale, toHexString(color), backgroundColor != null
-            ? toHexString(backgroundColor)
-            : null);
-    }
 
     @Override
     public String typeKey() {
@@ -77,27 +64,7 @@ public record TextElement(
      * @return a new text element with the given text, keeping the other properties the same
      */
     public TextElement withText(String text) {
-        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
-    }
-
-    /**
-     * Creates a new text element with the given color, keeping the other properties the same.
-     *
-     * @param color color of the text
-     * @return a new text element with the given color, keeping the other properties the same
-     */
-    public TextElement withColor(String color) {
-        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
-    }
-
-    /**
-     * Creates a new text element with the given background color, keeping the other properties the same.
-     *
-     * @param backgroundColor color of the text background, or null for no background
-     * @return a new text element with the given background color, keeping the other properties the same
-     */
-    public TextElement withBackgroundColor(@Nullable String backgroundColor) {
-        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, style);
     }
 
     /**
@@ -107,7 +74,7 @@ public record TextElement(
      * @return a new text element with the given scale, keeping the other properties the same
      */
     public TextElement withScale(float scale) {
-        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, style);
     }
 
     /**
@@ -117,8 +84,9 @@ public record TextElement(
      * @param localY local Y coordinate
      * @return a new text element with the given position, keeping the other properties the same
      */
+    @Override
     public TextElement withPosition(int localX, int localY) {
-        return new TextElement(localX, localY, alignment, text, scale, color, backgroundColor);
+        return new TextElement(localX, localY, alignment, text, scale, style);
     }
 
     /**
@@ -127,17 +95,28 @@ public record TextElement(
      * @param alignment alignment of the text
      * @return a new text element with the given alignment, keeping the other properties the same
      */
+    @Override
     public TextElement withAlignment(Alignment alignment) {
-        return new TextElement(x, y, alignment, text, scale, color, backgroundColor);
+        return new TextElement(x, y, alignment, text, scale, style);
     }
 
     /**
-     * Get the width of the text when rendered on a sign gui.
+     * Creates a new text element with the given style, keeping the other properties the same.
      *
-     * @param string the text to measure.
-     * @return the gui width of the text.
+     * @param style style of the text
+     * @return a new text element with the given style, keeping the other properties the same
      */
-    public float guiWidthOf(String string) {
-        return UiUtil.font().width(string) * BLOCK_PIXELS * TEXT_RENDER_SCALE * this.scale();
+    public TextElement withStyle(TextStyle style) {
+        return new TextElement(x, y, alignment, text, scale, style);
+    }
+
+    /**
+     * Creates a new text element with the given style updater, keeping the other properties the same.
+     *
+     * @param styleUpdater function to update the style of the text
+     * @return a new text element with the updated style, keeping the other properties the same
+     */
+    public TextElement withStyle(Function<TextStyle, TextStyle> styleUpdater) {
+        return withStyle(styleUpdater.apply(style));
     }
 }

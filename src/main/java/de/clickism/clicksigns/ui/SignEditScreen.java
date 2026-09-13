@@ -6,6 +6,7 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.element.TextStyle;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
 import de.clickism.clicksigns.ui.editor.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
@@ -334,7 +335,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         var center = signCenter();
                         var element = new TextElement(
                             center.x(), center.y(), Alignment.TEXT_RIGHT,
-                            "", 1.0f, "foreground", null
+                            "", 1.0f, TextStyle.DEFAULT
                         );
                         sign.addElement(element);
                     }),
@@ -432,18 +433,21 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 var colorResolver = sign.colorResolver();
                 // Foreground color
-                var foregroundColor = UiColor.of(colorResolver.resolveOrDefault(text.color(), Color.WHITE));
+                var style = text.style();
+                var foregroundColor = UiColor.of(colorResolver.resolveOrDefault(style.color(), Color.WHITE));
                 add(
                     memo(selected.id() + "-fg", () -> textField()
                         .growWidth()
                         .highlightInvalid(true)
                         .tooltip("Text Color")
                         .textShadow(false)
-                        .value(text.color())
+                        .value(style.color())
                         .onValueChanged(newColor -> {
                             if (selected == null) return;
                             sign.updateElement(selected.id(),
-                                element -> ((TextElement) element).withColor(newColor));
+                                element -> ((TextElement) element)
+                                    .withStyle(s ->
+                                        s.withColor(newColor)));
                         })
                     )
                         // Apply these after memo, so they are refreshed every rebuild
@@ -456,23 +460,23 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 // Background color
                 // TODO: Refactor into colorTextField
-                var backgroundColor = UiColor.of(colorResolver.resolveOrDefault(text.backgroundColor(), Color.WHITE));
+                var backgroundColor = UiColor.of(colorResolver.resolveOrDefault(style.backgroundColor().orElse(null), Color.WHITE));
                 add(
                     memo(selected.id() + "-bg", () -> textField()
                         .growWidth()
                         .highlightInvalid(true)
                         .tooltip("Background Color")
                         .textShadow(false)
-                        .value(text.backgroundColor() == null
-                            ? ""
-                            : text.backgroundColor())
+                        .value(style.backgroundColor().orElse(""))
                         .onValueChanged(newColor -> {
                             if (selected == null) return;
                             var newColorValue = newColor.isEmpty()
                                 ? null
                                 : newColor;
                             sign.updateElement(selected.id(),
-                                element -> ((TextElement) element).withBackgroundColor(newColorValue));
+                                element -> ((TextElement) element)
+                                    .withStyle(s ->
+                                        s.withBackgroundColor(newColorValue)));
                         })
                     )
                         // Apply these after memo, so they are refreshed every rebuild
