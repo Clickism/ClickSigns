@@ -5,16 +5,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 
 /**
- * Texture renderer utility class
+ * A utility class for rendering textures and solid colors in a given render context.
  */
 public class TextureRenderer {
-    private static final ResourceLocation WHITE_TEXTURE = new ResourceLocation("textures/misc/white.png");
-
     private final RenderContext context;
 
+    /**
+     * Creates a new texture renderer with the given render context.
+     *
+     * @param context the render context to use
+     */
     public TextureRenderer(RenderContext context) {
         this.context = context;
     }
@@ -43,6 +45,14 @@ public class TextureRenderer {
         render(buffer, blockWidth, blockHeight, color);
     }
 
+    /**
+     * Renders an outline with the given color and thickness from (0,0) to (blockWidth, blockHeight)
+     *
+     * @param color       the color to render the outline with
+     * @param blockWidth  the width of the outline in blocks
+     * @param blockHeight the height of the outline in blocks
+     * @param thickness   the thickness of the outline in blocks
+     */
     public void renderOutline(int color, float blockWidth, float blockHeight, float thickness) {
         // Top
         renderColor(color, blockWidth, thickness);
