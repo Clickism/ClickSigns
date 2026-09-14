@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 
 /**
  * A utility class for rendering textures and solid colors in a given render context.
@@ -99,13 +100,18 @@ public class TextureRenderer {
      * Creates a vertex with the given positions and UV coordinates
      */
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
+        var xAxis = context.direction().getAxis() == Direction.Axis.X;
         buffer.vertex(pose.pose(), x, y, 0)
             .color(color)
             .uv(u, v)
             .overlayCoords(OverlayTexture.NO_OVERLAY)
             .uv2(context.light())
             // Texture is facing towards -Z
-            .normal(pose.normal(), 0, 0, -1)
+            .normal(pose.normal(), xAxis
+                ? 1
+                : 0, 0, xAxis
+                ? 0
+                : 1)
             .endVertex();
     }
 }

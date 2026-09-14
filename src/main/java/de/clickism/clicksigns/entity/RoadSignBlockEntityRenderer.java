@@ -35,9 +35,8 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
         }
         var direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
         var renderer = new RoadSignRenderer(
-            new RenderContext(stack, source, light),
-            roadSign,
-            direction
+            new RenderContext(stack, source, light, direction),
+            roadSign
         );
         renderer.render();
     }

@@ -23,7 +23,6 @@ public final class RoadSignRenderer {
     // TODO: Move to render layers or constants
     public static final float Z_FIGHTING_OFFSET = 0.001f;
 
-    private final Direction direction;
     private final RoadSign roadSign;
 
     private final RenderContext context;
@@ -33,11 +32,9 @@ public final class RoadSignRenderer {
      */
     public RoadSignRenderer(
         RenderContext context,
-        @NotNull RoadSign roadSign,
-        Direction direction
+        @NotNull RoadSign roadSign
     ) {
         this.context = context;
-        this.direction = direction;
         this.roadSign = roadSign;
     }
 
@@ -48,7 +45,7 @@ public final class RoadSignRenderer {
         // Rotate 180 to base around "north", so that X goes right and Y goes up
         stack.mulPose(Axis.YP.rotationDegrees(180));
         // Rotate to match the direction of the road sign
-        stack.mulPose(Axis.YP.rotationDegrees(-direction.toYRot()));
+        stack.mulPose(Axis.YP.rotationDegrees(-context.direction().toYRot()));
         stack.translate(-.5, -.5, -.5);
 
         // Here, (0,0) is bottom left, and (width, height) is top right of the block
