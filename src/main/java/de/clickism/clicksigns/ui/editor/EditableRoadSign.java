@@ -5,8 +5,6 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -26,6 +24,7 @@ public class EditableRoadSign {
     private TextureSource frontSource;
     private TextureSource backSource;
     private Alignment alignment;
+
     /**
      * Creates a new EditableRoadSign with the specified properties.
      *
@@ -53,37 +52,78 @@ public class EditableRoadSign {
         }
     }
 
+    /**
+     * Gets the front texture source of the road sign.
+     *
+     * @return the front texture source
+     */
     public TextureSource frontSource() {
         return frontSource;
     }
 
+    /**
+     * Sets the front texture source of the road sign.
+     *
+     * @param frontSource the new front texture source
+     */
     public void frontSource(TextureSource frontSource) {
         this.frontSource = frontSource;
         notifyListeners();
     }
 
+    /**
+     * Gets the back texture source of the road sign.
+     *
+     * @return the back texture source
+     */
     public TextureSource backSource() {
         return backSource;
     }
 
+    /**
+     * Sets the back texture source of the road sign.
+     *
+     * @param backSource the new back texture source
+     */
     public void backSource(TextureSource backSource) {
         this.backSource = backSource;
         notifyListeners();
     }
 
+    /**
+     * Gets the collection of editable sign elements in the road sign.
+     *
+     * @return a collection of editable sign elements
+     */
     public Collection<EditableSignElement> elements() {
         return elements.values();
     }
 
+    /**
+     * Gets the alignment of the road sign.
+     *
+     * @return the alignment of the road sign
+     */
     public Alignment alignment() {
         return alignment;
     }
 
+    /**
+     * Sets the alignment of the road sign.
+     *
+     * @param alignment the new alignment of the road sign
+     */
     public void alignment(Alignment alignment) {
         this.alignment = alignment;
         notifyListeners();
     }
 
+    /**
+     * Updates the specified sign element using the provided updater function.
+     *
+     * @param id      the UUID of the sign element to update
+     * @param updater a function that takes the current SignElement and returns an updated SignElement
+     */
     public void updateElement(UUID id, UnaryOperator<SignElement> updater) {
         var editable = elements.get(id);
         if (editable != null) {
@@ -92,11 +132,22 @@ public class EditableRoadSign {
         }
     }
 
+    /**
+     * Removes the sign element with the specified UUID from the road sign.
+     *
+     * @param id the UUID of the sign element to remove
+     */
     public void removeElement(UUID id) {
         notifyListeners();
         elements.remove(id);
     }
 
+    /**
+     * Adds a new sign element to the road sign.
+     *
+     * @param element the SignElement to add
+     * @return the newly created EditableSignElement
+     */
     public EditableSignElement addElement(SignElement element) {
         var editable = new EditableSignElement(element);
         elements.put(editable.id(), editable);

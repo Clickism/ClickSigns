@@ -135,6 +135,37 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         private int dragStartY = 0;
         private EditableSignElement dragged = null;
 
+        private SignEditor() {
+            globalEvents().onKeyPress(event -> {
+                // Duplicate selected element with Ctrl+D
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
+                    spawnElementNearSelected(selected);
+                    event.consume();
+                }
+                // Copy selected element with Ctrl+C
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_C) {
+                    if (selected != null) {
+                        copied = selected;
+                        event.consume();
+                    }
+                }
+                // Paste copied element with Ctrl+V
+                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_V) {
+                    spawnElementNearSelected(copied);
+                    event.consume();
+                }
+                // Delete selected element with Delete key
+                if (event.code() == GLFW.GLFW_KEY_DELETE) {
+                    // Don't use the delete key for text elements
+                    if (selected != null && !(selected.current() instanceof TextElement)) {
+                        sign.removeElement(selected.id());
+                        selected(null);
+                        event.consume();
+                    }
+                }
+            });
+        }
+
         @Override
         protected void build() {
             childGap(8);
@@ -253,38 +284,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      * such as textures or adding elements.
      */
     private class SignControls extends UiComponent<SignControls> {
-        // TODO: Can't paste into text fields in the right panel, because we capture
-        private SignControls() {
-            onKeyPress(event -> {
-                // Duplicate selected element with Ctrl+D
-                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
-                    spawnElementNearSelected(selected);
-                    event.consume();
-                }
-                // Copy selected element with Ctrl+C
-                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_C) {
-                    if (selected != null) {
-                        copied = selected;
-                        event.consume();
-                    }
-                }
-                // Paste copied element with Ctrl+V
-                if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_V) {
-                    spawnElementNearSelected(copied);
-                    event.consume();
-                }
-                // Delete selected element with Delete key
-                if (event.code() == GLFW.GLFW_KEY_DELETE) {
-                    // Don't use the delete key for text elements
-                    if (selected != null && !(selected.current() instanceof TextElement)) {
-                        sign.removeElement(selected.id());
-                        selected(null);
-                        event.consume();
-                    }
-                }
-            });
-        }
-
         @Override
         protected void build() {
             childGap(4);
@@ -386,28 +385,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         new TemplateExportScreen(sign).open();
                     })
             );
-        }
-
-        private void spawnElementNearSelected(@Nullable EditableSignElement element) {
-            if (element == null) return;
-            Point position;
-            if (selected == null) {
-                position = signCenter();
-            } else {
-                var currentSelected = selected.current();
-                position = new Point(
-                    // Position the new element offset from the selected element, so they don't overlap
-                    (int) (currentSelected.x() + currentSelected.width() / 2),
-                    (int) (currentSelected.y() + currentSelected.height() / 2)
-                );
-            }
-            var newElement = element.current().withPosition(position.x(), position.y());
-            var editable = sign.addElement(newElement);
-            selected(editable);
-        }
-
-        private Point signCenter() {
-            return new Point(sign.width() / 2, sign.height() / 2);
         }
     }
 
@@ -646,6 +623,29 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 }));
         }
     }
+
+    private Point signCenter() {
+        return new Point(sign.width() / 2, sign.height() / 2);
+    }
+
+    private void spawnElementNearSelected(@Nullable EditableSignElement element) {
+        if (element == null) return;
+        Point position;
+        if (selected == null) {
+            position = signCenter();
+        } else {
+            var currentSelected = selected.current();
+            position = new Point(
+                // Position the new element offset from the selected element, so they don't overlap
+                (int) (currentSelected.x() + currentSelected.width() / 2),
+                (int) (currentSelected.y() + currentSelected.height() / 2)
+            );
+        }
+        var newElement = element.current().withPosition(position.x(), position.y());
+        var editable = sign.addElement(newElement);
+        selected(editable);
+    }
+
 
     /**
      * Creates a color input box with validation and suggestions.
