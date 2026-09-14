@@ -21,7 +21,9 @@ public record TextStyle(
     Optional<String> outlineColor,
     int outlineWidth,
     int paddingX,
-    int paddingY
+    int paddingY,
+    TextAlignment textAlignment,
+    int lineGap
 ) {
     /**
      * Default text style.
@@ -33,7 +35,9 @@ public record TextStyle(
         // TODO: Decide on how outline and background is rendered
         1,
         2,
-        1
+        1,
+        TextAlignment.CENTER,
+        0
     );
 
     /**
@@ -52,7 +56,9 @@ public record TextStyle(
         @Nullable String outlineColor,
         int outlineWidth,
         int paddingX,
-        int paddingY
+        int paddingY,
+        TextAlignment textAlignment,
+        int lineGap
     ) {
         this(
             color,
@@ -60,16 +66,10 @@ public record TextStyle(
             Optional.ofNullable(outlineColor),
             outlineWidth,
             paddingX,
-            paddingY
+            paddingY,
+            textAlignment,
+            lineGap
         );
-    }
-
-    public Alignment textAlignment() {
-        return Alignment.RIGHT;
-    }
-
-    public int lineGap() {
-        return 1;
     }
 
     /**
@@ -106,7 +106,7 @@ public record TextStyle(
      * @return a new text style with the updated color
      */
     public TextStyle withColor(@NotNull String newColor) {
-        return new TextStyle(newColor, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY);
+        return new TextStyle(newColor, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 
     /**
@@ -116,7 +116,7 @@ public record TextStyle(
      * @return a new text style with the updated background color
      */
     public TextStyle withBackgroundColor(@Nullable String newBackgroundColor) {
-        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY);
+        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 
     /**
@@ -126,7 +126,7 @@ public record TextStyle(
      * @return a new text style with the updated outline color
      */
     public TextStyle withOutlineColor(@Nullable String newOutlineColor) {
-        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY);
+        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 
     /**
@@ -136,7 +136,7 @@ public record TextStyle(
      * @return a new text style with the updated outline width
      */
     public TextStyle withOutlineWidth(int newOutlineWidth) {
-        return new TextStyle(color, backgroundColor, outlineColor, newOutlineWidth, paddingX, paddingY);
+        return new TextStyle(color, backgroundColor, outlineColor, newOutlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 
     /**
@@ -146,7 +146,7 @@ public record TextStyle(
      * @return a new text style with the updated horizontal padding
      */
     public TextStyle withPaddingX(int newPaddingX) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, newPaddingX, paddingY);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, newPaddingX, paddingY, textAlignment, lineGap);
     }
 
     /**
@@ -156,13 +156,33 @@ public record TextStyle(
      * @return a new text style with the updated vertical padding
      */
     public TextStyle withPaddingY(int newPaddingY) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY, textAlignment, lineGap);
+    }
+
+    /**
+     * Creates a new text style with the given text alignment, keeping the other properties the same.
+     *
+     * @param newTextAlignment the new text alignment of the text
+     * @return a new text style with the updated text alignment
+     */
+    public TextStyle withTextAlignment(TextAlignment newTextAlignment) {
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, newTextAlignment, lineGap);
+    }
+
+    /**
+     * Creates a new text style with the given line gap, keeping the other properties the same.
+     *
+     * @param newLineGap the new line gap of the text, in pixels
+     * @return a new text style with the updated line gap
+     */
+    public TextStyle withLineGap(int newLineGap) {
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, newLineGap);
     }
 
     /**
      * Text alignment options for text elements.
      */
-    public enum Alignment {
+    public enum TextAlignment {
         LEFT,
         CENTER,
         RIGHT

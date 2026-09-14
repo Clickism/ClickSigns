@@ -82,7 +82,9 @@ public class SignElementParser implements JsonHandler {
                     textElement.style().outlineColor().orElse(null),
                     nullIfDefault(textElement.style().outlineWidth(), TextStyle.DEFAULT.outlineWidth()),
                     nullIfDefault(textElement.style().paddingX(), TextStyle.DEFAULT.paddingX()),
-                    nullIfDefault(textElement.style().paddingY(), TextStyle.DEFAULT.paddingY())
+                    nullIfDefault(textElement.style().paddingY(), TextStyle.DEFAULT.paddingY()),
+                    nullIfDefault(textElement.style().textAlignment(), TextStyle.DEFAULT.textAlignment()),
+                    nullIfDefault(textElement.style().lineGap(), TextStyle.DEFAULT.lineGap())
                 )
             );
         }
@@ -200,7 +202,9 @@ public class SignElementParser implements JsonHandler {
             @Nullable String outlineColor,
             @Nullable Integer outlineWidth,
             @Nullable Integer paddingX,
-            @Nullable Integer paddingY
+            @Nullable Integer paddingY,
+            @Nullable TextStyle.TextAlignment textAlignment,
+            @Nullable Integer lineGap
         ) {
             /**
              * Converts the JSON object to a text style object
@@ -212,7 +216,9 @@ public class SignElementParser implements JsonHandler {
                     orDefault(outlineColor, TextStyle.DEFAULT.outlineColor().orElse(null)),
                     orDefault(outlineWidth, TextStyle.DEFAULT.outlineWidth()),
                     orDefault(paddingX, TextStyle.DEFAULT.paddingX()),
-                    orDefault(paddingY, TextStyle.DEFAULT.paddingY())
+                    orDefault(paddingY, TextStyle.DEFAULT.paddingY()),
+                    orDefault(textAlignment, TextStyle.DEFAULT.textAlignment()),
+                    orDefault(lineGap, TextStyle.DEFAULT.lineGap())
                 );
             }
         }

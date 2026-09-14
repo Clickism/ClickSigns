@@ -413,6 +413,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             }
 
             // Text controls
+            // TODO: Fix in ClickUI, text fields scissor breaks when scrolling
             var current = selected.current();
             if (current instanceof TextElement text) {
                 add(smallHeader(l("Text Color")));
@@ -511,7 +512,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 // Scale
                 add(smallHeader(l("Font Size")));
-                // TODO: Convert to work based on pt, so that by default 9pt and can go down to 3pt.
                 add(memo(selected.id() + "-font-size", () -> new NumberControl()
                     .unit(l("pt"))
                     .changeAmount(1)
@@ -527,6 +527,47 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 .withScale(newScale));
                     })
                 ));
+
+                if (text.lines().size() > 1) {
+                    // Line Controls
+                    add(smallHeader(l("Line Alignment")).padding(0));
+                    add(memo(selected.id() + "-line-alignment", () -> new AlignmentSelector()
+                        .alignment(switch (text.style().textAlignment()) {
+                            case LEFT -> Alignment.TEXT_LEFT;
+                            case CENTER -> Alignment.TEXT_CENTER;
+                            case RIGHT -> Alignment.TEXT_RIGHT;
+                        })
+                        .textOnly(true)
+                        .onAlignmentChange(newAlignment -> {
+                            if (selected == null) return;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element)
+                                    .withStyle(s -> s
+                                        .withTextAlignment(switch (newAlignment) {
+                                            case TOP_LEFT -> TextStyle.TextAlignment.LEFT;
+                                            case TOP_CENTER -> TextStyle.TextAlignment.CENTER;
+                                            case TOP_RIGHT -> TextStyle.TextAlignment.RIGHT;
+                                            default -> s.textAlignment();
+                                        })));
+                        })
+                    ));
+
+                    add(smallHeader(l("Line Gap")).padding(0));
+                    add(memo(selected.id() + "-line-gap", () -> new NumberControl()
+                        .unit(l("pt"))
+                        .changeAmount(1)
+                        .fastChangeAmount(4)
+                        .minValue(0)
+                        .maxValue(20)
+                        .value(text.style().lineGap())
+                        .onValueChanged(newGap -> {
+                            if (selected == null) return;
+                            sign.updateElement(selected.id(),
+                                element -> ((TextElement) element)
+                                    .withStyle(s -> s.withLineGap(newGap)));
+                        })
+                    ));
+                }
             }
 
             // Plate controls
@@ -602,7 +643,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             }
 
             // Add Alignment
-            add(smallHeader(l("Alignment")));
+            add(smallHeader(l("Element Alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
                 // TODO: Decide if good to limit to text alignment only

@@ -3,7 +3,6 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.util.Size;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
@@ -36,6 +35,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             buf.writeInt(style.outlineWidth());
             buf.writeInt(style.paddingX());
             buf.writeInt(style.paddingY());
+            buf.writeInt(style.textAlignment().ordinal());
+            buf.writeInt(style.lineGap());
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
             // TODO: Texture source written but not read
@@ -66,13 +67,17 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var outlineWidth = buf.readInt();
                 var paddingX = buf.readInt();
                 var paddingY = buf.readInt();
+                var textAlignment = TextStyle.TextAlignment.values()[buf.readInt()];
+                var lineGap = buf.readInt();
                 var style = new TextStyle(
                     color,
                     backgroundColor,
                     outlineColor,
                     outlineWidth,
                     paddingX,
-                    paddingY
+                    paddingY,
+                    textAlignment,
+                    lineGap
                 );
                 yield new TextElement(localX, localY, alignment, text, scale, style);
             }
@@ -111,6 +116,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             styleTag.putInt("outlineWidth", style.outlineWidth());
             styleTag.putInt("paddingX", style.paddingX());
             styleTag.putInt("paddingY", style.paddingY());
+            styleTag.putInt("textAlignment", text.style().textAlignment().ordinal());
+            styleTag.putInt("lineGap", text.style().lineGap());
             tag.putCompound("style", styleTag.asCompoundTag());
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
@@ -133,7 +140,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         var type = tag.getString("type");
         int localX = tag.getInt("x").orElseThrow();
         int localY = tag.getInt("y").orElseThrow();
-        Alignment alignment = Alignment.valueOf(tag.getString("alignment").orElseThrow());
+        var alignmentString = tag.getString("alignment").orElseThrow();
+        Alignment alignment = Alignment.valueOf(alignmentString);
         return switch (type.orElseThrow()) {
             case TextElement.TYPE -> {
                 var scale = tag.getFloat("scale").orElseThrow();
@@ -146,13 +154,18 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var outlineWidth = styleTag.getInt("outlineWidth").orElseThrow();
                 var paddingX = styleTag.getInt("paddingX").orElseThrow();
                 var paddingY = styleTag.getInt("paddingY").orElseThrow();
+                var textAlignmentString = styleTag.getString("textAlignment").orElse("CENTER");
+                var textAlignment = TextStyle.TextAlignment.valueOf(textAlignmentString);
+                var lineGap = styleTag.getInt("lineGap").orElse(0);
                 var style = new TextStyle(
                     color,
                     backgroundColor,
                     outlineColor,
                     outlineWidth,
                     paddingX,
-                    paddingY
+                    paddingY,
+                    textAlignment,
+                    lineGap
                 );
                 yield new TextElement(localX, localY, alignment, text, scale, style);
             }
