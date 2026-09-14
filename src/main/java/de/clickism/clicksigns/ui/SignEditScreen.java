@@ -584,11 +584,11 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .childGap(4)
                             .children(
                                 smallHeader(l("Front")).padding(0),
-                                new TextureButton(plate.front(), newTexture -> {
+                                new TextureButton(plate.frontSource(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
                                         element -> ((PlateElement) element)
-                                            .withFront(newTexture.resizeToFit(((PlateElement) element).size())));
+                                            .withFrontSource(newTexture.resizeToFit(((PlateElement) element).size())));
                                 })
                             ),
                         box()
@@ -596,11 +596,11 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .childGap(4)
                             .children(
                                 smallHeader(l("Back")).padding(0),
-                                new TextureButton(plate.back(), newTexture -> {
+                                new TextureButton(plate.backSource(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
                                         element -> ((PlateElement) element)
-                                            .withBack(newTexture.resizeToFit(((PlateElement) element).size())));
+                                            .withBackSource(newTexture.resizeToFit(((PlateElement) element).size())));
                                 })
                             )
                     )
@@ -614,9 +614,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         sign.updateElement(selected.id(),
                             element -> {
                                 var plateElement = (PlateElement) element;
-                                var newFront = plateElement.front().resizeToFit(newSize);
-                                var newBack = plateElement.back().resizeToFit(newSize);
-                                return plateElement.withFront(newFront).withBack(newBack);
+                                var newFront = plateElement.frontSource().resizeToFit(newSize);
+                                var newBack = plateElement.backSource().resizeToFit(newSize);
+                                return plateElement.withFrontSource(newFront).withBackSource(newBack);
                             });
                     })
                 ));

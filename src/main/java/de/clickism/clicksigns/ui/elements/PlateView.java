@@ -21,7 +21,7 @@ public class PlateView extends UiComponent<PlateView>
 
     @Override
     protected void build() {
-        var texture = element.front().resolve(colorResolver);
+        var texture = element.frontSource().resolve(colorResolver);
         add(image(
             texture.location(),
             texture.width() * UI_SCALE,

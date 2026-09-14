@@ -44,8 +44,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             // texture source more like a pipeline
             TextureSource.PACKET_WRITER.accept(buf, symbol.symbol().texture());
         } else if (element instanceof PlateElement plate) {
-            TextureSource.PACKET_WRITER.accept(buf, plate.front());
-            TextureSource.PACKET_WRITER.accept(buf, plate.back());
+            TextureSource.PACKET_WRITER.accept(buf, plate.frontSource());
+            TextureSource.PACKET_WRITER.accept(buf, plate.backSource());
         }
     };
     /**
@@ -127,8 +127,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         } else if (element instanceof PlateElement plate) {
             var frontTag = tag.createWriter();
             var backTag = tag.createWriter();
-            TextureSource.NBT_WRITER.write(frontTag, plate.front());
-            TextureSource.NBT_WRITER.write(backTag, plate.back());
+            TextureSource.NBT_WRITER.write(frontTag, plate.frontSource());
+            TextureSource.NBT_WRITER.write(backTag, plate.backSource());
             tag.putCompound("front", frontTag.asCompoundTag());
             tag.putCompound("back", backTag.asCompoundTag());
         }

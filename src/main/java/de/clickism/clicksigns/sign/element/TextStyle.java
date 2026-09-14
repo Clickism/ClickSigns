@@ -32,7 +32,6 @@ public record TextStyle(
         "foreground",
         Optional.empty(),
         Optional.empty(),
-        // TODO: Decide on how outline and background is rendered
         1,
         2,
         1,

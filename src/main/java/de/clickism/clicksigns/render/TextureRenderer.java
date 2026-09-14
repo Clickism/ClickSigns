@@ -41,7 +41,6 @@ public class TextureRenderer {
      * @param blockHeight the height of the quad in blocks
      */
     public void renderColor(int color, float blockWidth, float blockHeight) {
-        // TODO: Maybe use the white texture instead?
         var buffer = context.source().getBuffer(RenderType.textBackground());
         render(buffer, blockWidth, blockHeight, color);
     }

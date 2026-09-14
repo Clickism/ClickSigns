@@ -58,7 +58,6 @@ import java.util.List;
  * @param elements    elements of the road sign
  * @param alignment  alignment of the road sign
  */
-// TODO: Clear definitions, maybe remove templateId?
 public record RoadSign(
     TextureSource frontSource,
     TextureSource backSource,

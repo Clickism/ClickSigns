@@ -24,7 +24,6 @@ import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 /**
  * A UI component that displays a road sign with its texture and elements.
  */
-// TODO: Rename to Sign Editor
 public class SignView extends UiComponent<SignView> {
     /**
      * The editable road sign that this SignView displays and allows editing of.

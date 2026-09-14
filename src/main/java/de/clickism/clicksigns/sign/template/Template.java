@@ -45,6 +45,7 @@ public record Template(
      */
     public record Meta(
         String name,
+        // TODO: Maybe no description? Not really useful i dont think
         @Nullable String description,
         @Nullable String author
     ) {

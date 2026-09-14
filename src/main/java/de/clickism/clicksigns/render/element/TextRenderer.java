@@ -10,7 +10,6 @@ import net.minecraft.util.FastColor;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
-// TODO: Separate text alignment
 public class TextRenderer implements ElementRenderer<TextElement> {
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
     private static final float COLOR_DARKEN_FACTOR = 0.74f;
@@ -69,7 +68,6 @@ public class TextRenderer implements ElementRenderer<TextElement> {
     private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
         var color = roadSign.colorResolver().resolveInt(style.color());
-        // TODO: Find better way to match colors?
         var font = Util.font();
         context.withTextTransform(font, () -> {
             int offsetY = 0;

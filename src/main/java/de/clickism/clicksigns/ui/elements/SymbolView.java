@@ -5,6 +5,7 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.ui.ElementProvider;
+import de.clickism.clicksigns.ui.TextureList;
 import de.clickism.clicksigns.ui.TextureSelectScreen;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editor.EditableRoadSign;
@@ -58,7 +59,7 @@ public class SymbolView extends UiComponent<SymbolView>
             // Open symbol menu
             var colorResolver = sign.colorResolver();
             var entries = SignRegistries.SYMBOLS.all().stream()
-                .map(s -> new de.clickism.clicksigns.ui.TextureList.Entry(
+                .map(s -> new TextureList.Entry(
                     s.texture().resolve(colorResolver),
                     s.identifier(),
                     // TODO: Handle uncategorized symbols

@@ -99,10 +99,10 @@ public class SignElementParser implements JsonHandler {
             return new PlateElementJson(
                 nullIfDefault(plateElement.alignment(), PlateElementJson.DEFAULT_ALIGNMENT),
                 new Position(plateElement.x(), plateElement.y()),
-                plateElement.front().resolve(ColorResolver.empty()).width(),
-                plateElement.front().resolve(ColorResolver.empty()).height(),
-                TextureSource.textureLocationOf(plateElement.front()),
-                TextureSource.textureLocationOf(plateElement.back())
+                plateElement.frontSource().resolve(ColorResolver.empty()).width(),
+                plateElement.frontSource().resolve(ColorResolver.empty()).height(),
+                TextureSource.textureLocationOf(plateElement.frontSource()),
+                TextureSource.textureLocationOf(plateElement.backSource())
             );
         }
         throw new IllegalArgumentException("Unknown sign element type: " + element.getClass().getName());

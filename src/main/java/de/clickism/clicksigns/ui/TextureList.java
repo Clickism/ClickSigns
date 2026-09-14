@@ -47,7 +47,6 @@ public class TextureList extends UiComponent<TextureList> {
 
     @Override
     protected void build() {
-        // TODO: Fix multiple screens are opened?
         // Scrollable box
         var box = box()
             .grow()

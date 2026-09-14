@@ -12,11 +12,10 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
         // TODO: Varying z index based on whether or not colliding with road sign
         // Render front
-        var frontTexture = element.front().resolve(roadSign.colorResolver());
+        var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
         context.textureRenderer().renderTexture(frontTexture);
         // Render back
-        // TODO: Is this even correct?
-        var backTexture = element.back().resolve(roadSign.colorResolver());
+        var backTexture = element.backSource().resolve(roadSign.colorResolver());
         context.withFlip(element.width() / BLOCK_PIXELS, () -> {
             context.textureRenderer().renderTexture(backTexture);
         });

@@ -9,9 +9,8 @@ public record PlateElement(
     int x,
     int y,
     Alignment alignment,
-    // TODO: Rename frontSource and backSource to match roadSign
-    TextureSource front,
-    TextureSource back
+    TextureSource frontSource,
+    TextureSource backSource
 ) implements SignElement {
     /**
      * Type key
@@ -25,12 +24,12 @@ public record PlateElement(
 
     @Override
     public float width() {
-        return front.resolve(ColorResolver.empty()).width();
+        return frontSource.resolve(ColorResolver.empty()).width();
     }
 
     @Override
     public float height() {
-        return front.resolve(ColorResolver.empty()).height();
+        return frontSource.resolve(ColorResolver.empty()).height();
     }
 
     /**
@@ -45,18 +44,18 @@ public record PlateElement(
 
     @Override
     public PlateElement withPosition(int x, int y) {
-        return new PlateElement(x, y, alignment(), front(), back());
+        return new PlateElement(x, y, alignment(), frontSource(), backSource());
     }
 
     public PlateElement withAlignment(Alignment alignment) {
-        return new PlateElement(x(), y(), alignment, front(), back());
+        return new PlateElement(x(), y(), alignment, frontSource(), backSource());
     }
 
-    public PlateElement withFront(TextureSource front) {
-        return new PlateElement(x(), y(), alignment(), front, back());
+    public PlateElement withFrontSource(TextureSource front) {
+        return new PlateElement(x(), y(), alignment(), front, backSource());
     }
 
-    public PlateElement withBack(TextureSource back) {
-        return new PlateElement(x(), y(), alignment(), front(), back);
+    public PlateElement withBackSource(TextureSource back) {
+        return new PlateElement(x(), y(), alignment(), frontSource(), back);
     }
 }
