@@ -140,6 +140,19 @@ public class SignTextField extends TextField implements ElementProvider {
     }
 
     @Override
+    protected int cursorPosAt(int mouseX) {
+        var scale = renderScale();
+        var bounds = bounds();
+        // Undo the render transform around the field's top-left corner.
+        float localMouseX = bounds.x() + (mouseX - bounds.x()) / scale;
+        var textPos = textPosition();
+        int x = Mth.ceil(localMouseX - textPos.x());
+        var visibleText = value().substring(displayPos);
+        int charIndex = Util.font().plainSubstrByWidth(visibleText, x).length();
+        return displayPos + charIndex;
+    }
+
+    @Override
     public void render(RenderContext context) {
         // Render the text field
         var bounds = bounds();
