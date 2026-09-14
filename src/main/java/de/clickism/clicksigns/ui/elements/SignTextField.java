@@ -24,9 +24,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * <p>
  * Handles rendering of the text with scaling and background color, and custom styling.
  */
-// TODO: Add support for newlines!
 public class SignTextField extends TextField implements ElementProvider {
-    private static final int MIN_SIZE = 4;
     private TextElement element;
     private ColorResolver colorResolver;
 
@@ -87,9 +85,6 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected float currentWidth() {
         float width = elementToLayout().width();
-        if (width < MIN_SIZE) {
-            width = MIN_SIZE;
-        }
         return width * UI_SCALE;
     }
 
@@ -100,9 +95,6 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected float currentHeight() {
         var height = elementToLayout().height();
-        if (height < MIN_SIZE) {
-            height = MIN_SIZE;
-        }
         return height * UI_SCALE;
     }
 
@@ -113,9 +105,6 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected TextElement elementToLayout() {
         var text = textToShow();
-        if (listening()) {
-            text += "_";
-        }
         return element.withText(text);
     }
 
@@ -347,12 +336,15 @@ public class SignTextField extends TextField implements ElementProvider {
         // Calculate the position of the cursor
         x = textPos.x() + font.width(lineText) + element.lineXOffset(line);
         y = textPos.y() + lineIndex * font.lineHeight + (lineIndex * this.element.style().lineGap());
+        context.graphics().pose().pushPose();
+        context.graphics().pose().translate(0, 0, 100); // Move cursor to front
         super.renderCursor(context, x,
             // Render one above to render on top of underline if not underline
             inline
                 ? y
                 : y - 1,
             inline);
+        context.graphics().pose().popPose();
     }
 
     @Override
