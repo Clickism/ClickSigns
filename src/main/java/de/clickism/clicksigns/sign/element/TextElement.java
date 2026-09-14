@@ -3,9 +3,9 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.util.Util;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
@@ -41,32 +41,22 @@ public record TextElement(
 
     @Override
     public float width() {
-        return textSpaceToSignSpace(textSize().width());
+        return textSpaceToSignSpace(totalSize().width());
     }
 
     @Override
     public float height() {
-        return textSpaceToSignSpace(textSize().height());
+        return textSpaceToSignSpace(totalSize().height());
     }
 
     /**
-     * Calculates the dimension of the sign element in pixels.
+     * Returns the lines of text, split by newline characters.
      *
-     * @param dimension dimension of the text in blocks
-     * @param padding   padding of the text in pixels, in the given dimension
-     * @return the dimension of the sign element in pixels
+     * @return a list of lines of text
      */
-    // TODO: Fix text not aligned properly? (I think only in UI)
-    private int calculateSignDimension(int dimension, int padding) {
-        int result = dimension;
-        // If there is a background color, add padding to the dimension
-        if (style.isPaddingShown()) {
-            result += padding * 2;
-            if (style.isOutlineShown()) {
-                result += style.outlineWidth() * 2;
-            }
-        }
-        return Mth.ceil(textSpaceToSignSpace(result));
+    public List<String> lines() {
+        // Split the text by newline characters, preserving empty lines
+        return List.of(text.split("\n", -1));
     }
 
     /**
@@ -86,7 +76,7 @@ public record TextElement(
      *
      * @return the total size of the text element as a Size object
      */
-    public Size textSize() {
+    public Size totalSize() {
         var padded = paddedSize();
         return new Size(
             padded.width() + backgroundOffset() * 2,
@@ -119,13 +109,30 @@ public record TextElement(
      * @return the padded size of the text element as a Size object
      */
     public Size paddedSize() {
-        int width = Util.font().width(text);
-        int height = Util.font().lineHeight;
+        var unpadded = unpaddedSize();
+        var width = unpadded.width();
+        var height = unpadded.height();
         if (style.isPaddingShown()) {
             width += style.paddingX() * 2;
             height += style.paddingY() * 2;
         }
         return new Size(width, height);
+    }
+
+    /**
+     * Calculates the unpadded size of the text element in text space.
+     *
+     * @return the unpadded size of the text element as a Size object
+     */
+    public Size unpaddedSize() {
+        var lines = lines();
+        var maxLineWidth = lines.stream()
+            .mapToInt(Util.font()::width)
+            .max()
+            .orElse(0);
+        var lineHeight = Util.font().lineHeight;
+        var height = lineHeight * lines.size() + (lines.size() - 1) * style.lineGap();
+        return new Size(maxLineWidth, height);
     }
 
     /**

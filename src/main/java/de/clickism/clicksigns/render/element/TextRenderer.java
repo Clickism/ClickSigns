@@ -10,8 +10,8 @@ import net.minecraft.util.FastColor;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
+// TODO: Separate text alignment
 public class TextRenderer implements ElementRenderer<TextElement> {
-    // TODO: Adjust text scale, so that it's a bit nicer?
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
     private static final float COLOR_DARKEN_FACTOR = 0.74f;
 
@@ -71,17 +71,23 @@ public class TextRenderer implements ElementRenderer<TextElement> {
         // TODO: Find better way to match colors?
         var font = Util.font();
         context.withTextTransform(font, () -> {
-            font.drawInBatch(
-                element.text(),
-                0, 0,
-                multiplyColor(color, COLOR_DARKEN_FACTOR),
-                false,
-                context.stack().last().pose(),
-                context.source(),
-                Font.DisplayMode.POLYGON_OFFSET,
-                0, // No background
-                context.light()
-            );
+            int y = 0;
+            // Render in reverse, so that the first line is on top
+            for (int i = element.lines().size() - 1; i >= 0; i--) {
+                var line = element.lines().get(i);
+                font.drawInBatch(
+                    line,
+                    0, -y,
+                    multiplyColor(color, COLOR_DARKEN_FACTOR),
+                    false,
+                    context.stack().last().pose(),
+                    context.source(),
+                    Font.DisplayMode.POLYGON_OFFSET,
+                    0, // No background
+                    context.light()
+                );
+                y += font.lineHeight + element.style().lineGap();
+            }
         });
     }
 
@@ -95,7 +101,9 @@ public class TextRenderer implements ElementRenderer<TextElement> {
     private void renderStyle(TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
         var background = element.paddedSize();
-        var outlineWidth = style.isOutlineShown() ? style.outlineWidth() : 0;
+        var outlineWidth = style.isOutlineShown()
+            ? style.outlineWidth()
+            : 0;
         // Render background
         style.backgroundColor()
             .map(roadSign.colorResolver()::resolveInt)

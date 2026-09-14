@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clickui.layout.Align;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +63,14 @@ public record TextStyle(
             paddingX,
             paddingY
         );
+    }
+
+    public Alignment alignment() {
+        return Alignment.CENTER;
+    }
+
+    public int lineGap() {
+        return 1;
     }
 
     /**
@@ -149,5 +158,14 @@ public record TextStyle(
      */
     public TextStyle withPaddingY(int newPaddingY) {
         return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY);
+    }
+
+    /**
+     * Text alignment options for text elements.
+     */
+    public enum Alignment {
+        LEFT,
+        CENTER,
+        RIGHT
     }
 }
