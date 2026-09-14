@@ -140,16 +140,22 @@ public class SignTextField extends TextField implements ElementProvider {
      */
     protected void moveCursorVertically(int delta) {
         var linePos = linePosOf(cursorPos);
-        int newLine = linePos.line + delta;
-        if (newLine < 0) {
-            newLine = 0;
+        var lineText = elementToShow().lines();
+        int newLine = Mth.clamp(linePos.line + delta, 0, lineText.size() - 1);
+        // Calculate new position in the line visually, based on the x position of the cursor in the current line
+        var font = Util.font();
+        int cursorX = font.width(lineText.get(linePos.line).substring(0, linePos.pos)) + element.lineXOffset(lineText.get(linePos.line));
+        int newPos = 0;
+        for (int i = 0; i < lineText.get(newLine).length(); i++) {
+            int charWidth = font.width(lineText.get(newLine).substring(i, i + 1));
+            int charX = font.width(lineText.get(newLine).substring(0, i)) + element.lineXOffset(lineText.get(newLine));
+            if (charX + charWidth / 2 >= cursorX) {
+                newPos = i;
+                break;
+            } else {
+                newPos = lineText.get(newLine).length();
+            }
         }
-        var lines = elementToShow().lines();
-        if (newLine >= lines.size()) {
-            newLine = lines.size() - 1;
-        }
-        var newLineText = lines.get(newLine);
-        int newPos = Math.min(linePos.pos, newLineText.length());
         cursorPos = new LinePos(newLine, newPos).toCursorPos();
         if (!Screen.hasShiftDown()) {
             highlightPos = cursorPos;
@@ -223,8 +229,9 @@ public class SignTextField extends TextField implements ElementProvider {
         int lineIndex = Mth.clamp(y / lineHeight, 0, lines.size() - 1);
         // Calculate character index based on x position
         var lineText = lines.get(lineIndex);
+        x -= element.lineXOffset(lineText); // Adjust x based on line offset
         int charIndex = Util.font().plainSubstrByWidth(lineText, x).length();
-        // Calculate cursor position based on line and character index
+        // Calculate cursor position
         int lineCursorPos = 0;
         for (int i = 0; i < lineIndex; i++) {
             lineCursorPos += lines.get(i).length() + 1; // +1 for newline
@@ -317,7 +324,7 @@ public class SignTextField extends TextField implements ElementProvider {
             var font = context.font();
             var lineText = line.substring(startChar, endChar);
             var textPos = textPosition();
-            int highlightX = textPos.x() + font.width(line.substring(0, startChar));
+            int highlightX = textPos.x() + font.width(line.substring(0, startChar)) + element.lineXOffset(line);
             int highlightY = textPos.y() + lineIndex * font.lineHeight + (lineIndex * element.style().lineGap());
             int highlightWidth = font.width(lineText);
             super.renderHighlight(context, highlightX, highlightY, highlightWidth);
@@ -327,7 +334,8 @@ public class SignTextField extends TextField implements ElementProvider {
     @Override
     protected void renderCursor(RenderContext context, int x, int y, boolean inline) {
         // Calculate position based on lines
-        var lines = elementToShow().lines();
+        var element = elementToShow();
+        var lines = element.lines();
         var linePos = linePosOf(cursorPos);
         var lineIndex = linePos.line;
         var charIndex = linePos.pos;
@@ -336,8 +344,9 @@ public class SignTextField extends TextField implements ElementProvider {
         var line = lines.get(lineIndex);
         var lineText = line.substring(0, Math.min(charIndex, line.length()));
         var textPos = textPosition();
-        x = textPos.x() + font.width(lineText);
-        y = textPos.y() + lineIndex * font.lineHeight + (lineIndex * element.style().lineGap());
+        // Calculate the position of the cursor
+        x = textPos.x() + font.width(lineText) + element.lineXOffset(line);
+        y = textPos.y() + lineIndex * font.lineHeight + (lineIndex * this.element.style().lineGap());
         super.renderCursor(context, x,
             // Render one above to render on top of underline if not underline
             inline
@@ -352,11 +361,13 @@ public class SignTextField extends TextField implements ElementProvider {
         var graphics = context.graphics();
         var font = context.font();
         // Render the main text
-        var lines = elementToShow().lines();
+        var element = elementToShow();
+        var lines = element.lines();
         var lineY = y;
         for (var line : lines) {
-            graphics.drawString(font, line, x, lineY, color, false); // No shadow
-            lineY += font.lineHeight + element.style().lineGap();
+            var lineX = x + element.lineXOffset(line);
+            graphics.drawString(font, line, lineX, lineY, color, false); // No shadow
+            lineY += font.lineHeight + this.element.style().lineGap();
         }
         // No suggestion support
     }
@@ -425,6 +436,7 @@ public class SignTextField extends TextField implements ElementProvider {
     /**
      * A helper class representing a position in the text as a line index and a character position within that line.
      */
+    // TODO: Clean up line logic
     protected class LinePos {
         protected final int line;
         protected final int pos;

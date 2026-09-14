@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clickui.layout.Align;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,8 +64,8 @@ public record TextStyle(
         );
     }
 
-    public Alignment alignment() {
-        return Alignment.CENTER;
+    public Alignment textAlignment() {
+        return Alignment.RIGHT;
     }
 
     public int lineGap() {

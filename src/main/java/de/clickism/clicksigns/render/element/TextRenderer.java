@@ -67,17 +67,19 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      * @param roadSign the road sign being rendered
      */
     private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
-        var color = roadSign.colorResolver().resolveInt(element.style().color());
+        var style = element.style();
+        var color = roadSign.colorResolver().resolveInt(style.color());
         // TODO: Find better way to match colors?
         var font = Util.font();
         context.withTextTransform(font, () -> {
-            int y = 0;
+            int offsetY = 0;
             // Render in reverse, so that the first line is on top
             for (int i = element.lines().size() - 1; i >= 0; i--) {
                 var line = element.lines().get(i);
+                int offsetX = element.lineXOffset(line);
                 font.drawInBatch(
                     line,
-                    0, -y,
+                    offsetX, -offsetY,
                     multiplyColor(color, COLOR_DARKEN_FACTOR),
                     false,
                     context.stack().last().pose(),
@@ -86,7 +88,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                     0, // No background
                     context.light()
                 );
-                y += font.lineHeight + element.style().lineGap();
+                offsetY += font.lineHeight + style.lineGap();
             }
         });
     }

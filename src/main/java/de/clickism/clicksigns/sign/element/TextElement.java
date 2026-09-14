@@ -60,6 +60,23 @@ public record TextElement(
     }
 
     /**
+     * Calculates the X offset (from the text position)
+     * for a given line of text based on the text alignment.
+     *
+     * @param line the line of text to calculate the offset for
+     * @return the X offset for the line of text
+     */
+    public int lineXOffset(String line) {
+        var lineWidth = Util.font().width(line);
+        var totalWidth = unpaddedSize().width();
+        return switch (style.textAlignment()) {
+            case LEFT -> 0;
+            case CENTER -> (totalWidth - lineWidth) / 2;
+            case RIGHT -> totalWidth - lineWidth;
+        };
+    }
+
+    /**
      * Converts a dimension in text space to sign space, taking into account
      * the block pixels, text render scale, and element scale.
      *
