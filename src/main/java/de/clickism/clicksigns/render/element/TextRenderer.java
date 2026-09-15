@@ -10,6 +10,9 @@ import net.minecraft.util.FastColor;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
+/**
+ * Renders a {@link TextElement} on a {@link RoadSign}.
+ */
 public class TextRenderer implements ElementRenderer<TextElement> {
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
     private static final float COLOR_DARKEN_FACTOR = 0.74f;

@@ -14,8 +14,9 @@ import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.Mth;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,7 +57,7 @@ import java.util.List;
  * @param frontSource texture of the road sign
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
- * @param alignment  alignment of the road sign
+ * @param alignment   alignment of the road sign
  */
 public record RoadSign(
     TextureSource frontSource,
@@ -268,5 +269,17 @@ public record RoadSign(
      */
     public RoadSign withAlignment(Alignment alignment) {
         return new RoadSign(frontSource, backSource, elements, alignment);
+    }
+
+    /**
+     * Checks if the road sign's main texture intersects with the given sign element.
+     *
+     * @param element the sign element to check for intersection
+     * @return true if the road sign intersects with the sign element, false otherwise
+     */
+    public boolean intersects(SignElement element) {
+        var signRect = new Rectangle(0, 0, width(), height());
+        var elementRect = new Rectangle(element.x(), element.y(), Mth.ceil(element.width()), Mth.ceil(element.height()));
+        return signRect.intersects(elementRect);
     }
 }
