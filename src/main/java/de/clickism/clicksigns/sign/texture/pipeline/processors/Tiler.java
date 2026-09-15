@@ -4,6 +4,9 @@ import de.clickism.clicksigns.sign.texture.pipeline.Image;
 import de.clickism.clicksigns.sign.texture.pipeline.ResizableTextureProcessor;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureContext;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureProcessor;
+import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
+import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
+import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
 
 /**
  * Tiles a given image based on the specified tile set and dimensions.
@@ -17,6 +20,8 @@ public record Tiler(
     int outputWidth,
     int outputHeight
 ) implements ResizableTextureProcessor {
+    public static final String TYPE = "tiler";
+
     @Override
     public Image process(Image input, TextureContext context) {
         var output = new Image(outputWidth, outputHeight);
@@ -65,5 +70,39 @@ public record Tiler(
             return local + centerStart + centerSize;
         }
         return coord;
+    }
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
+
+    public static CommonCodec<Tiler> codec() {
+        return CommonCodec.of(
+            NbtCodec.of(
+                (writer, value) -> {
+                    writer.putInt("cornerSize", value.cornerSize);
+                    writer.putInt("outputWidth", value.outputWidth);
+                    writer.putInt("outputHeight", value.outputHeight);
+                },
+                reader -> new Tiler(
+                    reader.getInt("cornerSize").orElseThrow(),
+                    reader.getInt("outputWidth").orElseThrow(),
+                    reader.getInt("outputHeight").orElseThrow()
+                )
+            ),
+            PacketCodec.of(
+                (buffer, tiler) -> {
+                    buffer.writeInt(tiler.cornerSize);
+                    buffer.writeInt(tiler.outputWidth);
+                    buffer.writeInt(tiler.outputHeight);
+                },
+                buffer -> new Tiler(
+                    buffer.readInt(),
+                    buffer.readInt(),
+                    buffer.readInt()
+                )
+            )
+        );
     }
 }

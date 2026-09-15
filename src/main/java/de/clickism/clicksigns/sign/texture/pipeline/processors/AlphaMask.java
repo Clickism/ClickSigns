@@ -4,6 +4,9 @@ import de.clickism.clicksigns.sign.texture.pipeline.Image;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureContext;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureSource;
+import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
+import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
+import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
 
 /**
  * Applies an alpha mask to the input image using the specified mask texture.
@@ -15,6 +18,7 @@ import de.clickism.clicksigns.sign.texture.pipeline.TextureSource;
 public record AlphaMask(
     TextureSource mask
 ) implements TextureProcessor {
+    public static final String TYPE = "alpha_mask";
 
     @Override
     public Image process(Image input, TextureContext context) {
@@ -33,5 +37,33 @@ public record AlphaMask(
     @Override
     public String identity() {
         return toString();
+    }
+
+    @Override
+    public String typeKey() {
+        return TYPE;
+    }
+
+    public static CommonCodec<AlphaMask> codec() {
+        return CommonCodec.of(
+            NbtCodec.of(
+                (writer, value) -> {
+                    var tag = writer.createWriter();
+                    TextureSource.codec().writeNbt(tag, value.mask);
+                    writer.putCompound("mask", tag.asCompoundTag());
+                },
+                reader -> new AlphaMask(
+                    TextureSource.codec().readNbt(reader.getCompound("mask").orElseThrow())
+                )
+            ),
+            PacketCodec.of(
+                (buffer, value) -> {
+                    TextureSource.codec().writePacket(buffer, value.mask);
+                },
+                buffer -> {
+                    return new AlphaMask(TextureSource.codec().readPacket(buffer));
+                }
+            )
+        );
     }
 }

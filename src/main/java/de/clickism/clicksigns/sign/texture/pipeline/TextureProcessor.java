@@ -1,6 +1,14 @@
 package de.clickism.clicksigns.sign.texture.pipeline;
 
-public interface TextureProcessor {
+import de.clickism.clicksigns.sign.texture.pipeline.processors.AlphaMask;
+import de.clickism.clicksigns.sign.texture.pipeline.processors.ReplaceColor;
+import de.clickism.clicksigns.sign.texture.pipeline.processors.Tiler;
+import de.clickism.clicksigns.util.nbt.TypeKeyed;
+import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
+import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
+import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
+
+public interface TextureProcessor extends TypeKeyed {
     /**
      * Processes the given input image and returns the processed image.
      *
@@ -17,4 +25,41 @@ public interface TextureProcessor {
      * @return a unique identity string for this texture processor
      */
     String identity();
+
+    @SuppressWarnings("unchecked")
+    static <T extends TextureProcessor> CommonCodec<T> codecOf(String typeKey) {
+        return (CommonCodec<T>) switch (typeKey) {
+            case Tiler.TYPE -> Tiler.codec();
+            case ReplaceColor.TYPE -> ReplaceColor.codec();
+            case AlphaMask.TYPE -> AlphaMask.codec();
+            default -> throw new UnsupportedOperationException(
+                "Serialization of TextureProcessor of type: " + typeKey + " is not supported."
+            );
+        };
+    }
+
+    static CommonCodec<TextureProcessor> codec() {
+        return CommonCodec.of(
+            NbtCodec.of(
+                (writer, value) -> {
+                    writer.putString("type", value.typeKey());
+                    codecOf(value.typeKey()).writeNbt(writer, value);
+                },
+                reader -> {
+                    String type = reader.getString("type").orElseThrow();
+                    return codecOf(type).readNbt(reader);
+                }
+            ),
+            PacketCodec.of(
+                (buffer, value) -> {
+                    buffer.writeUtf(value.typeKey());
+                    codecOf(value.typeKey()).writePacket(buffer, value);
+                },
+                buffer -> {
+                    String type = buffer.readUtf();
+                    return codecOf(type).readPacket(buffer);
+                }
+            )
+        );
+    }
 }

@@ -3,6 +3,7 @@ package de.clickism.clicksigns.util.nbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
+// TODO: Convert to work both with NBT and JSON, so we can also use for templates more easily.
 public interface NbtWriter {
     void putString(String key, String value);
 
