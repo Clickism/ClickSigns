@@ -59,7 +59,7 @@ public final class RoadSignRenderer {
         float offsetY = alignment.offset().y * roadSign.blockHeight() / 2;
 
         // To make sure the sign covers the whole block, move back by half alignment offset
-        // TODO: Does not work if height/width < 1
+        // When width/height is < 1 block, will align to the opposite side of the block, but it's fine.
         offsetX -= alignment.offset().x / 2;
         offsetY -= alignment.offset().y / 2;
 

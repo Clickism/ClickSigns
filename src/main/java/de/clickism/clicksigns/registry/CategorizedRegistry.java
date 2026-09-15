@@ -114,7 +114,6 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      */
     public Collection<Category<T>> allCategories() {
         var normalCategories = categories.values().stream()
-            // TODO: Sorted or not sorted?
             .sorted((c1, c2) -> c1.name().compareToIgnoreCase(c2.name()))
             .toList();
         var uncategorized = uncategorized();

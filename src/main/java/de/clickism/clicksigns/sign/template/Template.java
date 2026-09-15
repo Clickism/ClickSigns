@@ -10,6 +10,7 @@ import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -18,8 +19,7 @@ public record Template(
     Meta meta,
     Sign sign,
     // Other data
-    // TODO: Maybe remove identifier at all? or make it nullable. Not needed for local templates
-    ResourceLocation identifier,
+    @NotNull ResourceLocation identifier,
     @Nullable ResourceLocation categoryId
 ) implements Categorized<Template> {
     /**

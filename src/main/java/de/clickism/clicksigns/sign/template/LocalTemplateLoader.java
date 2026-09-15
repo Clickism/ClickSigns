@@ -16,6 +16,7 @@ import static de.clickism.clicksigns.sign.reload.TemplateListener.TEMPLATE_EXTEN
 
 public class LocalTemplateLoader implements JsonHandler {
     private static final TemplateParser TEMPLATE_PARSER = new TemplateParser();
+    public static final String LOCAL_TEMPLATE_NAMESPACE = "local";
 
     private final Path root;
 
@@ -64,9 +65,12 @@ public class LocalTemplateLoader implements JsonHandler {
 
     private ResourceLocation pathToResourceLocation(Path path) {
         var relative = root.relativize(path);
-        var name = relative.toString().toLowerCase(Locale.ROOT).replace("\\", "/").replace(TEMPLATE_EXTENSION, "").replaceAll("[^a-z0-9/._-]", "_");
+        var name = relative.toString().toLowerCase(Locale.ROOT)
+            .replace("\\", "/")
+            .replace(TEMPLATE_EXTENSION, "")
+            .replaceAll("[^a-z0-9/._-]", "_");
         try {
-            return new ResourceLocation("local", name);
+            return ResourceLocation.tryBuild(LOCAL_TEMPLATE_NAMESPACE, name);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create a valid ResourceLocation for local template: " + path, e);
         }

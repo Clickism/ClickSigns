@@ -132,7 +132,6 @@ public class NumberControl extends UiComponent<NumberControl> implements FancyHe
     }
 
     private UiElement<?> buttonTooltip() {
-        // TODO: Move tooltip into sign editor info button
         if (fineChangeAmount != 0) {
             return text(t("clicksigns.ui.numberControl.fineControl.tooltip"));
         }
