@@ -180,6 +180,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         memo(() -> new SignView(sign)
                             .ref(signViewRef)
                             .signConfig((uiElement, editable) -> {
+                                // TODO: Decide if this is too distracting maybe?
                                 uiElement.style(style()
                                     .whenHovered(style()
                                         .borderColor(UiColor.CYAN.alpha(.5f))));
@@ -292,9 +293,9 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         protected void build() {
             childGap(4);
             children(
-                fancyHeader(t("clicksigns.editor.sign_properties")),
+                fancyHeader(t("clicksigns.editor.sign.header")),
                 // Add texture selection
-                smallHeader(t("clicksigns.editor.sign_textures")),
+                smallHeader(t("clicksigns.editor.sign.textures")),
                 box()
                     .horizontal()
                     .growWidth()
@@ -304,7 +305,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .growWidth()
                             .childGap(4)
                             .children(
-                                smallHeader(l("Front")).padding(0),
+                                smallHeader(t("clicksigns.ui.textures.front")).padding(0),
                                 new TextureButton(sign.frontSource(), newTexture -> {
                                     sign.frontSource(newTexture.resizeToFit(sign.build()));
                                 })
@@ -313,16 +314,16 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .growWidth()
                             .childGap(4)
                             .children(
-                                smallHeader(l("Back")).padding(0),
+                                smallHeader(t("clicksigns.ui.textures.back")).padding(0),
                                 new TextureButton(sign.backSource(), newTexture -> {
                                     sign.backSource(newTexture.resizeToFit(sign.build()));
                                 })
                             )
                     ),
                 // Add element controls
-                smallHeader(t("clicksigns.editor.elements")),
+                smallHeader(t("clicksigns.editor.sign.elements.header")),
 
-                button(t("+", "clicksigns.editor.elements.add_symbol"))
+                button(t("+", "clicksigns.editor.sign.elements.addSymbol"))
                     .growWidth()
                     .buttonColor(UiColor.LIME)
                     .onClick(event -> {
@@ -334,7 +335,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         );
                         sign.addElement(element);
                     }),
-                button(t("+", "clicksigns.editor.elements.add_text"))
+                button(t("+", "clicksigns.editor.sign.elements.addText"))
                     .growWidth()
                     .buttonColor(UiColor.LIME)
                     .onClick(event -> {
@@ -345,7 +346,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         );
                         sign.addElement(element);
                     }),
-                button(t("+", "clicksigns.editor.elements.add_plate"))
+                button(t("+", "clicksigns.editor.sign.elements.addPlate"))
                     .growWidth()
                     .buttonColor(UiColor.LIME)
                     .onClick(event -> {
@@ -358,8 +359,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         sign.addElement(element);
                     }),
                 // Add tools
-                smallHeader(t("clicksigns.editor.tools")),
-                button(t("⏪", "clicksigns.editor.tools.reset_texts"))
+                smallHeader(t("clicksigns.editor.sign.tools.header")),
+                button(t("⏪", "clicksigns.editor.sign.tools.resetTexts"))
                     .growWidth()
                     .buttonColor(UiColor.ORANGE)
                     .onClick(event -> {
@@ -372,7 +373,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         }
                         signViewRef.get().resetTextFieldCache();
                     }),
-                button(t("🗑", "clicksigns.editor.tools.remove_elements"))
+                button(t("🗑", "clicksigns.editor.sign.tools.removeElements"))
                     .growWidth()
                     .buttonColor(UiColor.MAROON)
                     .onClick(event -> {
@@ -381,8 +382,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             sign.removeElement(element.id());
                         }
                     }),
-                smallHeader(t("clicksigns.editor.export")),
-                button(t("📤", "clicksigns.editor.export_template"))
+                smallHeader(t("clicksigns.editor.sign.export.header")),
+                button(t("📤", "clicksigns.editor.sign.export.exportTemplate"))
                     .growWidth()
                     .buttonColor(UiColor.TEAL)
                     .onClick(event -> {
@@ -399,17 +400,17 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         @Override
         protected void build() {
             childGap(4);
-            add(fancyHeader(t("clicksigns.editor.element_properties")));
+            add(fancyHeader(t("clicksigns.editor.element.header")));
 
             if (selected == null) {
                 // No element selecteed
                 add(box().height(8)); // Spacer
-                add(text(t("clicksigns.editor.no_element_selected"))
+                add(text(t("clicksigns.editor.element.noneSelected"))
                     .alignTextCenter()
                     .style(style()
                         .alpha(0.6f)));
                 add(box().height(8)); // Spacer
-                add(text(t("clicksigns.editor.click_to_select"))
+                add(text(t("clicksigns.editor.element.noneSelected.description"))
                     .alignTextCenter()
                     .style(style()
                         .alpha(0.6f)));
@@ -420,7 +421,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             // TODO: Fix in ClickUI, text fields scissor breaks when scrolling
             var current = selected.current();
             if (current instanceof TextElement text) {
-                add(smallHeader(l("Text Color")));
+                add(smallHeader(t("clicksigns.editor.element.text.textColor")));
                 var colorResolver = sign.colorResolver();
                 // Foreground color
                 var style = text.style();
@@ -439,7 +440,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 ));
 
                 // Background color
-                add(smallHeader(l("Background Color")).padding(0));
+                add(smallHeader(t("clicksigns.editor.element.text.backgroundColor")).padding(0));
                 add(colorField(
                     selected.id() + "-bg",
                     null,
@@ -479,7 +480,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 // Outline Width
                 if (style.outlineColor().isPresent()) {
-                    add(smallHeader(l("Outline Width")).padding(0));
+                    add(smallHeader(t("clicksigns.editor.element.text.outlineWidth")).padding(0));
                     add(memo(selected.id() + "-outline-width", () -> new NumberControl()
                         .value(style.outlineWidth())
                         .unit(l("pt"))
@@ -496,13 +497,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 // Padding
                 if (style.isPaddingShown()) {
-                    add(smallHeader(l("Text Padding")));
+                    add(smallHeader(t("clicksigns.editor.element.text.padding")));
                     add(memo(selected.id() + "-padding", () -> new SizeControls(new Size(style.paddingX(), style.paddingY()))
                         .minSize(new Size(0, 0))
                         .maxSize(new Size(MAX_PADDING, MAX_PADDING))
-                        .widthHeader(l("Horizontal"))
-                        .heightHeader(l("Vertical"))
-                        .unit(t("pt"))
+                        .widthHeader(t("clicksigns.editor.element.text.padding.horizontal"))
+                        .heightHeader(t("clicksigns.editor.element.text.padding.vertical"))
+                        .unit(l("pt"))
                         .changeAmount(1)
                         .fineChangeAmount(0)
                         .onSizeChanged(newPadding -> {
@@ -515,7 +516,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 }
 
                 // Scale
-                add(smallHeader(l("Font Size")));
+                add(smallHeader(t("clicksigns.editor.element.text.fontSize")));
                 add(memo(selected.id() + "-font-size", () -> new NumberControl()
                     .unit(l("pt"))
                     .changeAmount(1)
@@ -534,7 +535,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
                 if (text.lines().size() > 1) {
                     // Line Controls
-                    add(smallHeader(l("Line Alignment")).padding(0));
+                    add(smallHeader(t("clicksigns.editor.element.text.lineAlignment")).padding(0));
                     add(memo(selected.id() + "-line-alignment", () -> new AlignmentSelector()
                         .alignment(switch (text.style().textAlignment()) {
                             case LEFT -> Alignment.TEXT_LEFT;
@@ -556,7 +557,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         })
                     ));
 
-                    add(smallHeader(l("Line Gap")).padding(0));
+                    add(smallHeader(t("clicksigns.editor.element.text.lineGap")).padding(0));
                     add(memo(selected.id() + "-line-gap", () -> new NumberControl()
                         .unit(l("pt"))
                         .changeAmount(1)
@@ -587,7 +588,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .growWidth()
                             .childGap(4)
                             .children(
-                                smallHeader(l("Front")).padding(0),
+                                smallHeader(t("clicksigns.ui.textures.front")).padding(0),
                                 new TextureButton(plate.frontSource(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
@@ -599,7 +600,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .growWidth()
                             .childGap(4)
                             .children(
-                                smallHeader(l("Back")).padding(0),
+                                smallHeader(t("clicksigns.ui.textures.back")).padding(0),
                                 new TextureButton(plate.backSource(), newTexture -> {
                                     if (selected == null) return;
                                     sign.updateElement(selected.id(),
@@ -609,7 +610,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             )
                     )
                 );
-                add(smallHeader(l("Plate Size")));
+                add(smallHeader(t("clicksigns.editor.element.plate.size")));
                 add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.size())
                     .minSize(MIN_PLATE_SIZE)
                     .maxSize(MAX_PLATE_SIZE)
@@ -630,8 +631,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
             // Symbol controls
             if (current instanceof SymbolElement symbol) {
-                add(smallHeader(l("Symbol")));
-                // TODO: Symbol selection button
+                add(smallHeader(t("clicksigns.editor.element.symbol.symbol")));
                 // TODO: Color replacement? Even better, make texture edit screen
                 add(new SymbolView(symbol, sign.colorResolver())
                     .padding(4)
@@ -652,7 +652,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             }
 
             // Add Alignment
-            add(smallHeader(l("Element Alignment")));
+            add(smallHeader(t("clicksigns.editor.element.general.alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
                 // TODO: Decide if good to limit to text alignment only
@@ -663,8 +663,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 })));
 
             // Delete button
-            add(smallHeader(t("clicksigns.editor.other")));
-            add(button(t("🗑", "clicksigns.editor.tools.remove_element"))
+            add(smallHeader(t("clicksigns.editor.element.other.header")));
+            add(button(t("🗑", "clicksigns.editor.element.other.removeElement"))
                 .growWidth()
                 .buttonColor(UiColor.MAROON)
                 .onClick(event -> {

@@ -62,8 +62,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                     .backgroundColor(UiColor.BLACK_A40)
                     .borderColor(UiColor.WHITE_A30))
                 .children(
-                    // TODO: Translate
-                    fancyHeader(l("Export Template")),
+                    fancyHeader(t("clicksigns.templateExport.header")),
                     smallHeader(t("clicksigns.template.info.name").copy()
                         .append(l("§r§c*"))),
                     memo(() -> textField()
@@ -79,7 +78,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .onValueChanged(this::updateValidity)
                         .ref(authorField)
                         .growWidth()),
-                    smallHeader(t("clicksigns.editor.export")),
+                    smallHeader(t("clicksigns.templateExport.export.header")),
                     box()
                         .horizontal()
                         .growWidth()
@@ -88,9 +87,9 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .children(
                             checkbox()
                                 .ref(includeTexts),
-                            text(t("clicksigns.template.include_texts"))
+                            text(t("clicksigns.templateExport.export.includeTexts"))
                         ),
-                    button(t("💾", "clicksigns.editor.export.save_template"))
+                    button(t("💾", "clicksigns.templateExport.export.save"))
                         .buttonColor(UiColor.TEAL)
                         .disabled(!isValid.get())
                         .growWidth()
@@ -102,7 +101,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                             );
                             event.screen().close();
                         }),
-                    button(t("📄", "clicksigns.editor.export.copy_json"))
+                    button(t("📄", "clicksigns.templateExport.export.copyJson"))
                         .buttonColor(UiColor.TEAL)
                         .disabled(!isValid.get())
                         .growWidth()

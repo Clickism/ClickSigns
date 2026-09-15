@@ -116,7 +116,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                     .children(
                                         // Delete button
                                         showLocal.get() && selected != null
-                                            ? button(t("🗑", "clicksigns.template.delete"))
+                                            ? button(t("🗑", "clicksigns.templateList.delete"))
                                             .buttonColor(UiColor.MAROON)
                                             .growWidth()
                                             .onClick(event -> {
@@ -137,7 +137,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                             })
                                             : box().growWidth(), // Spacer,
                                         // Apply button
-                                        button(t("🛠", "clicksigns.template.apply"))
+                                        button(t("🛠", "clicksigns.templateList.apply"))
                                             .buttonColor(UiColor.LIME)
                                             .growWidth()
                                             .onClick(event -> {
@@ -159,7 +159,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
             childGap(8);
             var template = selected.get();
             if (template == null) {
-                add(text("No template selected.")
+                add(text(t("clicksigns.templateList.noneSelected"))
                     .style(style()
                         .alpha(0.5f)));
                 return;
@@ -178,10 +178,10 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 .childGap(8)
                 .children(
                     // Name
-                    infoField(t("clicksigns.template.info.name"), meta.name()),
+                    infoField(t("clicksigns.templateList.info.name"), meta.name()),
                     // Author (optional)
                     meta.author() != null && !meta.author().isEmpty()
-                        ? infoField(t("clicksigns.template.info.author"), meta.author())
+                        ? infoField(t("clicksigns.templateList.info.author"), meta.author())
                         : null
                 ));
         }
