@@ -16,6 +16,6 @@ public interface RenderLayers {
     int TEXT = 4;
 
     // Back layers
-    int SIGN_BACK = 0;
-    int PLATE_BACK = 1;
+    int SIGN_BACK = -1;
+    int PLATE_BACK = -2;
 }

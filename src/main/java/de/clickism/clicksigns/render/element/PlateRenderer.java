@@ -13,24 +13,30 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 public class PlateRenderer implements ElementRenderer<PlateElement> {
     @Override
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
-        // Render front
-        if (!roadSign.intersects(element)) {
-            // Push Z back to align with the front of the sign
-            context.pushZ(RenderLayers.SIGN_FRONT - renderLayer());
-        }
-        var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
-        context.textureRenderer().renderTexture(frontTexture);
+        var intersects = roadSign.intersects(element);
+        int z = intersects
+            ? RenderLayers.PLATE_FRONT
+            : RenderLayers.SIGN_FRONT;
+        context.withZ(z, () -> {
+            // Render front
+            var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
+            context.textureRenderer().renderTexture(frontTexture);
+        });
         // Render back
         var backTexture = element.backSource().resolve(roadSign.colorResolver());
         // If not intersecting with the road sign, align with the front, so that there is not a gap inbetween
-        // TODO: Fix z offset when intersecting
-        context.withFlip(element.width() / BLOCK_PIXELS, () -> {
-            context.textureRenderer().renderTexture(backTexture);
+        z = intersects
+            ? RenderLayers.PLATE_BACK
+            : RenderLayers.SIGN_BACK;
+        context.withZ(z, () -> {
+            context.withFlip(element.width() / BLOCK_PIXELS, () -> {
+                context.textureRenderer().renderTexture(backTexture);
+            });
         });
     }
 
     @Override
     public int renderLayer() {
-        return RenderLayers.PLATE_FRONT;
+        return 0; // Handle layer in the render method
     }
 }

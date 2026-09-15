@@ -26,6 +26,7 @@ public record TextElement(
     int y,
     Alignment alignment,
     String text,
+    // TODO: Maybe separate horizontal/vertical scale (allow stretch)
     float scale,
     TextStyle style
 ) implements SignElement {

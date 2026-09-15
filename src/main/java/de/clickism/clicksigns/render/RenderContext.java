@@ -157,4 +157,16 @@ public final class RenderContext {
     public void pushZ(int index) {
         stack.translate(0, 0, index * Z_FIGHTING_OFFSET);
     }
+
+    /**
+     * Executes the given action with the Z-fighting offset applied.
+     *
+     * @param index  the index of the Z-fighting offset to apply
+     * @param action the action to execute
+     */
+    public void withZ(int index, Runnable action) {
+        pushZ(index);
+        action.run();
+        pushZ(-index);
+    }
 }

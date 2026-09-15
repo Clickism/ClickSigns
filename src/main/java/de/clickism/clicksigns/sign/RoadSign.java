@@ -278,8 +278,13 @@ public record RoadSign(
      * @return true if the road sign intersects with the sign element, false otherwise
      */
     public boolean intersects(SignElement element) {
-        var signRect = new Rectangle(0, 0, width(), height());
-        var elementRect = new Rectangle(element.x(), element.y(), Mth.ceil(element.width()), Mth.ceil(element.height()));
-        return signRect.intersects(elementRect);
+        var left = element.alignedX();
+        var top = element.alignedY();
+        var right = left + element.width();
+        var bottom = top + element.height();
+        return left < width()
+               && right > 0
+               && top < height()
+               && bottom > 0;
     }
 }
