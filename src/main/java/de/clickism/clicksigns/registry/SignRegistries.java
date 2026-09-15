@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.registry;
 
+import de.clickism.clicksigns.sign.StaticTexture;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.template.Template;
@@ -12,6 +13,10 @@ public class SignRegistries {
      * Registry for tile sets.
      */
     public static final CategorizedRegistry<TileSet> TILE_SETS = new CategorizedRegistry<>();
+    /**
+     * Registry for static textures.
+     */
+    public static final CategorizedRegistry<StaticTexture> STATIC_TEXTURES = new CategorizedRegistry<>();
     /**
      * Registry for symbols.
      */
