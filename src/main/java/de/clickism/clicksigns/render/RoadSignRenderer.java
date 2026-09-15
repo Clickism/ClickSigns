@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.math.Axis;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.render.element.ElementRenderer;
 import de.clickism.clicksigns.render.element.PlateRenderer;
 import de.clickism.clicksigns.render.element.SymbolRenderer;
@@ -10,7 +11,16 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.sign.texture.pipeline.TextureSource;
+import de.clickism.clicksigns.sign.texture.pipeline.processors.AlphaMask;
+import de.clickism.clicksigns.sign.texture.pipeline.processors.ReplaceColor;
+import de.clickism.clicksigns.sign.texture.pipeline.processors.Tiler;
+import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
+import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -87,6 +97,37 @@ public final class RoadSignRenderer {
      */
     private void renderBack() {
         context.withFlip(roadSign.blockWidth(), () -> {
+            if (roadSign.backSource() instanceof TiledTextureSource tiledSource) {
+                TextureSource frontSource;
+                if (roadSign.frontSource() instanceof TiledTextureSource frontTiledSource) {
+                    frontSource = new TextureSource(
+                        frontTiledSource.tileSetId(),
+                        List.of(
+                            new Tiler(frontTiledSource.resolveTileSet().cornerSize(), frontTiledSource.width(), frontTiledSource.height())
+                        )
+                    );
+                } else if (roadSign.frontSource() instanceof StaticTextureSource staticSource) {
+                    frontSource = new TextureSource(
+                        staticSource.location(),
+                        List.of()
+                    );
+                } else {
+                    throw new IllegalStateException("Unsupported front source type: " + roadSign.frontSource().getClass());
+                }
+                var backSource = new TextureSource(
+                    tiledSource.tileSetId(),
+                    List.of(
+                        new Tiler(tiledSource.resolveTileSet().cornerSize(), tiledSource.width(), tiledSource.height()),
+                        new AlphaMask(
+                            frontSource
+                        )
+                    )
+                );
+                var backTexture = backSource.resolve(roadSign.colorResolver());
+                context.textureRenderer().renderTexture(backTexture);
+                return;
+            }
+
             var backTexture = roadSign.backTexture();
             context.textureRenderer().renderTexture(backTexture);
         });

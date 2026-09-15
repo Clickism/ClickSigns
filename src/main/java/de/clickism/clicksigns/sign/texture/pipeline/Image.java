@@ -30,11 +30,25 @@ public record Image(
     }
 
     public int pixelAt(int x, int y) {
+        if (!withinBounds(x, y)) {
+            throw new IndexOutOfBoundsException(
+                "Pixel coordinates out of bounds: (" + x + ", " + y + ") for image of size " + width + "x" + height
+            );
+        }
         return pixels[y * width + x];
     }
 
     public void setPixelAt(int x, int y, int color) {
+        if (!withinBounds(x, y)) {
+            throw new IndexOutOfBoundsException(
+                "Pixel coordinates out of bounds: (" + x + ", " + y + ") for image of size " + width + "x" + height
+            );
+        }
         pixels[y * width + x] = color;
+    }
+
+    public boolean withinBounds(int x, int y) {
+        return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     public void forEachPixel(PixelConsumer consumer) {
