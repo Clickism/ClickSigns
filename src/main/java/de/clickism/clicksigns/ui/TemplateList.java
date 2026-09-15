@@ -50,10 +50,11 @@ public class TemplateList extends UiComponent<TemplateList> implements FancyHead
             }
         } else {
             // Add resource templates
-            // TODO: Add uncategorized templates at the end
             SignRegistries.RESOURCE_TEMPLATES.allCategories().forEach(category -> {
+                var entries = category.resolveEntries();
+                if (entries.isEmpty()) return;
                 box.add(category(l(category.name())));
-                category.resolveEntries().forEach(template -> {
+                entries.forEach(template -> {
                     box.add(entry(template));
                     templates.add(template);
                 });

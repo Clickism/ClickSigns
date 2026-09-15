@@ -62,7 +62,6 @@ public class SymbolView extends UiComponent<SymbolView>
                 .map(s -> new TextureList.Entry(
                     s.texture().resolve(colorResolver),
                     s.identifier(),
-                    // TODO: Handle uncategorized symbols
                     s.resolveCategory()
                 ))
                 .toList();

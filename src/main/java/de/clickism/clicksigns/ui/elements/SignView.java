@@ -32,6 +32,8 @@ public class SignView extends UiComponent<SignView> {
 
     private BiConsumer<UiElement<?>, EditableSignElement> elementConfig =
         (uiElement, signElement) -> {};
+    private BiConsumer<UiElement<?>, EditableRoadSign> signConfig =
+        (uiElement, roadSign) -> {};
 
     /**
      * The bounds of the main sign texture, used for rendering guidelines.
@@ -58,6 +60,19 @@ public class SignView extends UiComponent<SignView> {
      */
     public SignView elementConfig(BiConsumer<UiElement<?>, EditableSignElement> config) {
         this.elementConfig = config;
+        this.invalidateTree();
+        return this;
+    }
+
+    /**
+     * Sets a configuration consumer for the sign itself.
+     * (The main sign texture)
+     *
+     * @param config a consumer that configures the sign
+     * @return this SignView instance for method chaining
+     */
+    public SignView signConfig(BiConsumer<UiElement<?>, EditableRoadSign> config) {
+        this.signConfig = config;
         this.invalidateTree();
         return this;
     }
@@ -91,6 +106,7 @@ public class SignView extends UiComponent<SignView> {
         var mainSignElement = UiUtil.imageOf(texture)
             .relative(-maxBounds.x(), -maxBounds.y());
         this.mainSignElement = mainSignElement;
+        signConfig.accept(mainSignElement, roadSign);
         add(mainSignElement);
 
         // Add plate elements

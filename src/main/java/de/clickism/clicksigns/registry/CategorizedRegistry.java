@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -112,7 +113,13 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @return unmodifiable collection of all registered categories
      */
     public Collection<Category<T>> allCategories() {
-        return Collections.unmodifiableCollection(categories.values());
+        var normalCategories = categories.values().stream()
+            // TODO: Sorted or not sorted?
+            .sorted((c1, c2) -> c1.name().compareToIgnoreCase(c2.name()))
+            .toList();
+        var uncategorized = uncategorized();
+        return Stream.concat(normalCategories.stream(), Stream.of(uncategorized))
+            .toList();
     }
 
     /**

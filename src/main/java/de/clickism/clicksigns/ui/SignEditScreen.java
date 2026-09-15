@@ -170,7 +170,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
         protected void build() {
             childGap(8);
             children(box().childGap(8).grow().alignCenter().children(
-                // TODO: Decide if we want the sign view to be centered or partially.
                 // Sign view
                 box()
                     .padding(1)
@@ -180,6 +179,11 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .children(
                         memo(() -> new SignView(sign)
                             .ref(signViewRef)
+                            .signConfig((uiElement, editable) -> {
+                                uiElement.style(style()
+                                    .whenHovered(style()
+                                        .borderColor(UiColor.CYAN.alpha(.5f))));
+                            })
                             .elementConfig((uiElement, editable) -> {
                                 uiElement
                                     // Hover style
@@ -298,7 +302,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .children(
                         box()
                             .growWidth()
-                            .childGap(2)
+                            .childGap(4)
                             .children(
                                 smallHeader(l("Front")).padding(0),
                                 new TextureButton(sign.frontSource(), newTexture -> {
