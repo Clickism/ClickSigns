@@ -15,8 +15,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TextureList extends UiComponent<TextureList> {
+public class TextureList extends UiComponent<TextureList> implements FancyHeaders {
 
     private final Map<Category<?>, List<Entry>> categoryToEntries;
 
@@ -80,7 +81,9 @@ public class TextureList extends UiComponent<TextureList> {
                 for (int i = 0; i < 1; i++) {
                     row.add(
                         UiUtil.imageOf(texture, textureScale)
-                            .tooltip(l("Click to select this texture"))
+                            .tooltip(describeLeftClick(
+                                t("clicksigns.ui.textureList.tooltip.leftClick")
+                            ))
                             .style(style()
                                 .whenHovered(style()
                                     .borderColor(UiColor.RED)

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 
-import static de.clickism.clicksigns.render.RoadSignRenderer.Z_FIGHTING_OFFSET;
+import static de.clickism.clicksigns.render.RenderLayers.Z_FIGHTING_OFFSET;
 
 /**
  * Rnder context for rendering road signs, providing access to the pose stack, buffer source, light level, and direction.

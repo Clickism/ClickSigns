@@ -62,12 +62,12 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                     .backgroundColor(UiColor.BLACK_A40)
                     .borderColor(UiColor.WHITE_A30))
                 .children(
+                    // TODO: Translate
                     fancyHeader(l("Export Template")),
                     smallHeader(t("clicksigns.template.info.name").copy()
                         .append(l("§r§c*"))),
                     memo(() -> textField()
-                        // TODO: Translate
-                        .value(nextAvailableName("New Template", " #%d"))
+                        .value(nextAvailableName(t("clicksigns.templateExport.newTemplate").getString(), " #%d"))
                         .maxLength(32)
                         .onValueChanged(this::updateValidity)
                         .ref(nameField)

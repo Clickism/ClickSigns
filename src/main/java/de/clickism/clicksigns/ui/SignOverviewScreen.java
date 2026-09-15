@@ -17,7 +17,7 @@ import de.clickism.clickui.UiScreen;
 import net.minecraft.core.BlockPos;
 
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
-import static de.clickism.clicksigns.util.ComponentUtil.l;
+import static de.clickism.clicksigns.util.ComponentUtil.confirmWithIcon;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -70,10 +70,15 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                         }
                         // Element specific config
                         if (signElement instanceof TextElement) {
-                            uiElement.tooltip(t("clicksigns.overview.text.tooltip"));
+                            uiElement.tooltip(
+                                describeLeftClick(t("clicksigns.overview.text.tooltip.leftClick"))
+                            );
                         } else if (signElement instanceof SymbolElement) {
                             uiElement
-                                .tooltip(t("clicksigns.overview.symbol.tooltip"))
+                                .tooltip(descriptions(
+                                    describeLeftClick(t("clicksigns.overview.symbol.tooltip.leftClick")),
+                                    describeRightClick(t("clicksigns.overview.symbol.tooltip.rightClick"))
+                                ))
                                 .onClick(event -> {
                                     event.playSound();
                                     SymbolView.handleSymbolChange(roadSign, editableSignElement, event);
@@ -101,11 +106,10 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                 .backgroundColor(UiColor.BLACK_A50))
                             .children(
                                 // Spacer
-                                // TODO: Better name, translate
-                                smallHeader(l("Sign Options")).padding(0),
+                                smallHeader(t("clicksigns.overview.signOptions")).padding(0),
                                 // Buttons
                                 // Confirm button
-                                button(t("✔", "clicksigns.text.confirm"))
+                                button(confirmWithIcon())
                                     .growWidth()
                                     .buttonColor(UiColor.LIME)
                                     .onClick(event -> {
@@ -117,7 +121,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                         this.close();
                                     }),
                                 // Template button
-                                button(t("📝", "clicksigns.text.change_template"))
+                                button(t("📝", "clicksigns.overview.templates"))
                                     .growWidth()
                                     .buttonColor(UiColor.ORANGE)
                                     .onClick(event -> {
@@ -129,7 +133,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                             .open();
                                     }),
                                 // Edit button
-                                button(t("✎", "clicksigns.text.edit"))
+                                button(t("✎", "clicksigns.overview.edit"))
                                     .buttonColor(UiColor.TEAL)
                                     .growWidth()
                                     .onClick(e -> {
@@ -150,7 +154,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                         .backgroundColor(UiColor.BLACK_A50))
                                     .children(
                                         // Header
-                                        smallHeader(t("clicksigns.text.alignment")).padding(0),
+                                        smallHeader(t("clicksigns.overview.alignment")).padding(0),
                                         // Selector
                                         new AlignmentSelector()
                                             .alignment(roadSign.alignment())

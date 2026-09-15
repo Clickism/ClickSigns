@@ -52,7 +52,7 @@ public class ComponentUtil {
      * @return a component with the translated text for "Confirm"
      */
     public static Component confirm() {
-        return Component.translatable("clicksigns.text.confirm");
+        return Component.translatable("clicksigns.confirm");
     }
 
     /**
@@ -61,7 +61,7 @@ public class ComponentUtil {
      * @return a component with the icon and translated text for "Confirm"
      */
     public static Component confirmWithIcon() {
-        return t("✔", "clicksigns.text.confirm");
+        return t("✔", "clicksigns.confirm");
     }
 
     /**

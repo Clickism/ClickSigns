@@ -10,7 +10,6 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
@@ -19,8 +18,6 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * Road sign renderer
  */
 public final class RoadSignRenderer {
-    // TODO: Move to render layers or constants
-    public static final float Z_FIGHTING_OFFSET = 0.001f;
 
     private final RoadSign roadSign;
 
@@ -126,7 +123,7 @@ public final class RoadSignRenderer {
         var renderer = rendererForElement(element);
         var x = element.alignedX() / BLOCK_PIXELS;
         var y = element.alignedY() / BLOCK_PIXELS;
-        var z = renderer.renderLayer() * Z_FIGHTING_OFFSET;
+        var z = renderer.renderLayer() * RenderLayers.Z_FIGHTING_OFFSET;
         context.withTranslation(x, y, z, () -> {
             renderer.render(element, context, roadSign);
         });

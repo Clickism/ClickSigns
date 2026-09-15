@@ -2,16 +2,23 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.UiElement;
 import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.style.Style;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
+/**
+ * A UI component that allows the user to select a number within a specified range
+ * with increment and decrement buttons.
+ */
 public class NumberControl extends UiComponent<NumberControl> implements FancyHeaders {
-    private State<Integer> value = state(0);
+    private final State<Integer> value = state(0);
     private int minValue = 0;
     private int maxValue = Integer.MAX_VALUE;
 
@@ -81,8 +88,8 @@ public class NumberControl extends UiComponent<NumberControl> implements FancyHe
             .children(
                 // Scale down
                 button("-")
-                    // TODO: Translate
                     .tooltip(buttonTooltip())
+                    .style(buttonStyle())
                     .size(height)
                     .onClick(event -> {
                         value.update(v -> updateAmount(v, -changeAmount()));
@@ -107,6 +114,7 @@ public class NumberControl extends UiComponent<NumberControl> implements FancyHe
                 // Scale up
                 button("+")
                     .tooltip(buttonTooltip())
+                    .style(buttonStyle())
                     .size(height)
                     .onClick(event -> {
                         value.update(v -> updateAmount(v, changeAmount()));
@@ -115,12 +123,21 @@ public class NumberControl extends UiComponent<NumberControl> implements FancyHe
             );
     }
 
-    private String buttonTooltip() {
+    private Style buttonStyle() {
+        return style()
+            .when(c -> Screen.hasShiftDown() && fineChangeAmount != 0, style()
+                .overlayColor(UiColor.TEAL.alpha(0.4f)))
+            .when(c -> Screen.hasShiftDown() && fastChangeAmount != 0, style()
+                .overlayColor(UiColor.LIME.alpha(0.4f)));
+    }
+
+    private UiElement<?> buttonTooltip() {
+        // TODO: Move tooltip into sign editor info button
         if (fineChangeAmount != 0) {
-            return "§7Tip: §rHold Shift for fine control";
+            return text(t("clicksigns.ui.numberControl.fineControl.tooltip"));
         }
         if (fastChangeAmount != 0) {
-            return "§7Tip: §rHold Shift for faster control";
+            return text(t("clicksigns.ui.numberControl.fastControl.tooltip"));
         }
         return null;
     }

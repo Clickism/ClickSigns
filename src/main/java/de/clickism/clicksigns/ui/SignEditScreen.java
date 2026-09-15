@@ -613,6 +613,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.size())
                     .minSize(MIN_PLATE_SIZE)
                     .maxSize(MAX_PLATE_SIZE)
+                    .changeAmount(8)
+                    .fineChangeAmount(1)
                     .onSizeChanged(newSize -> {
                         if (selected == null) return;
                         sign.updateElement(selected.id(),
@@ -638,7 +640,10 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         .backgroundColor(UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver())))
                         .whenHovered(style()
                             .borderColor(UiColor.RED)))
-                    .tooltip(t("clicksigns.overview.symbol.tooltip"))
+                    .tooltip(descriptions(
+                        describeLeftClick(t("clicksigns.overview.symbol.tooltip.leftClick")),
+                        describeRightClick(t("clicksigns.overview.symbol.tooltip.rightClick"))
+                    ))
                     .onClick(event -> {
                         event.playSound();
                         if (selected == null) return;

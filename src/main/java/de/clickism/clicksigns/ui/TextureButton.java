@@ -10,8 +10,9 @@ import de.clickism.clickui.UiComponent;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TextureButton extends UiComponent<TextureButton> {
+public class TextureButton extends UiComponent<TextureButton> implements FancyHeaders {
     private final TextureSource source;
     private final Consumer<TextureSource> onTextureSelected;
 
@@ -20,7 +21,6 @@ public class TextureButton extends UiComponent<TextureButton> {
         this.onTextureSelected = onTextureSelected;
     }
 
-    // TODO: Tooltip
     @Override
     protected void build() {
         var texture = source.resize(16, 16).resolve(ColorResolver.empty());
@@ -31,6 +31,10 @@ public class TextureButton extends UiComponent<TextureButton> {
             .style(style()
                 .whenHovered(style()
                     .borderColor(UiColor.RED)))
+            .tooltip(descriptions(
+                describeLeftClick(t("clicksigns.ui.textureButton.tooltip.leftClick")),
+                describeRightClick(t("clicksigns.ui.textureButton.tooltip.rightClick"))
+            ))
             .onClick(event -> {
                 event.playSound();
                 if (event.isLeftClick()) {
@@ -54,7 +58,7 @@ public class TextureButton extends UiComponent<TextureButton> {
                         ))
                         .toList();
 
-                    new TextureSelectScreen(l("Select Texture"), entries)
+                    new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries)
                         // TODO: Confirm this also works well for non-tile-set textures
                         .textureScale(2) // Smaller scale for tilesets
                         .onTextureSelected(entry -> {

@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFW;
 
 import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
@@ -38,8 +39,7 @@ public class SignTextField extends TextField implements ElementProvider {
         this.element = element;
         this.colorResolver = colorResolver;
         this.scrolling(false);
-        // TODO: Translate
-        this.placeholder("Text");
+        this.placeholder(t("clicksigns.textPlaceholder").getString());
         this.value(element.text());
         // Set up style
         this.overrideStyle(style()
