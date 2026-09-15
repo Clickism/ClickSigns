@@ -3,7 +3,6 @@ package de.clickism.clicksigns.sign;
 import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +28,6 @@ public record StaticTexture(
      * @return a texture source that provides the texture for this static texture
      */
     public TextureSource textureSource() {
-        return new StaticTextureSource(identifier);
+        return TextureSource.ofStatic(identifier);
     }
 }

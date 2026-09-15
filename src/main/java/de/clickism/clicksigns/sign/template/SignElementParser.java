@@ -102,8 +102,8 @@ public class SignElementParser implements JsonHandler {
                 plateElement.frontSource().resolve(ColorResolver.empty()).width(),
                 plateElement.frontSource().resolve(ColorResolver.empty()).height(),
                 // TODO: Proper encoding
-                TextureSource.textureLocationOf(plateElement.frontSource()),
-                TextureSource.textureLocationOf(plateElement.backSource()),
+                plateElement.frontSource().base(),
+                plateElement.backSource().base(),
                 nullIfDefault(plateElement.matchSignTextures(), true)
             );
         }
@@ -258,8 +258,8 @@ public class SignElementParser implements JsonHandler {
                 pos.x,
                 pos.y,
                 orDefault(alignment, DEFAULT_ALIGNMENT),
-                TextureSource.parse(front, width, height),
-                TextureSource.parse(back, width, height),
+                TextureSource.ofStatic(front),
+                TextureSource.ofStatic(back),
                 orDefault(matchSignTextures, true)
             );
         }

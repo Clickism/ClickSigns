@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.texture.pipeline;
+package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.sign.ColorResolver;
 

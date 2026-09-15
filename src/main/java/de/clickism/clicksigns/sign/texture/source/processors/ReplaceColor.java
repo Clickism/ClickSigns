@@ -1,8 +1,8 @@
-package de.clickism.clicksigns.sign.texture.pipeline.processors;
+package de.clickism.clicksigns.sign.texture.source.processors;
 
-import de.clickism.clicksigns.sign.texture.pipeline.Image;
-import de.clickism.clicksigns.sign.texture.pipeline.TextureContext;
-import de.clickism.clicksigns.sign.texture.pipeline.TextureProcessor;
+import de.clickism.clicksigns.sign.texture.source.Image;
+import de.clickism.clicksigns.sign.texture.source.TextureContext;
+import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
 import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
 import de.clickism.clicksigns.util.nbt.codec.PacketCodec;

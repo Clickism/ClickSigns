@@ -4,7 +4,6 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * @param texture    texture source for the symbol's texture
  */
 public record Symbol(
+    // TODO: Remove id and use front source's base instead.
     ResourceLocation identifier,
     TextureSource texture,
     @Nullable ResourceLocation categoryId
@@ -25,7 +25,7 @@ public record Symbol(
      */
     public static final Symbol ERROR_SYMBOL = new Symbol(
         ClickSigns.identifier("error_symbol"),
-        new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
+        TextureSource.ofStatic(ClickSigns.identifier("error_symbol.png")),
         null
     );
 

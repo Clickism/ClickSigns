@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.texture.pipeline;
+package de.clickism.clicksigns.sign.texture.source;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;

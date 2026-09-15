@@ -8,15 +8,13 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.element.TextStyle;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,8 +75,8 @@ public record RoadSign(
      * The default road sign to use when no road sign is set.
      */
     public static RoadSign DEFAULT = new RoadSign(
-        new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
-        new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
+        TextureSource.ofTiled(ClickSigns.signAsset("tilesets/default/white.png"), 4, 32, 16),
+        TextureSource.ofTiled(ClickSigns.signAsset("tilesets/backs/back.png"), 4, 32, 16),
         List.of(
             new SymbolElement(5, 8, Alignment.CENTER, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
             new TextElement(9, 12, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT),
@@ -91,8 +89,8 @@ public record RoadSign(
      * Writer for packets
      */
     public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
-        TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
-        TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
+        TextureSource.codec().writePacket(buf, sign.frontSource());
+        TextureSource.codec().writePacket(buf, sign.backSource());
         buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
         buf.writeInt(sign.alignment().ordinal());
     };
@@ -100,8 +98,8 @@ public record RoadSign(
      * Reader for packets
      */
     public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
-        var front = TextureSource.PACKET_READER.apply(buf);
-        var back = TextureSource.PACKET_READER.apply(buf);
+        var front = TextureSource.codec().readPacket(buf);
+        var back = TextureSource.codec().readPacket(buf);
         var elements = buf.readList(SignElement.PACKET_READER);
         var alignment = Alignment.values()[buf.readInt()];
         return new RoadSign(front, back, elements, alignment);
@@ -112,8 +110,8 @@ public record RoadSign(
     public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
         var front = tag.createWriter();
         var back = tag.createWriter();
-        TextureSource.NBT_WRITER.write(front, sign.frontSource());
-        TextureSource.NBT_WRITER.write(back, sign.backSource());
+        TextureSource.codec().writeNbt(front, sign.frontSource());
+        TextureSource.codec().writeNbt(back, sign.backSource());
         tag.putCompound("front", front.asCompoundTag());
         tag.putCompound("back", back.asCompoundTag());
         tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
@@ -125,8 +123,8 @@ public record RoadSign(
     public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
         var frontCompound = tag.getCompound("front").orElseThrow();
         var backCompound = tag.getCompound("back").orElseThrow();
-        var front = TextureSource.NBT_READER.read(frontCompound);
-        var back = TextureSource.NBT_READER.read(backCompound);
+        var front = TextureSource.codec().readNbt(frontCompound);
+        var back = TextureSource.codec().readNbt(backCompound);
         var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
         var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
         return new RoadSign(front, back, new ArrayList<>(elements), alignment);
@@ -209,6 +207,18 @@ public record RoadSign(
      */
     public RoadSign withBack(TextureSource backSource) {
         return new RoadSign(frontSource, backSource, elements, alignment);
+    }
+
+    /**
+     * Masks the back texture with the front texture, so that the back texture always
+     * matches up with the front texture.
+     *
+     * @param frontSource the front texture source
+     * @param backSource  the back texture source
+     * @return a new texture source with the back texture masked by the front texture
+     */
+    public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
+        return backSource.addProcessor(new AlphaMask(frontSource));
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Template parsing logic.
  */
+// TODO: Just use sign NBT writer/reader for these
 public class TemplateParser implements JsonHandler {
     private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
 
@@ -43,8 +44,9 @@ public class TemplateParser implements JsonHandler {
         var signJson = new TemplateJson.SignJson(
             roadSign.width(),
             roadSign.height(),
-            TextureSource.textureLocationOf(roadSign.frontSource()),
-            TextureSource.textureLocationOf(roadSign.backSource()),
+            // TODO: Proper encoding
+            roadSign.frontSource().base(),
+            roadSign.backSource().base(),
             roadSign.elements().stream()
                 .map(element -> ELEMENT_PARSER.toJson(element, includeTexts))
                 .toList()
@@ -103,8 +105,9 @@ public class TemplateParser implements JsonHandler {
                 return new Template.Sign(
                     width,
                     height,
-                    TextureSource.parse(front, width, height),
-                    TextureSource.parse(back, width, height),
+                    // TODO: Fix and save proper texture
+                    TextureSource.ofStatic(front),
+                    TextureSource.ofStatic(back),
                     parsedElements
                 );
             }

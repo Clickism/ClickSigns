@@ -20,7 +20,6 @@ import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.nbt.NbtUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -308,13 +307,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .children(
                                 smallHeader(t("clicksigns.ui.textures.front")).padding(0),
                                 new TextureButton(sign.frontSource(), newTexture -> {
-                                    sign.frontSource(newTexture.resizeToFit(sign.build()));
+                                    sign.frontSource(newTexture.resize(sign.build()));
                                     // Update all plate elements that match the sign textures
                                     for (var element : sign.elements()) {
                                         if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
                                             sign.updateElement(element.id(),
                                                 edited -> ((PlateElement) edited)
-                                                    .withFrontSource(newTexture.resizeToFit(plate.size())));
+                                                    .withFrontSource(newTexture.resize(plate.size())));
                                         }
                                     }
                                 })
@@ -324,17 +323,19 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                             .childGap(4)
                             .children(
                                 smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                                new TextureButton(sign.backSource(), newTexture -> {
-                                    sign.backSource(newTexture.resizeToFit(sign.build()));
-                                    // Update all plate elements that match the sign textures
-                                    for (var element : sign.elements()) {
-                                        if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
-                                            sign.updateElement(element.id(),
-                                                edited -> ((PlateElement) edited)
-                                                    .withBackSource(newTexture.resizeToFit(plate.size())));
+                                new TextureButton(
+                                    RoadSign.maskedBackOf(sign.frontSource().resize(16, 16), sign.backSource()),
+                                    newTexture -> {
+                                        sign.backSource(newTexture.resize(sign.build()));
+                                        // Update all plate elements that match the sign textures
+                                        for (var element : sign.elements()) {
+                                            if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
+                                                sign.updateElement(element.id(),
+                                                    edited -> ((PlateElement) edited)
+                                                        .withBackSource(newTexture.resize(plate.size())));
+                                            }
                                         }
-                                    }
-                                })
+                                    })
                             )
                     ),
                 // Add element controls
@@ -610,15 +611,15 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 sign.updateElement(selected.id(),
                                     element -> ((PlateElement) element)
                                         // Make sure textures match again
-                                        .withFrontSource(sign.frontSource().resizeToFit(((PlateElement) element).size()))
-                                        .withBackSource(sign.backSource().resizeToFit(((PlateElement) element).size()))
+                                        .withFrontSource(sign.frontSource().resize(((PlateElement) element).size()))
+                                        .withBackSource(sign.backSource().resize(((PlateElement) element).size()))
                                         .withMatchSignTextures(checked));
                             }),
                         text(t("clicksigns.editor.element.plate.matchSignTextures"))
                             .style(style()
                                 .fontScale(0.8f)
                                 .alpha(0.8f)
-                    )));
+                            )));
 
                 if (!plate.matchSignTextures()) {
                     // Show texture options
@@ -636,7 +637,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                         if (selected == null) return;
                                         sign.updateElement(selected.id(),
                                             element -> ((PlateElement) element)
-                                                .withFrontSource(newTexture.resizeToFit(((PlateElement) element).size())));
+                                                .withFrontSource(newTexture.resize(((PlateElement) element).size())));
                                     })
                                 ),
                             box()
@@ -644,12 +645,13 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 .childGap(4)
                                 .children(
                                     smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                                    new TextureButton(plate.backSource(), newTexture -> {
-                                        if (selected == null) return;
-                                        sign.updateElement(selected.id(),
-                                            element -> ((PlateElement) element)
-                                                .withBackSource(newTexture.resizeToFit(((PlateElement) element).size())));
-                                    })
+                                    new TextureButton(RoadSign.maskedBackOf(plate.frontSource().resize(16, 16), plate.backSource()),
+                                        newTexture -> {
+                                            if (selected == null) return;
+                                            sign.updateElement(selected.id(),
+                                                element -> ((PlateElement) element)
+                                                    .withBackSource(newTexture.resize(((PlateElement) element).size())));
+                                        })
                                 )
                         )
                     );
@@ -666,8 +668,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         sign.updateElement(selected.id(),
                             element -> {
                                 var plateElement = (PlateElement) element;
-                                var newFront = plateElement.frontSource().resizeToFit(newSize);
-                                var newBack = plateElement.backSource().resizeToFit(newSize);
+                                var newFront = plateElement.frontSource().resize(newSize);
+                                var newBack = plateElement.backSource().resize(newSize);
                                 return plateElement.withFrontSource(newFront).withBackSource(newBack);
                             });
                     })

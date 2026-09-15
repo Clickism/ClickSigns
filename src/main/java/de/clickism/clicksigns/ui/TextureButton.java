@@ -3,7 +3,6 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
@@ -38,20 +37,20 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
             .onClick(event -> {
                 event.playSound();
                 if (event.isLeftClick()) {
-                    // Cycle to next texture in the same category
-                    if (source instanceof TiledTextureSource tiled) {
-                        var tileSet = tiled.resolveTileSet();
-                        if (tileSet == null) return;
-                        var nextTileSet = tileSet.nextInCategory();
-                        var nextTexture = TiledTextureSource.unsized(nextTileSet.identifier());
-                        onTextureSelected.accept(nextTexture);
-                    }
+                    // TODO: Cycle to next texture in the same category
+//                    if (source instanceof TiledTextureSource tiled) {
+//                        var tileSet = tiled.resolveTileSet();
+//                        if (tileSet == null) return;
+//                        var nextTileSet = tileSet.nextInCategory();
+//                        var nextTexture = TiledTextureSource.unsized(nextTileSet.identifier());
+//                        onTextureSelected.accept(nextTexture);
+//                    }
                 } else {
                     // Open texture menu
                     // TODO: Handle non-tile-set textures (e.g. custom textures)
                     var tileSetEntries = SignRegistries.TILE_SETS.all().stream()
                         .map(tileSet -> new TextureList.Entry(
-                            new TiledTextureSource(tileSet.identifier(), 16, 16)
+                            TextureSource.ofTiled(tileSet, 16, 16)
                                 .resolve(tileSet.colorResolver()),
                             tileSet.identifier(),
                             tileSet.resolveCategory()
@@ -73,7 +72,7 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
                         .onTextureSelected(entry -> {
                             var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
                             if (tileSet != null) {
-                                onTextureSelected.accept(new TiledTextureSource(tileSet.identifier(), 16, 16));
+                                onTextureSelected.accept(TextureSource.ofTiled(tileSet, 16, 16));
                                 return;
                             }
                             var staticTexture = SignRegistries.STATIC_TEXTURES.get(entry.identifier());

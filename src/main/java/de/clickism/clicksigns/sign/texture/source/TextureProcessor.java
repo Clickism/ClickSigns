@@ -1,8 +1,8 @@
-package de.clickism.clicksigns.sign.texture.pipeline;
+package de.clickism.clicksigns.sign.texture.source;
 
-import de.clickism.clicksigns.sign.texture.pipeline.processors.AlphaMask;
-import de.clickism.clicksigns.sign.texture.pipeline.processors.ReplaceColor;
-import de.clickism.clicksigns.sign.texture.pipeline.processors.Tiler;
+import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
+import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
+import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.util.nbt.TypeKeyed;
 import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
 import de.clickism.clicksigns.util.nbt.codec.NbtCodec;

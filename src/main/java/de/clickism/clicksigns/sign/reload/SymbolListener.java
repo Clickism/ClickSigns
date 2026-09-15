@@ -2,9 +2,8 @@ package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Symbol;
-import de.clickism.clicksigns.sign.texture.source.ColorizedTextureSource;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
@@ -41,9 +40,14 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
         TextureSource source;
         if (category != null && category.replaceColor != null) {
             var replaceColor = category.replaceColor;
-            source = new ColorizedTextureSource(location, replaceColor.from(), replaceColor.to());
+            source = new TextureSource(
+                location,
+                List.of(
+                    new ReplaceColor(replaceColor.from(), replaceColor.to())
+                )
+            );
         } else {
-            source = new StaticTextureSource(location);
+            source = TextureSource.ofStatic(location);
         }
         var symbol = new Symbol(location, source, categoryId);
         SignRegistries.SYMBOLS.register(symbol);

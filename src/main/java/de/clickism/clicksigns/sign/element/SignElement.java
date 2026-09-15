@@ -42,10 +42,10 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             // TODO: Texture source written but not read
             // TODO: Should symbols have id, or should they be identified based on their texture source's root?, would have to make
             // texture source more like a pipeline
-            TextureSource.PACKET_WRITER.accept(buf, symbol.symbol().texture());
+            TextureSource.codec().writePacket(buf, symbol.symbol().texture());
         } else if (element instanceof PlateElement plate) {
-            TextureSource.PACKET_WRITER.accept(buf, plate.frontSource());
-            TextureSource.PACKET_WRITER.accept(buf, plate.backSource());
+            TextureSource.codec().writePacket(buf, plate.frontSource());
+            TextureSource.codec().writePacket(buf, plate.backSource());
             buf.writeBoolean(plate.matchSignTextures());
         }
     };
@@ -84,13 +84,13 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             }
             case SymbolElement.TYPE -> {
                 var id = buf.readResourceLocation();
-                var source = TextureSource.PACKET_READER.apply(buf);
+                var source = TextureSource.codec().readPacket(buf);
                 var symbol = SignRegistries.SYMBOLS.get(id).withTexture(source);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             case PlateElement.TYPE -> {
-                var front = TextureSource.PACKET_READER.apply(buf);
-                var back = TextureSource.PACKET_READER.apply(buf);
+                var front = TextureSource.codec().readPacket(buf);
+                var back = TextureSource.codec().readPacket(buf);
                 var match = buf.readBoolean();
                 yield new PlateElement(localX, localY, alignment, front, back, match);
             }
@@ -124,13 +124,13 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
             var textureTag = tag.createWriter();
-            TextureSource.NBT_WRITER.write(textureTag, symbol.symbol().texture());
+            TextureSource.codec().writeNbt(textureTag, symbol.symbol().texture());
             tag.putCompound("texture", textureTag.asCompoundTag());
         } else if (element instanceof PlateElement plate) {
             var frontTag = tag.createWriter();
             var backTag = tag.createWriter();
-            TextureSource.NBT_WRITER.write(frontTag, plate.frontSource());
-            TextureSource.NBT_WRITER.write(backTag, plate.backSource());
+            TextureSource.codec().writeNbt(frontTag, plate.frontSource());
+            TextureSource.codec().writeNbt(backTag, plate.backSource());
             tag.putCompound("front", frontTag.asCompoundTag());
             tag.putCompound("back", backTag.asCompoundTag());
             tag.putBoolean("match", plate.matchSignTextures());
@@ -175,15 +175,15 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
                 var textureTag = tag.getCompound("texture").orElseThrow();
-                var texture = TextureSource.NBT_READER.read(textureTag);
+                var texture = TextureSource.codec().readNbt(textureTag);
                 var symbol = SignRegistries.SYMBOLS.get(id).withTexture(texture);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             case PlateElement.TYPE -> {
                 var frontTag = tag.getCompound("front").orElseThrow();
                 var backTag = tag.getCompound("back").orElseThrow();
-                var front = TextureSource.NBT_READER.read(frontTag);
-                var back = TextureSource.NBT_READER.read(backTag);
+                var front = TextureSource.codec().readNbt(frontTag);
+                var back = TextureSource.codec().readNbt(backTag);
                 var match = tag.getBoolean("match").orElse(true);
                 yield new PlateElement(localX, localY, alignment, front, back, match);
             }
