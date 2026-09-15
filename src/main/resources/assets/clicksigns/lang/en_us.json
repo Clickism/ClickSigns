@@ -62,6 +62,7 @@
   "clicksigns.editor.element.text.lineAlignment": "Line Alignment",
   "clicksigns.editor.element.text.lineGap": "Line Gap",
 
+  "clicksigns.editor.element.plate.matchSignTextures": "Match Sign Textures",
   "clicksigns.editor.element.plate.textures": "Plate Textures",
   "clicksigns.editor.element.plate.size": "Plate Size",
 

@@ -20,6 +20,7 @@ import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.layout.Point;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.NbtUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -308,6 +309,14 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 smallHeader(t("clicksigns.ui.textures.front")).padding(0),
                                 new TextureButton(sign.frontSource(), newTexture -> {
                                     sign.frontSource(newTexture.resizeToFit(sign.build()));
+                                    // Update all plate elements that match the sign textures
+                                    for (var element : sign.elements()) {
+                                        if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
+                                            sign.updateElement(element.id(),
+                                                edited -> ((PlateElement) edited)
+                                                    .withFrontSource(newTexture.resizeToFit(plate.size())));
+                                        }
+                                    }
                                 })
                             ),
                         box()
@@ -317,6 +326,14 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                                 smallHeader(t("clicksigns.ui.textures.back")).padding(0),
                                 new TextureButton(sign.backSource(), newTexture -> {
                                     sign.backSource(newTexture.resizeToFit(sign.build()));
+                                    // Update all plate elements that match the sign textures
+                                    for (var element : sign.elements()) {
+                                        if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
+                                            sign.updateElement(element.id(),
+                                                edited -> ((PlateElement) edited)
+                                                    .withBackSource(newTexture.resizeToFit(plate.size())));
+                                        }
+                                    }
                                 })
                             )
                     ),
@@ -354,7 +371,8 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         var element = new PlateElement(
                             center.x(), center.y(), Alignment.CENTER,
                             sign.frontSource().resize(8, 6),
-                            sign.backSource().resize(8, 6)
+                            sign.backSource().resize(8, 6),
+                            true
                         );
                         sign.addElement(element);
                     }),
@@ -427,7 +445,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 var style = text.style();
                 add(colorField(
                     selected.id() + "-fg",
-                    null,
                     style.color(),
                     colorResolver,
                     newColor -> {
@@ -443,7 +460,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 add(smallHeader(t("clicksigns.editor.element.text.backgroundColor")).padding(0));
                 add(colorField(
                     selected.id() + "-bg",
-                    null,
                     style.backgroundColor().orElse(""),
                     colorResolver,
                     newColor -> {
@@ -463,7 +479,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 // Outline color
                 add(colorField(
                     selected.id() + "-outline",
-                    null,
                     style.outlineColor().orElse(""),
                     colorResolver,
                     newColor -> {
@@ -577,39 +592,69 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
 
             // Plate controls
             if (current instanceof PlateElement plate) {
-                // TODO: Make plates by default match the sign's textures. But allow decoupling them.
                 add(smallHeader(l("Plate Textures")));
+
                 add(box()
                     .horizontal()
                     .growWidth()
+                    .crossAlign(Align.CENTER)
                     .childGap(4)
+                    .padding(2)
+                    .style(style()
+                        .backgroundColor(UiColor.BLACK_A20))
                     .children(
-                        box()
-                            .growWidth()
-                            .childGap(4)
-                            .children(
-                                smallHeader(t("clicksigns.ui.textures.front")).padding(0),
-                                new TextureButton(plate.frontSource(), newTexture -> {
-                                    if (selected == null) return;
-                                    sign.updateElement(selected.id(),
-                                        element -> ((PlateElement) element)
-                                            .withFrontSource(newTexture.resizeToFit(((PlateElement) element).size())));
-                                })
-                            ),
-                        box()
-                            .growWidth()
-                            .childGap(4)
-                            .children(
-                                smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                                new TextureButton(plate.backSource(), newTexture -> {
-                                    if (selected == null) return;
-                                    sign.updateElement(selected.id(),
-                                        element -> ((PlateElement) element)
-                                            .withBackSource(newTexture.resizeToFit(((PlateElement) element).size())));
-                                })
-                            )
-                    )
-                );
+                        checkbox()
+                            .checked(plate.matchSignTextures())
+                            .onCheckedChange(checked -> {
+                                if (selected == null) return;
+                                sign.updateElement(selected.id(),
+                                    element -> ((PlateElement) element)
+                                        // Make sure textures match again
+                                        .withFrontSource(sign.frontSource().resizeToFit(((PlateElement) element).size()))
+                                        .withBackSource(sign.backSource().resizeToFit(((PlateElement) element).size()))
+                                        .withMatchSignTextures(checked));
+                            }),
+                        text(t("clicksigns.editor.element.plate.matchSignTextures"))
+                            .style(style()
+                                .fontScale(0.8f)
+                                .alpha(0.8f)
+                    )));
+
+                if (!plate.matchSignTextures()) {
+                    // Show texture options
+                    add(box()
+                        .horizontal()
+                        .growWidth()
+                        .childGap(4)
+                        .children(
+                            box()
+                                .growWidth()
+                                .childGap(4)
+                                .children(
+                                    smallHeader(t("clicksigns.ui.textures.front")).padding(0),
+                                    new TextureButton(plate.frontSource(), newTexture -> {
+                                        if (selected == null) return;
+                                        sign.updateElement(selected.id(),
+                                            element -> ((PlateElement) element)
+                                                .withFrontSource(newTexture.resizeToFit(((PlateElement) element).size())));
+                                    })
+                                ),
+                            box()
+                                .growWidth()
+                                .childGap(4)
+                                .children(
+                                    smallHeader(t("clicksigns.ui.textures.back")).padding(0),
+                                    new TextureButton(plate.backSource(), newTexture -> {
+                                        if (selected == null) return;
+                                        sign.updateElement(selected.id(),
+                                            element -> ((PlateElement) element)
+                                                .withBackSource(newTexture.resizeToFit(((PlateElement) element).size())));
+                                    })
+                                )
+                        )
+                    );
+                }
+
                 add(smallHeader(t("clicksigns.editor.element.plate.size")));
                 add(memo(selected.id() + "-plate-size", () -> new SizeControls(plate.size())
                     .minSize(MIN_PLATE_SIZE)
@@ -655,7 +700,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             add(smallHeader(t("clicksigns.editor.element.general.alignment")));
             add(memo(selected.id() + "-alignment", () -> new AlignmentSelector()
                 .alignment(current.alignment())
-                // TODO: Decide if good to limit to text alignment only
                 .onAlignmentChange(newAlignment -> {
                     if (selected == null) return;
                     sign.updateElement(selected.id(),
@@ -701,7 +745,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      * Creates a color input box with validation and suggestions.
      *
      * @param id             The unique identifier for the UI element.
-     * @param tooltip        The tooltip text to display on hover.
      * @param value          The initial color value as a string.
      * @param colorResolver  The ColorResolver to validate and suggest colors.
      * @param onValueChanged A consumer that handles changes to the color value.
@@ -709,7 +752,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      */
     private UiElement<?> colorField(
         String id,
-        String tooltip,
         String value,
         ColorResolver colorResolver,
         Consumer<String> onValueChanged
@@ -719,7 +761,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             textField()
                 .growWidth()
                 .highlightInvalid(true)
-                .tooltip(tooltip)
                 .textShadow(false)
                 .value(value)
                 .onValueChanged(onValueChanged))

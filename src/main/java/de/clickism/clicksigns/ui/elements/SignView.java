@@ -237,7 +237,6 @@ public class SignView extends UiComponent<SignView> {
      *
      * @return a Rect representing the maximum relative bounds of the sign and its elements
      */
-    // TODO: Move into roadSign itself?
     private Rect maxRelativeBounds() {
         // Size based on bounds of the elements
         var sign = roadSign.build();

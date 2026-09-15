@@ -101,8 +101,10 @@ public class SignElementParser implements JsonHandler {
                 new Position(plateElement.x(), plateElement.y()),
                 plateElement.frontSource().resolve(ColorResolver.empty()).width(),
                 plateElement.frontSource().resolve(ColorResolver.empty()).height(),
+                // TODO: Proper encoding
                 TextureSource.textureLocationOf(plateElement.frontSource()),
-                TextureSource.textureLocationOf(plateElement.backSource())
+                TextureSource.textureLocationOf(plateElement.backSource()),
+                nullIfDefault(plateElement.matchSignTextures(), true)
             );
         }
         throw new IllegalArgumentException("Unknown sign element type: " + element.getClass().getName());
@@ -240,7 +242,8 @@ public class SignElementParser implements JsonHandler {
         int width,
         int height,
         ResourceLocation front,
-        ResourceLocation back
+        ResourceLocation back,
+        @Nullable Boolean matchSignTextures
     ) {
         private static final Alignment DEFAULT_ALIGNMENT = Alignment.CENTER;
 
@@ -256,7 +259,8 @@ public class SignElementParser implements JsonHandler {
                 pos.y,
                 orDefault(alignment, DEFAULT_ALIGNMENT),
                 TextureSource.parse(front, width, height),
-                TextureSource.parse(back, width, height)
+                TextureSource.parse(back, width, height),
+                orDefault(matchSignTextures, true)
             );
         }
     }

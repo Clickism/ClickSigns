@@ -46,6 +46,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
         } else if (element instanceof PlateElement plate) {
             TextureSource.PACKET_WRITER.accept(buf, plate.frontSource());
             TextureSource.PACKET_WRITER.accept(buf, plate.backSource());
+            buf.writeBoolean(plate.matchSignTextures());
         }
     };
     /**
@@ -90,7 +91,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             case PlateElement.TYPE -> {
                 var front = TextureSource.PACKET_READER.apply(buf);
                 var back = TextureSource.PACKET_READER.apply(buf);
-                yield new PlateElement(localX, localY, alignment, front, back);
+                var match = buf.readBoolean();
+                yield new PlateElement(localX, localY, alignment, front, back, match);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
         };
@@ -131,6 +133,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             TextureSource.NBT_WRITER.write(backTag, plate.backSource());
             tag.putCompound("front", frontTag.asCompoundTag());
             tag.putCompound("back", backTag.asCompoundTag());
+            tag.putBoolean("match", plate.matchSignTextures());
         }
     };
     /**
@@ -181,7 +184,8 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var backTag = tag.getCompound("back").orElseThrow();
                 var front = TextureSource.NBT_READER.read(frontTag);
                 var back = TextureSource.NBT_READER.read(backTag);
-                yield new PlateElement(localX, localY, alignment, front, back);
+                var match = tag.getBoolean("match").orElse(true);
+                yield new PlateElement(localX, localY, alignment, front, back, match);
             }
             default -> throw new IllegalArgumentException("Unknown element type: " + type);
         };
