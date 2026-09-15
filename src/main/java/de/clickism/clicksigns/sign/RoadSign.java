@@ -80,10 +80,10 @@ public record RoadSign(
         new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
         new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
         List.of(
-            new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-            new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT),
-            new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT),
-            new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, TextStyle.DEFAULT)
+            new SymbolElement(5, 8, Alignment.CENTER, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
+            new TextElement(9, 12, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT),
+            new TextElement(9, 8, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT),
+            new TextElement(9, 4, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT)
         ),
         DEFAULT_ALIGNMENT
     );
