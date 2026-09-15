@@ -8,8 +8,8 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
-import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class TextureButton extends UiComponent<TextureButton> implements FancyHeaders {
@@ -49,20 +49,37 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
                 } else {
                     // Open texture menu
                     // TODO: Handle non-tile-set textures (e.g. custom textures)
-                    var entries = SignRegistries.TILE_SETS.all().stream()
+                    var tileSetEntries = SignRegistries.TILE_SETS.all().stream()
                         .map(tileSet -> new TextureList.Entry(
                             new TiledTextureSource(tileSet.identifier(), 16, 16)
                                 .resolve(tileSet.colorResolver()),
                             tileSet.identifier(),
                             tileSet.resolveCategory()
-                        ))
+                        ));
+
+                    var staticEntries = SignRegistries.STATIC_TEXTURES.all().stream()
+                        .map(staticTexture -> new TextureList.Entry(
+                            staticTexture.textureSource().resolve(ColorResolver.empty()),
+                            staticTexture.identifier(),
+                            staticTexture.resolveCategory()
+                        ));
+
+                    var entries = Stream.concat(tileSetEntries, staticEntries)
                         .toList();
 
                     new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries)
                         // TODO: Confirm this also works well for non-tile-set textures
                         .textureScale(2) // Smaller scale for tilesets
                         .onTextureSelected(entry -> {
-                            onTextureSelected.accept(TiledTextureSource.unsized(entry.identifier()));
+                            var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
+                            if (tileSet != null) {
+                                onTextureSelected.accept(new TiledTextureSource(tileSet.identifier(), 16, 16));
+                                return;
+                            }
+                            var staticTexture = SignRegistries.STATIC_TEXTURES.get(entry.identifier());
+                            if (staticTexture != null) {
+                                onTextureSelected.accept(staticTexture.textureSource());
+                            }
                         }).open();
                 }
             }));

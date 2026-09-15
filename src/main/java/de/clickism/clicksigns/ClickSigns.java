@@ -3,10 +3,7 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.sign.reload.SignReloadListener;
-import de.clickism.clicksigns.sign.reload.SymbolListener;
-import de.clickism.clicksigns.sign.reload.TemplateListener;
-import de.clickism.clicksigns.sign.reload.TileSetListener;
+import de.clickism.clicksigns.sign.reload.*;
 import de.clickism.clicksigns.sign.template.LocalTemplateManager;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -40,8 +37,9 @@ public class ClickSigns {
         Platform.network().register(); // Register network
         // Local template manager
         LOCAL_TEMPLATE_MANAGER.initialize();
-        // Add reload listener
+        // Add reload listeners
         Platform.get().addReloadListener(new TileSetListener());
+        Platform.get().addReloadListener(new StaticTextureListener());
         Platform.get().addReloadListener(new SymbolListener());
         Platform.get().addReloadListener(new TemplateListener());
     }

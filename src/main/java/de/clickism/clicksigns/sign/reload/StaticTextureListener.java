@@ -16,7 +16,7 @@ public class StaticTextureListener extends CategorizedReloadListener<StaticTextu
      * Creates a new static texture listener.
      */
     public StaticTextureListener() {
-        super(SignRegistries.TILE_SETS, STATIC_DIRECTORY, ".png", CategoryJson.class);
+        super(SignRegistries.STATIC_TEXTURES, STATIC_DIRECTORY, ".png", CategoryJson.class);
     }
 
     @Override

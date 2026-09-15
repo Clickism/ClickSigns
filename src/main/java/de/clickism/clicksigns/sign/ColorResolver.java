@@ -20,7 +20,9 @@ public class ColorResolver {
         .defineRGB("blue", 0x2739EB)
         .defineRGB("brown", 0x844635)
         .defineRGB("green", 0x009345)
-        .defineRGB("yellow", 0xffbc21);
+        .defineRGB("yellow", 0xffbc21)
+        // Define sign colors
+        .defineRGB("foreground", 0x292929);
 
     /**
      * Bright red error color used as fallback
