@@ -4,10 +4,10 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 
+// TODO: Primary color
 public record TextureSource(
     ResourceLocation base,
     // TODO: put colorResolver here, as the base should define it? or actually idk,
@@ -121,6 +121,46 @@ public record TextureSource(
     }
 
     /**
+     * A texture source is resizable if it contains exactly one resizable processor, and
+     * possibly other non-resizable processors.
+     * <p>
+     * This limitation is due to the fact that resizable processors can change the size of the image, and
+     * having multiple resizable processors would make it ambiguous which one should determine the final size.
+     *
+     * @return checks if the texture source is resizable
+     */
+    public boolean isResizable() {
+        var count = processors.stream()
+            .filter(p -> p instanceof ResizableTextureProcessor)
+            .count();
+        return count == 1;
+    }
+
+    /**
+     * Returns a new texture source with the given width and height, if this texture source is resizable.
+     * <p>
+     * If this texture source is not resizable, returns the same texture source without any changes.
+     *
+     * @param width  the desired width of the new texture source
+     * @param height the desired height of the new texture source
+     * @return a new texture source with the given width and height, or the same texture source if not resizable
+     */
+    public TextureSource resize(int width, int height) {
+        if (!isResizable()) {
+            return this;
+        }
+        var newProcessors = new ArrayList<TextureProcessor>();
+        for (var processor : processors) {
+            if (processor instanceof ResizableTextureProcessor resizable) {
+                newProcessors.add(resizable.resize(width, height));
+            } else {
+                newProcessors.add(processor);
+            }
+        }
+        return new TextureSource(base, newProcessors);
+    }
+
+    /**
      * Returns a unique resource location for the given key, generating a new one if it doesn't exist.
      *
      * @param key the key to get or assign a resource location for
@@ -130,5 +170,26 @@ public record TextureSource(
         var prefix = "generated/";
         var uuid = UUID.randomUUID();
         return RESOURCE_LOCATIONS.computeIfAbsent(key, k -> ClickSigns.identifier(prefix + uuid));
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and no processors.
+     *
+     * @param base the base resource location for the texture source
+     * @return a new texture source with the given base and no processors
+     */
+    public static TextureSource ofStatic(ResourceLocation base) {
+        return new TextureSource(base, List.of());
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and a list of processors.
+     *
+     * @param base       the base resource location for the texture source
+     * @param processors the list of processors to apply to the base image
+     * @return a new texture source with the given base and processors
+     */
+    public static TextureSource of(ResourceLocation base, List<TextureProcessor> processors) {
+        return new TextureSource(base, processors);
     }
 }

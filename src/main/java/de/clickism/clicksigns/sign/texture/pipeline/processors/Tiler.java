@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.texture.pipeline.processors;
 
 import de.clickism.clicksigns.sign.texture.pipeline.Image;
+import de.clickism.clicksigns.sign.texture.pipeline.ResizableTextureProcessor;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureContext;
 import de.clickism.clicksigns.sign.texture.pipeline.TextureProcessor;
 
@@ -15,7 +16,7 @@ public record Tiler(
     int cornerSize,
     int outputWidth,
     int outputHeight
-) implements TextureProcessor {
+) implements ResizableTextureProcessor {
     @Override
     public Image process(Image input, TextureContext context) {
         var output = new Image(outputWidth, outputHeight);
@@ -28,6 +29,11 @@ public record Tiler(
             output.setPixelAt(x, y, color);
         });
         return output;
+    }
+
+    @Override
+    public TextureProcessor resize(int width, int height) {
+        return new Tiler(cornerSize, width, height);
     }
 
     @Override
