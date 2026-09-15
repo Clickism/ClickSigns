@@ -39,6 +39,10 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
         var tileSetJson = fromJsonOrThrow(resource, TileSetJson.class);
         var isBack = category != null && category.isBack != null && category.isBack;
         SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
+        var resolver = tileSetJson.colorResolver();
+        if (resolver != null) {
+            SignRegistries.COLOR_RESOLVERS.register(textureLocation, resolver);
+        }
     }
 
     /**
@@ -53,17 +57,19 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
         @Nullable Map<String, String> colors
     ) {
         TileSet toTileSet(ResourceLocation location, boolean isBack, @Nullable ResourceLocation categoryId) {
-            var resolver = ColorResolver.withDefault();
-            if (colors != null) {
-                colors.forEach(resolver::tryParseAndDefine);
-            }
             return new TileSet(
                 location,
                 categoryId, cornerSize,
                 centerSize,
-                resolver,
                 isBack
             );
+        }
+
+        @Nullable ColorResolver colorResolver() {
+            if (colors == null || colors.isEmpty()) return null;
+            var resolver = ColorResolver.withDefault();
+            colors.forEach(resolver::tryParseAndDefine);
+            return resolver;
         }
     }
 

@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.texture.Texture;
@@ -16,8 +17,6 @@ import java.util.*;
 // TODO: Primary color
 public record TextureSource(
     ResourceLocation base,
-    // TODO: put colorResolver here, as the base should define it? or actually idk,
-    //  maybe make processor have a processContext method, and tilesets can change the colorResolver.
     List<TextureProcessor> processors
 ) {
     public TextureSource {
@@ -36,9 +35,13 @@ public record TextureSource(
     public static final Texture ERROR_TEXTURE =
         new Texture(ClickSigns.identifier("error.png"), 32, 16, null);
 
+    /**
+     * Returns the color resolver associated with the base resource location of this texture source.
+     *
+     * @return the color resolver for the base resource location, or a default resolver if none is registered
+     */
     public ColorResolver colorResolver() {
-        // TODO: Return actual color resolver of texture/tileset
-        return ColorResolver.withDefault();
+        return SignRegistries.COLOR_RESOLVERS.getOrDefault(base);
     }
 
     /**
@@ -122,7 +125,7 @@ public record TextureSource(
      * @return a unique identity string for this texture source
      */
     private String identity() {
-        // TODO: Color resolver in identity! Important
+        // TODO: Color resolver in identity! Important!! Maybe make identifiable color resolver? idk...
         var sb = new StringBuilder();
         sb.append(base.toString());
         for (var processor : processors) {

@@ -25,6 +25,10 @@ public class SignRegistries {
      * Registry for templates.
      */
     public static final CategorizedRegistry<Template> RESOURCE_TEMPLATES = new CategorizedRegistry<>();
+    /**
+     * Registry for color resolvers.
+     */
+    public static final ColorResolverRegistry COLOR_RESOLVERS = new ColorResolverRegistry();
 
     private SignRegistries() {
         // Singleton

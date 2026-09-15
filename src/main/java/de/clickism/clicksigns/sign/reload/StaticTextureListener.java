@@ -4,6 +4,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.StaticTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,6 +18,13 @@ public class StaticTextureListener extends CategorizedReloadListener<StaticTextu
      */
     public StaticTextureListener() {
         super(SignRegistries.STATIC_TEXTURES, STATIC_DIRECTORY, ".png", CategoryJson.class);
+    }
+
+    @Override
+    public void onReload(ResourceManager manager) {
+        // TODO: Warning! Only works if no other reload listener registers color resolvers.
+        SignRegistries.COLOR_RESOLVERS.clear();
+        super.onReload(manager);
     }
 
     @Override

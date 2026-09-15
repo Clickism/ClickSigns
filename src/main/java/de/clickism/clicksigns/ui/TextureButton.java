@@ -47,11 +47,10 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
 //                    }
                 } else {
                     // Open texture menu
-                    // TODO: Handle non-tile-set textures (e.g. custom textures)
                     var tileSetEntries = SignRegistries.TILE_SETS.all().stream()
                         .map(tileSet -> new TextureList.Entry(
                             TextureSource.ofTiled(tileSet, 16, 16)
-                                .resolve(tileSet.colorResolver()),
+                                .resolve(ColorResolver.empty()),
                             tileSet.identifier(),
                             tileSet.resolveCategory()
                         ));
@@ -67,7 +66,6 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
                         .toList();
 
                     new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries)
-                        // TODO: Confirm this also works well for non-tile-set textures
                         .textureScale(2) // Smaller scale for tilesets
                         .onTextureSelected(entry -> {
                             var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
