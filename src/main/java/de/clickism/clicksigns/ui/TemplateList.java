@@ -21,15 +21,13 @@ import java.util.function.Consumer;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TemplateList extends UiComponent<TemplateList> {
+public class TemplateList extends UiComponent<TemplateList> implements FancyHeaders {
 
     private final State<Boolean> showLocal = state(false);
     private Consumer<Template> onTemplateSelected = template -> {};
     private @Nullable Template selected = null;
 
     private final List<Template> templates = new ArrayList<>();
-
-    private boolean reloadedLocal = false;
 
     @Override
     protected void build() {
@@ -38,12 +36,6 @@ public class TemplateList extends UiComponent<TemplateList> {
             .grow()
             .scrollable(true);
         add(box);
-
-        if (showLocal.get() && !reloadedLocal) {
-            reloadedLocal = true;
-            // Reload local templates to ensure they are up to date
-            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload();
-        }
 
         templates.clear();
         if (showLocal.get()) {
@@ -97,7 +89,9 @@ public class TemplateList extends UiComponent<TemplateList> {
             .growWidth()
             .tooltip(box()
                 .padding(4)
+                .childGap(4)
                 .children(
+                    smallHeader(l(template.meta().name())).padding(0),
                     new SignView(new EditableRoadSign(template.build()))
                 ))
             .style(style()
@@ -123,7 +117,8 @@ public class TemplateList extends UiComponent<TemplateList> {
         return this;
     }
 
-    public void selected(@Nullable Template template) {
+    public TemplateList selected(@Nullable Template template) {
         this.selected = template;
+        return this;
     }
 }

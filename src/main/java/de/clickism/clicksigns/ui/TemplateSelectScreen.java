@@ -16,9 +16,10 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
     private final State<Boolean> showLocal = state(false);
+    private final State<Template> selected = state(null);
 
     private Consumer<Template> onTemplateSelected = template -> {};
-    private Template selected = null;
+    private boolean reloadedLocal = false;
 
     public TemplateSelectScreen onTemplateSelected(Consumer<Template> onTemplateSelected) {
         this.onTemplateSelected = onTemplateSelected;
@@ -30,12 +31,13 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
         Ref<TemplateList> listRef = ref();
         Ref<TemplateInfo> infoRef = ref();
 
-        Consumer<Template> updateSelected = (selected) -> {
-            this.selected = selected;
-            listRef.get().selected(selected);
-            infoRef.get().template.update(selected);
-        };
+        if (showLocal.get() && !reloadedLocal) {
+            reloadedLocal = true;
+            // Reload local templates to ensure they are up to date
+            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload();
+        }
 
+        var selected = this.selected.get();
         this.grow()
             .children(
                 // Top Bar
@@ -61,6 +63,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                             .alpha(UiConstants.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(false);
+                                        this.selected.update(o -> null); // Clear selection when switching to resource templates
                                     }),
                                 button(t("💾", "clicksigns.template.category.local"))
                                     .tooltip(t("clicksigns.template.category.local.tooltip"))
@@ -70,6 +73,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                             .alpha(UiConstants.INACTIVE_ALPHA)))
                                     .onClick(event -> {
                                         showLocal.update(true);
+                                        this.selected.update(o -> null); // Clear selection when switching to resource templates
                                     })
                             ),
 
@@ -88,9 +92,10 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                             .children(
                                 new TemplateList()
                                     .ref(listRef)
+                                    .selected(this.selected.get())
                                     .showLocal(showLocal.get())
                                     .grow()
-                                    .onTemplateSelected(updateSelected)
+                                    .onTemplateSelected(this.selected::update)
                             ),
 
                         // Preview
@@ -110,7 +115,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                     .childGap(8)
                                     .children(
                                         // Delete button
-                                        showLocal.get()
+                                        showLocal.get() && selected != null
                                             ? button(t("🗑", "clicksigns.template.delete"))
                                             .buttonColor(UiColor.MAROON)
                                             .growWidth()
@@ -127,7 +132,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                                 var nextTemplate = nextIndex >= 0 && nextIndex < templates.size()
                                                     ? templates.get(nextIndex)
                                                     : null;
-                                                updateSelected.accept(nextTemplate);
+                                                this.selected.update(o -> nextTemplate);
                                                 templateList.invalidateTree(); // Invalidate list
                                             })
                                             : box().growWidth(), // Spacer,
@@ -148,13 +153,11 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
             );
     }
 
-    private static class TemplateInfo extends UiComponent<TemplateInfo> {
-        private final State<Template> template = state(null);
-
+    private class TemplateInfo extends UiComponent<TemplateInfo> {
         @Override
         protected void build() {
             childGap(8);
-            var template = this.template.get();
+            var template = selected.get();
             if (template == null) {
                 add(text("No template selected.")
                     .style(style()
@@ -176,10 +179,6 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 .children(
                     // Name
                     infoField(t("clicksigns.template.info.name"), meta.name()),
-                    // Description (optional)
-                    meta.description() != null && !meta.description().isEmpty()
-                        ? infoField(t("clicksigns.template.info.description"), meta.description())
-                        : null,
                     // Author (optional)
                     meta.author() != null && !meta.author().isEmpty()
                         ? infoField(t("clicksigns.template.info.author"), meta.author())

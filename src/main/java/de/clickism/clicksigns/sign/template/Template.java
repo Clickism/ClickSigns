@@ -40,13 +40,10 @@ public record Template(
      * Metadata for a sign template.
      *
      * @param name        the display name of the template
-     * @param description a brief description of the template
      * @param author      the author of the template
      */
     public record Meta(
         String name,
-        // TODO: Maybe no description? Not really useful i dont think
-        @Nullable String description,
         @Nullable String author
     ) {
         /**
@@ -56,9 +53,8 @@ public record Template(
          */
         public static Meta placeholder() {
             var name = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.name"));
-            var description = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.description"));
             var author = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.author"));
-            return new Meta(name, description, author);
+            return new Meta(name, author);
         }
     }
 

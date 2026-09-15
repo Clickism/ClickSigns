@@ -12,6 +12,10 @@ import de.clickism.clickui.elements.input.Checkbox;
 import de.clickism.clickui.elements.input.TextField;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.reactivity.State;
+import net.minecraft.client.Minecraft;
+
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -28,11 +32,10 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
     implements FancyHeaders, JsonHandler {
 
     private final Ref<TextField> nameField = ref();
-    private final Ref<TextField> descriptionField = ref();
     private final Ref<TextField> authorField = ref();
     private final Ref<Checkbox> includeTexts = ref();
 
-    private final State<Boolean> isValid = state(false);
+    private final State<Boolean> isValid = state(true);
 
     private final EditableRoadSign roadSign;
 
@@ -63,18 +66,15 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                     smallHeader(t("clicksigns.template.info.name").copy()
                         .append(l("§r§c*"))),
                     memo(() -> textField()
+                        // TODO: Translate
+                        .value(nextAvailableName("New Template", " #%d"))
                         .maxLength(32)
                         .onValueChanged(this::updateValidity)
                         .ref(nameField)
                         .growWidth()),
-                    smallHeader(t("clicksigns.template.info.description")),
-                    memo(() -> textField()
-                        .maxLength(512)
-                        .onValueChanged(this::updateValidity)
-                        .ref(descriptionField)
-                        .growWidth()), // TODO: Text area for description
                     smallHeader(t("clicksigns.template.info.author")),
                     memo(() -> textField()
+                        .value(playerName())
                         .maxLength(64)
                         .onValueChanged(this::updateValidity)
                         .ref(authorField)
@@ -146,16 +146,46 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
      */
     private Template.Meta readMeta() {
         var name = nameField.get().value();
-        var description = descriptionField.get().value();
         var author = authorField.get().value();
         return new Template.Meta(
             name,
-            description.isEmpty()
-                ? null
-                : description,
             author.isEmpty()
                 ? null
                 : author
         );
+    }
+
+    /**
+     * Gets the name of the current player in the Minecraft instance.
+     *
+     * @return the player's name as a string, or an empty string if the player is not available
+     */
+    private static String playerName() {
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return "";
+        }
+        return player.getName().getString();
+    }
+
+    /**
+     * Generates a unique name based on the provided base name by appending an index if necessary.
+     *
+     * @param baseName the base name to start with
+     * @param indexFormat the format string for the index to append (e.g., "#%d")
+     * @return a unique name that does not conflict with existing template names
+     */
+    private static String nextAvailableName(String baseName, String indexFormat) {
+        ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload templates
+        int index = 1;
+        var names = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
+            .map(template -> template.meta().name())
+            .collect(Collectors.toSet());
+        String newName = baseName;
+        while (names.contains(newName)) {
+            newName = baseName + indexFormat.formatted(index);
+            index++;
+        }
+        return newName;
     }
 }
