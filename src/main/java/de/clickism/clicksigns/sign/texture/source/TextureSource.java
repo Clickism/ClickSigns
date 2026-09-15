@@ -51,7 +51,7 @@ public record TextureSource(
      * @return the resolved texture, or the error texture if loading or processing fails
      */
     public Texture resolve(ColorResolver colorResolver) {
-        var identity = identity();
+        var identity = identity(new TextureContext(colorResolver));
         // Check cache
         if (TEXTURE_CACHE.containsKey(identity)) {
             return TEXTURE_CACHE.get(identity);
@@ -85,7 +85,7 @@ public record TextureSource(
      */
     public Image resolveImage(ColorResolver colorResolver) {
         var context = new TextureContext(colorResolver);
-        var identity = identity();
+        var identity = identity(context);
         if (IMAGE_CACHE.containsKey(identity)) {
             return IMAGE_CACHE.get(identity);
         }
@@ -110,10 +110,10 @@ public record TextureSource(
             try {
                 image = processor.process(image, context);
                 if (image == null) {
-                    throw new RuntimeException("Processor " + processor.identity() + " returned null image");
+                    throw new RuntimeException("Processor " + processor.identity(context) + " returned null image");
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Failed to process image with processor " + processor.identity(), e);
+                throw new RuntimeException("Failed to process image with processor " + processor.identity(context), e);
             }
         }
         return image;
@@ -124,12 +124,12 @@ public record TextureSource(
      *
      * @return a unique identity string for this texture source
      */
-    private String identity() {
+    private String identity(TextureContext context) {
         // TODO: Color resolver in identity! Important!! Maybe make identifiable color resolver? idk...
         var sb = new StringBuilder();
         sb.append(base.toString());
         for (var processor : processors) {
-            sb.append("+").append(processor.identity());
+            sb.append("+").append(processor.identity(context));
         }
         return sb.toString();
     }

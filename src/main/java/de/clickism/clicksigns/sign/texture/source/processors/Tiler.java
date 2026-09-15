@@ -42,7 +42,7 @@ public record Tiler(
     }
 
     @Override
-    public String identity() {
+    public String identity(TextureContext context) {
         return this.toString();
     }
 

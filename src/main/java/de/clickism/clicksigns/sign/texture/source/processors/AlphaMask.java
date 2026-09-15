@@ -22,6 +22,7 @@ public record AlphaMask(
 
     @Override
     public Image process(Image input, TextureContext context) {
+        // TODO: Decide what happens if mask is bigger than input, rn its black, and looks bad.
         var maskImage = mask.resolveImage(context.colorResolver());
         input.forEachPixel((x, y, color) -> {
             int maskColor = maskImage.withinBounds(x, y)
@@ -35,7 +36,7 @@ public record AlphaMask(
     }
 
     @Override
-    public String identity() {
+    public String identity(TextureContext context) {
         return toString();
     }
 

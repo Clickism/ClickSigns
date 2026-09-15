@@ -5,6 +5,7 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -21,6 +22,13 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
      */
     public TileSetListener() {
         super(SignRegistries.TILE_SETS, TILESET_DIRECTORY, TILESET_EXTENSION, CategoryJson.class);
+    }
+
+    @Override
+    public void onReload(ResourceManager manager) {
+        // TODO: Warning! Only works if no other reload listener registers color resolvers.
+        SignRegistries.COLOR_RESOLVERS.clear();
+        super.onReload(manager);
     }
 
     @Override

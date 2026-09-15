@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.texture.source;
 
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
@@ -21,10 +22,13 @@ public interface TextureProcessor extends TypeKeyed {
     /**
      * Returns a unique identity string for this texture processor and its parameters,
      * used for caching.
+     * <p>
+     * This should also reflect any uses of {@link ColorResolver}, so that the texture cache
+     * is only used if the same color resolver is used, or the same relevant colors are produced.
      *
      * @return a unique identity string for this texture processor
      */
-    String identity();
+    String identity(TextureContext context);
 
     @SuppressWarnings("unchecked")
     static <T extends TextureProcessor> CommonCodec<T> codecOf(String typeKey) {

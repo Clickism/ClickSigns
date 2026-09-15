@@ -359,7 +359,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .onClick(event -> {
                         var center = signCenter();
                         var element = new TextElement(
-                            center.x(), center.y(), Alignment.TEXT_CENTER,
+                            center.x(), center.y(), Alignment.CENTER,
                             "", 1.0f, TextStyle.DEFAULT
                         );
                         sign.addElement(element);

@@ -73,8 +73,8 @@
   "clicksigns.editor.element.other.removeElement": "Remove Element",
 
   "clicksigns.templateExport.header": "Export Template",
-  "clicksigns.templateExport.includeTexts": "Include Written Texts",
   "clicksigns.templateExport.export.header": "Export Template",
+  "clicksigns.templateExport.export.includeTexts": "Include Written Texts",
   "clicksigns.templateExport.export.save": "Save to Local Templates",
   "clicksigns.templateExport.export.copyJson": "Save to Local Templates",
   "clicksigns.templateExport.newTemplate": "New Template",

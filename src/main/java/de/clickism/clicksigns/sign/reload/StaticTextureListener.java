@@ -21,13 +21,6 @@ public class StaticTextureListener extends CategorizedReloadListener<StaticTextu
     }
 
     @Override
-    public void onReload(ResourceManager manager) {
-        // TODO: Warning! Only works if no other reload listener registers color resolvers.
-        SignRegistries.COLOR_RESOLVERS.clear();
-        super.onReload(manager);
-    }
-
-    @Override
     protected String categoryName(CategoryJson category) {
         return category.name();
     }

@@ -41,8 +41,10 @@ public record ReplaceColor(
     }
 
     @Override
-    public String identity() {
-        return this.toString();
+    public String identity(TextureContext context) {
+        var from = context.colorResolver().resolveInt(fromColor);
+        var to = context.colorResolver().resolveInt(toColor);
+        return "ReplaceColor[from=" + from + ", to=" + to + "]";
     }
 
     @Override
