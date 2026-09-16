@@ -67,7 +67,8 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
         TileSet toTileSet(ResourceLocation location, boolean isBack, @Nullable ResourceLocation categoryId) {
             return new TileSet(
                 location,
-                categoryId, cornerSize,
+                categoryId,
+                cornerSize,
                 centerSize,
                 isBack
             );

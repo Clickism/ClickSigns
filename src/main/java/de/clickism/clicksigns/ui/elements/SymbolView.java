@@ -67,7 +67,7 @@ public class SymbolView extends UiComponent<SymbolView>
                 .toList();
 
             // Find sign background primary color
-            var backgroundColor = UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver()));
+            var backgroundColor = UiUtil.primaryColorOf(sign.frontSource().resolveImage(sign.colorResolver()));
             new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
                 .onTextureSelected(entry -> {
                     var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());

@@ -14,6 +14,8 @@ import java.util.List;
  * Symbol reload listener.
  */
 // TODO: A way to define color replacement only for a single symbol, and similar for other props/tilesets (hidden categories?)
+//  Just refactor includeCategories logic, maybe not needed? Maybe like nested categories, or just JSON files to override data idk
+//  so that you can have different logic for different symbols in the same category
 public class SymbolListener extends CategorizedReloadListener<SymbolListener.CategoryJson> {
     private static final String SYMBOL_DIRECTORY = "symbols";
     private static final String SYMBOL_EXTENSION = ".png";

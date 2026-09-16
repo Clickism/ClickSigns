@@ -38,13 +38,19 @@ public class TextureButton extends UiComponent<TextureButton> implements FancyHe
                 event.playSound();
                 if (event.isLeftClick()) {
                     // TODO: Cycle to next texture in the same category
-//                    if (source instanceof TiledTextureSource tiled) {
-//                        var tileSet = tiled.resolveTileSet();
-//                        if (tileSet == null) return;
-//                        var nextTileSet = tileSet.nextInCategory();
-//                        var nextTexture = TiledTextureSource.unsized(nextTileSet.identifier());
-//                        onTextureSelected.accept(nextTexture);
-//                    }
+                    if (SignRegistries.TILE_SETS.has(source.base())) {
+                        // Is tileset, cycle to next tileset in the same category
+                        var tileSet = SignRegistries.TILE_SETS.get(source.base());
+                        var nextTileSet = tileSet.nextInCategory();
+                        var nextTexture = TextureSource.ofTiled(nextTileSet, 16, 16);
+                        onTextureSelected.accept(nextTexture);
+                    } else if (SignRegistries.STATIC_TEXTURES.has(source.base())) {
+                        // Is static texture, cycle to next static texture in the same category
+                        var staticTexture = SignRegistries.STATIC_TEXTURES.get(source.base());
+                        var nextStaticTexture = staticTexture.nextInCategory();
+                        var nextTexture = nextStaticTexture.textureSource();
+                        onTextureSelected.accept(nextTexture);
+                    }
                 } else {
                     // Open texture menu
                     var tileSetEntries = SignRegistries.TILE_SETS.all().stream()

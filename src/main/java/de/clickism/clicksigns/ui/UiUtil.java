@@ -17,15 +17,15 @@ public class UiUtil {
     /**
      * Returns the primary color of the given texture as a UiColor.
      *
-     * @param texture the texture to get the primary color from
+     * @param image the texture to get the primary color from
      * @return the primary color of the texture as a UiColor, or default color if no primary color
      */
-    public static UiColor primaryColorOf(Texture texture) {
-        var primaryColor = texture.primaryColor();
-        if (primaryColor != null) {
-            return UiColor.rgba(primaryColor);
+    public static UiColor primaryColorOf(de.clickism.clicksigns.sign.texture.source.Image image) {
+        if (image == null || image.width() <= 0 || image.height() <= 0) {
+            return UiColor.BLACK_A50;
         }
-        return UiColor.BLACK_A50;
+        var primaryColor = image.pixelAt(image.width() / 2, image.height() / 2);
+        return UiColor.rgba(primaryColor);
     }
 
     /**

@@ -12,7 +12,6 @@ import de.clickism.clicksigns.sign.Symbol;
  * @param alignment alignment of the symbol
  * @param symbol    symbol to display
  */
-// TODO: Add scale?
 public record SymbolElement(
     int x,
     int y,

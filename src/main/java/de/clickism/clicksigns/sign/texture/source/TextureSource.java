@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
-// TODO: Primary color
 public record TextureSource(
     ResourceLocation base,
     List<TextureProcessor> processors
@@ -32,7 +31,7 @@ public record TextureSource(
      * The error texture to use when loading or generating a texture fails.
      */
     public static final Texture ERROR_TEXTURE =
-        new Texture(ClickSigns.identifier("error.png"), 32, 16, null);
+        new Texture(ClickSigns.identifier("error.png"), 32, 16);
 
     /**
      * Returns the color resolver associated with the base resource location of this texture source.
@@ -71,7 +70,7 @@ public record TextureSource(
         // Upload texture to Minecraft and cache it
         var location = getOrAssignResourceLocation(identity);
         Image.upload(location, image);
-        var texture = new Texture(location, image.width(), image.height(), null);
+        var texture = new Texture(location, image.width(), image.height());
         TEXTURE_CACHE.put(identity, texture);
         return texture;
     }

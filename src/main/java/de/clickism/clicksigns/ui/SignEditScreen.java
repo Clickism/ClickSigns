@@ -683,7 +683,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .padding(4)
                     .style(style()
                         .borderColor(UiColor.GRAY)
-                        .backgroundColor(UiUtil.primaryColorOf(sign.frontSource().resolve(sign.colorResolver())))
+                        .backgroundColor(UiUtil.primaryColorOf(sign.frontSource().resolveImage(sign.colorResolver())))
                         .whenHovered(style()
                             .borderColor(UiColor.RED)))
                     .tooltip(descriptions(
