@@ -39,9 +39,6 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             buf.writeInt(style.lineGap());
         } else if (element instanceof SymbolElement symbol) {
             buf.writeResourceLocation(symbol.symbol().identifier());
-            // TODO: Texture source written but not read
-            // TODO: Should symbols have id, or should they be identified based on their texture source's root?, would have to make
-            // texture source more like a pipeline
             TextureSource.codec().writePacket(buf, symbol.symbol().texture());
         } else if (element instanceof PlateElement plate) {
             TextureSource.codec().writePacket(buf, plate.frontSource());

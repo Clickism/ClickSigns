@@ -23,7 +23,6 @@ public record TextureSource(
         processors = List.copyOf(processors);
     }
 
-    // TODO: Separate texture cache class?
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
     private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
     private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
@@ -125,7 +124,6 @@ public record TextureSource(
      * @return a unique identity string for this texture source
      */
     private String identity(TextureContext context) {
-        // TODO: Color resolver in identity! Important!! Maybe make identifiable color resolver? idk...
         var sb = new StringBuilder();
         sb.append(base.toString());
         for (var processor : processors) {

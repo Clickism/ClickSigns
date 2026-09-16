@@ -22,13 +22,15 @@ public record AlphaMask(
 
     @Override
     public Image process(Image input, TextureContext context) {
-        // TODO: Decide what happens if mask is bigger than input, rn its black, and looks bad.
         var maskImage = mask.resolveImage(context.colorResolver());
         input.forEachPixel((x, y, color) -> {
             int maskColor = maskImage.withinBounds(x, y)
                 ? maskImage.pixelAt(x, y)
                 : 0; // Transparent if not within bounds
-            int alpha = (maskColor >> 24) & 0xFF;
+            int maskAlpha = (maskColor >> 24) & 0xFF;
+            int colorAlpha = (color >> 24) & 0xFF;
+            // Use the minimum so that the mask can only make the pixel more transparent, not more opaque
+            int alpha = Math.min(maskAlpha, colorAlpha);
             int newColor = (alpha << 24) | (color & 0xFFFFFF);
             input.setPixelAt(x, y, newColor);
         });

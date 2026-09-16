@@ -428,7 +428,6 @@ public class SignTextField extends TextField implements ElementProvider {
     /**
      * A helper class representing a position in the text as a line index and a character position within that line.
      */
-    // TODO: Clean up line logic
     protected class LinePos {
         protected final int line;
         protected final int pos;

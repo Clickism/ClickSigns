@@ -13,7 +13,6 @@ import de.clickism.clicksigns.sign.Symbol;
  * @param symbol    symbol to display
  */
 // TODO: Add scale?
-// TODO: Add color replacement data here somewhere? make pipeline?
 public record SymbolElement(
     int x,
     int y,

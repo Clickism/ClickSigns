@@ -44,7 +44,6 @@ public class TemplateParser implements JsonHandler {
         var signJson = new TemplateJson.SignJson(
             roadSign.width(),
             roadSign.height(),
-            // TODO: Proper encoding
             roadSign.frontSource().base(),
             roadSign.backSource().base(),
             roadSign.elements().stream()
@@ -105,7 +104,6 @@ public class TemplateParser implements JsonHandler {
                 return new Template.Sign(
                     width,
                     height,
-                    // TODO: Fix and save proper texture
                     TextureSource.ofStatic(front),
                     TextureSource.ofStatic(back),
                     parsedElements

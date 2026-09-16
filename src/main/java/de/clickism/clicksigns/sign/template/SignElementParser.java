@@ -15,7 +15,6 @@ import java.util.Optional;
 /**
  * Parser for sign elements from JSON objects.
  * <p>
- * TODO: Fix, texture sources are not fully encodable in json!
  */
 public class SignElementParser implements JsonHandler {
     /**
@@ -101,7 +100,6 @@ public class SignElementParser implements JsonHandler {
                 new Position(plateElement.x(), plateElement.y()),
                 plateElement.frontSource().resolve(ColorResolver.empty()).width(),
                 plateElement.frontSource().resolve(ColorResolver.empty()).height(),
-                // TODO: Proper encoding
                 plateElement.frontSource().base(),
                 plateElement.backSource().base(),
                 nullIfDefault(plateElement.matchSignTextures(), true)

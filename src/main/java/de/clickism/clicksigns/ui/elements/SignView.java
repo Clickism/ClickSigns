@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
  * A UI component that displays a road sign with its texture and elements.
@@ -176,7 +177,7 @@ public class SignView extends UiComponent<SignView> {
             && text.text().isEmpty()
             && !((SignTextField) view).listening()
         ) {
-            pos = elementPosition(text.withText("Text"), maxBounds); // TODO: Translate, use value?
+            pos = elementPosition(text.withText(t("clicksigns.textPlaceholder").getString()), maxBounds);
         }
         // Reposition
         view.relative(pos.x(), pos.y());

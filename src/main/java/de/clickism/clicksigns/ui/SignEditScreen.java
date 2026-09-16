@@ -180,7 +180,6 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                         memo(() -> new SignView(sign)
                             .ref(signViewRef)
                             .signConfig((uiElement, editable) -> {
-                                // TODO: Decide if this is too distracting maybe?
                                 uiElement.style(style()
                                     .whenHovered(style()
                                         .borderColor(UiColor.CYAN.alpha(.5f))));
@@ -679,7 +678,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
             // Symbol controls
             if (current instanceof SymbolElement symbol) {
                 add(smallHeader(t("clicksigns.editor.element.symbol.symbol")));
-                // TODO: Color replacement? Even better, make texture edit screen
+                // TODO: Texture edit screen
                 add(new SymbolView(symbol, sign.colorResolver())
                     .padding(4)
                     .style(style()
