@@ -161,7 +161,7 @@ public record RoadSign(
         // Ensure that all plate elements match the sign's textures
         elements = elements.stream()
             .map(element -> {
-                if (element instanceof PlateElement plate) {
+                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
                     return plate.matchTextures(frontSource, backSource);
                 } else {
                     return element;
@@ -259,6 +259,8 @@ public record RoadSign(
      */
     public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
         // TODO: Make sure it works with asymmetrical textures, might need to flip the front texture as well before masking
+        // Resize back to make sure it covers the front texture, and then mask it with the front texture
+        backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
         return backSource.addProcessor(new AlphaMask(frontSource));
     }
 

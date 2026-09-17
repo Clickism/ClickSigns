@@ -1,9 +1,9 @@
 package de.clickism.clicksigns.ui.components;
 
+import de.clickism.clickui.State;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
-import de.clickism.clickui.State;
 import de.clickism.clickui.style.Style;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -31,6 +31,7 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
     private Consumer<Integer> onValueChanged = value -> {};
 
     private int height = 14; // Default height
+    private boolean allowInput = true;
 
     public NumberControl value(int value) {
         this.value.update(value);
@@ -79,6 +80,12 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
         return this;
     }
 
+    public NumberControl allowInput(boolean allowInput) {
+        this.allowInput = allowInput;
+        this.invalidateTree();
+        return this;
+    }
+
     @Override
     protected void build() {
         this
@@ -87,17 +94,20 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
             .growWidth()
             .children(
                 // Scale down
-                button("-")
+                allowInput
+                    ? button("-")
                     .tooltip(buttonTooltip())
                     .style(buttonStyle())
                     .size(height)
                     .onClick(event -> {
                         value.update(v -> updateAmount(v, -changeAmount()));
                         onValueChanged.accept(value.get());
-                    }),
+                    })
+                    : null,
                 box()
                     .grow()
                     .alignCenter()
+                    .height(height)
                     .style(style()
                         .backgroundColor(UiColor.BLACK_A30))
                     .padding(1, 0, 0, 0)
@@ -112,7 +122,8 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
                                 .textColor(UiColor.GRAY))
                     ),
                 // Scale up
-                button("+")
+                allowInput
+                    ? button("+")
                     .tooltip(buttonTooltip())
                     .style(buttonStyle())
                     .size(height)
@@ -120,6 +131,7 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
                         value.update(v -> updateAmount(v, changeAmount()));
                         onValueChanged.accept(value.get());
                     })
+                    : null
             );
     }
 

@@ -23,7 +23,8 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
             context.textureRenderer().renderTexture(frontTexture);
         });
         // Render back
-        var backTexture = element.backSource().resolve(roadSign.colorResolver());
+        var masked = RoadSign.maskedBackOf(element.frontSource(), element.backSource());
+        var backTexture = masked.resolve(roadSign.colorResolver());
         // If not intersecting with the road sign, align with the front, so that there is not a gap inbetween
         z = intersects
             ? RenderLayers.PLATE_BACK

@@ -27,6 +27,7 @@ public class SizeControls extends UiComponent<SizeControls> implements CommonCom
 
     private int changeAmount = 1;
     private int fineChangeAmount = 0;
+    private boolean allowInput = true;
 
     public SizeControls(Size size) {
         this.size = state(size);
@@ -74,6 +75,12 @@ public class SizeControls extends UiComponent<SizeControls> implements CommonCom
         return this;
     }
 
+    public SizeControls allowInput(boolean allowInput) {
+        this.allowInput = allowInput;
+        this.invalidateTree();
+        return this;
+    }
+
     @Override
     protected void build() {
         this.horizontal()
@@ -108,6 +115,7 @@ public class SizeControls extends UiComponent<SizeControls> implements CommonCom
                     .changeAmount(changeAmount)
                     .fineChangeAmount(fineChangeAmount)
                     .unit(unit)
+                    .allowInput(allowInput)
                     .onValueChanged(value -> {
                         updateSize(size -> isWidth
                             ? size.withWidth(value)

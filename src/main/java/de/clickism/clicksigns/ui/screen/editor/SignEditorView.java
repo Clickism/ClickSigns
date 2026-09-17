@@ -79,6 +79,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
     @Override
     protected void build() {
         childGap(8);
+        boolean canResize = context.roadSign().frontSource().isResizable();
         children(box().childGap(8).grow().alignCenter().children(
             // Sign view
             box()
@@ -116,7 +117,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                                     UiColor.MAGENTA.color()
                                                 );
                                             })))
-                                // Update selectedRef on click
+                                // Update selected on click
                                 .onClick(event -> {
                                     context.setSelected(editable);
                                 })
@@ -175,6 +176,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                 .changeAmount(8)
                                 .fineChangeAmount(1)
                                 .unit(l("px"))
+                                .allowInput(canResize)
                                 .onSizeChanged(newSize -> {
                                     context.roadSign().resize(newSize.width(), newSize.height());
                                 }),

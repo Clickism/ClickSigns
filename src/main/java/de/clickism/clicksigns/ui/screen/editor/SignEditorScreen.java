@@ -24,10 +24,6 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
 
     private Consumer<RoadSign> onSignChange = sign -> {};
 
-    // Keep refs to these to invalidate them when needed
-    private final Ref<SignPropertyControls> signControlsRef = ref();
-    private final Ref<SignElementControls> elementControlsRef = ref();
-
     /**
      * Create a new sign edit screen for the given sign.
      *
@@ -35,17 +31,11 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
      */
     public SignEditorScreen(@NotNull RoadSign sign) {
         var editableSign = new EditableRoadSign(sign);
-        editableSign.onSignChanged(() -> {
-            // Update the sign view and controls when the sign changes
-            this.signControlsRef.get().invalidateTree();
-            this.elementControlsRef.get().invalidateTree();
-        });
+        // Update the sign view and controls when the sign changes
+        editableSign.onSignChanged(this::invalidateTree);
         // Create context
         this.context = new SignEditorContext(editableSign);
-        this.context.onSelectedChanged(element -> {
-            // Update the element controls when the selected element changes
-            this.elementControlsRef.get().invalidateTree();
-        });
+        this.context.onSelectedChanged(element -> this.invalidateTree());
     }
 
     /**
@@ -69,7 +59,6 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                 panel()
                     .children(
                         new SignPropertyControls(this.context)
-                            .ref(signControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)
                     ),
@@ -95,7 +84,6 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                 panel()
                     .children(
                         new SignElementControls(this.context)
-                            .ref(elementControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)
                     )

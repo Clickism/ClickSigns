@@ -230,6 +230,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
             .maxSize(PlateElement.MAX_PLATE_SIZE)
             .changeAmount(8)
             .fineChangeAmount(1)
+            .allowInput(plate.frontSource().isResizable())
             .onSizeChanged(newSize -> {
                 context.roadSign().updatePlateElement(id,
                     element -> {
