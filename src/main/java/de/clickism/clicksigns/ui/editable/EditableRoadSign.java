@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui.editor.editable;
+package de.clickism.clicksigns.ui.editable;
 
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
@@ -8,7 +8,6 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.layout.Point;
 

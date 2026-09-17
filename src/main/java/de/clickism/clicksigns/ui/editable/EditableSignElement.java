@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui.editor.editable;
+package de.clickism.clicksigns.ui.editable;
 
 import de.clickism.clicksigns.sign.element.SignElement;
 

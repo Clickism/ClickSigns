@@ -1,10 +1,11 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.screen.template;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.CommonComponents;
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.util.JsonHandler;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.State;

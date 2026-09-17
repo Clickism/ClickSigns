@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.block;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
+import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -72,7 +73,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RoadSignBlockEntity roadSignEntity) {
-            new de.clickism.clicksigns.ui.SignOverviewScreen(roadSignEntity).open();
+            new SignOverviewScreen(roadSignEntity).open();
 //            GuiUtils.openScreen(new SignOverviewScreen(null, roadSignEntity));
         }
         return InteractionResult.SUCCESS;

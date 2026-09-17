@@ -1,7 +1,8 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.registry.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;

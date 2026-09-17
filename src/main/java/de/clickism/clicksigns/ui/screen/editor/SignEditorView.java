@@ -1,11 +1,11 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.ui.SignOverviewScreen;
+import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import de.clickism.clicksigns.ui.components.SizeControls;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
-import de.clickism.clicksigns.ui.elements.SignView;
+import de.clickism.clicksigns.ui.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.components.sign.SignView;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.Ref;

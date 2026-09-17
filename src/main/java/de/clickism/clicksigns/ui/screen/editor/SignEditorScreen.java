@@ -1,8 +1,8 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.ui.components.CommonComponents;
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;

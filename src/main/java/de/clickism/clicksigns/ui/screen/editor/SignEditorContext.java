@@ -1,7 +1,7 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.screen.editor;
 
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;

@@ -1,12 +1,12 @@
-package de.clickism.clicksigns.ui.elements;
+package de.clickism.clicksigns.ui.components.sign;
 
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;

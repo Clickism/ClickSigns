@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
@@ -7,7 +7,7 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.element.TextStyle;
-import de.clickism.clicksigns.ui.TemplateExportScreen;
+import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.TwoSidedTextureButton;
 import de.clickism.clickui.UiColor;

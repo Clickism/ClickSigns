@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.screen;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
@@ -8,11 +8,12 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.components.CommonComponents;
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.SignEditorScreen;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.screen.editor.SignEditorScreen;
 import de.clickism.clicksigns.ui.components.AlignmentSelector;
-import de.clickism.clicksigns.ui.elements.SignView;
-import de.clickism.clicksigns.ui.elements.SymbolView;
+import de.clickism.clicksigns.ui.components.sign.SignView;
+import de.clickism.clicksigns.ui.components.sign.SymbolView;
+import de.clickism.clicksigns.ui.screen.template.TemplateSelectScreen;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;

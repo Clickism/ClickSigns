@@ -1,14 +1,14 @@
-package de.clickism.clicksigns.ui.elements;
+package de.clickism.clicksigns.ui.components.sign;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.ui.TextureList;
-import de.clickism.clicksigns.ui.TextureSelectScreen;
+import de.clickism.clicksigns.ui.screen.texture.TextureList;
+import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
 

@@ -1,5 +1,6 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.screen.texture;
 
+import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;

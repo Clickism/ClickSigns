@@ -3,8 +3,8 @@ package de.clickism.clicksigns.ui.components;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.ui.TextureList;
-import de.clickism.clicksigns.ui.TextureSelectScreen;
+import de.clickism.clicksigns.ui.screen.texture.TextureList;
+import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 

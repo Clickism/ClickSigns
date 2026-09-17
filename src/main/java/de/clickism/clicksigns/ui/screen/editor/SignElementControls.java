@@ -1,11 +1,10 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.*;
-import de.clickism.clicksigns.ui.elements.SymbolView;
+import de.clickism.clicksigns.ui.components.sign.SymbolView;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
