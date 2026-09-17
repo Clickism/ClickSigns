@@ -2,7 +2,7 @@ package de.clickism.clicksigns.ui.editor;
 
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.ui.SignOverviewScreen;
-import de.clickism.clicksigns.ui.SizeControls;
+import de.clickism.clicksigns.ui.components.SizeControls;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
 import de.clickism.clicksigns.ui.elements.SignView;

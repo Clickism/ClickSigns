@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
@@ -17,7 +17,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  * A UI component that allows the user to select a number within a specified range
  * with increment and decrement buttons.
  */
-public class NumberControl extends UiComponent<NumberControl> implements FancyHeaders {
+public class NumberControl extends UiComponent<NumberControl> implements CommonComponents {
     private final State<Integer> value = state(0);
     private int minValue = 0;
     private int maxValue = Integer.MAX_VALUE;

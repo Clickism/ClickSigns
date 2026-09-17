@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.UiColor;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TemplateList extends UiComponent<TemplateList> implements FancyHeaders {
+public class TemplateList extends UiComponent<TemplateList> implements CommonComponents {
 
     private final State<Boolean> showLocal = state(false);
     private Consumer<Template> onTemplateSelected = template -> {};

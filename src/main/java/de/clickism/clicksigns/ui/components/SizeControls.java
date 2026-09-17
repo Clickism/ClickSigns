@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.State;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
-public class SizeControls extends UiComponent<SizeControls> implements FancyHeaders {
+public class SizeControls extends UiComponent<SizeControls> implements CommonComponents {
     private final State<Size> size;
 
     private Consumer<Size> onSizeChanged = size -> {};

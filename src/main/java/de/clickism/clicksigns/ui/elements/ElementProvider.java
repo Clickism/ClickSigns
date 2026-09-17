@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.elements;
 
 import de.clickism.clicksigns.sign.element.SignElement;
 

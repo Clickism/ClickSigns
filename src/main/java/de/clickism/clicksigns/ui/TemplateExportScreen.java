@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
 import de.clickism.clicksigns.util.JsonHandler;
 import de.clickism.clickui.Ref;
@@ -28,7 +29,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  * The template can then be saved to the local template manager or copied as JSON to the clipboard.
  */
 public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
-    implements FancyHeaders, JsonHandler {
+    implements CommonComponents, JsonHandler {
 
     private final Ref<TextField> nameField = ref();
     private final Ref<TextField> authorField = ref();

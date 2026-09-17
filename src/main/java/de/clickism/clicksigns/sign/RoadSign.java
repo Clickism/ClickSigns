@@ -2,10 +2,7 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.element.TextStyle;
+import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
@@ -132,6 +129,19 @@ public record RoadSign(
         var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
         return new RoadSign(front, back, new ArrayList<>(elements), alignment);
     };
+
+    public RoadSign {
+        // Ensure that all plate elements match the sign's textures
+        elements = elements.stream()
+            .map(element -> {
+                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
+                    return plate.withFrontSource(frontSource).withBackSource(backSource);
+                } else {
+                    return element;
+                }
+            })
+            .toList();
+    }
 
     /**
      * Gets the color resolver for this road sign.

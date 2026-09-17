@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.ui.editor;
 
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.ui.FancyHeaders;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
 import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 // TODO: Info button instead of too many tooltips
 // TODO: Ability to select multiple elements and move them together/copy etc.
 public class SignEditorScreen extends UiScreen<SignEditorScreen>
-    implements FancyHeaders {
+    implements CommonComponents {
 
     /**
      * Main editor context

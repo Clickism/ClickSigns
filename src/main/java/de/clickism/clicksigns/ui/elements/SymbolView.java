@@ -4,7 +4,6 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.TextureList;
 import de.clickism.clicksigns.ui.TextureSelectScreen;
 import de.clickism.clicksigns.ui.UiUtil;

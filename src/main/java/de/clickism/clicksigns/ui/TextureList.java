@@ -2,6 +2,7 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.registry.Category;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
@@ -14,10 +15,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public class TextureList extends UiComponent<TextureList> implements FancyHeaders {
+public class TextureList extends UiComponent<TextureList> implements CommonComponents {
 
     private final Map<Category<?>, List<Entry>> categoryToEntries;
 

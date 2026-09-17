@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui;
+package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clickui.BaseComponents;
 import de.clickism.clickui.UiColor;
@@ -9,7 +9,10 @@ import net.minecraft.network.chat.Component;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
-public interface FancyHeaders extends BaseComponents {
+/**
+ * A collection of custom UI components.
+ */
+public interface CommonComponents extends BaseComponents {
     default Box fancyHeader(Component text) {
         return box()
             .padding(4)

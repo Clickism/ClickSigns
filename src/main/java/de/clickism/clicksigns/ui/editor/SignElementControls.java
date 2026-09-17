@@ -3,8 +3,8 @@ package de.clickism.clicksigns.ui.editor;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.*;
-import de.clickism.clicksigns.ui.*;
-import de.clickism.clicksigns.ui.elements.AlignmentSelector;
+import de.clickism.clicksigns.ui.UiUtil;
+import de.clickism.clicksigns.ui.components.*;
 import de.clickism.clicksigns.ui.elements.SymbolView;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
@@ -19,7 +19,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 /**
  * The element controls, meant for editing the selected element.
  */
-class SignElementControls extends UiComponent<SignElementControls> implements FancyHeaders {
+class SignElementControls extends UiComponent<SignElementControls> implements CommonComponents {
     private final SignEditorContext context;
 
     public SignElementControls(SignEditorContext context) {
@@ -84,7 +84,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Fa
                     element.withStyle(s -> s.withBackgroundColor(newColor)));
             }));
         // TODO: Translate
-        add(smallHeader(l("Outline Color")));
+        add(smallHeader(t("clicksigns.editor.element.text.outlineColor")));
         // Outline color
         add(memo(id + "-outline-color", () -> new ColorField(colorResolver))
             .value(style.outlineColor().orElse(""))
@@ -183,7 +183,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Fa
 
     private void addPlateControls(PlateElement plate, UUID id) {
         // TODO: Translate
-        add(smallHeader(l("Plate Textures")));
+        add(smallHeader(t("clicksigns.editor.element.plate.textures")));
 
         var roadSign = context.roadSign();
         add(box()
@@ -213,34 +213,16 @@ class SignElementControls extends UiComponent<SignElementControls> implements Fa
 
         if (!plate.matchSignTextures()) {
             // Show texture options
-            add(box()
-                .horizontal()
-                .growWidth()
-                .childGap(4)
-                .children(
-                    box()
-                        .growWidth()
-                        .childGap(4)
-                        .children(
-                            smallHeader(t("clicksigns.ui.textures.front")).padding(0),
-                            new TextureButton(plate.frontSource(), newTexture -> {
-                                roadSign.updatePlateElement(id, element ->
-                                    element.withFrontSource(newTexture.resize(element.size())));
-                            })
-                        ),
-                    box()
-                        .growWidth()
-                        .childGap(4)
-                        .children(
-                            smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                            new TextureButton(RoadSign.maskedBackOf(plate.frontSource().resize(16, 16), plate.backSource()),
-                                newTexture -> {
-                                    roadSign.updatePlateElement(id, element ->
-                                        element.withBackSource(newTexture.resize(element.size())));
-                                })
-                        )
-                )
-            );
+            add(new TwoSidedTextureButton(plate.frontSource(), plate.backSource())
+                .onFrontSelected(source -> {
+                    roadSign.updatePlateElement(id, element ->
+                        element.withFrontSource(source.resize(element.size())));
+                })
+                .onBackSelected(source -> {
+                    roadSign.updatePlateElement(id, element ->
+                        element.withBackSource(source.resize(element.size())));
+                })
+                .maskBack());
         }
 
         add(smallHeader(t("clicksigns.editor.element.plate.size")));

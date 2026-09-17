@@ -8,6 +8,8 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.util.PixelSized;
+import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.layout.Point;
 
 import java.util.*;
@@ -266,6 +268,15 @@ public class EditableRoadSign {
      */
     public int height() {
         return frontSource.resolve(colorResolver()).height();
+    }
+
+    /**
+     * Gets the size of the road sign as a PixelSized object.
+     *
+     * @return the size of the road sign
+     */
+    public Size size() {
+        return new Size(width(), height());
     }
 
     /**

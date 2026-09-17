@@ -3,7 +3,6 @@ package de.clickism.clicksigns.ui.elements;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;

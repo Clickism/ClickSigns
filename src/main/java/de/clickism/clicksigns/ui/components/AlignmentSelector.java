@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui.elements;
+package de.clickism.clicksigns.ui.components;
 
 import com.mojang.math.Axis;
 import de.clickism.clicksigns.sign.Alignment;
