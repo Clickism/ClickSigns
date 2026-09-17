@@ -28,7 +28,7 @@ public class SignRegistries {
     /**
      * Registry for color resolvers.
      */
-    public static final ColorResolverRegistry COLOR_RESOLVERS = new ColorResolverRegistry();
+    public static final ColorResolverRegistry TILE_SET_COLOR_RESOLVERS = new ColorResolverRegistry();
 
     private SignRegistries() {
         // Singleton

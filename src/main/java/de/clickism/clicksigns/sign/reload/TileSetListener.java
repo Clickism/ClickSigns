@@ -26,8 +26,8 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
 
     @Override
     public void onReload(ResourceManager manager) {
-        // TODO: Warning! Only works if no other reload listener registers color resolvers.
-        SignRegistries.COLOR_RESOLVERS.clear();
+        // Only works if no other reload listener registers color resolvers.
+        SignRegistries.TILE_SET_COLOR_RESOLVERS.clear();
         super.onReload(manager);
     }
 
@@ -49,7 +49,7 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
         SignRegistries.TILE_SETS.register(tileSetJson.toTileSet(textureLocation, isBack, categoryId));
         var resolver = tileSetJson.colorResolver();
         if (resolver != null) {
-            SignRegistries.COLOR_RESOLVERS.register(textureLocation, resolver);
+            SignRegistries.TILE_SET_COLOR_RESOLVERS.register(textureLocation, resolver);
         }
     }
 

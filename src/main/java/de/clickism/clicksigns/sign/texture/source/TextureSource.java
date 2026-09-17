@@ -39,7 +39,7 @@ public record TextureSource(
      * @return the color resolver for the base resource location, or a default resolver if none is registered
      */
     public ColorResolver colorResolver() {
-        return SignRegistries.COLOR_RESOLVERS.getOrDefault(base);
+        return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base);
     }
 
     /**
