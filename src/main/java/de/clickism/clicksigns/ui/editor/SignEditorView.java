@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
-public class SignEditor extends UiComponent<SignEditor> {
+class SignEditorView extends UiComponent<SignEditorView> {
     private int dragStartX = 0;
     private int dragStartY = 0;
     private EditableSignElement dragged = null;
@@ -31,9 +31,10 @@ public class SignEditor extends UiComponent<SignEditor> {
 
     private Consumer<MouseClickEvent> onConfirm = event -> {};
 
-    public SignEditor(SignEditorContext context) {
+    public SignEditorView(SignEditorContext context) {
         this.context = context;
         globalEvents().onKeyPress(event -> {
+            // TODO: Controls
             // Duplicate selectedRef element with Ctrl+D
 //            var selected = selectedRef.get();
 //            if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
@@ -70,7 +71,7 @@ public class SignEditor extends UiComponent<SignEditor> {
      * @param onConfirm the callback to be invoked on confirm
      * @return this SignEditor instance for method chaining
      */
-    public SignEditor onConfirm(Consumer<MouseClickEvent> onConfirm) {
+    public SignEditorView onConfirm(Consumer<MouseClickEvent> onConfirm) {
         this.onConfirm = onConfirm;
         return this;
     }

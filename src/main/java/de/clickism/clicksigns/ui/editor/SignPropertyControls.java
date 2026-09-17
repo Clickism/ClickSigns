@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 /**
- * The sign controls, for editing general info about ths sign,
+ * The sign controls, for editing general info about this sign,
  * such as textures or adding elements.
  */
-class SignControls extends UiComponent<SignControls> implements FancyHeaders {
+class SignPropertyControls extends UiComponent<SignPropertyControls> implements FancyHeaders {
     private final SignEditorContext context;
 
-    public SignControls(SignEditorContext context) {
+    public SignPropertyControls(SignEditorContext context) {
         this.context = context;
     }
 
@@ -131,8 +131,6 @@ class SignControls extends UiComponent<SignControls> implements FancyHeaders {
                             context.roadSign().regenerateId(element.id());
                         }
                     }
-                    // TODO: Reset text field cache in the sign view
-//                    signViewRef.get().resetTextFieldCache();
                 }),
             button(t("🗑", "clicksigns.editor.sign.tools.removeElements"))
                 .growWidth()

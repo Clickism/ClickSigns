@@ -12,10 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-// TODO: Split into different classes
 // TODO: Info button instead of too many tooltips
 // TODO: Ability to select multiple elements and move them together/copy etc.
-public class SignEditScreen extends UiScreen<SignEditScreen>
+public class SignEditorScreen extends UiScreen<SignEditorScreen>
     implements FancyHeaders {
 
     /**
@@ -26,15 +25,15 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
     private Consumer<RoadSign> onSignChange = sign -> {};
 
     // Keep refs to these to invalidate them when needed
-    private final Ref<SignControls> signControlsRef = ref();
-    private final Ref<ElementControls> elementControlsRef = ref();
+    private final Ref<SignPropertyControls> signControlsRef = ref();
+    private final Ref<SignElementControls> elementControlsRef = ref();
 
     /**
      * Create a new sign edit screen for the given sign.
      *
      * @param sign The sign to edit.
      */
-    public SignEditScreen(@NotNull RoadSign sign) {
+    public SignEditorScreen(@NotNull RoadSign sign) {
         var editableSign = new EditableRoadSign(sign);
         editableSign.onSignChanged(() -> {
             // Update the sign view and controls when the sign changes
@@ -56,7 +55,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
      * @param onSignChange The callback to be called when the sign is updated.
      * @return This screen.
      */
-    public SignEditScreen onSignChange(Consumer<RoadSign> onSignChange) {
+    public SignEditorScreen onSignChange(Consumer<RoadSign> onSignChange) {
         this.onSignChange = onSignChange;
         return this;
     }
@@ -69,7 +68,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 // Left panel
                 panel()
                     .children(
-                        new SignControls(this.context)
+                        new SignPropertyControls(this.context)
                             .ref(signControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)
@@ -81,7 +80,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                     .alignCenter()
                     .childGap(8)
                     .children(
-                        new SignEditor(this.context)
+                        new SignEditorView(this.context)
                             .grow()
                             .alignCenter()
                             .onConfirm(event -> {
@@ -95,7 +94,7 @@ public class SignEditScreen extends UiScreen<SignEditScreen>
                 // Right panel
                 panel()
                     .children(
-                        new ElementControls(this.context)
+                        new SignElementControls(this.context)
                             .ref(elementControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)

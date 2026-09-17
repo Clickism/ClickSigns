@@ -8,7 +8,7 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.SignEditScreen;
+import de.clickism.clicksigns.ui.editor.SignEditorScreen;
 import de.clickism.clicksigns.ui.elements.AlignmentSelector;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clicksigns.ui.elements.SymbolView;
@@ -138,7 +138,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                     .buttonColor(UiColor.TEAL)
                                     .growWidth()
                                     .onClick(e -> {
-                                        new SignEditScreen(roadSign.build())
+                                        new SignEditorScreen(roadSign.build())
                                             .onSignChange(roadSign::copyFrom)
                                             .open();
                                     })

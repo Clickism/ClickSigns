@@ -19,10 +19,10 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 /**
  * The element controls, meant for editing the selected element.
  */
-class ElementControls extends UiComponent<ElementControls> implements FancyHeaders {
+class SignElementControls extends UiComponent<SignElementControls> implements FancyHeaders {
     private final SignEditorContext context;
 
-    public ElementControls(SignEditorContext context) {
+    public SignElementControls(SignEditorContext context) {
         this.context = context;
     }
 
