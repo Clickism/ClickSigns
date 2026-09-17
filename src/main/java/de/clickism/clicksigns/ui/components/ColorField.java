@@ -38,6 +38,13 @@ public class ColorField extends Field<ColorField> {
         });
     }
 
+    @Override
+    public ColorField value(String value) {
+        super.value(value);
+        this.updateStyle();
+        return this;
+    }
+
     /**
      * Updates the style of the ColorField based on the current color.
      */

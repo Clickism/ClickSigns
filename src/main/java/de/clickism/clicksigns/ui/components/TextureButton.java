@@ -101,14 +101,5 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         }).open();
                 }
             }));
-        add(button("Edit")
-            .growWidth()
-            .onClick(event -> {
-                new TextureEditScreen(source, colorResolver)
-                    .onTextureEdited(editedSource -> {
-                        onTextureSelected.accept(editedSource);
-                    })
-                    .open();
-            }));
     }
 }

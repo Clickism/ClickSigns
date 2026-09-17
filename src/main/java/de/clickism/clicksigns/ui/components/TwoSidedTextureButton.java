@@ -3,6 +3,9 @@ package de.clickism.clicksigns.ui.components;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
+import de.clickism.clicksigns.util.Size;
+import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
 import java.util.function.Consumer;
@@ -18,11 +21,18 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
     private TextureSource backSource;
     private Consumer<TextureSource> onFrontSelected = source -> {};
     private Consumer<TextureSource> onBackSelected = source -> {};
+    private final Size desiredSize;
 
-    public TwoSidedTextureButton(TextureSource frontSource, TextureSource backSource, ColorResolver colorResolver) {
+    public TwoSidedTextureButton(
+        TextureSource frontSource,
+        TextureSource backSource,
+        ColorResolver colorResolver,
+        Size desiredSize
+    ) {
         this.frontSource = frontSource;
         this.backSource = backSource;
         this.colorResolver = colorResolver;
+        this.desiredSize = desiredSize;
     }
 
     public TwoSidedTextureButton onFrontSelected(Consumer<TextureSource> onFrontSelected) {
@@ -54,20 +64,46 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
                 .growWidth()
                 .childGap(4)
                 .children(
-                    box()
-                        .growWidth()
-                        .childGap(4)
-                        .children(
-                            smallHeader(t("clicksigns.ui.textures.front")).padding(0),
-                            new TextureButton(frontSource, colorResolver)
-                                .onTextureSelected(onFrontSelected)),
-                    box()
-                        .growWidth()
-                        .childGap(4)
-                        .children(
-                            smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                            new TextureButton(backSource, colorResolver)
-                                .onTextureSelected(onBackSelected))
+                    withHeader(
+                        t("clicksigns.ui.textures.front"),
+                        box()
+                            .childGap(4)
+                            .growWidth()
+                            .children(
+                                new TextureButton(frontSource, colorResolver)
+                                    .onTextureSelected(textureSource ->
+                                        onFrontSelected.accept(textureSource.resize(desiredSize))),
+                                button(t("✎", "clicksigns.ui.textures.edit"))
+                                    .buttonColor(UiColor.TEAL)
+                                    .growWidth()
+                                    .height(14)
+                                    .onClick(event -> {
+                                        new TextureEditScreen(frontSource, colorResolver)
+                                            .onTextureEdited(onFrontSelected)
+                                            .open();
+                                    })
+                            )
+                    ),
+                    withHeader(
+                        t("clicksigns.ui.textures.back"),
+                        box()
+                            .childGap(4)
+                            .growWidth()
+                            .children(
+                                new TextureButton(backSource, colorResolver)
+                                    .onTextureSelected(textureSource ->
+                                        onBackSelected.accept(textureSource.resize(desiredSize))),
+                                button(t("✎", "clicksigns.ui.textures.edit"))
+                                    .buttonColor(UiColor.TEAL)
+                                    .growWidth()
+                                    .height(14)
+                                    .onClick(event -> {
+                                        new TextureEditScreen(backSource, colorResolver)
+                                            .onTextureEdited(onBackSelected)
+                                            .open();
+                                    })
+                            )
+                    )
                 )
             );
     }

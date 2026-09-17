@@ -37,6 +37,7 @@
   "clicksigns.editor.sign.textures": "Sign Textures",
   "clicksigns.ui.textures.front": "Front",
   "clicksigns.ui.textures.back": "Back",
+  "clicksigns.ui.textures.edit": "Edit",
 
   "clicksigns.editor.sign.elements.header": "Add Elements",
   "clicksigns.editor.sign.elements.addSymbol": "Add Symbol",

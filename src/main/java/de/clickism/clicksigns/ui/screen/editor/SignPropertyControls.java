@@ -33,13 +33,14 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
             fancyHeader(t("clicksigns.editor.sign.header")),
             // Add texture selection
             smallHeader(t("clicksigns.editor.sign.textures")),
-            new TwoSidedTextureButton(roadSign.frontSource(), roadSign.backSource(), roadSign.colorResolver())
-                .onFrontSelected(source -> {
-                    roadSign.frontSource(source.resize(roadSign.size()));
-                })
-                .onBackSelected(source -> {
-                    roadSign.backSource(source.resize(roadSign.size()));
-                })
+            new TwoSidedTextureButton(
+                roadSign.frontSource(),
+                roadSign.backSource(),
+                roadSign.colorResolver(),
+                roadSign.size()
+            )
+                .onFrontSelected(roadSign::frontSource)
+                .onBackSelected(roadSign::backSource)
                 .maskBack(),
             // Add element controls
             smallHeader(t("clicksigns.editor.sign.elements.header")),

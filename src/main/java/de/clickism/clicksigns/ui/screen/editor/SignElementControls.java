@@ -284,14 +284,19 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
 
         if (!plate.matchSignTextures()) {
             // Show texture options
-            add(new TwoSidedTextureButton(plate.frontSource(), plate.backSource(), roadSign.colorResolver())
+            add(new TwoSidedTextureButton(
+                plate.frontSource(),
+                plate.backSource(),
+                roadSign.colorResolver(),
+                plate.size()
+            )
                 .onFrontSelected(source -> {
                     roadSign.updatePlateElement(id, element ->
-                        element.withFrontSource(source.resize(element.size())));
+                        element.withFrontSource(source));
                 })
                 .onBackSelected(source -> {
                     roadSign.updatePlateElement(id, element ->
-                        element.withBackSource(source.resize(element.size())));
+                        element.withBackSource(source));
                 })
                 .maskBack());
         }
@@ -319,25 +324,36 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
         // TODO: Texture edit screen
         var roadSign = context.roadSign();
         var colorResolver = roadSign.colorResolver();
-        add(new SymbolView(symbol, colorResolver)
-            .padding(4)
-            .style(style()
-                .borderColor(UiColor.GRAY)
-                .backgroundColor(UiUtil.primaryColorOf(roadSign.frontSource().resolveImage(colorResolver)))
-                .whenHovered(style()
-                    .borderColor(UiColor.RED)))
-            .tooltip(descriptions(
-                describeLeftClick(t("clicksigns.overview.symbol.tooltip.leftClick")),
-                describeRightClick(t("clicksigns.overview.symbol.tooltip.rightClick"))
-            ))
-            .onClick(event -> {
-                event.playSound();
-                SymbolView.handleSymbolChange(roadSign, roadSign.getElement(id), event);
-            }));
-        add(button("Edit")
-            .onClick(event -> {
-                new TextureEditScreen(symbol.symbol().texture(), colorResolver).open();
-            }));
+        add(box()
+            .childGap(4)
+            .alignCenter()
+            .children(
+                new SymbolView(symbol, colorResolver)
+                    .padding(4)
+                    .style(style()
+                        .borderColor(UiColor.GRAY)
+                        .backgroundColor(UiUtil.primaryColorOf(roadSign.frontSource().resolveImage(colorResolver)))
+                        .whenHovered(style()
+                            .borderColor(UiColor.RED)))
+                    .tooltip(descriptions(
+                        describeLeftClick(t("clicksigns.overview.symbol.tooltip.leftClick")),
+                        describeRightClick(t("clicksigns.overview.symbol.tooltip.rightClick"))
+                    ))
+                    .onClick(event -> {
+                        event.playSound();
+                        SymbolView.handleSymbolChange(roadSign, roadSign.getElement(id), event);
+                    }),
+                button(t("✎", "clicksigns.ui.textures.edit"))
+                    .buttonColor(UiColor.TEAL)
+                    .growWidth()
+                    .height(14)
+                    .onClick(event -> {
+                        new TextureEditScreen(symbol.symbol().texture(), colorResolver)
+                            // TODO: Implement callback
+//                            .onTextureEdited(onFrontSelected)
+                            .open();
+                    })
+            ));
     }
 
     private void addCommonControls(SignElement element, UUID id) {

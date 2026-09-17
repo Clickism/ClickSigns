@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -29,6 +30,7 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
+// TODO: Translate, clean up
 public class TextureEditScreen extends UiScreen<TextureEditScreen> implements CommonComponents {
     private final EditableTextureSource textureSource;
     private final ColorResolver colorResolver;
@@ -135,7 +137,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                                     .children(
                                         fancyHeader(l("Output Texture")),
                                         new ImageBox(outputSource)
-                                            .size(120 - 16),
+                                            .growWidth(),
 
                                         withHeader(
                                             l("Texture Size"),
@@ -253,7 +255,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
 
         @Override
         protected void build() {
-            // TODO: Fix image fitting/keep aspect ratio problems
+            // TODO: Fix image fitting/keep aspect ratio problems, heights are too much?
             var texture = source.resolve(colorResolver);
             this
                 .padding(2)
@@ -265,6 +267,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                         .borderColor(UiColor.LIGHT_GRAY.alpha(1f))))
                 .children(
                     UiUtil.imageOf(texture)
+                        .keepAspectRatio(true)
                         .grow()
                 );
         }
@@ -320,6 +323,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                             l("Corner Size"),
                             new NumberControl()
                                 .value(tiler.cornerSize())
+                                .minValue(0)
                                 .onValueChanged(newValue -> {
                                     textureSource.updateProcessor(
                                         processor.id(),
@@ -331,6 +335,9 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                             l("Width"),
                             new NumberControl()
                                 .value(tiler.outputWidth())
+                                .fastChangeAmount(8)
+                                .minValue(RoadSign.MIN_SIGN_SIZE.width())
+                                .maxValue(RoadSign.MAX_SIGN_SIZE.width())
                                 .onValueChanged(newValue -> {
                                     textureSource.updateProcessor(
                                         processor.id(),
@@ -342,6 +349,9 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                             l("Height"),
                             new NumberControl()
                                 .value(tiler.outputHeight())
+                                .fastChangeAmount(8)
+                                .minValue(RoadSign.MIN_SIGN_SIZE.height())
+                                .maxValue(RoadSign.MAX_SIGN_SIZE.height())
                                 .onValueChanged(newValue -> {
                                     textureSource.updateProcessor(
                                         processor.id(),
