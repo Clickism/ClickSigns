@@ -93,7 +93,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                         .signConfig((uiElement, editable) -> {
                             uiElement.style(style()
                                 .whenHovered(style()
-                                    .borderColor(UiColor.CYAN.alpha(.5f))));
+                                    .borderColor(UiColor.RED.alpha(.3f))));
                         })
                         .elementConfig((uiElement, editable) -> {
                             uiElement
