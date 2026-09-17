@@ -1,7 +1,8 @@
 package de.clickism.clicksigns.ui.screen.editor;
 
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.ui.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clickui.event.events.DragEvent;
 import de.clickism.clickui.event.events.DragStartEvent;
 import de.clickism.clickui.event.events.KeyPressEvent;
@@ -22,10 +23,10 @@ public class EditorActionHandler {
     /**
      * Global clipboard
      */
-    private static final Set<EditableSignElement> CLIPBOARD = new HashSet<>();
+    private static final Set<Editable<SignElement>> CLIPBOARD = new HashSet<>();
 
-    private final Map<EditableSignElement, Point> dragStartPositions = new HashMap<>();
-    private final Map<EditableSignElement, Point> dragCurrentPositions = new HashMap<>();
+    private final Map<Editable<SignElement>, Point> dragStartPositions = new HashMap<>();
+    private final Map<Editable<SignElement>, Point> dragCurrentPositions = new HashMap<>();
 
     private boolean justDragged = false;
 
@@ -122,7 +123,7 @@ public class EditorActionHandler {
         dragCurrentPositions.clear();
     }
 
-    public void handleMouseDown(EditableSignElement element) {
+    public void handleMouseDown(Editable<SignElement> element) {
         // If ctrl is held, toggle selection
         if (Screen.hasControlDown()) {
             context.setSelected(null, false); // So that no controls are shown
@@ -134,7 +135,7 @@ public class EditorActionHandler {
         }
     }
 
-    public void handleMouseUp(EditableSignElement element) {
+    public void handleMouseUp(Editable<SignElement> element) {
         // If ctrl is held, toggle selection
         if (!Screen.hasControlDown() && !justDragged) {
             // Clear selection and select the clicked element
@@ -148,7 +149,7 @@ public class EditorActionHandler {
      *
      * @param action the action to perform on each selected element
      */
-    private void forEachSelectedAndClearOld(Consumer<EditableSignElement> action) {
+    private void forEachSelectedAndClearOld(Consumer<Editable<SignElement>> action) {
         // Clear old selection and set new selection
         var newSelection = new HashSet<>(context.selection());
         context.clearSelection();
@@ -160,15 +161,15 @@ public class EditorActionHandler {
      *
      * @param action the action to perform on each selected element
      */
-    private void forEachSelected(Consumer<EditableSignElement> action) {
+    private void forEachSelected(Consumer<Editable<SignElement>> action) {
         context.selection().forEach(action);
     }
 
-    private void spawnElementNearSelected(@Nullable EditableSignElement element) {
+    private void spawnElementNearSelected(@Nullable Editable<SignElement> element) {
         spawnElementNear(element, context.selected());
     }
 
-    private void spawnElementNear(@Nullable EditableSignElement element, @Nullable EditableSignElement other) {
+    private void spawnElementNear(@Nullable Editable<SignElement> element, @Nullable Editable<SignElement> other) {
         if (element == null) return;
         Point position;
         if (other == null) {

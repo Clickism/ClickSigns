@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editable.EditableSignElement;
+import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.ui.screen.texture.TextureList;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiComponent;
@@ -39,7 +39,7 @@ public class SymbolView extends UiComponent<SymbolView>
      */
     public static void handleSymbolChange(
         EditableRoadSign sign,
-        EditableSignElement symbolElement,
+        Editable<SignElement> symbolElement,
         MouseClickEvent event
     ) {
         var current = symbolElement.current();

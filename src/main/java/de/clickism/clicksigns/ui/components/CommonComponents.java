@@ -57,6 +57,23 @@ public interface CommonComponents extends BaseComponents {
                 .alpha(0.9f));
     }
 
+    default UiElement<?> darkBox() {
+        return box()
+            .growWidth()
+            .padding(4)
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A50));
+    }
+
+    default UiElement<?> darkBoxOutlined() {
+        return box()
+            .growWidth()
+            .padding(4)
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A50)
+                .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f)));
+    }
+
     default Text smallParagraph(Component text) {
         return text(text)
             .growWidth()

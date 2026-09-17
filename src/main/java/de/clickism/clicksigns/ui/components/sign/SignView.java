@@ -5,8 +5,8 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.UiUtil;
+import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
@@ -31,7 +31,7 @@ public class SignView extends UiComponent<SignView> {
      */
     private final EditableRoadSign roadSign;
 
-    private BiConsumer<UiElement<?>, EditableSignElement> elementConfig =
+    private BiConsumer<UiElement<?>, Editable<SignElement>> elementConfig =
         (uiElement, signElement) -> {};
     private BiConsumer<UiElement<?>, EditableRoadSign> signConfig =
         (uiElement, roadSign) -> {};
@@ -59,7 +59,7 @@ public class SignView extends UiComponent<SignView> {
      * @param config a consumer that configures each SignElement
      * @return this SignView instance for method chaining
      */
-    public SignView elementConfig(BiConsumer<UiElement<?>, EditableSignElement> config) {
+    public SignView elementConfig(BiConsumer<UiElement<?>, Editable<SignElement>> config) {
         this.elementConfig = config;
         this.invalidateTree();
         return this;
@@ -167,7 +167,7 @@ public class SignView extends UiComponent<SignView> {
      * @param element   the EditableSignElement to add
      * @param maxBounds the maximum bounds of the sign and its elements
      */
-    private void addElementView(EditableSignElement element, Rect maxBounds) {
+    private void addElementView(Editable<SignElement> element, Rect maxBounds) {
         // Memoize element based on its id
         var view = createViewFor(element);
         var pos = elementPosition(element.current(), maxBounds);
@@ -211,7 +211,7 @@ public class SignView extends UiComponent<SignView> {
      * @param editableElement the sign element for which to create a view
      * @return a UiElement representing the view for the given SignElement
      */
-    protected UiElement<?> createViewFor(EditableSignElement editableElement) {
+    protected UiElement<?> createViewFor(Editable<SignElement> editableElement) {
         var colorResolver = roadSign.build().colorResolver();
         var element = editableElement.current();
         if (element instanceof PlateElement plate) {

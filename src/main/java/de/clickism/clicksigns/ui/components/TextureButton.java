@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui.components;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.ui.screen.texture.TextureList;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
@@ -99,6 +100,15 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                             }
                         }).open();
                 }
+            }));
+        add(button("Edit")
+            .growWidth()
+            .onClick(event -> {
+                new TextureEditScreen(source, colorResolver)
+                    .onTextureEdited(editedSource -> {
+                        onTextureSelected.accept(editedSource);
+                    })
+                    .open();
             }));
     }
 }

@@ -105,4 +105,25 @@ public record Tiler(
     public String typeKey() {
         return TYPE;
     }
+
+    /**
+     * Creates a new Tiler instance with the specified output size, keeping the corner size the same.
+     *
+     * @param width  the new output width in pixels
+     * @param height the new output height in pixels
+     * @return a new Tiler instance with the specified output size
+     */
+    public Tiler withOutputSize(int width, int height) {
+        return new Tiler(cornerSize, width, height);
+    }
+
+    /**
+     * Creates a new Tiler instance with the specified corner size, keeping the output size the same.
+     *
+     * @param cornerSize the new corner size in pixels
+     * @return a new Tiler instance with the specified corner size
+     */
+    public Tiler withCornerSize(int cornerSize) {
+        return new Tiler(cornerSize, outputWidth, outputHeight);
+    }
 }

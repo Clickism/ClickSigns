@@ -1,7 +1,8 @@
 package de.clickism.clicksigns.ui.screen.editor;
 
+import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
-import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -10,10 +11,10 @@ import java.util.function.Consumer;
 
 public class SignEditorContext {
     private final EditableRoadSign roadSign;
-    private @Nullable EditableSignElement selected = null;
-    private final Set<EditableSignElement> selection = new HashSet<>();
+    private @Nullable Editable<SignElement> selected = null;
+    private final Set<Editable<SignElement>> selection = new HashSet<>();
 
-    private Consumer<EditableSignElement> onSelectedChanged = element -> {};
+    private Consumer<Editable<SignElement>> onSelectedChanged = element -> {};
 
     public SignEditorContext(EditableRoadSign roadSign) {
         this.roadSign = roadSign;
@@ -23,15 +24,15 @@ public class SignEditorContext {
         return roadSign;
     }
 
-    public @Nullable EditableSignElement selected() {
+    public @Nullable Editable<SignElement> selected() {
         return selected;
     }
 
-    public Set<EditableSignElement> selection() {
+    public Set<Editable<SignElement>> selection() {
         return selection;
     }
 
-    public void toggleSelection(EditableSignElement element) {
+    public void toggleSelection(Editable<SignElement> element) {
         if (selection.contains(element)) {
             selection.remove(element);
         } else {
@@ -43,15 +44,15 @@ public class SignEditorContext {
         selection.clear();
     }
 
-    public boolean isSelected(EditableSignElement element) {
+    public boolean isSelected(Editable<SignElement> element) {
         return element.equals(selected) || selection.contains(element);
     }
 
-    public void setSelected(@Nullable EditableSignElement selected) {
+    public void setSelected(@Nullable Editable<SignElement> selected) {
         setSelected(selected, true);
     }
 
-    public void setSelected(@Nullable EditableSignElement selected, boolean clearSelection) {
+    public void setSelected(@Nullable Editable<SignElement> selected, boolean clearSelection) {
         if (clearSelection) {
             this.selection.clear();
         }
@@ -62,7 +63,7 @@ public class SignEditorContext {
         this.onSelectedChanged.accept(selected);
     }
 
-    public void onSelectedChanged(Consumer<EditableSignElement> listener) {
+    public void onSelectedChanged(Consumer<Editable<SignElement>> listener) {
         this.onSelectedChanged = listener;
     }
 }

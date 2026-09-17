@@ -51,7 +51,7 @@ public record ReplaceColor(
 
     @Override
     public Image process(Image input, TextureContext context) {
-        boolean replaceAll = fromColor == null;
+        boolean replaceAll = fromColor == null || fromColor.isEmpty();
         // Convert colors to integers
         int fromColorArgb = context.colorResolver().resolveInt(fromColor);
         int toColorArgb = context.colorResolver().resolveInt(toColor);
@@ -75,5 +75,25 @@ public record ReplaceColor(
     @Override
     public String typeKey() {
         return TYPE;
+    }
+
+    /**
+     * Creates a new ReplaceColor instance with the specified fromColor.
+     *
+     * @param fromColor the new fromColor value, or null to replace all colors
+     * @return a new ReplaceColor instance with the updated fromColor
+     */
+    public ReplaceColor withFromColor(@Nullable String fromColor) {
+        return new ReplaceColor(fromColor, this.toColor);
+    }
+
+    /**
+     * Creates a new ReplaceColor instance with the specified toColor.
+     *
+     * @param toColor the new toColor value
+     * @return a new ReplaceColor instance with the updated toColor
+     */
+    public ReplaceColor withToColor(String toColor) {
+        return new ReplaceColor(this.fromColor, toColor);
     }
 }

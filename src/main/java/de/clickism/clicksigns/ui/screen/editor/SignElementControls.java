@@ -5,6 +5,7 @@ import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.*;
 import de.clickism.clicksigns.ui.components.sign.SymbolView;
+import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
@@ -332,6 +333,10 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
             .onClick(event -> {
                 event.playSound();
                 SymbolView.handleSymbolChange(roadSign, roadSign.getElement(id), event);
+            }));
+        add(button("Edit")
+            .onClick(event -> {
+                new TextureEditScreen(symbol.symbol().texture(), colorResolver).open();
             }));
     }
 

@@ -17,14 +17,14 @@ import java.util.function.UnaryOperator;
 /**
  * Represents an editable road sign that can be modified and built into a road sign.
  * <p>
- * Uses {@link EditableSignElement} for its elements, allowing for modifications to individual elements,
+ * Uses {@link Editable} for its elements, allowing for modifications to individual elements,
  * while maintaining their identities.
  * <p>
  * Changes to the properties or elements of the road sign can be tracked using
  * {@link #onSignChanged(Runnable)}, which are notified whenever the sign changes.
  */
 public class EditableRoadSign {
-    private final Map<UUID, EditableSignElement> elements = new LinkedHashMap<>();
+    private final Map<UUID, Editable<SignElement>> elements = new LinkedHashMap<>();
     private final List<Runnable> listeners = new ArrayList<>();
     private TextureSource frontSource;
     private TextureSource backSource;
@@ -115,7 +115,7 @@ public class EditableRoadSign {
      *
      * @return a collection of editable sign elements
      */
-    public Collection<EditableSignElement> elements() {
+    public Collection<Editable<SignElement>> elements() {
         return elements.values();
     }
 
@@ -144,7 +144,7 @@ public class EditableRoadSign {
      * @param id the UUID of the sign element to retrieve
      * @return the editable sign element with the specified UUID, or null if not found
      */
-    public EditableSignElement getElement(UUID id) {
+    public Editable<SignElement> getElement(UUID id) {
         return elements.get(id);
     }
 
@@ -224,8 +224,8 @@ public class EditableRoadSign {
      * @param element the SignElement to add
      * @return the newly created EditableSignElement
      */
-    public EditableSignElement addElement(SignElement element) {
-        var editable = EditableSignElement.createRandom(element);
+    public Editable<SignElement> addElement(SignElement element) {
+        var editable = Editable.createRandom(element);
         elements.put(editable.id(), editable);
         notifyListeners();
         return editable;
@@ -241,7 +241,7 @@ public class EditableRoadSign {
     public void regenerateId(UUID id) {
         var editable = elements.get(id);
         if (editable == null) return;
-        var newEditable = EditableSignElement.createRandom(editable.current());
+        var newEditable = Editable.createRandom(editable.current());
         elements.put(newEditable.id(), newEditable);
         elements.remove(id);
         notifyListeners();
@@ -314,7 +314,7 @@ public class EditableRoadSign {
         this.elements.clear();
         // Convert elements to editable elements
         for (SignElement element : roadSign.elements()) {
-            var editable = EditableSignElement.createRandom(element);
+            var editable = Editable.createRandom(element);
             this.elements.put(editable.id(), editable);
         }
         notifyListeners();
@@ -327,7 +327,7 @@ public class EditableRoadSign {
      */
     public RoadSign build() {
         List<SignElement> fixedElements = elements.values().stream()
-            .map(EditableSignElement::current)
+            .map(Editable::current)
             .toList();
         return new RoadSign(frontSource, backSource, fixedElements, alignment);
     }

@@ -1,18 +1,16 @@
 package de.clickism.clicksigns.ui.editable;
 
-import de.clickism.clicksigns.sign.element.SignElement;
-
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 /**
- * Represents an editable sign element that can be modified while maintaining its identity.
+ * Represents an editable object that can be modified while maintaining its identity.
  * <p>
- * Each EditableSignElement has a unique identifier (UUID) and holds a SignElement value.
+ * Each Editable has a unique identifier (UUID) and holds a SignElement value.
  */
-public class EditableSignElement {
+public class Editable<T> {
     private final UUID id;
-    private SignElement value;
+    private T value;
 
     /**
      * Constructs a new EditableSignElement with the specified id and SignElement value.
@@ -20,7 +18,7 @@ public class EditableSignElement {
      * @param id    the unique identifier (UUID) for this EditableSignElement
      * @param value the initial SignElement value
      */
-    private EditableSignElement(UUID id, SignElement value) {
+    private Editable(UUID id, T value) {
         this.id = id;
         this.value = value;
     }
@@ -31,8 +29,8 @@ public class EditableSignElement {
      * @param element the SignElement value for the new EditableSignElement
      * @return a new EditableSignElement instance with a random UUID and the specified SignElement value
      */
-    public static EditableSignElement createRandom(SignElement element) {
-        return new EditableSignElement(UUID.randomUUID(), element);
+    public static <T> Editable<T> createRandom(T element) {
+        return new Editable<>(UUID.randomUUID(), element);
     }
 
     /**
@@ -42,8 +40,8 @@ public class EditableSignElement {
      * @param element the SignElement value for the new EditableSignElement
      * @return a new EditableSignElement instance with the specified UUID and SignElement value
      */
-    public static EditableSignElement of(UUID id, SignElement element) {
-        return new EditableSignElement(id, element);
+    public static <T> Editable<T> of(UUID id, T element) {
+        return new Editable<>(id, element);
     }
 
     /**
@@ -60,7 +58,7 @@ public class EditableSignElement {
      *
      * @return the current SignElement value
      */
-    public SignElement current() {
+    public T current() {
         return value;
     }
 
@@ -70,7 +68,7 @@ public class EditableSignElement {
      * @param updater the updater function that takes the current SignElement and returns a new SignElement
      * @return the updated SignElement value
      */
-    public SignElement update(UnaryOperator<SignElement> updater) {
+    public T update(UnaryOperator<T> updater) {
         this.value = updater.apply(this.value);
         return this.value;
     }
@@ -84,7 +82,7 @@ public class EditableSignElement {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        EditableSignElement other = (EditableSignElement) obj;
+        Editable<?> other = (Editable<?>) obj;
         return id.equals(other.id);
     }
 }

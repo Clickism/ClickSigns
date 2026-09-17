@@ -18,7 +18,8 @@ public record SymbolElement(
     int x,
     int y,
     Alignment alignment,
-    Symbol symbol
+    Symbol symbol // TODO: Convert to id and add resolveSymbol
+    // TODO: Add texture source here!
 ) implements SignElement {
     /**
      * Type key
