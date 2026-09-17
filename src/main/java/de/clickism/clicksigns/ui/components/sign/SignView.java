@@ -171,7 +171,6 @@ public class SignView extends UiComponent<SignView> {
         // Memoize element based on its id
         var view = createViewFor(element);
         var pos = elementPosition(element.current(), maxBounds);
-        // TODO: This is a temporary fix, it gets out of sync because it depends on selection state which doesnt always trigger a rerender. Fix this!
         // If placeholder text is being rendered, we need to posiiton based on that instead of the actual text
         if (element.current() instanceof TextElement text
             && text.text().isEmpty()

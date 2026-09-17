@@ -85,6 +85,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                 // Update selected on click
                                 .onClick(event -> {
                                     actionHandler.handleMouseDown(editable);
+                                    signViewRef.get().invalidateTree();
                                 })
                                 .onRelease(event -> {
                                     actionHandler.handleMouseUp(editable);
