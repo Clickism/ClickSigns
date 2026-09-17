@@ -2,11 +2,11 @@ package de.clickism.clicksigns.ui;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.template.Template;
-import de.clickism.clicksigns.ui.editor.EditableRoadSign;
+import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.elements.SignTextField;
 import de.clickism.clicksigns.ui.elements.SignView;
 import de.clickism.clickui.*;
-import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.State;
 import de.clickism.clickui.style.Border;
 import net.minecraft.ChatFormatting;
 

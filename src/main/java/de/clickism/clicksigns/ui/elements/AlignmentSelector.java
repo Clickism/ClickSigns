@@ -6,7 +6,7 @@ import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Rect;
-import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.State;
 import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.style.Border;
 

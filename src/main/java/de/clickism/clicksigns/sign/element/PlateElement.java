@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Size;
 
@@ -29,6 +30,8 @@ public record PlateElement(
      * Type key
      */
     public static final String TYPE = "plate";
+    public static final Size MIN_PLATE_SIZE = new Size(4, 4);
+    public static final Size MAX_PLATE_SIZE = RoadSign.MAX_SIGN_SIZE;
 
     @Override
     public String typeKey() {

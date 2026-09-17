@@ -1,10 +1,14 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.editor.editable;
 
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clickui.layout.Point;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -119,6 +123,16 @@ public class EditableRoadSign {
     }
 
     /**
+     * Gets the editable sign element with the specified UUID.
+     *
+     * @param id the UUID of the sign element to retrieve
+     * @return the editable sign element with the specified UUID, or null if not found
+     */
+    public EditableSignElement getElement(UUID id) {
+        return elements.get(id);
+    }
+
+    /**
      * Updates the specified sign element using the provided updater function.
      *
      * @param id      the UUID of the sign element to update
@@ -130,6 +144,52 @@ public class EditableRoadSign {
             editable.update(updater);
             notifyListeners();
         }
+    }
+
+    /**
+     * Updates the specified sign element of a specific type using the provided updater function.
+     *
+     * @param id      the UUID of the sign element to update
+     * @param type    the class type of the sign element to update
+     * @param updater a function that takes the current SignElement and returns an updated SignElement
+     * @param <T>     the type of the sign element to update
+     */
+    public <T extends SignElement> void updateElement(UUID id, Class<T> type, UnaryOperator<T> updater) {
+        var editable = elements.get(id);
+        if (editable != null && type.isInstance(editable.current())) {
+            editable.update(element -> updater.apply(type.cast(element)));
+            notifyListeners();
+        }
+    }
+
+    /**
+     * Updates the specified text element using the provided updater function.
+     *
+     * @param id      the UUID of the text element to update
+     * @param updater a function that takes the current TextElement and returns an updated TextElement
+     */
+    public void updateTextElement(UUID id, UnaryOperator<TextElement> updater) {
+        updateElement(id, TextElement.class, updater);
+    }
+
+    /**
+     * Updates the specified symbol element using the provided updater function.
+     *
+     * @param id      the UUID of the symbol element to update
+     * @param updater a function that takes the current SignElement and returns an updated SignElement
+     */
+    public void updateSymbolElement(UUID id, UnaryOperator<SymbolElement> updater) {
+        updateElement(id, SymbolElement.class, updater);
+    }
+
+    /**
+     * Updates the specified plate element using the provided updater function.
+     *
+     * @param id      the UUID of the plate element to update
+     * @param updater a function that takes the current SignElement and returns an updated SignElement
+     */
+    public void updatePlateElement(UUID id, UnaryOperator<PlateElement> updater) {
+        updateElement(id, PlateElement.class, updater);
     }
 
     /**
@@ -149,10 +209,26 @@ public class EditableRoadSign {
      * @return the newly created EditableSignElement
      */
     public EditableSignElement addElement(SignElement element) {
-        var editable = new EditableSignElement(element);
+        var editable = EditableSignElement.createRandom(element);
         elements.put(editable.id(), editable);
         notifyListeners();
         return editable;
+    }
+
+    /**
+     * Regenerates the UUID of the sign element with the specified UUID.
+     * The element will be replaced with a new EditableSignElement with a new UUID.
+     * Useful if an element needs to be removed from caches/memo-s.
+     *
+     * @param id the UUID of the sign element to regenerate
+     */
+    public void regenerateId(UUID id) {
+        var editable = elements.get(id);
+        if (editable == null) return;
+        var newEditable = EditableSignElement.createRandom(editable.current());
+        elements.put(newEditable.id(), newEditable);
+        elements.remove(id);
+        notifyListeners();
     }
 
     /**
@@ -193,6 +269,15 @@ public class EditableRoadSign {
     }
 
     /**
+     * Calculates the center point of the road sign based on its width and height.
+     *
+     * @return the center point of the road sign
+     */
+    public Point center() {
+        return new Point(width() / 2, height() / 2);
+    }
+
+    /**
      * Copies the properties and elements from the given RoadSign into this EditableRoadSign.
      *
      * @param roadSign the RoadSign to copy from
@@ -204,7 +289,7 @@ public class EditableRoadSign {
         this.elements.clear();
         // Convert elements to editable elements
         for (SignElement element : roadSign.elements()) {
-            var editable = new EditableSignElement(element);
+            var editable = EditableSignElement.createRandom(element);
             this.elements.put(editable.id(), editable);
         }
         notifyListeners();

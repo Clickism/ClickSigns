@@ -34,6 +34,9 @@ public record TextElement(
      */
     public static final String TYPE = "text";
 
+    public static final int MIN_TEXT_PT = 3;
+    public static final int MAX_TEXT_PT = 72;
+
     @Override
     public String typeKey() {
         return TYPE;

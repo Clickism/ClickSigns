@@ -39,6 +39,9 @@ public record TextStyle(
         0
     );
 
+    public static final int MAX_OUTLINE_WIDTH = 10;
+    public static final int MAX_PADDING = 20;
+
     /**
      * Creates a new text style with the given color, background color, outline color, outline padding, and outline width.
      *
@@ -115,6 +118,7 @@ public record TextStyle(
      * @return a new text style with the updated background color
      */
     public TextStyle withBackgroundColor(@Nullable String newBackgroundColor) {
+        newBackgroundColor = newBackgroundColor != null && newBackgroundColor.isEmpty() ? null : newBackgroundColor;
         return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 
@@ -125,6 +129,7 @@ public record TextStyle(
      * @return a new text style with the updated outline color
      */
     public TextStyle withOutlineColor(@Nullable String newOutlineColor) {
+        newOutlineColor = newOutlineColor != null && newOutlineColor.isEmpty() ? null : newOutlineColor;
         return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY, textAlignment, lineGap);
     }
 

@@ -32,7 +32,7 @@ Then, place it on a wall, on iron bars or anywhere you'd like, then click on the
   
 - _On the left side_, you have a list of all the templates **you have installed.**
 - The templates are displayed in the format: *"Width x Height : Pack : Name : (Details)"*
-- _On the right side_, you have all the details regarding the selected template.
+- _On the right side_, you have all the details regarding the selectedRef template.
 - You can use the arrows to look at different variants here as well.
 - **Using Filters:** To use the filters, either click on the direction you want, or input the width/height you're searching. If you for example select both **Left** and **Forward**, it will only show you the sign templates that have both directions.
 

@@ -8,8 +8,8 @@ import de.clickism.clicksigns.ui.ElementProvider;
 import de.clickism.clicksigns.ui.TextureList;
 import de.clickism.clicksigns.ui.TextureSelectScreen;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.editor.EditableRoadSign;
-import de.clickism.clicksigns.ui.editor.EditableSignElement;
+import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
+import de.clickism.clicksigns.ui.editor.editable.EditableSignElement;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
 
@@ -49,9 +49,9 @@ public class SymbolView extends UiComponent<SymbolView>
         if (event.isLeftClick()) {
             // Cycle to next symbol in the same category
             var nextSymbol = symbol.symbol().nextInCategory();
-            sign.updateElement(
+            sign.updateSymbolElement(
                 symbolElement.id(),
-                element -> ((SymbolElement) element).withSymbol(nextSymbol)
+                element -> element.withSymbol(nextSymbol)
             );
         }
 
@@ -72,9 +72,9 @@ public class SymbolView extends UiComponent<SymbolView>
                 .onTextureSelected(entry -> {
                     var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
                     if (newSymbol == null) return;
-                    sign.updateElement(
+                    sign.updateSymbolElement(
                         symbolElement.id(),
-                        element -> ((SymbolElement) element).withSymbol(newSymbol)
+                        element -> element.withSymbol(newSymbol)
                     );
                 }).open();
         }

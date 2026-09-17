@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.ui.editor;
+package de.clickism.clicksigns.ui.editor.editable;
 
 import de.clickism.clicksigns.sign.element.SignElement;
 
@@ -15,13 +15,13 @@ public class EditableSignElement {
     private SignElement value;
 
     /**
-     * Constructs a new EditableSignElement with the specified SignElement value.
-     * A unique identifier (UUID) is generated for this instance.
+     * Constructs a new EditableSignElement with the specified id and SignElement value.
      *
+     * @param id    the unique identifier (UUID) for this EditableSignElement
      * @param value the initial SignElement value
      */
-    public EditableSignElement(SignElement value) {
-        this.id = UUID.randomUUID();
+    private EditableSignElement(UUID id, SignElement value) {
+        this.id = id;
         this.value = value;
     }
 
@@ -65,5 +65,26 @@ public class EditableSignElement {
         if (obj == null || getClass() != obj.getClass()) return false;
         EditableSignElement other = (EditableSignElement) obj;
         return id.equals(other.id);
+    }
+
+    /**
+     * Creates a new EditableSignElement with a random UUID and the specified SignElement value.
+     *
+     * @param element the SignElement value for the new EditableSignElement
+     * @return a new EditableSignElement instance with a random UUID and the specified SignElement value
+     */
+    public static EditableSignElement createRandom(SignElement element) {
+        return new EditableSignElement(UUID.randomUUID(), element);
+    }
+
+    /**
+     * Creates a new EditableSignElement with the specified UUID and SignElement value.
+     *
+     * @param id      the unique identifier (UUID) for the new EditableSignElement
+     * @param element the SignElement value for the new EditableSignElement
+     * @return a new EditableSignElement instance with the specified UUID and SignElement value
+     */
+    public static EditableSignElement of(UUID id, SignElement element) {
+        return new EditableSignElement(id, element);
     }
 }

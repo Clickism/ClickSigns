@@ -10,6 +10,7 @@ import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.util.PixelSized;
+import de.clickism.clicksigns.util.Size;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
@@ -63,6 +64,8 @@ public record RoadSign(
     List<SignElement> elements,
     Alignment alignment
 ) implements PixelSized {
+    public static final Size MIN_SIGN_SIZE = new Size(6, 6);
+    public static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
     /**
      * The default alignment for road signs when no alignment is set.
      */

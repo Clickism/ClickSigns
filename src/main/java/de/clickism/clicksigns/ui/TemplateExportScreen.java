@@ -3,18 +3,17 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
-import de.clickism.clicksigns.ui.editor.EditableRoadSign;
+import de.clickism.clicksigns.ui.editor.editable.EditableRoadSign;
 import de.clickism.clicksigns.util.JsonHandler;
 import de.clickism.clickui.Ref;
+import de.clickism.clickui.State;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.elements.input.Checkbox;
 import de.clickism.clickui.elements.input.TextField;
 import de.clickism.clickui.layout.Align;
-import de.clickism.clickui.reactivity.State;
 import net.minecraft.client.Minecraft;
 
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
@@ -133,9 +132,12 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
      * @return true if the input is valid, false otherwise
      */
     private boolean isValidInput() {
-        var nameField = this.nameField.getOrNull();
-        if (nameField == null) return false;
-        return !nameField.value().isEmpty();
+        try {
+            var nameField = this.nameField.get();
+            return !nameField.value().isEmpty();
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     /**

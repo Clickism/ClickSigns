@@ -3,7 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
-import de.clickism.clickui.reactivity.State;
+import de.clickism.clickui.State;
 import de.clickism.clickui.style.Style;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
