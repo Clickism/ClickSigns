@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -40,7 +41,9 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
         templates.clear();
         if (showLocal.get()) {
             // Add local templates
-            var localTemplates = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates();
+            var localTemplates = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
+                .sorted(Comparator.comparing(template -> template.meta().name()))
+                .toList();
             if (!localTemplates.isEmpty()) {
                 box.add(category(t("clicksigns.template.category.local")));
                 localTemplates.forEach(template -> {
@@ -51,7 +54,9 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
         } else {
             // Add resource templates
             SignRegistries.RESOURCE_TEMPLATES.allCategories().forEach(category -> {
-                var entries = category.resolveEntries();
+                var entries = category.resolveEntries().stream()
+                    .sorted(Comparator.comparing(template -> template.meta().name()))
+                    .toList();
                 if (entries.isEmpty()) return;
                 box.add(category(l(category.name())));
                 entries.forEach(template -> {

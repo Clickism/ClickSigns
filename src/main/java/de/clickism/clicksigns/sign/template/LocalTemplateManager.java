@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +36,7 @@ public class LocalTemplateManager {
     }
 
     public Collection<Template> templates() {
-        return templates.values();
+        return Collections.unmodifiableCollection(templates.values());
     }
 
     public boolean isLocal(Template template) {
