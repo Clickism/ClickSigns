@@ -1,15 +1,13 @@
 package de.clickism.clicksigns.ui.screen.editor;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.PlateElement;
-import de.clickism.clicksigns.sign.element.SymbolElement;
-import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.element.TextStyle;
-import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;
+import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.TwoSidedTextureButton;
+import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
@@ -36,7 +34,7 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
             fancyHeader(t("clicksigns.editor.sign.header")),
             // Add texture selection
             smallHeader(t("clicksigns.editor.sign.textures")),
-            new TwoSidedTextureButton(roadSign.frontSource(), roadSign.backSource())
+            new TwoSidedTextureButton(roadSign.frontSource(), roadSign.backSource(), roadSign.colorResolver())
                 .onFrontSelected(source -> {
                     roadSign.frontSource(source.resize(roadSign.size()));
                 })
@@ -51,37 +49,23 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
                 .growWidth()
                 .buttonColor(UiColor.LIME)
                 .onClick(event -> {
-                    var center = roadSign.center();
-                    var symbol = SignRegistries.SYMBOLS.get(RoadSign.DEFAULT_SYMBOL_TEXTURE);
-                    var element = new SymbolElement(
-                        center.x(), center.y(), Alignment.CENTER,
-                        symbol
-                    );
-                    roadSign.addElement(element);
+                    spawnElement(SymbolElement.createDefault());
                 }),
             button(t("+", "clicksigns.editor.sign.elements.addText"))
                 .growWidth()
                 .buttonColor(UiColor.LIME)
                 .onClick(event -> {
-                    var center = roadSign.center();
-                    var element = new TextElement(
-                        center.x(), center.y(), Alignment.CENTER,
-                        "", 1.0f, TextStyle.DEFAULT
-                    );
-                    roadSign.addElement(element);
+                    spawnElement(TextElement.createDefault());
                 }),
             button(t("+", "clicksigns.editor.sign.elements.addPlate"))
                 .growWidth()
                 .buttonColor(UiColor.LIME)
                 .onClick(event -> {
-                    var center = roadSign.center();
-                    var element = new PlateElement(
-                        center.x(), center.y(), Alignment.CENTER,
-                        roadSign.frontSource().resize(8, 6),
-                        roadSign.backSource().resize(8, 6),
-                        true
-                    );
-                    roadSign.addElement(element);
+                    var plate = PlateElement.createDefault();
+                    spawnElement(plate
+                        // Use sign textures but match the default size
+                        .withFrontSource(roadSign.frontSource().resize(plate.size()))
+                        .withBackSource(roadSign.backSource().resize(plate.size())));
                 }),
             // Add tools
             smallHeader(t("clicksigns.editor.sign.tools.header")),
@@ -116,5 +100,17 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
                     new TemplateExportScreen(roadSign).open();
                 })
         );
+    }
+
+    /**
+     * Spawns a new element in the center of the sign.
+     *
+     * @param element the element to spawn
+     */
+    private void spawnElement(SignElement element) {
+        var position = context.roadSign().center();
+        element = element.withPosition(position.x(), position.y());
+        var editable = context.roadSign().addElement(element);
+        context.setSelected(editable);
     }
 }

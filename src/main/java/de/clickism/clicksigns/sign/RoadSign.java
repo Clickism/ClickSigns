@@ -2,7 +2,10 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.element.*;
+import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
@@ -11,7 +14,6 @@ import de.clickism.clicksigns.util.Size;
 import de.clickism.clicksigns.util.nbt.NbtReader;
 import de.clickism.clicksigns.util.nbt.NbtWriter;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,28 +65,53 @@ public record RoadSign(
 ) implements PixelSized {
     public static final Size MIN_SIGN_SIZE = new Size(6, 6);
     public static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
+
     /**
      * The default alignment for road signs when no alignment is set.
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
+
     /**
-     * The default symbol texture.
+     * Gets the default front texture source for road signs.
+     *
+     * @return the default front texture source
      */
-    public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
+    public static TextureSource defaultFrontSource() {
+        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/default/white.png"))
+            .textureSource(32, 16);
+    }
+
     /**
-     * The default road sign to use when no road sign is set.
+     * Gets the default back texture source for road signs.
+     *
+     * @return the default back texture source
      */
-    public static RoadSign DEFAULT = new RoadSign(
-        TextureSource.ofTiled(ClickSigns.signAsset("tilesets/default/white.png"), 4, 32, 16),
-        TextureSource.ofTiled(ClickSigns.signAsset("tilesets/backs/back.png"), 4, 32, 16),
-        List.of(
-            new SymbolElement(5, 8, Alignment.CENTER, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-            new TextElement(9, 12, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT),
-            new TextElement(9, 8, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT),
-            new TextElement(9, 4, Alignment.CENTER_RIGHT, "", 1f, TextStyle.DEFAULT)
-        ),
-        DEFAULT_ALIGNMENT
-    );
+    public static TextureSource defaultBackSource() {
+        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/backs/back.png"))
+            .textureSource(32, 16);
+    }
+
+    /**
+     * Creates a new road sign with default properties.
+     * <p>
+     * Warning: {@link SignRegistries} should be initialized before calling this method, otherwise it will throw an exception.
+     *
+     * @return the default road sign
+     */
+    public static RoadSign createDefault() {
+        return new RoadSign(
+            defaultFrontSource(),
+            defaultBackSource(),
+            List.of(
+                SymbolElement.createDefault().withPosition(5, 8),
+                TextElement.createDefault().withPosition(9, 12).withAlignment(Alignment.CENTER_RIGHT),
+                TextElement.createDefault().withPosition(9, 8).withAlignment(Alignment.CENTER_RIGHT),
+                TextElement.createDefault().withPosition(9, 4).withAlignment(Alignment.CENTER_RIGHT)
+            ),
+            DEFAULT_ALIGNMENT
+        );
+    }
+
     /**
      * Writer for packets
      */
@@ -134,8 +161,8 @@ public record RoadSign(
         // Ensure that all plate elements match the sign's textures
         elements = elements.stream()
             .map(element -> {
-                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
-                    return plate.withFrontSource(frontSource).withBackSource(backSource);
+                if (element instanceof PlateElement plate) {
+                    return plate.matchTextures(frontSource, backSource);
                 } else {
                     return element;
                 }

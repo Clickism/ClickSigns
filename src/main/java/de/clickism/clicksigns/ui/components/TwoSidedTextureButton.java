@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.ui.components;
 
+import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clickui.UiComponent;
@@ -14,13 +15,15 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> implements CommonComponents {
     private TextureSource frontSource;
     private TextureSource backSource;
+    private final ColorResolver colorResolver;
 
     private Consumer<TextureSource> onFrontSelected = source -> {};
     private Consumer<TextureSource> onBackSelected = source -> {};
 
-    public TwoSidedTextureButton(TextureSource frontSource, TextureSource backSource) {
+    public TwoSidedTextureButton(TextureSource frontSource, TextureSource backSource, ColorResolver colorResolver) {
         this.frontSource = frontSource;
         this.backSource = backSource;
+        this.colorResolver = colorResolver;
     }
 
     public TwoSidedTextureButton onFrontSelected(Consumer<TextureSource> onFrontSelected) {
@@ -45,7 +48,9 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
 
     @Override
     protected void build() {
-        this.children(box()
+        this
+            .growWidth()
+            .children(box()
             .horizontal()
             .growWidth()
             .childGap(4)
@@ -55,13 +60,15 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
                     .childGap(4)
                     .children(
                         smallHeader(t("clicksigns.ui.textures.front")).padding(0),
-                        new TextureButton(frontSource, onFrontSelected)),
+                        new TextureButton(frontSource, colorResolver)
+                            .onTextureSelected(onFrontSelected)),
                 box()
                     .growWidth()
                     .childGap(4)
                     .children(
                         smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                        new TextureButton(backSource, onBackSelected))
+                        new TextureButton(backSource, colorResolver)
+                            .onTextureSelected(onBackSelected))
             )
         );
     }

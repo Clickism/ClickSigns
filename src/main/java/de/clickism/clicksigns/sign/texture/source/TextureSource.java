@@ -228,26 +228,6 @@ public record TextureSource(
     }
 
     /**
-     * Creates a new texture source with the given tileset and dimensions, using a tiler processor.
-     *
-     * @param tileSet the tileset to use for tiling
-     * @param width   the width of the generated texture in pixels
-     * @param height  the height of the generated texture in pixels
-     * @return a new texture source with the given tileset and dimensions
-     */
-    public static TextureSource ofTiled(TileSet tileSet, int width, int height) {
-        return new TextureSource(tileSet.identifier(), List.of(
-            new Tiler(tileSet.cornerSize(), width, height)
-        ));
-    }
-
-    public static TextureSource ofTiled(ResourceLocation tileSetId, int cornerSize, int width, int height) {
-        return new TextureSource(tileSetId, List.of(
-            new Tiler(cornerSize, width, height)
-        ));
-    }
-
-    /**
      * Creates a new texture source with the given base resource location and a list of processors.
      *
      * @param base       the base resource location for the texture source

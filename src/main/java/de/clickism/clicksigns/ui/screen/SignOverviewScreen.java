@@ -46,7 +46,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
         // Use entity road sign or default if null
         var roadSign = entity.roadSign();
         if (roadSign == null) {
-            roadSign = RoadSign.DEFAULT;
+            roadSign = RoadSign.createDefault();
         }
         this.roadSign = new EditableRoadSign(roadSign);
     }

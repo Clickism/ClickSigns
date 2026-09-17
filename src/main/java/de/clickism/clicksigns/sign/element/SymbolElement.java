@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.Symbol;
@@ -7,8 +9,8 @@ import de.clickism.clicksigns.sign.Symbol;
 /**
  * Symbol element on a road sign.
  *
- * @param x    local X coordinate
- * @param y    local Y coordinate
+ * @param x         local X coordinate
+ * @param y         local Y coordinate
  * @param alignment alignment of the symbol
  * @param symbol    symbol to display
  */
@@ -22,6 +24,18 @@ public record SymbolElement(
      * Type key
      */
     public static final String TYPE = "symbol";
+
+    /**
+     * Creates a new symbol element with default properties.
+     *
+     * @return the default symbol element
+     */
+    public static SymbolElement createDefault() {
+        return new SymbolElement(0, 0,
+            Alignment.CENTER,
+            SignRegistries.SYMBOLS.get(ClickSigns.signAsset("symbols/arrows/right_curvy.png"))
+        );
+    }
 
     @Override
     public String typeKey() {

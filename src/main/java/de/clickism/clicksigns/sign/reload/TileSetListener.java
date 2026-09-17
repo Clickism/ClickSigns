@@ -69,7 +69,6 @@ public class TileSetListener extends CategorizedReloadListener<TileSetListener.C
                 location,
                 categoryId,
                 cornerSize,
-                centerSize,
                 isBack
             );
         }

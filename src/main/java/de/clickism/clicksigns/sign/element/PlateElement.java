@@ -26,12 +26,27 @@ public record PlateElement(
     TextureSource backSource,
     boolean matchSignTextures
 ) implements SignElement {
+    public static final Size MIN_PLATE_SIZE = new Size(4, 4);
+    public static final Size MAX_PLATE_SIZE = RoadSign.MAX_SIGN_SIZE;
+
     /**
      * Type key
      */
     public static final String TYPE = "plate";
-    public static final Size MIN_PLATE_SIZE = new Size(4, 4);
-    public static final Size MAX_PLATE_SIZE = RoadSign.MAX_SIGN_SIZE;
+
+    /**
+     * Creates a new plate element with default properties.
+     *
+     * @return the default plate element
+     */
+    public static PlateElement createDefault() {
+        return new PlateElement(0, 0,
+            Alignment.CENTER,
+            RoadSign.defaultFrontSource().resize(8, 6),
+            RoadSign.defaultBackSource().resize(8, 6),
+            true
+        );
+    }
 
     @Override
     public String typeKey() {
@@ -56,6 +71,20 @@ public record PlateElement(
      */
     public Size size() {
         return new Size((int) width(), (int) height());
+    }
+
+    /**
+     * Creates a new PlateElement with the specified front and back texture sources.
+     * The texture sources are resized to match the size of the current PlateElement.
+     *
+     * @param front The new front texture source for the PlateElement.
+     * @param back  The new back texture source for the PlateElement.
+     * @return A new PlateElement instance with the updated front and back texture sources.
+     */
+    public PlateElement matchTextures(TextureSource front, TextureSource back) {
+        return this
+            .withFrontSource(front.resize(size()))
+            .withBackSource(back.resize(size()));
     }
 
     @Override

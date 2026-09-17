@@ -212,7 +212,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
 
         if (!plate.matchSignTextures()) {
             // Show texture options
-            add(new TwoSidedTextureButton(plate.frontSource(), plate.backSource())
+            add(new TwoSidedTextureButton(plate.frontSource(), plate.backSource(), roadSign.colorResolver())
                 .onFrontSelected(source -> {
                     roadSign.updatePlateElement(id, element ->
                         element.withFrontSource(source.resize(element.size())));

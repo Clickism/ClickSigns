@@ -73,6 +73,7 @@ public class EditableRoadSign {
      */
     public void frontSource(TextureSource frontSource) {
         this.frontSource = frontSource;
+        matchPlateTextures();
         notifyListeners();
     }
 
@@ -92,7 +93,21 @@ public class EditableRoadSign {
      */
     public void backSource(TextureSource backSource) {
         this.backSource = backSource;
+        matchPlateTextures();
         notifyListeners();
+    }
+
+    /**
+     * Matches the textures of all plate elements in the road sign to the current front and back texture sources.
+     */
+    private void matchPlateTextures() {
+        var sign = build();
+        for (var element : elements.values()) {
+            if (element.current() instanceof PlateElement plate) {
+                element.update(current ->
+                    plate.matchTextures(sign.frontSource(), sign.backSource()));
+            }
+        }
     }
 
     /**

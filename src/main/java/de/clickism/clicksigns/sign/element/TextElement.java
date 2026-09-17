@@ -29,13 +29,27 @@ public record TextElement(
     float scale,
     TextStyle style
 ) implements SignElement {
+    public static final int MIN_TEXT_PT = 3;
+    public static final int MAX_TEXT_PT = 72;
+
     /**
      * Type key
      */
     public static final String TYPE = "text";
 
-    public static final int MIN_TEXT_PT = 3;
-    public static final int MAX_TEXT_PT = 72;
+    /**
+     * Creates a new text element with default properties.
+     *
+     * @return the default text element
+     */
+    public static TextElement createDefault() {
+        return new TextElement(0, 0,
+            Alignment.CENTER,
+            "",
+            1.0f,
+            TextStyle.DEFAULT
+        );
+    }
 
     @Override
     public String typeKey() {

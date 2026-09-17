@@ -21,18 +21,25 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
     public static final int TEXTURE_SIZE = 16;
 
     private final TextureSource source;
-    private final Consumer<TextureSource> onTextureSelected;
+    private final ColorResolver colorResolver;
+    private Consumer<TextureSource> onTextureSelected;
 
-    public TextureButton(TextureSource source, Consumer<TextureSource> onTextureSelected) {
+    public TextureButton(TextureSource source, ColorResolver colorResolver) {
         this.source = source;
+        this.colorResolver = colorResolver;
+    }
+
+    public TextureButton onTextureSelected(Consumer<TextureSource> onTextureSelected) {
         this.onTextureSelected = onTextureSelected;
+        return this;
     }
 
     @Override
     protected void build() {
-        var texture = source.resize(TextureButton.TEXTURE_SIZE, TextureButton.TEXTURE_SIZE).resolve(ColorResolver.empty());
+        var texture = source.resize(TEXTURE_SIZE, TEXTURE_SIZE)
+            .resolve(colorResolver);
         grow();
-        add(image(texture.location(), 40, 40)
+        add(image(texture.location(), TEXTURE_SIZE, TEXTURE_SIZE)
             .keepAspectRatio(true)
             .grow()
             .style(style()
@@ -49,7 +56,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         // Is tileset, cycle to next tileset in the same category
                         var tileSet = SignRegistries.TILE_SETS.get(source.base());
                         var nextTileSet = tileSet.nextInCategory();
-                        var nextTexture = TextureSource.ofTiled(nextTileSet, TextureButton.TEXTURE_SIZE, TextureButton.TEXTURE_SIZE);
+                        var nextTexture = nextTileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE);
                         onTextureSelected.accept(nextTexture);
                     } else if (SignRegistries.STATIC_TEXTURES.has(source.base())) {
                         // Is static texture, cycle to next static texture in the same category
@@ -62,15 +69,15 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                     // Open texture menu
                     var tileSetEntries = SignRegistries.TILE_SETS.all().stream()
                         .map(tileSet -> new TextureList.Entry(
-                            TextureSource.ofTiled(tileSet, TextureButton.TEXTURE_SIZE, TextureButton.TEXTURE_SIZE)
-                                .resolve(ColorResolver.empty()),
+                            tileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE)
+                                .resolve(colorResolver),
                             tileSet.identifier(),
                             tileSet.resolveCategory()
                         ));
 
                     var staticEntries = SignRegistries.STATIC_TEXTURES.all().stream()
                         .map(staticTexture -> new TextureList.Entry(
-                            staticTexture.textureSource().resolve(ColorResolver.empty()),
+                            staticTexture.textureSource().resolve(colorResolver),
                             staticTexture.identifier(),
                             staticTexture.resolveCategory()
                         ));
@@ -83,7 +90,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         .onTextureSelected(entry -> {
                             var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
                             if (tileSet != null) {
-                                onTextureSelected.accept(TextureSource.ofTiled(tileSet, TextureButton.TEXTURE_SIZE, TextureButton.TEXTURE_SIZE));
+                                onTextureSelected.accept(tileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE));
                                 return;
                             }
                             var staticTexture = SignRegistries.STATIC_TEXTURES.get(entry.identifier());
