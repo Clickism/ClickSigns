@@ -70,7 +70,7 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
             smallHeader(t("clicksigns.editor.sign.tools.header")),
             button(t("⏪", "clicksigns.editor.sign.tools.resetTexts"))
                 .growWidth()
-                .buttonColor(UiColor.ORANGE)
+                .buttonColor(UiColor.MAROON)
                 .onClick(event -> {
                     var elements = new ArrayList<>(roadSign.elements());
                     for (var element : elements) {
