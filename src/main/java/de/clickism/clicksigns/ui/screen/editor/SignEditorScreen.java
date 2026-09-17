@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui.screen.editor;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clickui.Ref;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.elements.Box;
@@ -13,15 +14,25 @@ import java.util.function.Consumer;
 
 // TODO: Info button instead of too many tooltips
 // TODO: Ability to select multiple elements and move them together/copy etc.
+
+/**
+ * Screen for editing a road sign.
+ */
 public class SignEditorScreen extends UiScreen<SignEditorScreen>
     implements CommonComponents {
-
     /**
      * Main editor context
      */
     private final SignEditorContext context;
 
     private Consumer<RoadSign> onSignChange = sign -> {};
+
+    /*
+     * We keep the component and also the editor and control components stable, and handle
+     *  reactivity manually.
+     */
+    private final Ref<SignElementControls> elementControlsRef = ref();
+    private final Ref<SignPropertyControls> propertyControlsRef = ref();
 
     /**
      * Create a new sign edit screen for the given sign.
@@ -31,10 +42,17 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
     public SignEditorScreen(@NotNull RoadSign sign) {
         var editableSign = new EditableRoadSign(sign);
         // Update the sign view and controls when the sign changes
-        editableSign.onSignChanged(this::invalidateTree);
+        editableSign.onSignChanged(() -> {
+            // Invalidate both the element controls and property controls
+            this.elementControlsRef.get().invalidateTree();
+            this.propertyControlsRef.get().invalidateTree();
+        });
         // Create context
         this.context = new SignEditorContext(editableSign);
-        this.context.onSelectedChanged(element -> this.invalidateTree());
+        this.context.onSelectedChanged(element -> {
+            // Invalidate the element controls
+            this.elementControlsRef.get().invalidateTree();
+        });
     }
 
     /**
@@ -58,6 +76,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                 panel()
                     .children(
                         new SignPropertyControls(this.context)
+                            .ref(propertyControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)
                     ),
@@ -83,6 +102,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                 panel()
                     .children(
                         new SignElementControls(this.context)
+                            .ref(elementControlsRef)
                             .grow()
                             .crossAlign(Align.CENTER)
                     )
