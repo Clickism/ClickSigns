@@ -20,7 +20,7 @@ public record RoadSignUpdatePacket(
     BlockPos pos,
     RoadSign roadSign
 ) implements Packet {
-
+    // TODO: Handle crashes and make sure server/client doesnt crash
     public static final PacketType<RoadSignUpdatePacket> TYPE = new PacketType<>(
         ClickSigns.identifier("road_sign_update"),
         // Writer

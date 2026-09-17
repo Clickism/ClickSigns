@@ -21,12 +21,20 @@ public record TextureSource(
      */
     public static final Texture ERROR_TEXTURE =
         new Texture(ClickSigns.identifier("error.png"), 32, 16);
+
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
     private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
     private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
     private static final HashSet<String> ERROR_CACHE = new HashSet<>();
 
+    public static final int MAX_PROCESSOR_COUNT = 20;
+
     public TextureSource {
+        if (processors.size() > MAX_PROCESSOR_COUNT) {
+            throw new IllegalArgumentException(
+                "Too many texture processors: " + processors.size() + " (max " + MAX_PROCESSOR_COUNT + ")"
+            );
+        }
         processors = List.copyOf(processors);
     }
 

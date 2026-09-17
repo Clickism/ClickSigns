@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
@@ -12,8 +13,15 @@ import de.clickism.clicksigns.ui.components.NumberControl;
 import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.UiColor;
+import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.UiScreen;
+import de.clickism.clickui.layout.Align;
+import de.clickism.clickui.render.RenderContext;
+import de.clickism.clickui.render.TooltipRenderer;
+import de.clickism.clickui.style.Border;
+import net.minecraft.ChatFormatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,70 +48,133 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
 
     @Override
     protected void build() {
-        grow();
-        alignCenter();
-        children(
-            box()
-                .padding(8)
-                .alignCenter()
-                .style(style()
-                    .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
-                    .backgroundColor(UiColor.BLACK_A50))
-                .children(
-                    fancyHeader(l("Texture Pipeline Editor")),
+        var inputSource = TextureSource.ofStatic(textureSource.base());
+        var inputTexture = inputSource.resolve(colorResolver);
+        var outputSource = textureSource.build();
+        var outputTexture = outputSource.resolve(colorResolver);
+        this.alignCenter()
+            .grow()
+            .padding(8)
+            .childGap(8)
+            .children(
+                h4(l("Texture Pipeline Editor"))
+                    .padding(6, 12)
+                    .style(style()
+                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
+                        .backgroundColor(UiColor.BLACK.alpha(0.5f))),
 
-                    box()
-                        .childGap(8)
-                        .horizontal()
-                        .children(
-                            // Left - Base Texture
-                            box()
-                                .width(64)
-                                .childGap(4)
-                                .children(
-                                    smallHeader(l("Base Texture")),
-                                    UiUtil.imageOf(TextureSource.ofStatic(textureSource.base()).resolve(ColorResolver.empty()))
-                                        .keepAspectRatio(true)
-                                        .grow(),
-                                    darkBox()
-                                        .children(
-                                            smallParagraph(l(textureSource.base().toString()))
+                box()
+                    .horizontal()
+                    .childGap(8)
+                    .growWidth()
+                    .children(
+                        // Left - Base Texture and properties
+                        box()
+                            .grow()
+                            .crossAlign(Align.END)
+                            .children(
+                                darkBoxOutlined()
+                                    .maxWidth(120)
+                                    .childGap(8)
+                                    .growHeight()
+                                    .children(
+                                        fancyHeader(l("Base Texture")),
+                                        new ImageBox(inputSource)
+                                            .growWidth(),
+
+                                        withHeader(
+                                            l("Texture Size"),
+                                            darkBox()
+                                                .children(
+                                                    smallParagraph(l(inputTexture.width() + "x" + inputTexture.height()))
+                                                        .alignTextCenter()
+                                                )
+                                        ),
+
+                                        withHeader(
+                                            l("Resource Path"),
+                                            darkBox()
+                                                .children(
+                                                    smallParagraph(l(textureSource.base().toString()))
+                                                )
                                         )
-                                ),
+                                    )
+                            ),
+                        // Center - Texture Processors
+                        darkBoxOutlined()
+                            .scrollable(false)
+                            .grow()
+                            .minHeight(300)
+                            .maxHeight(400)
+                            .maxWidth(300)
+                            .childGap(8)
+                            .children(
+                                fancyHeader(l("Texture Processors")),
+                                processorList().growHeight(),
 
-                            // Right - Processors
-                            box()
-                                .children(
-                                    smallHeader(l("Processors")),
-                                    processorList(),
-                                    button(l("+ Add Processor"))
-                                        .growWidth()
-                                        .buttonColor(UiColor.LIME)
-                                        .onClick(event -> {
-                                            new TextureProcessorSelectScreen()
-                                                .onProcessorSelected(textureSource::addProcessor)
-                                                .open();
-                                        })
-                                )
-                        ),
+                                button(l("+ Add Processor"))
+                                    .disabled(textureSource.processors().size() >= TextureSource.MAX_PROCESSOR_COUNT)
+                                    .growWidth()
+                                    .buttonColor(UiColor.LIME)
+                                    .onClick(event -> {
+                                        new TextureProcessorSelectScreen()
+                                            .onProcessorSelected(textureSource::addProcessor)
+                                            .open();
+                                    })
+                            ),
 
-                    button(ComponentUtil.confirmWithIcon())
-                        .growWidth()
-                        .buttonColor(UiColor.LIME)
-                        .onClick(event -> {
-                            onTextureEdited.accept(textureSource.build());
-                            close();
-                        })
-                )
-        );
+                        // Right - Output preview and confirm button
+                        box()
+                            .grow()
+                            .children(
+                                darkBoxOutlined()
+                                    .grow()
+                                    .padding(8)
+                                    .maxWidth(120)
+                                    .childGap(8)
+                                    .children(
+                                        fancyHeader(l("Output Texture")),
+                                        new ImageBox(outputSource)
+                                            .size(120 - 16),
+
+                                        withHeader(
+                                            l("Texture Size"),
+                                            darkBox()
+                                                .children(
+                                                    smallParagraph(l(outputTexture.width() + "x" + outputTexture.height()))
+                                                        .alignTextCenter()
+                                                )
+                                        ),
+
+                                        withHeader(
+                                            l("Resource Path"),
+                                            darkBox()
+                                                .children(
+                                                    smallParagraph(l(outputTexture.location().toString()))
+                                                )
+                                        ),
+
+                                        box().grow(),
+
+                                        button(ComponentUtil.confirmWithIcon())
+                                            .growWidth()
+                                            .buttonColor(UiColor.LIME)
+                                            .onClick(event -> {
+                                                onTextureEdited.accept(textureSource.build());
+                                                close();
+                                            })
+                                    )
+                            )
+                    )
+
+            );
     }
 
     private UiElement<?> processorList() {
         var list = box()
-            .width(240)
+            .grow()
+            .padding(0, 6)
             .childGap(4)
-            .padding(4)
-            .growHeight()
             .scrollable(true);
         var partialProcessors = new ArrayList<TextureProcessor>();
         for (var processor : textureSource.processors()) {
@@ -112,129 +183,221 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                 textureSource.base(),
                 List.copyOf(partialProcessors)
             );
-            var partialTexture = partialSource.resolve(colorResolver);
+            var view = memo(processor.id() + "-view", () -> processorView(processor));
             list.add(darkBoxOutlined()
+                .style(style()
+                    .borderPosition(Border.Position.INSIDE)
+                    .backgroundColor(UiColor.BLACK_A80))
                 .growWidth()
                 .horizontal()
                 .alignCenter()
                 .childGap(4)
+                .height(53)
+                .padding(4)
                 .children(
                     // Preview
-                    UiUtil.imageOf(partialTexture)
-                        .size(32)
-                        .keepAspectRatio(true),
+                    new ImageBox(partialSource)
+                        .size(45),
                     // Processor controls
-                    processorView(processor),
-                    // Remove button
-                    button("✖")
-                        .buttonColor(UiColor.RED)
-                        .onClick(event -> {
-                            textureSource.removeProcessor(processor);
-                        })
+                    view,
+                    // Buttons
+                    box()
+                        .growHeight()
+                        .alignCenter()
+                        .childGap(2)
+                        .children(
+                            button("⬆")
+                                .size(12)
+                                .buttonColor(UiColor.LIGHT_GRAY)
+                                .onClick(event -> {
+                                    textureSource.moveProcessor(processor.id(), -1);
+                                }),
+                            box().grow(),
+                            // Remove button
+                            button("🗑")
+                                .size(12)
+                                .buttonColor(UiColor.RED)
+                                .onClick(event -> {
+                                    textureSource.removeProcessor(processor);
+                                }),
+                            box().grow(),
+                            button("⬇")
+                                .size(12)
+                                .buttonColor(UiColor.LIGHT_GRAY)
+                                .onClick(event -> {
+                                    textureSource.moveProcessor(processor.id(), 1);
+                                })
+                        )
                 ));
         }
         return list;
     }
 
+    private class ImageBox extends UiComponent<ImageBox> {
+        private final TextureSource source;
+        private final Image image;
+
+        private @Nullable Integer hoveredPixel = null;
+
+        public ImageBox(TextureSource source) {
+            this.source = source;
+            this.image = source.resolveImage(colorResolver);
+            this.onClick(event -> {
+                if (hoveredPixel != null) {
+                    var colorHex = String.format("#%06x", (0xFFFFFF & hoveredPixel));
+                    UiUtil.copyToClipboard(colorHex);
+                    event.playSound();
+                }
+            });
+        }
+
+        @Override
+        protected void build() {
+            // TODO: Fix image fitting/keep aspect ratio problems
+            var texture = source.resolve(colorResolver);
+            this
+                .padding(2)
+                .style(style()
+                    .borderPosition(Border.Position.INSIDE)
+                    .borderColor(UiColor.LIGHT_GRAY.alpha(0.2f))
+                    .backgroundColor(UiColor.BLACK)
+                    .whenHovered(style()
+                        .borderColor(UiColor.LIGHT_GRAY.alpha(1f))))
+                .children(
+                    UiUtil.imageOf(texture)
+                        .grow()
+                );
+        }
+
+        @Override
+        public void render(RenderContext context) {
+            // Update color
+            var imageX = context.mouseX() - bounds().x() - padding().left();
+            var imageY = context.mouseY() - bounds().y() - padding().top();
+            var renderedWidth = bounds().width() - padding().horizontal();
+            var renderedHeight = bounds().height() - padding().vertical();
+            imageX = imageX * image.width() / renderedWidth;
+            imageY = imageY * image.height() / renderedHeight;
+            if (imageX >= 0 && imageX < image.width() && imageY >= 0 && imageY < image.height()) {
+                hoveredPixel = image.pixelAt(imageX, imageY);
+                // Render tooltip
+                var colorHex = l(String.format("#%06x", (0xFFFFFF & hoveredPixel)));
+                var colorBox = box()
+                    .horizontal()
+                    .childGap(2)
+                    .alignCenter()
+                    .children(
+                        box()
+                            .size(10)
+                            .style(style().backgroundColor(UiColor.rgba(hoveredPixel))),
+                        text(colorHex).padding(1, 0, 0, 0)
+                    );
+                var tooltip = box()
+                    .childGap(2)
+                    .children(
+                        colorBox,
+                        box().height(1).growWidth()
+                            .style(style().backgroundColor(UiColor.LIGHT_GRAY.alpha(0.3f))),
+                        describeLeftClick(l("Copy Color"))
+                    );
+                tooltip.invalidateLayout();
+                new TooltipRenderer(tooltip, context).render();
+            }
+        }
+    }
+
     private UiElement<?> processorView(Editable<TextureProcessor> processor) {
         var current = processor.current();
         if (current instanceof Tiler tiler) {
-            return box()
-                .growWidth()
-                .childGap(4)
-                .children(
-                    smallHeader(l("Tiler")).padding(0),
-                    box()
-                        .growWidth()
-                        .horizontal()
-                        .childGap(4)
-                        .children(
-                            box()
-                                .growWidth()
-                                .children(
-                                    smallHeader(l("Corner Size")).padding(0),
-                                    new NumberControl()
-                                        .value(tiler.cornerSize())
-                                        .onValueChanged(newValue -> {
-                                            textureSource.updateProcessor(
-                                                processor.id(),
-                                                p -> ((Tiler) p).withCornerSize(newValue)
-                                            );
-                                        })
-                                ),
-                            box()
-                                .growWidth()
-                                .children(
-                                    smallHeader(l("Width")).padding(0),
-                                    new NumberControl()
-                                        .value(tiler.outputWidth())
-                                        .onValueChanged(newValue -> {
-                                            textureSource.updateProcessor(
-                                                processor.id(),
-                                                p -> ((Tiler) p).withOutputSize(newValue, ((Tiler) p).outputHeight())
-                                            );
-                                        })
-                                ),
-                            box()
-                                .growWidth()
-                                .children(
-                                    smallHeader(l("Height")).padding(0),
-                                    new NumberControl()
-                                        .value(tiler.outputHeight())
-                                        .onValueChanged(newValue -> {
-                                            textureSource.updateProcessor(
-                                                processor.id(),
-                                                p -> ((Tiler) p).withOutputSize(((Tiler) p).outputWidth(), newValue)
-                                            );
-                                        })
-                                )
+            return withHeader(
+                l("Tiler").copy().withStyle(ChatFormatting.BOLD),
+                box()
+                    .growWidth()
+                    .horizontal()
+                    .childGap(4)
+                    .children(
+                        withHeader(
+                            l("Corner Size"),
+                            new NumberControl()
+                                .value(tiler.cornerSize())
+                                .onValueChanged(newValue -> {
+                                    textureSource.updateProcessor(
+                                        processor.id(),
+                                        p -> ((Tiler) p).withCornerSize(newValue)
+                                    );
+                                })
+                        ),
+                        withHeader(
+                            l("Width"),
+                            new NumberControl()
+                                .value(tiler.outputWidth())
+                                .onValueChanged(newValue -> {
+                                    textureSource.updateProcessor(
+                                        processor.id(),
+                                        p -> ((Tiler) p).withOutputSize(newValue, ((Tiler) p).outputHeight())
+                                    );
+                                })
+                        ),
+                        withHeader(
+                            l("Height"),
+                            new NumberControl()
+                                .value(tiler.outputHeight())
+                                .onValueChanged(newValue -> {
+                                    textureSource.updateProcessor(
+                                        processor.id(),
+                                        p -> ((Tiler) p).withOutputSize(((Tiler) p).outputWidth(), newValue)
+                                    );
+                                })
                         )
-                );
+                    )
+            );
         } else if (current instanceof ReplaceColor replaceColor) {
             return box()
                 .growWidth()
                 .childGap(4)
                 .children(
-                    smallHeader(l("Replace Color")).padding(0),
+                    smallHeader(l("Replace Color").copy().withStyle(ChatFormatting.BOLD)).padding(0),
                     box()
                         .growWidth()
                         .horizontal()
                         .childGap(4)
                         .children(
-                            box()
-                                .growWidth()
-                                .children(
-                                    smallHeader(l("From")).padding(0),
-                                    new ColorField(colorResolver)
-                                        .value(replaceColor.fromColor() != null
-                                            ? replaceColor.fromColor()
-                                            : "")
-                                        .onColorChanged(color -> {
-                                            var newColor = color.isEmpty()
-                                                ? null
-                                                : color;
-                                            textureSource.updateProcessor(
-                                                processor.id(),
-                                                p -> ((ReplaceColor) p).withFromColor(newColor)
-                                            );
-                                        })
-                                ),
-                            box()
-                                .growWidth()
-                                .children(
-                                    smallHeader(l("To")).padding(0),
-                                    new ColorField(colorResolver)
-                                        .value(replaceColor.toColor())
-                                        .onColorChanged(color -> {
-                                            if (color.isEmpty()) {
-                                                return;
-                                            }
-                                            textureSource.updateProcessor(
-                                                processor.id(),
-                                                p -> ((ReplaceColor) p).withToColor(color)
-                                            );
-                                        })
-                                )
+                            withHeader(
+                                l("From (Optional)"),
+                                new ColorField(colorResolver)
+                                    .growWidth()
+                                    .height(14)
+                                    .padding(2, 4)
+                                    .value(replaceColor.fromColor() != null
+                                        ? replaceColor.fromColor()
+                                        : "")
+                                    .onColorChanged(color -> {
+                                        var newColor = color.isEmpty()
+                                            ? null
+                                            : color;
+                                        textureSource.updateProcessor(
+                                            processor.id(),
+                                            p -> ((ReplaceColor) p).withFromColor(newColor)
+                                        );
+                                    })
+                            ),
+                            withHeader(
+                                l("To"),
+                                new ColorField(colorResolver)
+                                    .growWidth()
+                                    .height(14)
+                                    .padding(2, 4)
+                                    .value(replaceColor.toColor())
+                                    .onColorChanged(color -> {
+                                        if (color.isEmpty()) {
+                                            return;
+                                        }
+                                        textureSource.updateProcessor(
+                                            processor.id(),
+                                            p -> ((ReplaceColor) p).withToColor(color)
+                                        );
+                                    })
+                            )
                         )
                 );
         } else {

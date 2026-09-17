@@ -57,7 +57,7 @@ public interface CommonComponents extends BaseComponents {
                 .alpha(0.9f));
     }
 
-    default UiElement<?> darkBox() {
+    default Box darkBox() {
         return box()
             .growWidth()
             .padding(4)
@@ -65,13 +65,23 @@ public interface CommonComponents extends BaseComponents {
                 .backgroundColor(UiColor.BLACK_A50));
     }
 
-    default UiElement<?> darkBoxOutlined() {
+    default Box darkBoxOutlined() {
         return box()
             .growWidth()
             .padding(4)
             .style(style()
                 .backgroundColor(UiColor.BLACK_A50)
                 .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f)));
+    }
+
+    default Box withHeader(Component header, UiElement<?> content) {
+        return box()
+            .growWidth()
+            .childGap(4)
+            .children(
+                smallHeader(header).padding(0),
+                content
+            );
     }
 
     default Text smallParagraph(Component text) {
