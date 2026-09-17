@@ -19,10 +19,12 @@ public interface CommonComponents extends BaseComponents {
             .growWidth()
             .alignCenter()
             .style(style()
-                .borderColor(UiColor.WHITE_A30)
-                .backgroundColor(UiColor.WHITE_A10))
+                .borderColorBottom(UiColor.WHITE_A60)
+                .backgroundColor(UiColor.WHITE.alpha(0.10f)))
             .children(
                 text(text)
+                    .style(style()
+                        .alpha(0.9f))
             );
     }
 

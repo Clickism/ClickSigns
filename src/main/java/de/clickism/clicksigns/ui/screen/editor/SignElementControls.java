@@ -59,6 +59,9 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
         if (element instanceof SymbolElement symbol) {
             addSymbolControls(symbol, id);
         }
+
+        add(box().growHeight()); // Spacer
+
         addCommonControls(element, id);
     }
 

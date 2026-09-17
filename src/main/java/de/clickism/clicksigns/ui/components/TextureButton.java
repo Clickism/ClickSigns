@@ -86,7 +86,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         .toList();
 
                     new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries)
-                        .textureScale(2) // Smaller scale for tilesets
+                        .textureScale(3.0f) // Smaller scale for tilesets
                         .onTextureSelected(entry -> {
                             var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
                             if (tileSet != null) {
