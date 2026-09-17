@@ -29,7 +29,7 @@ public class ColorField extends Field<ColorField> {
                 return colorResolver.isValidColor(string);
             });
         this.updateStyle();
-        super.onValueChanged(value -> {
+        this.onValueChanged(value -> {
             // Update color
             color = UiColor.of(colorResolver.resolveOrDefault(value, color.toColor()));
             this.updateStyle();
@@ -49,8 +49,7 @@ public class ColorField extends Field<ColorField> {
             ));
     }
 
-    @Override
-    public ColorField onValueChanged(Consumer<String> listener) {
+    public ColorField onColorChanged(Consumer<String> listener) {
         this.onColorChanged = listener;
         return this;
     }

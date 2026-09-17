@@ -4,6 +4,7 @@ import de.clickism.clickui.BaseComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.elements.Box;
+import de.clickism.clickui.elements.Text;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
@@ -48,6 +49,22 @@ public interface CommonComponents extends BaseComponents {
                     ));
     }
 
+    default Text paragraph(Component text) {
+        return text(text)
+            .growWidth()
+            .style(style()
+                .fontScale(0.95f)
+                .alpha(0.9f));
+    }
+
+    default Text smallParagraph(Component text) {
+        return text(text)
+            .growWidth()
+            .style(style()
+                .fontScale(0.8f)
+                .alpha(0.8f));
+    }
+
     default UiElement<?> action(Component text) {
         return text(text.copy().withStyle(ChatFormatting.BOLD))
             .padding(3, 2, 2, 3)
@@ -55,6 +72,17 @@ public interface CommonComponents extends BaseComponents {
                 .textColor(UiColor.WHITE_A90)
                 .backgroundColor(UiColor.WHITE_A20)
                 .fontScale(0.75f));
+    }
+
+    default UiElement<?> action(Component... texts) {
+        var box = box()
+            .horizontal()
+            .childGap(2)
+            .alignCenter();
+        for (var text : texts) {
+            box.add(action(text));
+        }
+        return box;
     }
 
     default UiElement<?> descriptions(UiElement<?>... descriptions) {

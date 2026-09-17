@@ -24,6 +24,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
      * Main editor context
      */
     private final SignEditorContext context;
+    private final EditorActionHandler actionHandler;
 
     private Consumer<RoadSign> onSignChange = sign -> {};
 
@@ -53,6 +54,9 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
             // Invalidate the element controls
             this.elementControlsRef.get().invalidateTree();
         });
+        // Add action handler
+        this.actionHandler = new EditorActionHandler(this.context);
+        this.globalEvents().onKeyPress(this.actionHandler::handleKeyPress);
     }
 
     /**
@@ -87,7 +91,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                     .alignCenter()
                     .childGap(8)
                     .children(
-                        new SignEditorView(this.context)
+                        new SignEditorView(this.context, this.actionHandler)
                             .grow()
                             .alignCenter()
                             .onConfirm(event -> {

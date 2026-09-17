@@ -181,8 +181,11 @@ public class SignView extends UiComponent<SignView> {
         }
         // Reposition
         view.relative(pos.x(), pos.y());
-        // Configure
-        elementConfig.accept(view, element);
+        // Configure once per element, so that event listeners aren't added multiple times
+        memo(view.hashCode() + "-config", () -> {
+            elementConfig.accept(view, element);
+            return null;
+        });
         // Add to the view
         add(view);
     }

@@ -72,6 +72,8 @@
   "clicksigns.editor.element.other.header": "Other",
   "clicksigns.editor.element.other.removeElement": "Remove Element",
 
+  "clicksigns.editor.info.header": "Info",
+
   "clicksigns.templateExport.header": "Export Template",
   "clicksigns.templateExport.export.header": "Export Template",
   "clicksigns.templateExport.export.includeTexts": "Include Written Texts",
@@ -93,9 +95,6 @@
   "clicksigns.template.category.resource.tooltip": "Resource templates are loaded from resource packs or are built into the mod.",
 
   "clicksigns.category.uncategorized": "Uncategorized",
-
-  "clicksigns.ui.numberControl.fineControl.tooltip": "§7Tip: §rHold Shift for fine control",
-  "clicksigns.ui.numberControl.fastControl.tooltip": "§7Tip: §rHold Shift for faster control",
 
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"

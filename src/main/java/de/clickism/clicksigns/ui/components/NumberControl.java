@@ -96,7 +96,6 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
                 // Scale down
                 allowInput
                     ? button("-")
-                    .tooltip(buttonTooltip())
                     .style(buttonStyle())
                     .size(height)
                     .onClick(event -> {
@@ -124,7 +123,6 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
                 // Scale up
                 allowInput
                     ? button("+")
-                    .tooltip(buttonTooltip())
                     .style(buttonStyle())
                     .size(height)
                     .onClick(event -> {
@@ -141,16 +139,6 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
                 .overlayColor(UiColor.TEAL.alpha(0.4f)))
             .when(c -> Screen.hasShiftDown() && fastChangeAmount != 0, style()
                 .overlayColor(UiColor.LIME.alpha(0.4f)));
-    }
-
-    private UiElement<?> buttonTooltip() {
-        if (fineChangeAmount != 0) {
-            return text(t("clicksigns.ui.numberControl.fineControl.tooltip"));
-        }
-        if (fastChangeAmount != 0) {
-            return text(t("clicksigns.ui.numberControl.fastControl.tooltip"));
-        }
-        return null;
     }
 
     private int updateAmount(int currentValue, int delta) {

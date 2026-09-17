@@ -4,7 +4,6 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.SizeControls;
 import de.clickism.clicksigns.ui.components.sign.SignView;
-import de.clickism.clicksigns.ui.editable.EditableSignElement;
 import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clicksigns.util.Size;
@@ -13,7 +12,6 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
 import de.clickism.clickui.layout.Point;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -23,43 +21,13 @@ import static de.clickism.clicksigns.util.ComponentUtil.l;
 class SignEditorView extends UiComponent<SignEditorView> {
     private final Ref<SignView> signViewRef = ref();
     private final SignEditorContext context;
-    private int dragStartX = 0;
-    private int dragStartY = 0;
-    private EditableSignElement dragged = null;
     private Consumer<MouseClickEvent> onConfirm = event -> {};
 
-    public SignEditorView(SignEditorContext context) {
+    private final EditorActionHandler actionHandler;
+
+    public SignEditorView(SignEditorContext context, EditorActionHandler actionHandler) {
         this.context = context;
-        globalEvents().onKeyPress(event -> {
-            // TODO: Controls
-            // Duplicate selectedRef element with Ctrl+D
-//            var selected = selectedRef.get();
-//            if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
-//                spawnElementNearSelected(selected);
-//                event.consume();
-//            }
-//            // Copy selectedRef element with Ctrl+C
-//            if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_C) {
-//                if (selectedRef != null) {
-//                    SignEditScreen.copied = selected;
-//                    event.consume();
-//                }
-//            }
-//            // Paste copied element with Ctrl+V
-//            if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_V) {
-//                signEditScreen.spawnElementNearSelected(SignEditScreen.copied);
-//                event.consume();
-//            }
-//            // Delete selectedRef element with Delete key
-//            if (event.code() == GLFW.GLFW_KEY_DELETE) {
-//                // Don't use the delete key for text elements
-//                if (signEditScreen.selected != null && !(signEditScreen.selected.current() instanceof TextElement)) {
-//                    signEditScreen.sign.removeElement(signEditScreen.selected.id());
-//                    signEditScreen.selected(null);
-//                    event.consume();
-//                }
-//            }
-        });
+        this.actionHandler = actionHandler;
     }
 
     /**
@@ -98,7 +66,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                 .style(style()
                                     .whenHovered(style()
                                         .borderColor(UiColor.RED))
-                                    .when(sc -> editable.equals(context.selected()) || editable.equals(dragged),
+                                    .when(sc -> context.isSelected(editable),
                                         style()
                                             .borderColor(UiColor.GREEN)
                                             .addPostRenderHook((context, el) -> {
@@ -116,39 +84,19 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                             })))
                                 // Update selected on click
                                 .onClick(event -> {
-                                    context.setSelected(editable);
+                                    actionHandler.handleMouseDown(editable);
+                                })
+                                .onRelease(event -> {
+                                    actionHandler.handleMouseUp(editable);
                                 })
                                 .onDragStart(event -> {
-                                    dragStartX = editable.current().x();
-                                    dragStartY = editable.current().y();
-                                    dragged = editable;
+                                    actionHandler.handleDragStart(event);
                                     signViewRef.get().renderGuidelines(true);
                                 })
                                 // Drag controls
-                                .onDrag(event -> {
-                                    // Get the delta in sign space
-                                    int deltaX = (int) (event.totalDeltaX() / UI_SCALE);
-                                    int deltaY = (int) (event.totalDeltaY() / UI_SCALE);
-
-                                    int newX = dragStartX + deltaX;
-                                    int newY = dragStartY - deltaY;
-
-                                    if (dragged == null) return;
-
-                                    var currentElement = dragged.current();
-                                    if (newX == currentElement.x() && newY == currentElement.y()) {
-                                        // No change
-                                        return;
-                                    }
-
-                                    // Replace the element in the sign with a new one at the new position
-                                    context.roadSign().updateElement(
-                                        dragged.id(),
-                                        element -> element.withPosition(newX, newY)
-                                    );
-                                })
+                                .onDrag(actionHandler::handleDrag)
                                 .onDragEnd(event -> {
-                                    dragged = null;
+                                    actionHandler.handleDragEnd();
                                     signViewRef.get().renderGuidelines(false);
                                 });
                         }))
@@ -190,22 +138,5 @@ class SignEditorView extends UiComponent<SignEditorView> {
         ));
     }
 
-    private void spawnElementNearSelected(@Nullable EditableSignElement element) {
-        if (element == null) return;
-        Point position;
-        var selected = context.selected();
-        if (selected == null) {
-            position = context.roadSign().center();
-        } else {
-            var currentSelected = selected.current();
-            position = new Point(
-                // Position the new element offset from the selected element, so they don't overlap
-                (int) (currentSelected.x() + currentSelected.width() / 2),
-                (int) (currentSelected.y() + currentSelected.height() / 2)
-            );
-        }
-        var newElement = element.current().withPosition(position.x(), position.y());
-        var editable = context.roadSign().addElement(newElement);
-        context.setSelected(editable);
-    }
+
 }

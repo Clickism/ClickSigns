@@ -8,7 +8,9 @@ import de.clickism.clicksigns.ui.components.sign.SymbolView;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.UiElement;
 import de.clickism.clickui.layout.Align;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
@@ -28,24 +30,14 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
     @Override
     protected void build() {
         childGap(4);
-        add(fancyHeader(t("clicksigns.editor.element.header")));
 
         var editableElement = context.selected();
         if (editableElement == null) {
-            // TODO: Make nicer, Also, add control info here
-            // No element selecteed
-            add(box().height(8)); // Spacer
-            add(text(t("clicksigns.editor.element.noneSelected"))
-                .alignTextCenter()
-                .style(style()
-                    .alpha(0.6f)));
-            add(box().height(8)); // Spacer
-            add(text(t("clicksigns.editor.element.noneSelected.description"))
-                .alignTextCenter()
-                .style(style()
-                    .alpha(0.6f)));
+            addInfo();
             return;
         }
+        add(fancyHeader(t("clicksigns.editor.element.header")));
+
         // Text controls
         // TODO: Fix in ClickUI, text fields scissor breaks when scrolling
         var element = editableElement.current();
@@ -65,31 +57,103 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
         addCommonControls(element, id);
     }
 
+    private void addInfo() {
+        add(fancyHeader(t("clicksigns.editor.info.header")));
+        add(box()
+            .grow()
+            .childGap(4)
+            .children(
+                box(), // Spacer
+                // None selected
+                box()
+                    .growWidth()
+                    .padding(8)
+                    .style(style()
+                        .backgroundColor(UiColor.BLACK_A20))
+                    .children(
+                        paragraph(l("No element selected."))
+                            .alignTextCenter()
+                    ),
+                box(), // Spacer
+                box()
+                    .growWidth()
+                    .padding(8)
+                    .style(style()
+                        .backgroundColor(UiColor.BLACK_A20))
+                    .children(
+                        paragraph(l("Click on an element to select and edit it."))
+                    ),
+                box().grow(), // Spacer
+                // Controls
+                smallHeader(l("Controls")),
+                box()
+                    .growWidth()
+                    .padding(4)
+                    .childGap(4)
+                    .style(style()
+                        .backgroundColor(UiColor.BLACK_A20))
+                    .children(
+                        describeLeftClick(l("Select")),
+                        describeAction(action(l("Drag")), l("Move")),
+                        describeAction(action(l("Ctrl"), l("C")), l("Copy")),
+                        describeAction(action(l("Ctrl"), l("V")), l("Paste")),
+                        describeAction(action(l("Ctrl"), l("D")), l("Duplicate")),
+                        describeAction(action(l("Ctrl"), l("A")), l("Select All")),
+                        describeAction(action(l("Delete")), l("Delete"))
+                    ),
+                smallHeader(l("Tips")),
+                box()
+                    .childGap(4)
+                    .growWidth()
+                    .children(
+                        tip(l("Hold Shift to have faster/slower changes when using number controls.")),
+                        tip(l("Hold Ctrl to select multiple elements at once."))
+                    )
+            ));
+    }
+
+    private UiElement<?> tip(Component text) {
+        return box()
+            .growWidth()
+            .padding(8)
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A20))
+            .children(
+                smallParagraph(text)
+            );
+    }
+
     private void addTextControls(TextElement text, UUID id) {
         add(smallHeader(t("clicksigns.editor.element.text.textColor")));
         var colorResolver = context.roadSign().colorResolver();
         // Foreground color
         var style = text.style();
-        add(memo(id + "-text-color", () -> new ColorField(colorResolver))
-            .value(style.color())
-            .onValueChanged(newColor -> {
+        add(memo(
+            id + "-text-color",
+            () -> new ColorField(colorResolver)
+                .value(style.color()))
+            .onColorChanged(newColor -> {
                 context.roadSign().updateTextElement(id, element ->
                     element.withStyle(s -> s.withColor(newColor)));
             }));
 
         // Background color
         add(smallHeader(t("clicksigns.editor.element.text.backgroundColor")).padding(0));
-        add(memo(id + "-bg-color", () -> new ColorField(colorResolver))
-            .value(style.backgroundColor().orElse(""))
-            .onValueChanged(newColor -> {
+        add(memo(
+            id + "-bg-color",
+            () -> new ColorField(colorResolver)
+                .value(style.backgroundColor().orElse("")))
+            .onColorChanged(newColor -> {
                 context.roadSign().updateTextElement(id, element ->
                     element.withStyle(s -> s.withBackgroundColor(newColor)));
             }));
         add(smallHeader(t("clicksigns.editor.element.text.outlineColor")));
         // Outline color
-        add(memo(id + "-outline-color", () -> new ColorField(colorResolver))
-            .value(style.outlineColor().orElse(""))
-            .onValueChanged(newColor -> {
+        add(memo(
+            id + "-outline-color",
+            () -> new ColorField(colorResolver)
+                .value(style.outlineColor().orElse("")))
+            .onColorChanged(newColor -> {
                 context.roadSign().updateTextElement(id, element ->
                     element.withStyle(s -> s.withOutlineColor(newColor)));
             }));
