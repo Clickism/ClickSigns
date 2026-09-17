@@ -1,10 +1,9 @@
 package de.clickism.clicksigns.ui.screen.editor;
 
-import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.*;
+import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
+import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.TwoSidedTextureButton;
 import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;

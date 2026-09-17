@@ -3,10 +3,10 @@ package de.clickism.clicksigns.ui.components;
 import com.mojang.math.Axis;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.ui.UiConstants;
+import de.clickism.clickui.State;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Rect;
-import de.clickism.clickui.State;
 import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.style.Border;
 

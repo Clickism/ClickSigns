@@ -3,7 +3,6 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.reload.*;
 import de.clickism.clicksigns.sign.template.LocalTemplateManager;
 import net.minecraft.resources.ResourceLocation;

@@ -13,10 +13,9 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  * A UI component that displays two texture buttons side by side, one for the front texture and one for the back texture.
  */
 public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> implements CommonComponents {
-    private TextureSource frontSource;
-    private TextureSource backSource;
     private final ColorResolver colorResolver;
-
+    private final TextureSource frontSource;
+    private TextureSource backSource;
     private Consumer<TextureSource> onFrontSelected = source -> {};
     private Consumer<TextureSource> onBackSelected = source -> {};
 
@@ -51,25 +50,25 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
         this
             .growWidth()
             .children(box()
-            .horizontal()
-            .growWidth()
-            .childGap(4)
-            .children(
-                box()
-                    .growWidth()
-                    .childGap(4)
-                    .children(
-                        smallHeader(t("clicksigns.ui.textures.front")).padding(0),
-                        new TextureButton(frontSource, colorResolver)
-                            .onTextureSelected(onFrontSelected)),
-                box()
-                    .growWidth()
-                    .childGap(4)
-                    .children(
-                        smallHeader(t("clicksigns.ui.textures.back")).padding(0),
-                        new TextureButton(backSource, colorResolver)
-                            .onTextureSelected(onBackSelected))
-            )
-        );
+                .horizontal()
+                .growWidth()
+                .childGap(4)
+                .children(
+                    box()
+                        .growWidth()
+                        .childGap(4)
+                        .children(
+                            smallHeader(t("clicksigns.ui.textures.front")).padding(0),
+                            new TextureButton(frontSource, colorResolver)
+                                .onTextureSelected(onFrontSelected)),
+                    box()
+                        .growWidth()
+                        .childGap(4)
+                        .children(
+                            smallHeader(t("clicksigns.ui.textures.back")).padding(0),
+                            new TextureButton(backSource, colorResolver)
+                                .onTextureSelected(onBackSelected))
+                )
+            );
     }
 }

@@ -12,6 +12,24 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  * Renders a {@link PlateElement} on a {@link RoadSign}.
  */
 public class PlateRenderer implements ElementRenderer<PlateElement> {
+    /**
+     * Checks if the road sign's main texture intersects with the given sign element.
+     *
+     * @param roadSign the road sign to check for intersection
+     * @param element  the sign element to check for intersection
+     * @return true if the road sign intersects with the sign element, false otherwise
+     */
+    private static boolean intersects(RoadSign roadSign, SignElement element) {
+        var left = element.alignedX();
+        var top = element.alignedY();
+        var right = left + element.width();
+        var bottom = top + element.height();
+        return left < roadSign.width()
+               && right > 0
+               && top < roadSign.height()
+               && bottom > 0;
+    }
+
     @Override
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
         var intersects = intersects(roadSign, element);
@@ -40,23 +58,5 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     @Override
     public int renderLayer() {
         return 0; // Handle layer in the render method
-    }
-
-    /**
-     * Checks if the road sign's main texture intersects with the given sign element.
-     *
-     * @param roadSign the road sign to check for intersection
-     * @param element  the sign element to check for intersection
-     * @return true if the road sign intersects with the sign element, false otherwise
-     */
-    private static boolean intersects(RoadSign roadSign, SignElement element) {
-        var left = element.alignedX();
-        var top = element.alignedY();
-        var right = left + element.width();
-        var bottom = top + element.height();
-        return left < roadSign.width()
-               && right > 0
-               && top < roadSign.height()
-               && bottom > 0;
     }
 }

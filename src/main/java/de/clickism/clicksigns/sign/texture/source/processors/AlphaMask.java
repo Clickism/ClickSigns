@@ -1,12 +1,12 @@
 package de.clickism.clicksigns.sign.texture.source.processors;
 
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureContext;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.serialization.codec.CommonCodec;
-import de.clickism.clicksigns.serialization.codec.PacketCodec;
 
 /**
  * Applies an alpha mask to the input image using the specified mask texture.
@@ -19,6 +19,29 @@ public record AlphaMask(
     TextureSource mask
 ) implements TextureProcessor {
     public static final String TYPE = "alpha_mask";
+
+    public static CommonCodec<AlphaMask> codec() {
+        return CommonCodec.of(
+            TagCodec.of(
+                (writer, value) -> {
+                    var tag = writer.createTag();
+                    TextureSource.codec().writeTag(tag, value.mask);
+                    writer.putTag("mask", tag);
+                },
+                reader -> new AlphaMask(
+                    TextureSource.codec().readTag(reader.getTag("mask").orElseThrow())
+                )
+            ),
+            PacketCodec.of(
+                (buffer, value) -> {
+                    TextureSource.codec().writePacket(buffer, value.mask);
+                },
+                buffer -> {
+                    return new AlphaMask(TextureSource.codec().readPacket(buffer));
+                }
+            )
+        );
+    }
 
     @Override
     public Image process(Image input, TextureContext context) {
@@ -45,28 +68,5 @@ public record AlphaMask(
     @Override
     public String typeKey() {
         return TYPE;
-    }
-
-    public static CommonCodec<AlphaMask> codec() {
-        return CommonCodec.of(
-            TagCodec.of(
-                (writer, value) -> {
-                    var tag = writer.createTag();
-                    TextureSource.codec().writeTag(tag, value.mask);
-                    writer.putTag("mask", tag);
-                },
-                reader -> new AlphaMask(
-                    TextureSource.codec().readTag(reader.getTag("mask").orElseThrow())
-                )
-            ),
-            PacketCodec.of(
-                (buffer, value) -> {
-                    TextureSource.codec().writePacket(buffer, value.mask);
-                },
-                buffer -> {
-                    return new AlphaMask(TextureSource.codec().readPacket(buffer));
-                }
-            )
-        );
     }
 }

@@ -30,6 +30,24 @@ public enum Alignment {
     }
 
     /**
+     * Returns a list of all alignments.
+     *
+     * @return list of all alignments
+     */
+    public static List<Alignment> all() {
+        return List.of(values());
+    }
+
+    /**
+     * Returns a list of all text alignments.
+     *
+     * @return list of all text alignments
+     */
+    public static List<Alignment> textAlignments() {
+        return List.of(TEXT_LEFT, TEXT_CENTER, TEXT_RIGHT);
+    }
+
+    /**
      * The offset to apply to the position when rendering,
      * where (0, 0) is the center and i.E (1, 1) is the bottom right corner.
      *
@@ -75,23 +93,5 @@ public enum Alignment {
             case BOTTOM_CENTER -> BOTTOM_CENTER;
             case BOTTOM_RIGHT -> BOTTOM_LEFT;
         };
-    }
-
-    /**
-     * Returns a list of all alignments.
-     *
-     * @return list of all alignments
-     */
-    public static List<Alignment> all() {
-        return List.of(values());
-    }
-
-    /**
-     * Returns a list of all text alignments.
-     *
-     * @return list of all text alignments
-     */
-    public static List<Alignment> textAlignments() {
-        return List.of(TEXT_LEFT, TEXT_CENTER, TEXT_RIGHT);
     }
 }

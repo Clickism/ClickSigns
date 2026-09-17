@@ -13,6 +13,10 @@ import java.util.Optional;
  * @param tag
  */
 public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
+    public static NbtTagImpl empty() {
+        return new NbtTagImpl(new CompoundTag());
+    }
+
     @Override
     public void putString(String key, String value) {
         if (value == null) {
@@ -130,9 +134,5 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     @Override
     public TagWriter createTag() {
         return empty();
-    }
-
-    public static NbtTagImpl empty() {
-        return new NbtTagImpl(new CompoundTag());
     }
 }

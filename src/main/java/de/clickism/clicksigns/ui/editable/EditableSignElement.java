@@ -26,6 +26,27 @@ public class EditableSignElement {
     }
 
     /**
+     * Creates a new EditableSignElement with a random UUID and the specified SignElement value.
+     *
+     * @param element the SignElement value for the new EditableSignElement
+     * @return a new EditableSignElement instance with a random UUID and the specified SignElement value
+     */
+    public static EditableSignElement createRandom(SignElement element) {
+        return new EditableSignElement(UUID.randomUUID(), element);
+    }
+
+    /**
+     * Creates a new EditableSignElement with the specified UUID and SignElement value.
+     *
+     * @param id      the unique identifier (UUID) for the new EditableSignElement
+     * @param element the SignElement value for the new EditableSignElement
+     * @return a new EditableSignElement instance with the specified UUID and SignElement value
+     */
+    public static EditableSignElement of(UUID id, SignElement element) {
+        return new EditableSignElement(id, element);
+    }
+
+    /**
      * Returns the unique identifier (UUID) of this EditableSignElement.
      *
      * @return the UUID of this EditableSignElement
@@ -65,26 +86,5 @@ public class EditableSignElement {
         if (obj == null || getClass() != obj.getClass()) return false;
         EditableSignElement other = (EditableSignElement) obj;
         return id.equals(other.id);
-    }
-
-    /**
-     * Creates a new EditableSignElement with a random UUID and the specified SignElement value.
-     *
-     * @param element the SignElement value for the new EditableSignElement
-     * @return a new EditableSignElement instance with a random UUID and the specified SignElement value
-     */
-    public static EditableSignElement createRandom(SignElement element) {
-        return new EditableSignElement(UUID.randomUUID(), element);
-    }
-
-    /**
-     * Creates a new EditableSignElement with the specified UUID and SignElement value.
-     *
-     * @param id      the unique identifier (UUID) for the new EditableSignElement
-     * @param element the SignElement value for the new EditableSignElement
-     * @return a new EditableSignElement instance with the specified UUID and SignElement value
-     */
-    public static EditableSignElement of(UUID id, SignElement element) {
-        return new EditableSignElement(id, element);
     }
 }

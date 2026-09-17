@@ -12,8 +12,6 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
@@ -90,7 +88,7 @@ public final class RoadSignRenderer {
     private void renderBack() {
         context.withFlip(roadSign.blockWidth(), () -> {
             var backTexture = RoadSign.maskedBackOf(roadSign.frontSource(), roadSign.backSource())
-                    .resolve(roadSign.colorResolver());
+                .resolve(roadSign.colorResolver());
             context.textureRenderer().renderTexture(backTexture);
         });
     }

@@ -1,12 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.serialization.TagReader;
-import de.clickism.clicksigns.serialization.TagWriter;
 import de.clickism.clicksigns.serialization.TypeKeyed;
-import net.minecraft.network.FriendlyByteBuf;
+import de.clickism.clicksigns.sign.Alignment;
 
 /**
  * Represents an element of a road sign.
@@ -14,7 +9,8 @@ import net.minecraft.network.FriendlyByteBuf;
  * Elements are positioned using the sign's coordinate system, where (0, 0) is the bottom left corner of the sign.
  * For more information, see {@link de.clickism.clicksigns.sign.RoadSign}.
  */
-public sealed interface SignElement extends TypeKeyed permits PlateElement, SymbolElement, TextElement {
+public sealed interface SignElement extends TypeKeyed
+    permits PlateElement, SymbolElement, TextElement {
     /**
      * Gets the X coordinate of this element.
      *

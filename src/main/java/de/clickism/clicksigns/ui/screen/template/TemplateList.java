@@ -4,12 +4,12 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.components.CommonComponents;
-import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.components.sign.SignView;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
+import de.clickism.clickui.State;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
-import de.clickism.clickui.State;
 import de.clickism.clickui.style.Border;
 import de.clickism.clickui.style.Style;
 import net.minecraft.network.chat.Component;
@@ -25,10 +25,9 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 public class TemplateList extends UiComponent<TemplateList> implements CommonComponents {
 
     private final State<Boolean> showLocal = state(false);
+    private final List<Template> templates = new ArrayList<>();
     private Consumer<Template> onTemplateSelected = template -> {};
     private @Nullable Template selected = null;
-
-    private final List<Template> templates = new ArrayList<>();
 
     @Override
     protected void build() {

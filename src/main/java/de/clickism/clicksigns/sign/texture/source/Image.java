@@ -29,6 +29,43 @@ public record Image(
         this(width, height, new int[width * height]);
     }
 
+    public static @Nullable Image open(ResourceLocation location) {
+        var minecraft = Minecraft.getInstance();
+        try (var nativeImage = NativeImage.read(minecraft.getResourceManager().open(location))) {
+            int height = nativeImage.getHeight();
+            int width = nativeImage.getWidth();
+            var pixels = new int[width * height];
+            // Copy all pixels
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int abgr = nativeImage.getPixelRGBA(x, y);
+                    int argb = FastColor.ARGB32.color(
+                        FastColor.ABGR32.alpha(abgr),
+                        FastColor.ABGR32.red(abgr),
+                        FastColor.ABGR32.green(abgr),
+                        FastColor.ABGR32.blue(abgr)
+                    );
+                    pixels[y * width + x] = argb;
+                }
+            }
+            return new Image(width, height, pixels);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Uploads the given image to the Minecraft texture manager at the specified resource location.
+     *
+     * @param location the resource location where the image will be uploaded
+     * @param image    the image to upload
+     */
+    public static void upload(ResourceLocation location, Image image) {
+        var minecraft = Minecraft.getInstance();
+        var nativeImage = image.toNativeImage();
+        minecraft.getTextureManager().register(location, new DynamicTexture(nativeImage));
+    }
+
     public int pixelAt(int x, int y) {
         if (!withinBounds(x, y)) {
             throw new IndexOutOfBoundsException(
@@ -79,43 +116,6 @@ public record Image(
             }
         }
         return nativeImage;
-    }
-
-    public static @Nullable Image open(ResourceLocation location) {
-        var minecraft = Minecraft.getInstance();
-        try (var nativeImage = NativeImage.read(minecraft.getResourceManager().open(location))) {
-            int height = nativeImage.getHeight();
-            int width = nativeImage.getWidth();
-            var pixels = new int[width * height];
-            // Copy all pixels
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    int abgr = nativeImage.getPixelRGBA(x, y);
-                    int argb = FastColor.ARGB32.color(
-                        FastColor.ABGR32.alpha(abgr),
-                        FastColor.ABGR32.red(abgr),
-                        FastColor.ABGR32.green(abgr),
-                        FastColor.ABGR32.blue(abgr)
-                    );
-                    pixels[y * width + x] = argb;
-                }
-            }
-            return new Image(width, height, pixels);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Uploads the given image to the Minecraft texture manager at the specified resource location.
-     *
-     * @param location the resource location where the image will be uploaded
-     * @param image    the image to upload
-     */
-    public static void upload(ResourceLocation location, Image image) {
-        var minecraft = Minecraft.getInstance();
-        var nativeImage = image.toNativeImage();
-        minecraft.getTextureManager().register(location, new DynamicTexture(nativeImage));
     }
 
     @FunctionalInterface

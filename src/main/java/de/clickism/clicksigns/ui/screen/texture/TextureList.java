@@ -21,9 +21,8 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 public class TextureList extends UiComponent<TextureList> implements CommonComponents {
 
     private final Map<Category<?>, List<Entry>> categoryToEntries;
-
-    private Consumer<Entry> onTextureSelected = texture -> {};
     private final float textureScale;
+    private Consumer<Entry> onTextureSelected = texture -> {};
 
     /**
      * Creates a new TextureList with the given entries.

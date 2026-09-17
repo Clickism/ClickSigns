@@ -4,16 +4,11 @@ import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.ComponentUtil;
-import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public record Template(
     Meta meta,
@@ -39,8 +34,8 @@ public record Template(
     /**
      * Metadata for a sign template.
      *
-     * @param name        the display name of the template
-     * @param author      the author of the template
+     * @param name   the display name of the template
+     * @param author the author of the template
      */
     public record Meta(
         String name,

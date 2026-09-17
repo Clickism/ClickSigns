@@ -2,12 +2,12 @@ package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.util.PixelSized;
-import de.clickism.clicksigns.serialization.codec.CommonCodec;
-import de.clickism.clicksigns.serialization.codec.TagCodec;
-import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
@@ -16,20 +16,80 @@ public record TextureSource(
     ResourceLocation base,
     List<TextureProcessor> processors
 ) {
-    public TextureSource {
-        processors = List.copyOf(processors);
-    }
-
-    private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
-    private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
-    private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
-    private static final HashSet<String> ERROR_CACHE = new HashSet<>();
-
     /**
      * The error texture to use when loading or generating a texture fails.
      */
     public static final Texture ERROR_TEXTURE =
         new Texture(ClickSigns.identifier("error.png"), 32, 16);
+    private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
+    private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
+    private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
+    private static final HashSet<String> ERROR_CACHE = new HashSet<>();
+
+    public TextureSource {
+        processors = List.copyOf(processors);
+    }
+
+    /**
+     * Returns a unique resource location for the given key, generating a new one if it doesn't exist.
+     *
+     * @param key the key to get or assign a resource location for
+     * @return the resource location associated with the key
+     */
+    private static ResourceLocation getOrAssignResourceLocation(String key) {
+        var prefix = "generated/";
+        var uuid = UUID.randomUUID();
+        return RESOURCE_LOCATIONS.computeIfAbsent(key, k -> ClickSigns.identifier(prefix + uuid));
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and no processors.
+     *
+     * @param base the base resource location for the texture source
+     * @return a new texture source with the given base and no processors
+     */
+    public static TextureSource ofStatic(ResourceLocation base) {
+        return new TextureSource(base, List.of());
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and a list of processors.
+     *
+     * @param base       the base resource location for the texture source
+     * @param processors the list of processors to apply to the base image
+     * @return a new texture source with the given base and processors
+     */
+    public static TextureSource of(ResourceLocation base, List<TextureProcessor> processors) {
+        return new TextureSource(base, processors);
+    }
+
+    public static CommonCodec<TextureSource> codec() {
+        return CommonCodec.of(
+            TagCodec.of(
+                (writer, value) -> {
+                    writer.putResourceLocation("base", value.base());
+                    writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeTag);
+                },
+                reader -> new TextureSource(
+                    reader.getResourceLocation("base").orElseThrow(),
+                    reader.getCollection("processors", TextureProcessor.codec()::readTag).orElseThrow().stream()
+                        .toList()
+                )
+            ),
+            PacketCodec.of(
+                (buf, value) -> {
+                    buf.writeResourceLocation(value.base());
+                    buf.writeCollection(value.processors(), TextureProcessor.codec()::writePacket);
+                },
+                buf -> {
+                    return new TextureSource(
+                        buf.readResourceLocation(),
+                        buf.readList(TextureProcessor.codec()::readPacket)
+                    );
+                }
+            )
+        );
+    }
 
     /**
      * Returns the color resolver associated with the base resource location of this texture source.
@@ -201,66 +261,5 @@ public record TextureSource(
         var newProcessors = new ArrayList<>(processors);
         newProcessors.add(processor);
         return new TextureSource(base, newProcessors);
-    }
-
-    /**
-     * Returns a unique resource location for the given key, generating a new one if it doesn't exist.
-     *
-     * @param key the key to get or assign a resource location for
-     * @return the resource location associated with the key
-     */
-    private static ResourceLocation getOrAssignResourceLocation(String key) {
-        var prefix = "generated/";
-        var uuid = UUID.randomUUID();
-        return RESOURCE_LOCATIONS.computeIfAbsent(key, k -> ClickSigns.identifier(prefix + uuid));
-    }
-
-    /**
-     * Creates a new texture source with the given base resource location and no processors.
-     *
-     * @param base the base resource location for the texture source
-     * @return a new texture source with the given base and no processors
-     */
-    public static TextureSource ofStatic(ResourceLocation base) {
-        return new TextureSource(base, List.of());
-    }
-
-    /**
-     * Creates a new texture source with the given base resource location and a list of processors.
-     *
-     * @param base       the base resource location for the texture source
-     * @param processors the list of processors to apply to the base image
-     * @return a new texture source with the given base and processors
-     */
-    public static TextureSource of(ResourceLocation base, List<TextureProcessor> processors) {
-        return new TextureSource(base, processors);
-    }
-
-    public static CommonCodec<TextureSource> codec() {
-        return CommonCodec.of(
-            TagCodec.of(
-                (writer, value) -> {
-                    writer.putResourceLocation("base", value.base());
-                    writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeTag);
-                },
-                reader -> new TextureSource(
-                    reader.getResourceLocation("base").orElseThrow(),
-                    reader.getCollection("processors", TextureProcessor.codec()::readTag).orElseThrow().stream()
-                        .toList()
-                )
-            ),
-            PacketCodec.of(
-                (buf, value) -> {
-                    buf.writeResourceLocation(value.base());
-                    buf.writeCollection(value.processors(), TextureProcessor.codec()::writePacket);
-                },
-                buf -> {
-                    return new TextureSource(
-                        buf.readResourceLocation(),
-                        buf.readList(TextureProcessor.codec()::readPacket)
-                    );
-                }
-            )
-        );
     }
 }

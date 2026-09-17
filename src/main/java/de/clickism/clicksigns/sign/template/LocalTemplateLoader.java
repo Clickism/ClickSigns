@@ -15,9 +15,8 @@ import java.util.function.BiConsumer;
 import static de.clickism.clicksigns.sign.reload.TemplateListener.TEMPLATE_EXTENSION;
 
 public class LocalTemplateLoader implements JsonHandler {
-    private static final TemplateParser TEMPLATE_PARSER = new TemplateParser();
     public static final String LOCAL_TEMPLATE_NAMESPACE = "local";
-
+    private static final TemplateParser TEMPLATE_PARSER = new TemplateParser();
     private final Path root;
 
     public LocalTemplateLoader(Path root) {

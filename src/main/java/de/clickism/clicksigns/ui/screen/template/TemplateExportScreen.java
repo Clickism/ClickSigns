@@ -49,6 +49,40 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
         this.roadSign = roadSign;
     }
 
+    /**
+     * Gets the name of the current player in the Minecraft instance.
+     *
+     * @return the player's name as a string, or an empty string if the player is not available
+     */
+    private static String playerName() {
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return "";
+        }
+        return player.getName().getString();
+    }
+
+    /**
+     * Generates a unique name based on the provided base name by appending an index if necessary.
+     *
+     * @param baseName    the base name to start with
+     * @param indexFormat the format string for the index to append (e.g., "#%d")
+     * @return a unique name that does not conflict with existing template names
+     */
+    private static String nextAvailableName(String baseName, String indexFormat) {
+        ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload templates
+        int index = 1;
+        var names = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
+            .map(template -> template.meta().name())
+            .collect(Collectors.toSet());
+        String newName = baseName;
+        while (names.contains(newName)) {
+            newName = baseName + indexFormat.formatted(index);
+            index++;
+        }
+        return newName;
+    }
+
     @Override
     protected void build() {
         alignCenter();
@@ -156,39 +190,5 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                 ? null
                 : author
         );
-    }
-
-    /**
-     * Gets the name of the current player in the Minecraft instance.
-     *
-     * @return the player's name as a string, or an empty string if the player is not available
-     */
-    private static String playerName() {
-        var player = Minecraft.getInstance().player;
-        if (player == null) {
-            return "";
-        }
-        return player.getName().getString();
-    }
-
-    /**
-     * Generates a unique name based on the provided base name by appending an index if necessary.
-     *
-     * @param baseName the base name to start with
-     * @param indexFormat the format string for the index to append (e.g., "#%d")
-     * @return a unique name that does not conflict with existing template names
-     */
-    private static String nextAvailableName(String baseName, String indexFormat) {
-        ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload templates
-        int index = 1;
-        var names = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
-            .map(template -> template.meta().name())
-            .collect(Collectors.toSet());
-        String newName = baseName;
-        while (names.contains(newName)) {
-            newName = baseName + indexFormat.formatted(index);
-            index++;
-        }
-        return newName;
     }
 }

@@ -1,11 +1,11 @@
 package de.clickism.clicksigns.sign.texture.source.processors;
 
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureContext;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
-import de.clickism.clicksigns.serialization.codec.CommonCodec;
-import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +23,31 @@ public record ReplaceColor(
     String toColor
 ) implements TextureProcessor {
     public static final String TYPE = "replace_color";
+
+    public static CommonCodec<ReplaceColor> codec() {
+        return CommonCodec.of(
+            TagCodec.of(
+                (writer, value) -> {
+                    writer.putString("toColor", value.toColor);
+                    writer.putString("fromColor", value.fromColor);
+                },
+                reader -> new ReplaceColor(
+                    reader.getString("fromColor").orElse(null),
+                    reader.getString("toColor").orElseThrow()
+                )
+            ),
+            PacketCodec.of(
+                (buffer, value) -> {
+                    buffer.writeNullable(value.fromColor, FriendlyByteBuf::writeUtf);
+                    buffer.writeUtf(value.toColor);
+                },
+                buffer -> new ReplaceColor(
+                    buffer.readNullable(FriendlyByteBuf::readUtf),
+                    buffer.readUtf()
+                )
+            )
+        );
+    }
 
     @Override
     public Image process(Image input, TextureContext context) {
@@ -50,30 +75,5 @@ public record ReplaceColor(
     @Override
     public String typeKey() {
         return TYPE;
-    }
-
-    public static CommonCodec<ReplaceColor> codec() {
-        return CommonCodec.of(
-            TagCodec.of(
-                (writer, value) -> {
-                    writer.putString("toColor", value.toColor);
-                    writer.putString("fromColor", value.fromColor);
-                },
-                reader -> new ReplaceColor(
-                    reader.getString("fromColor").orElse(null),
-                    reader.getString("toColor").orElseThrow()
-                )
-            ),
-            PacketCodec.of(
-                (buffer, value) -> {
-                    buffer.writeNullable(value.fromColor, FriendlyByteBuf::writeUtf);
-                    buffer.writeUtf(value.toColor);
-                },
-                buffer -> new ReplaceColor(
-                    buffer.readNullable(FriendlyByteBuf::readUtf),
-                    buffer.readUtf()
-                )
-            )
-        );
     }
 }

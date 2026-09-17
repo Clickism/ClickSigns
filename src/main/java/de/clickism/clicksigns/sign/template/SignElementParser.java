@@ -18,6 +18,34 @@ import java.util.Optional;
  */
 public class SignElementParser implements JsonHandler {
     /**
+     * Returns the value if it is not null, otherwise returns the default value.
+     *
+     * @param value        the value to check for null
+     * @param defaultValue the default value to return if the value is null
+     * @param <T>          the type of the value
+     * @return the value if it is not null, otherwise the default value
+     */
+    public static <T> T orDefault(@Nullable T value, T defaultValue) {
+        return value != null
+            ? value
+            : defaultValue;
+    }
+
+    /**
+     * Returns null if the value is equal to the default value, otherwise returns the value.
+     *
+     * @param value        the value to check for equality with the default value
+     * @param defaultValue the default value to compare against
+     * @param <T>          the type of the value
+     * @return null if the value is equal to the default value, otherwise the value
+     */
+    private static <T> @Nullable T nullIfDefault(@Nullable T value, T defaultValue) {
+        if (value == null) return null;
+        if (value.equals(defaultValue)) return null;
+        return value;
+    }
+
+    /**
      * Parses a sign element from a JSON object.
      *
      * @param object the JSON object to parse
@@ -261,33 +289,5 @@ public class SignElementParser implements JsonHandler {
                 orDefault(matchSignTextures, true)
             );
         }
-    }
-
-    /**
-     * Returns the value if it is not null, otherwise returns the default value.
-     *
-     * @param value        the value to check for null
-     * @param defaultValue the default value to return if the value is null
-     * @param <T>          the type of the value
-     * @return the value if it is not null, otherwise the default value
-     */
-    public static <T> T orDefault(@Nullable T value, T defaultValue) {
-        return value != null
-            ? value
-            : defaultValue;
-    }
-
-    /**
-     * Returns null if the value is equal to the default value, otherwise returns the value.
-     *
-     * @param value        the value to check for equality with the default value
-     * @param defaultValue the default value to compare against
-     * @param <T>          the type of the value
-     * @return null if the value is equal to the default value, otherwise the value
-     */
-    private static <T> @Nullable T nullIfDefault(@Nullable T value, T defaultValue) {
-        if (value == null) return null;
-        if (value.equals(defaultValue)) return null;
-        return value;
     }
 }

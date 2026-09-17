@@ -68,6 +68,19 @@ public record RoadSign(
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
 
+    public RoadSign {
+        // Ensure that all plate elements match the sign's textures
+        elements = elements.stream()
+            .map(element -> {
+                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
+                    return plate.matchTextures(frontSource, backSource);
+                } else {
+                    return element;
+                }
+            })
+            .toList();
+    }
+
     /**
      * Gets the default front texture source for road signs.
      *
@@ -109,17 +122,19 @@ public record RoadSign(
         );
     }
 
-    public RoadSign {
-        // Ensure that all plate elements match the sign's textures
-        elements = elements.stream()
-            .map(element -> {
-                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
-                    return plate.matchTextures(frontSource, backSource);
-                } else {
-                    return element;
-                }
-            })
-            .toList();
+    /**
+     * Masks the back texture with the front texture, so that the back texture always
+     * matches up with the front texture.
+     *
+     * @param frontSource the front texture source
+     * @param backSource  the back texture source
+     * @return a new texture source with the back texture masked by the front texture
+     */
+    public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
+        // TODO: Make sure it works with asymmetrical textures, might need to flip the front texture as well before masking
+        // Resize back to make sure it covers the front texture, and then mask it with the front texture
+        backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
+        return backSource.addProcessor(new AlphaMask(frontSource));
     }
 
     /**
@@ -199,21 +214,6 @@ public record RoadSign(
      */
     public RoadSign withBack(TextureSource backSource) {
         return new RoadSign(frontSource, backSource, elements, alignment);
-    }
-
-    /**
-     * Masks the back texture with the front texture, so that the back texture always
-     * matches up with the front texture.
-     *
-     * @param frontSource the front texture source
-     * @param backSource  the back texture source
-     * @return a new texture source with the back texture masked by the front texture
-     */
-    public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
-        // TODO: Make sure it works with asymmetrical textures, might need to flip the front texture as well before masking
-        // Resize back to make sure it covers the front texture, and then mask it with the front texture
-        backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
-        return backSource.addProcessor(new AlphaMask(frontSource));
     }
 
     /**
