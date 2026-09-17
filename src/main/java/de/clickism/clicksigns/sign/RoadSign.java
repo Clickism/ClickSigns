@@ -131,10 +131,9 @@ public record RoadSign(
      * @return a new texture source with the back texture masked by the front texture
      */
     public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
-        // TODO: Make sure it works with asymmetrical textures, might need to flip the front texture as well before masking
         // Resize back to make sure it covers the front texture, and then mask it with the front texture
         backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
-        return backSource.addProcessor(new AlphaMask(frontSource));
+        return backSource.addProcessor(new AlphaMask(frontSource, true));
     }
 
     /**

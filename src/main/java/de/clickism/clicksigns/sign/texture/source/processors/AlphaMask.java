@@ -16,7 +16,8 @@ import de.clickism.clicksigns.sign.texture.source.TextureSource;
  * @param mask the texture source representing the alpha mask
  */
 public record AlphaMask(
-    TextureSource mask
+    TextureSource mask,
+    boolean mirrorX
 ) implements TextureProcessor {
     public static final String TYPE = "alpha_mask";
 
@@ -27,17 +28,23 @@ public record AlphaMask(
                     var tag = writer.createTag();
                     TextureSource.codec().writeTag(tag, value.mask);
                     writer.putTag("mask", tag);
+                    writer.putBoolean("mirrorX", value.mirrorX);
                 },
                 reader -> new AlphaMask(
-                    TextureSource.codec().readTag(reader.getTag("mask").orElseThrow())
+                    TextureSource.codec().readTag(reader.getTag("mask").orElseThrow()),
+                    reader.getBoolean("mirrorX").orElse(false)
                 )
             ),
             PacketCodec.of(
                 (buffer, value) -> {
                     TextureSource.codec().writePacket(buffer, value.mask);
+                    buffer.writeBoolean(value.mirrorX);
                 },
                 buffer -> {
-                    return new AlphaMask(TextureSource.codec().readPacket(buffer));
+                    return new AlphaMask(
+                        TextureSource.codec().readPacket(buffer),
+                        buffer.readBoolean()
+                    );
                 }
             )
         );
@@ -47,8 +54,9 @@ public record AlphaMask(
     public Image process(Image input, TextureContext context) {
         var maskImage = mask.resolveImage(context.colorResolver());
         input.forEachPixel((x, y, color) -> {
+            int maskX = mirrorX ? maskImage.width() - 1 - x : x;
             int maskColor = maskImage.withinBounds(x, y)
-                ? maskImage.pixelAt(x, y)
+                ? maskImage.pixelAt(maskX, y)
                 : 0; // Transparent if not within bounds
             int maskAlpha = (maskColor >> 24) & 0xFF;
             int colorAlpha = (color >> 24) & 0xFF;
