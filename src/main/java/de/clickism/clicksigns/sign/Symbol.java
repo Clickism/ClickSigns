@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  * @param texture    texture source for the symbol's texture
  */
 public record Symbol(
-    // TODO: Remove id and use front source's base instead.
     ResourceLocation identifier,
     TextureSource texture,
     @Nullable ResourceLocation categoryId

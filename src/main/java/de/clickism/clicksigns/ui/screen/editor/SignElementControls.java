@@ -71,7 +71,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                     .style(style()
                         .backgroundColor(UiColor.BLACK_A20))
                     .children(
-                        paragraph(l("No element selected."))
+                        paragraph(t("clicksigns.editor.info.noneSelected"))
                             .alignTextCenter()
                     ),
                 box(), // Spacer
@@ -81,11 +81,11 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                     .style(style()
                         .backgroundColor(UiColor.BLACK_A20))
                     .children(
-                        paragraph(l("Click on an element to select and edit it."))
+                        paragraph(t("clicksigns.editor.info.noneSelected.description"))
                     ),
                 box().grow(), // Spacer
                 // Controls
-                smallHeader(l("Controls")),
+                smallHeader(t("clicksigns.editor.info.controls.header")),
                 box()
                     .growWidth()
                     .padding(4)
@@ -93,21 +93,27 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                     .style(style()
                         .backgroundColor(UiColor.BLACK_A20))
                     .children(
-                        describeLeftClick(l("Select")),
-                        describeAction(action(l("Drag")), l("Move")),
-                        describeAction(action(l("Ctrl"), l("C")), l("Copy")),
-                        describeAction(action(l("Ctrl"), l("V")), l("Paste")),
-                        describeAction(action(l("Ctrl"), l("D")), l("Duplicate")),
-                        describeAction(action(l("Ctrl"), l("A")), l("Select All")),
-                        describeAction(action(l("Delete")), l("Delete"))
+                        describeLeftClick(t("clicksigns.editor.info.controls.select")),
+                        describeAction(action(t("clicksigns.ui.drag")),
+                            t("clicksigns.editor.info.controls.move")),
+                        describeAction(action(t("clicksigns.ui.ctrl"), l("C")),
+                            t("clicksigns.editor.info.controls.copy")),
+                        describeAction(action(t("clicksigns.ui.ctrl"), l("V")),
+                            t("clicksigns.editor.info.controls.paste")),
+                        describeAction(action(t("clicksigns.ui.ctrl"), l("D")),
+                            t("clicksigns.editor.info.controls.duplicate")),
+                        describeAction(action(t("clicksigns.ui.ctrl"), l("A")),
+                            t("clicksigns.editor.info.controls.selectAll")),
+                        describeAction(action(t("clicksigns.ui.delete")),
+                            t("clicksigns.editor.info.controls.delete"))
                     ),
                 smallHeader(l("Tips")),
                 box()
                     .childGap(4)
                     .growWidth()
                     .children(
-                        tip(l("Hold Shift to have faster/slower changes when using number controls.")),
-                        tip(l("Hold Ctrl to select multiple elements at once."))
+                        tip(t("clicksigns.editor.info.tips.numberControls")),
+                        tip(t("clicksigns.editor.info.tips.multipleElements"))
                     )
             ));
     }

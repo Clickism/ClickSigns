@@ -15,6 +15,9 @@
   "clicksigns.ui.leftClick": "Click",
   "clicksigns.ui.rightClick": "Right Click",
   "clicksigns.ui.shiftClick": "Shift Click",
+  "clicksigns.ui.drag": "Drag",
+  "clicksigns.ui.ctrl": "Ctrl",
+  "clicksigns.ui.delete": "Delete",
 
   "clicksigns.ui.textureList.tooltip.leftClick": "Select texture",
 
@@ -48,8 +51,7 @@
   "clicksigns.editor.sign.export.exportTemplate": "Export Template",
 
   "clicksigns.editor.element.header": "Element",
-  "clicksigns.editor.element.noneSelected": "No Element Selected",
-  "clicksigns.editor.element.noneSelected.description": "Click on an element to select it",
+
 
   "clicksigns.editor.element.text.textColor": "Text Color",
   "clicksigns.editor.element.text.backgroundColor": "Background Color",
@@ -72,7 +74,21 @@
   "clicksigns.editor.element.other.header": "Other",
   "clicksigns.editor.element.other.removeElement": "Remove Element",
 
+  "clicksigns.editor.info.noneSelected": "No element selected.",
+  "clicksigns.editor.info.noneSelected.description": "Click on an element to select and edit it.",
+
   "clicksigns.editor.info.header": "Info",
+  "clicksigns.editor.info.controls.header": "Controls",
+  "clicksigns.editor.info.controls.select": "Select",
+  "clicksigns.editor.info.controls.move": "Move",
+  "clicksigns.editor.info.controls.copy": "Copy",
+  "clicksigns.editor.info.controls.paste": "Paste",
+  "clicksigns.editor.info.controls.duplicate": "Duplicate",
+  "clicksigns.editor.info.controls.selectAll": "Select All",
+  "clicksigns.editor.info.controls.delete": "Delete",
+  "clicksigns.editor.info.tips.header": "Tips",
+  "clicksigns.editor.info.tips.numberControls": "Hold Shift to have faster/slower changes when using number controls.",
+  "clicksigns.editor.info.tips.multipleElements": "Hold Ctrl to select multiple elements at once.",
 
   "clicksigns.templateExport.header": "Export Template",
   "clicksigns.templateExport.export.header": "Export Template",

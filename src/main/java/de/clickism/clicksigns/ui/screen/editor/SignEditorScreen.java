@@ -12,9 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-// TODO: Info button instead of too many tooltips
-// TODO: Ability to select multiple elements and move them together/copy etc.
-
 /**
  * Screen for editing a road sign.
  */
