@@ -1,11 +1,11 @@
 package de.clickism.clicksigns.sign.texture.source.processors;
 
+import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureContext;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
-import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
-import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
-import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +54,7 @@ public record ReplaceColor(
 
     public static CommonCodec<ReplaceColor> codec() {
         return CommonCodec.of(
-            NbtCodec.of(
+            TagCodec.of(
                 (writer, value) -> {
                     writer.putString("toColor", value.toColor);
                     writer.putString("fromColor", value.fromColor);

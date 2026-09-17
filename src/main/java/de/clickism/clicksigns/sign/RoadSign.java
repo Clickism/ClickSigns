@@ -11,8 +11,8 @@ import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.Size;
-import de.clickism.clicksigns.util.nbt.NbtReader;
-import de.clickism.clicksigns.util.nbt.NbtWriter;
+import de.clickism.clicksigns.serialization.TagReader;
+import de.clickism.clicksigns.serialization.TagWriter;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
@@ -134,24 +134,24 @@ public record RoadSign(
     /**
      * Writer for NBT
      */
-    public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
-        var front = tag.createWriter();
-        var back = tag.createWriter();
-        TextureSource.codec().writeNbt(front, sign.frontSource());
-        TextureSource.codec().writeNbt(back, sign.backSource());
-        tag.putCompound("front", front.asCompoundTag());
-        tag.putCompound("back", back.asCompoundTag());
+    public static final TagWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
+        var front = tag.createTag();
+        var back = tag.createTag();
+        TextureSource.codec().writeTag(front, sign.frontSource());
+        TextureSource.codec().writeTag(back, sign.backSource());
+        tag.putTag("front", front);
+        tag.putTag("back", back);
         tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
         tag.putString("alignment", sign.alignment().name());
     };
     /**
      * Reader for NBT
      */
-    public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
-        var frontCompound = tag.getCompound("front").orElseThrow();
-        var backCompound = tag.getCompound("back").orElseThrow();
-        var front = TextureSource.codec().readNbt(frontCompound);
-        var back = TextureSource.codec().readNbt(backCompound);
+    public static final TagReader.Reader<RoadSign> NBT_READER = (tag) -> {
+        var frontCompound = tag.getTag("front").orElseThrow();
+        var backCompound = tag.getTag("back").orElseThrow();
+        var front = TextureSource.codec().readTag(frontCompound);
+        var back = TextureSource.codec().readTag(backCompound);
         var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
         var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
         return new RoadSign(front, back, new ArrayList<>(elements), alignment);

@@ -1,16 +1,16 @@
-package de.clickism.clicksigns.util.nbt.codec;
+package de.clickism.clicksigns.serialization.codec;
 
-import de.clickism.clicksigns.util.nbt.NbtReader;
-import de.clickism.clicksigns.util.nbt.NbtWriter;
+import de.clickism.clicksigns.serialization.TagReader;
+import de.clickism.clicksigns.serialization.TagWriter;
 import net.minecraft.network.FriendlyByteBuf;
 
-public interface CommonCodec<T> extends NbtCodec<T>, PacketCodec<T> {
-    default void writeNbt(NbtWriter writer, T value) {
-        nbtWriter().write(writer, value);
+public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
+    default void writeTag(TagWriter writer, T value) {
+        tagWriter().write(writer, value);
     }
 
-    default T readNbt(NbtReader reader) {
-        return nbtReader().read(reader);
+    default T readTag(TagReader reader) {
+        return tagReader().read(reader);
     }
 
     default void writePacket(FriendlyByteBuf buf, T value) {
@@ -22,18 +22,18 @@ public interface CommonCodec<T> extends NbtCodec<T>, PacketCodec<T> {
     }
 
     static <T> CommonCodec<T> of(
-        NbtCodec<T> nbtCodec,
+        TagCodec<T> nbtCodec,
         PacketCodec<T> packetCodec
     ) {
         return new CommonCodec<>() {
             @Override
-            public NbtWriter.Writer<T> nbtWriter() {
-                return nbtCodec.nbtWriter();
+            public TagWriter.Writer<T> tagWriter() {
+                return nbtCodec.tagWriter();
             }
 
             @Override
-            public NbtReader.Reader<T> nbtReader() {
-                return nbtCodec.nbtReader();
+            public TagReader.Reader<T> tagReader() {
+                return nbtCodec.tagReader();
             }
 
             @Override

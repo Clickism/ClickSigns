@@ -131,7 +131,7 @@ public class SignOverviewScreen extends UiScreen<SignOverviewScreen> implements 
                                         new TemplateSelectScreen()
                                             .onTemplateSelected(template -> {
                                                 // Change template
-                                                roadSign.copyFrom(template.build());
+                                                roadSign.copyFrom(template.roadSign());
                                             })
                                             .open();
                                     }),

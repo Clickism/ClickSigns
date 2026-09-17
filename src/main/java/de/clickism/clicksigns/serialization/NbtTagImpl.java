@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util.nbt;
+package de.clickism.clicksigns.serialization;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -7,7 +7,12 @@ import net.minecraft.nbt.Tag;
 import java.util.Collection;
 import java.util.Optional;
 
-public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWriter {
+/**
+ * Implementation of TagReader and TagWriter using NBT's.
+ *
+ * @param tag
+ */
+public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     @Override
     public void putString(String key, String value) {
         if (value == null) {
@@ -87,7 +92,7 @@ public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWrit
         var list = new ListTag();
         for (T item : collection) {
             CompoundTag itemTag = new CompoundTag();
-            writer.write(new NbtReaderWriterImpl(itemTag), item);
+            writer.write(new NbtTagImpl(itemTag), item);
             list.add(itemTag);
         }
         tag.put(key, list);
@@ -99,33 +104,35 @@ public record NbtReaderWriterImpl(CompoundTag tag) implements NbtReader, NbtWrit
         var list = tag.getList(key, Tag.TAG_COMPOUND);
         var collection = list.stream()
             .filter(element -> element instanceof CompoundTag)
-            .map(element -> reader.read(new NbtReaderWriterImpl((CompoundTag) element)))
+            .map(element -> reader.read(new NbtTagImpl((CompoundTag) element)))
             .toList();
         return Optional.of(collection);
     }
 
     @Override
-    public void putCompound(String key, CompoundTag compoundTag) {
-        if (compoundTag == null) {
-            tag.remove(key);
+    public void putTag(String key, TagWriter tag) {
+        if (tag == null) {
+            this.tag.remove(key);
             return;
         }
-        tag.put(key, compoundTag);
+        if (!(tag instanceof NbtTagImpl nbtTag)) {
+            throw new IllegalArgumentException("compoundTag must be an instance of NbtTagImpl");
+        }
+        this.tag.put(key, nbtTag.tag);
     }
 
     @Override
-    public Optional<NbtReader> getCompound(String key) {
+    public Optional<TagReader> getTag(String key) {
         if (!tag.contains(key, Tag.TAG_COMPOUND)) return Optional.empty();
-        return Optional.of(new NbtReaderWriterImpl(tag.getCompound(key)));
+        return Optional.of(new NbtTagImpl(tag.getCompound(key)));
     }
 
     @Override
-    public NbtWriter createWriter() {
-        return new NbtReaderWriterImpl(new CompoundTag());
+    public TagWriter createTag() {
+        return empty();
     }
 
-    @Override
-    public CompoundTag asCompoundTag() {
-        return tag;
+    public static NbtTagImpl empty() {
+        return new NbtTagImpl(new CompoundTag());
     }
 }

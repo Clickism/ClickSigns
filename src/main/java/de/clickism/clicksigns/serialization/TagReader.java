@@ -1,11 +1,11 @@
-package de.clickism.clicksigns.util.nbt;
+package de.clickism.clicksigns.serialization;
 
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface NbtReader {
+public interface TagReader {
     Optional<String> getString(String key);
 
     Optional<Integer> getInt(String key);
@@ -20,13 +20,13 @@ public interface NbtReader {
 
     <T> Optional<Collection<T>> getCollection(String key, Reader<T> reader);
 
-    Optional<NbtReader> getCompound(String key);
+    Optional<TagReader> getTag(String key);
 
     default Optional<ResourceLocation> getResourceLocation(String key) {
         return getString(key).map(ResourceLocation::tryParse);
     }
 
     interface Reader<T> {
-        T read(NbtReader nbt);
+        T read(TagReader nbt);
     }
 }

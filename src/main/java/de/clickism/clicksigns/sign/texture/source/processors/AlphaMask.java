@@ -1,12 +1,12 @@
 package de.clickism.clicksigns.sign.texture.source.processors;
 
+import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureContext;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
-import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
-import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 
 /**
  * Applies an alpha mask to the input image using the specified mask texture.
@@ -49,14 +49,14 @@ public record AlphaMask(
 
     public static CommonCodec<AlphaMask> codec() {
         return CommonCodec.of(
-            NbtCodec.of(
+            TagCodec.of(
                 (writer, value) -> {
-                    var tag = writer.createWriter();
-                    TextureSource.codec().writeNbt(tag, value.mask);
-                    writer.putCompound("mask", tag.asCompoundTag());
+                    var tag = writer.createTag();
+                    TextureSource.codec().writeTag(tag, value.mask);
+                    writer.putTag("mask", tag);
                 },
                 reader -> new AlphaMask(
-                    TextureSource.codec().readNbt(reader.getCompound("mask").orElseThrow())
+                    TextureSource.codec().readTag(reader.getTag("mask").orElseThrow())
                 )
             ),
             PacketCodec.of(

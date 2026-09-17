@@ -3,13 +3,11 @@ package de.clickism.clicksigns.sign.texture.source;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
-import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.texture.Texture;
-import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.util.PixelSized;
-import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
-import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
-import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.TagCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
@@ -240,14 +238,14 @@ public record TextureSource(
 
     public static CommonCodec<TextureSource> codec() {
         return CommonCodec.of(
-            NbtCodec.of(
+            TagCodec.of(
                 (writer, value) -> {
                     writer.putResourceLocation("base", value.base());
-                    writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeNbt);
+                    writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeTag);
                 },
                 reader -> new TextureSource(
                     reader.getResourceLocation("base").orElseThrow(),
-                    reader.getCollection("processors", TextureProcessor.codec()::readNbt).orElseThrow().stream()
+                    reader.getCollection("processors", TextureProcessor.codec()::readTag).orElseThrow().stream()
                         .toList()
                 )
             ),

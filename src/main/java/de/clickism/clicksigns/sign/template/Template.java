@@ -17,7 +17,7 @@ import java.util.List;
 
 public record Template(
     Meta meta,
-    Sign sign,
+    RoadSign signData,
     // Other data
     @NotNull ResourceLocation identifier,
     @Nullable ResourceLocation categoryId
@@ -27,8 +27,8 @@ public record Template(
      *
      * @return a new RoadSign instance based on this template and the specified dimensions
      */
-    public RoadSign build() {
-        return sign.build();
+    public RoadSign roadSign() {
+        return signData.withAlignment(RoadSign.DEFAULT_ALIGNMENT);
     }
 
     @Override
@@ -55,37 +55,6 @@ public record Template(
             var name = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.name"));
             var author = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.author"));
             return new Meta(name, author);
-        }
-    }
-
-    /**
-     * Sign data for a sign template.
-     *
-     * @param width    the width of the sign in pixels
-     * @param height   the height of the sign in pixels
-     * @param front    the front texture source of the sign
-     * @param back     the back texture source of the sign
-     * @param elements the list of sign elements for the sign
-     */
-    public record Sign(
-        int width,
-        int height,
-        TextureSource front,
-        TextureSource back,
-        List<SignElement> elements
-    ) implements PixelSized {
-        /**
-         * Builds a road sign based on this sign data.
-         *
-         * @return a new RoadSign instance based on this sign data and the specified dimensions
-         */
-        private RoadSign build() {
-            return new RoadSign(
-                front.resize(width, height),
-                back.resize(width, height),
-                elements,
-                RoadSign.DEFAULT_ALIGNMENT
-            );
         }
     }
 }

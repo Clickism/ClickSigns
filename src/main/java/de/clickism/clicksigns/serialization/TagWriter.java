@@ -1,10 +1,9 @@
-package de.clickism.clicksigns.util.nbt;
+package de.clickism.clicksigns.serialization;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
-// TODO: Convert to work both with NBT and JSON, so we can also use for templates more easily.
-public interface NbtWriter {
+public interface TagWriter {
     void putString(String key, String value);
 
     void putInt(String key, int value);
@@ -17,19 +16,21 @@ public interface NbtWriter {
 
     void putBoolean(String key, boolean value);
 
-    <T> void putCollection(String key, Iterable<T> collection, Writer<T> writer);
+    <T> void putCollection(String key, @Nullable Iterable<T> collection, Writer<T> writer);
 
-    void putCompound(String key, CompoundTag writer);
+    void putTag(String key, @Nullable TagWriter writer);
 
-    NbtWriter createWriter();
-
-    CompoundTag asCompoundTag();
+    TagWriter createTag();
 
     default void putResourceLocation(String key, ResourceLocation value) {
         putString(key, value.toString());
     }
 
+    default void delete(String key) {
+        putTag(key, null);
+    }
+
     interface Writer<T> {
-        void write(NbtWriter nbt, T value);
+        void write(TagWriter nbt, T value);
     }
 }

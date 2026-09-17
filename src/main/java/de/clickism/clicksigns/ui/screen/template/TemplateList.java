@@ -94,7 +94,7 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
                 .childGap(4)
                 .children(
                     smallHeader(l(template.meta().name())).padding(0),
-                    new SignView(new EditableRoadSign(template.build()))
+                    new SignView(new EditableRoadSign(template.roadSign()))
                 ))
             .style(style()
                 .whenHovered(style()

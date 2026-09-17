@@ -82,7 +82,6 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 context.roadSign().updateTextElement(id, element ->
                     element.withStyle(s -> s.withBackgroundColor(newColor)));
             }));
-        // TODO: Translate
         add(smallHeader(t("clicksigns.editor.element.text.outlineColor")));
         // Outline color
         add(memo(id + "-outline-color", () -> new ColorField(colorResolver))
@@ -181,7 +180,6 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
     }
 
     private void addPlateControls(PlateElement plate, UUID id) {
-        // TODO: Translate
         add(smallHeader(t("clicksigns.editor.element.plate.textures")));
 
         var roadSign = context.roadSign();

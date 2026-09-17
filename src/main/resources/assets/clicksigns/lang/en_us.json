@@ -76,7 +76,7 @@
   "clicksigns.templateExport.export.header": "Export Template",
   "clicksigns.templateExport.export.includeTexts": "Include Written Texts",
   "clicksigns.templateExport.export.save": "Save to Local Templates",
-  "clicksigns.templateExport.export.copyJson": "Save to Local Templates",
+  "clicksigns.templateExport.export.copyJson": "Copy Template JSON",
   "clicksigns.templateExport.newTemplate": "New Template",
 
   "clicksigns.templateList.noneSelected": "No template selected",

@@ -26,11 +26,7 @@ public class LocalTemplateManager {
     }
 
     public void initialize() {
-        try {
-            loader.processAll(templates::put);
-        } catch (Exception e) {
-            ClickSigns.LOGGER.error("Failed to load local templates from path: {}", root, e);
-        }
+        loader.tryProcessAll(templates::put);
     }
 
     public void reload() {

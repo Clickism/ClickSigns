@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.util.nbt.codec;
+package de.clickism.clicksigns.serialization.codec;
 
 import net.minecraft.network.FriendlyByteBuf;
 

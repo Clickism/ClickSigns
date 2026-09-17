@@ -1,13 +1,13 @@
 package de.clickism.clicksigns.sign.texture.source;
 
+import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
-import de.clickism.clicksigns.util.nbt.TypeKeyed;
-import de.clickism.clicksigns.util.nbt.codec.CommonCodec;
-import de.clickism.clicksigns.util.nbt.codec.NbtCodec;
-import de.clickism.clicksigns.util.nbt.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.TypeKeyed;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
 
 public interface TextureProcessor extends TypeKeyed {
     /**
@@ -44,14 +44,14 @@ public interface TextureProcessor extends TypeKeyed {
 
     static CommonCodec<TextureProcessor> codec() {
         return CommonCodec.of(
-            NbtCodec.of(
+            TagCodec.of(
                 (writer, value) -> {
                     writer.putString("type", value.typeKey());
-                    codecOf(value.typeKey()).writeNbt(writer, value);
+                    codecOf(value.typeKey()).writeTag(writer, value);
                 },
                 reader -> {
                     String type = reader.getString("type").orElseThrow();
-                    return codecOf(type).readNbt(reader);
+                    return codecOf(type).readTag(reader);
                 }
             ),
             PacketCodec.of(

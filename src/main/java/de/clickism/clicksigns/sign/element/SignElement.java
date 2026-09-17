@@ -3,9 +3,9 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.util.nbt.NbtReader;
-import de.clickism.clicksigns.util.nbt.NbtWriter;
-import de.clickism.clicksigns.util.nbt.TypeKeyed;
+import de.clickism.clicksigns.serialization.TagReader;
+import de.clickism.clicksigns.serialization.TagWriter;
+import de.clickism.clicksigns.serialization.TypeKeyed;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
@@ -97,7 +97,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
     /**
      * Nbt writer
      */
-    NbtWriter.Writer<SignElement> NBT_WRITER = (tag, element) -> {
+    TagWriter.Writer<SignElement> NBT_WRITER = (tag, element) -> {
         var type = element.typeKey();
         tag.putString("type", type);
         tag.putInt("x", element.x());
@@ -107,7 +107,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             tag.putFloat("scale", text.scale());
             tag.putString("text", text.text());
             // Write text style
-            var styleTag = tag.createWriter();
+            var styleTag = tag.createTag();
             var style = text.style();
             styleTag.putString("color", style.color());
             styleTag.putString("backgroundColor", style.backgroundColor().orElse(null));
@@ -117,26 +117,26 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             styleTag.putInt("paddingY", style.paddingY());
             styleTag.putInt("textAlignment", text.style().textAlignment().ordinal());
             styleTag.putInt("lineGap", text.style().lineGap());
-            tag.putCompound("style", styleTag.asCompoundTag());
+            tag.putTag("style", styleTag);
         } else if (element instanceof SymbolElement symbol) {
             tag.putResourceLocation("symbol", symbol.symbol().identifier());
-            var textureTag = tag.createWriter();
-            TextureSource.codec().writeNbt(textureTag, symbol.symbol().texture());
-            tag.putCompound("texture", textureTag.asCompoundTag());
+            var textureTag = tag.createTag();
+            TextureSource.codec().writeTag(textureTag, symbol.symbol().texture());
+            tag.putTag("texture", textureTag);
         } else if (element instanceof PlateElement plate) {
-            var frontTag = tag.createWriter();
-            var backTag = tag.createWriter();
-            TextureSource.codec().writeNbt(frontTag, plate.frontSource());
-            TextureSource.codec().writeNbt(backTag, plate.backSource());
-            tag.putCompound("front", frontTag.asCompoundTag());
-            tag.putCompound("back", backTag.asCompoundTag());
+            var frontTag = tag.createTag();
+            var backTag = tag.createTag();
+            TextureSource.codec().writeTag(frontTag, plate.frontSource());
+            TextureSource.codec().writeTag(backTag, plate.backSource());
+            tag.putTag("front", frontTag);
+            tag.putTag("back", backTag);
             tag.putBoolean("match", plate.matchSignTextures());
         }
     };
     /**
      * Nbt reader
      */
-    NbtReader.Reader<SignElement> NBT_READER = (tag) -> {
+    TagReader.Reader<SignElement> NBT_READER = (tag) -> {
         var type = tag.getString("type");
         int localX = tag.getInt("x").orElseThrow();
         int localY = tag.getInt("y").orElseThrow();
@@ -147,7 +147,7 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
                 var scale = tag.getFloat("scale").orElseThrow();
                 var text = tag.getString("text").orElseThrow();
                 // Read text style
-                var styleTag = tag.getCompound("style").orElseThrow();
+                var styleTag = tag.getTag("style").orElseThrow();
                 var color = styleTag.getString("color").orElseThrow();
                 var backgroundColor = styleTag.getString("backgroundColor").orElse(null);
                 var outlineColor = styleTag.getString("outlineColor").orElse(null);
@@ -171,16 +171,16 @@ public sealed interface SignElement extends TypeKeyed permits PlateElement, Symb
             }
             case SymbolElement.TYPE -> {
                 var id = tag.getResourceLocation("symbol").orElseThrow();
-                var textureTag = tag.getCompound("texture").orElseThrow();
-                var texture = TextureSource.codec().readNbt(textureTag);
+                var textureTag = tag.getTag("texture").orElseThrow();
+                var texture = TextureSource.codec().readTag(textureTag);
                 var symbol = SignRegistries.SYMBOLS.get(id).withTexture(texture);
                 yield new SymbolElement(localX, localY, alignment, symbol);
             }
             case PlateElement.TYPE -> {
-                var frontTag = tag.getCompound("front").orElseThrow();
-                var backTag = tag.getCompound("back").orElseThrow();
-                var front = TextureSource.codec().readNbt(frontTag);
-                var back = TextureSource.codec().readNbt(backTag);
+                var frontTag = tag.getTag("front").orElseThrow();
+                var backTag = tag.getTag("back").orElseThrow();
+                var front = TextureSource.codec().readTag(frontTag);
+                var back = TextureSource.codec().readTag(backTag);
                 var match = tag.getBoolean("match").orElse(true);
                 yield new PlateElement(localX, localY, alignment, front, back, match);
             }

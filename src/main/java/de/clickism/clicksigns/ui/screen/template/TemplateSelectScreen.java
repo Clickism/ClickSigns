@@ -166,7 +166,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                 return;
             }
             // Add preview
-            add(new SignView(new EditableRoadSign(template.build()))
+            add(new SignView(new EditableRoadSign(template.roadSign()))
                 .elementConfig((uiElement, signElement) -> {
                     if (uiElement instanceof SignTextField textField) {
                         // Disable input for the preview

@@ -30,26 +30,28 @@ public class LocalTemplateLoader implements JsonHandler {
         }
     }
 
-    public void processAll(BiConsumer<Path, Template> consumer) throws IOException {
+    public void tryProcessAll(BiConsumer<Path, Template> consumer) {
         try (var stream = Files.walk(root)) {
             stream.filter(path -> path.toString().endsWith(TEMPLATE_EXTENSION)).forEach(path -> {
                 try {
                     var template = loadTemplate(path);
                     consumer.accept(path, template);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to load template from path: " + path, e);
+                } catch (Exception e) {
+                    ClickSigns.LOGGER.error("Failed to load template from path: {}", path, e);
                 }
             });
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to process local templates in directory: {}", root, e);
         }
     }
 
-    public Template loadTemplate(Path path) throws IOException {
+    public Template loadTemplate(Path path) throws Exception {
         var jsonObject = GSON.fromJson(Files.readString(path), JsonObject.class);
         var location = pathToResourceLocation(path);
         return TEMPLATE_PARSER.parse(jsonObject, location, null);
     }
 
-    public void deleteTemplate(Path path) throws IOException {
+    public void deleteTemplate(Path path) throws Exception {
         Files.deleteIfExists(path);
     }
 
