@@ -4,6 +4,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.serialization.NbtTagImpl;
+import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -74,7 +75,7 @@ public class RoadSignBlockEntity extends BlockEntity {
         super.saveAdditional(tag);
         if (this.roadSign == null) return;
         var writer = new NbtTagImpl(tag);
-        RoadSign.NBT_WRITER.write(writer, this.roadSign);
+        RoadSignCodec.codec().writeTag(writer, this.roadSign);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class RoadSignBlockEntity extends BlockEntity {
         super.load(tag);
         var reader = new NbtTagImpl(tag);
         try {
-            this.roadSign = RoadSign.NBT_READER.read(reader);
+            this.roadSign = RoadSignCodec.codec().readTag(reader);
         } catch (Exception e) {
             ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
         }

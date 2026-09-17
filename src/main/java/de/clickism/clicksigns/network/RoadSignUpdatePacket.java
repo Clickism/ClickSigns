@@ -6,6 +6,7 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.Packet;
 import de.clickism.clicksigns.platform.network.PacketType;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 
@@ -25,12 +26,12 @@ public record RoadSignUpdatePacket(
         // Writer
         (buf, packet) -> {
             buf.writeBlockPos(packet.pos());
-            RoadSign.PACKET_WRITER.accept(buf, packet.roadSign());
+            RoadSignCodec.codec().writePacket(buf, packet.roadSign());
         },
         // Reader
         (buf) -> {
             BlockPos pos = buf.readBlockPos();
-            RoadSign roadSign = RoadSign.PACKET_READER.apply(buf);
+            RoadSign roadSign = RoadSignCodec.codec().readPacket(buf);
             return new RoadSignUpdatePacket(pos, roadSign);
         },
         // Server Handler

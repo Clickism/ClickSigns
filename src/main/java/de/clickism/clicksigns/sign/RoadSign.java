@@ -11,9 +11,6 @@ import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clicksigns.util.Size;
-import de.clickism.clicksigns.serialization.TagReader;
-import de.clickism.clicksigns.serialization.TagWriter;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,51 +108,6 @@ public record RoadSign(
             DEFAULT_ALIGNMENT
         );
     }
-
-    /**
-     * Writer for packets
-     */
-    public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
-        TextureSource.codec().writePacket(buf, sign.frontSource());
-        TextureSource.codec().writePacket(buf, sign.backSource());
-        buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
-        buf.writeInt(sign.alignment().ordinal());
-    };
-    /**
-     * Reader for packets
-     */
-    public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
-        var front = TextureSource.codec().readPacket(buf);
-        var back = TextureSource.codec().readPacket(buf);
-        var elements = buf.readList(SignElement.PACKET_READER);
-        var alignment = Alignment.values()[buf.readInt()];
-        return new RoadSign(front, back, elements, alignment);
-    };
-    /**
-     * Writer for NBT
-     */
-    public static final TagWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
-        var front = tag.createTag();
-        var back = tag.createTag();
-        TextureSource.codec().writeTag(front, sign.frontSource());
-        TextureSource.codec().writeTag(back, sign.backSource());
-        tag.putTag("front", front);
-        tag.putTag("back", back);
-        tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
-        tag.putString("alignment", sign.alignment().name());
-    };
-    /**
-     * Reader for NBT
-     */
-    public static final TagReader.Reader<RoadSign> NBT_READER = (tag) -> {
-        var frontCompound = tag.getTag("front").orElseThrow();
-        var backCompound = tag.getTag("back").orElseThrow();
-        var front = TextureSource.codec().readTag(frontCompound);
-        var back = TextureSource.codec().readTag(backCompound);
-        var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
-        var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
-        return new RoadSign(front, back, new ArrayList<>(elements), alignment);
-    };
 
     public RoadSign {
         // Ensure that all plate elements match the sign's textures
@@ -275,46 +227,6 @@ public record RoadSign(
     }
 
     /**
-     * Creates a new road sign with the given element replaced.
-     *
-     * @param oldElement the element to be replaced
-     * @param newElement the new element to replace the old one
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign replaceElement(SignElement oldElement, SignElement newElement) {
-        var newElements = new ArrayList<>(elements);
-        int index = newElements.indexOf(oldElement);
-        if (index != -1) {
-            newElements.set(index, newElement);
-        }
-        return withElements(newElements);
-    }
-
-    /**
-     * Creates a new road sign with the given element removed.
-     *
-     * @param element the element to be removed
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign removeElement(SignElement element) {
-        var newElements = new ArrayList<>(elements);
-        newElements.remove(element);
-        return withElements(newElements);
-    }
-
-    /**
-     * Creates a new road sign with the given element added.
-     *
-     * @param element the element to be added
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign addElement(SignElement element) {
-        var newElements = new ArrayList<>(elements);
-        newElements.add(element);
-        return withElements(newElements);
-    }
-
-    /**
      * Creates a new road sign with the given alignment.
      *
      * @param alignment new alignment for the road sign
@@ -322,22 +234,5 @@ public record RoadSign(
      */
     public RoadSign withAlignment(Alignment alignment) {
         return new RoadSign(frontSource, backSource, elements, alignment);
-    }
-
-    /**
-     * Checks if the road sign's main texture intersects with the given sign element.
-     *
-     * @param element the sign element to check for intersection
-     * @return true if the road sign intersects with the sign element, false otherwise
-     */
-    public boolean intersects(SignElement element) {
-        var left = element.alignedX();
-        var top = element.alignedY();
-        var right = left + element.width();
-        var bottom = top + element.height();
-        return left < width()
-               && right > 0
-               && top < height()
-               && bottom > 0;
     }
 }

@@ -3,6 +3,7 @@ package de.clickism.clicksigns.sign.template;
 import com.google.gson.JsonObject;
 import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,7 @@ public class TemplateParser implements JsonHandler {
     public JsonObject toJson(Template.Meta meta, RoadSign roadSign, boolean includeTexts) {
         var tag = new JsonTagImpl(new JsonObject());
         if (!includeTexts) {
+            // Strip texts if not including them
             roadSign = roadSign.withElements(roadSign.elements().stream()
                 .map(element -> {
                     if (element instanceof TextElement text) {
@@ -48,7 +50,7 @@ public class TemplateParser implements JsonHandler {
                 })
                 .toList());
         }
-        RoadSign.NBT_WRITER.write(tag, roadSign);
+        RoadSignCodec.codec().writeTag(tag, roadSign);
         var signJson = tag.jsonObject();
         var templateJson = new TemplateJson(meta, signJson);
         return toJsonObject(templateJson);
@@ -69,7 +71,7 @@ public class TemplateParser implements JsonHandler {
          */
         private Template parse(ResourceLocation id, ResourceLocation categoryId) {
             var tag = new JsonTagImpl(sign);
-            var parsedSign = RoadSign.NBT_READER.read(tag);
+            var parsedSign = RoadSignCodec.codec().readTag(tag);
             return new Template(
                 meta,
                 parsedSign,

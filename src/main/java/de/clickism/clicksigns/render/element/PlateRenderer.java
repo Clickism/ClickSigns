@@ -4,6 +4,7 @@ import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.element.SignElement;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -13,7 +14,7 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 public class PlateRenderer implements ElementRenderer<PlateElement> {
     @Override
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
-        var intersects = roadSign.intersects(element);
+        var intersects = intersects(roadSign, element);
         int z = intersects
             ? RenderLayers.PLATE_FRONT
             : RenderLayers.SIGN_FRONT;
@@ -39,5 +40,23 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     @Override
     public int renderLayer() {
         return 0; // Handle layer in the render method
+    }
+
+    /**
+     * Checks if the road sign's main texture intersects with the given sign element.
+     *
+     * @param roadSign the road sign to check for intersection
+     * @param element  the sign element to check for intersection
+     * @return true if the road sign intersects with the sign element, false otherwise
+     */
+    private static boolean intersects(RoadSign roadSign, SignElement element) {
+        var left = element.alignedX();
+        var top = element.alignedY();
+        var right = left + element.width();
+        var bottom = top + element.height();
+        return left < roadSign.width()
+               && right > 0
+               && top < roadSign.height()
+               && bottom > 0;
     }
 }
