@@ -114,6 +114,8 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
             .buttonColor(UiColor.TEAL)
             .growWidth()
             .height(14)
+            .style(style()
+                .fontScale(0.8f))
             .onClick(event -> {
                 new TextureEditScreen(source, background, colorResolver, categories)
                     .onTextureEdited(onTextureSelected)
