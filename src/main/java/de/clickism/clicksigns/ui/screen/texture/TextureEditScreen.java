@@ -7,6 +7,7 @@ import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.ui.components.CommonComponents;
+import de.clickism.clicksigns.ui.components.ImageWithPicker;
 import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.ui.screen.texture.processor.AlphaMaskControls;
 import de.clickism.clicksigns.ui.screen.texture.processor.ReplaceColorControls;

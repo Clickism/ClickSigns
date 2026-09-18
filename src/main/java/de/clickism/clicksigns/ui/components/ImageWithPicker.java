@@ -1,11 +1,10 @@
-package de.clickism.clicksigns.ui.screen.texture;
+package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.render.RenderContext;
