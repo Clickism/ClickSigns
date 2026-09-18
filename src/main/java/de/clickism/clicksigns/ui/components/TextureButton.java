@@ -9,6 +9,7 @@ import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.style.Border;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -50,18 +51,28 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
     protected void build() {
         grow();
         childGap(4);
-        if (background != null) {
-            var backgroundColor = UiUtil.primaryColorOf(background.resolveImage(colorResolver));
-            padding(4);
-            style(style()
-                .backgroundColor(backgroundColor));
-        }
+        var imageBox = box()
+            .grow();
+        add(imageBox);
         var texture = source.resize(TEXTURE_SIZE, TEXTURE_SIZE)
             .resolve(colorResolver);
-        add(UiUtil.imageOf(texture)
-            .keepAspectRatio(true)
-            .grow()
+        imageBox.add(
+            UiUtil.imageOf(texture)
+                .keepAspectRatio(true)
+                .grow()
+        );
+        imageBox
+            .padding(background != null
+                ? 4
+                : 2)
             .style(style()
+                .borderPosition(Border.Position.INSIDE)
+                .backgroundColor(background != null
+                    ? UiUtil.primaryColorOf(background.resolveImage(colorResolver))
+                    : UiColor.BLACK.alpha(0.2f))
+                .borderColor(background != null
+                    ? UiColor.GRAY
+                    : UiColor.LIGHT_GRAY.alpha(0.2f))
                 .whenHovered(style()
                     .borderColor(UiColor.RED)))
             .tooltip(descriptions(
@@ -98,7 +109,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         onTextureSelected
                     ).open();
                 }
-            }));
+            });
         add(button(t("✎", "clicksigns.ui.textures.edit"))
             .buttonColor(UiColor.TEAL)
             .growWidth()

@@ -329,21 +329,6 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
             .childGap(4)
             .alignCenter()
             .children(
-                new SymbolView(symbol, colorResolver)
-                    .padding(4)
-                    .style(style()
-                        .borderColor(UiColor.GRAY)
-                        .backgroundColor(UiUtil.primaryColorOf(roadSign.frontSource().resolveImage(colorResolver)))
-                        .whenHovered(style()
-                            .borderColor(UiColor.RED)))
-                    .tooltip(descriptions(
-                        describeLeftClick(t("clicksigns.overview.symbol.tooltip.leftClick")),
-                        describeRightClick(t("clicksigns.overview.symbol.tooltip.rightClick"))
-                    ))
-                    .onClick(event -> {
-                        event.playSound();
-                        SymbolView.handleSymbolChange(roadSign, roadSign.getElement(id), event);
-                    }),
                 new TextureButton(
                     symbol.textureSource(),
                     roadSign.frontSource(),
