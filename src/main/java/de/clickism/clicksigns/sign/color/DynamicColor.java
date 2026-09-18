@@ -42,8 +42,5 @@ public @interface DynamicColor {
         .define("green", 0x009345)
         .define("yellow", 0xFFBC21)
         .define("red", 0xCE353A)
-        .define("orange", 0xFF8C00)
-        // Define sign colors
-        // TODO: Move into use contrast with background color, try to guess from contrast
-        .define("foreground", 0x292929);
+        .define("orange", 0xFF8C00);
 }

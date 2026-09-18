@@ -24,7 +24,7 @@ public record Symbol(
      */
     public static final Symbol ERROR_SYMBOL = new Symbol(
         ClickSigns.identifier("error_symbol"),
-        TextureSource.ofStatic(ClickSigns.identifier("error_symbol.png")),
+        TextureSource.ofStatic(ClickSigns.identifier("error.png")),
         null
     );
 
@@ -48,15 +48,6 @@ public record Symbol(
     public ResourceLocation identifierForCategory(ResourceLocation location, ResourceLocation categoryId) {
         var normalized = categoryId.getNamespace() + "__" + categoryId.getPath();
         return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
-    }
-
-    /**
-     * Checks if this symbol is the error symbol.
-     *
-     * @return true if this symbol is the error symbol, false otherwise
-     */
-    public boolean isError() {
-        return this.identifier.equals(ERROR_SYMBOL.identifier);
     }
 
     @Override

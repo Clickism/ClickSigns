@@ -29,7 +29,7 @@ public record TextureSource(
     /**
      * The error texture to use when loading or generating a texture fails.
      */
-    public static final Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16);
+    public static final Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 16, 16);
     public static final Image ERROR_IMAGE = new Image(1, 1, new int[]{0xFFFF0000}); // Single red pixel
 
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
