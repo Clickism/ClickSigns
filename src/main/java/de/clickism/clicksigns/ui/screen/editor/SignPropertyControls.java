@@ -4,6 +4,7 @@ import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.TwoSidedTextureButton;
 import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;
@@ -37,6 +38,7 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
                 roadSign.frontSource(),
                 roadSign.backSource(),
                 roadSign.colorResolver(),
+                TextureCategory.SIGN_TEXTURES,
                 roadSign.size()
             )
                 .onFrontSelected(roadSign::frontSource)

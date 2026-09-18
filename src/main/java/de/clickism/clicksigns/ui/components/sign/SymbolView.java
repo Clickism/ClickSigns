@@ -4,6 +4,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.editable.Editable;
@@ -11,6 +12,8 @@ import de.clickism.clicksigns.ui.screen.texture.TextureList;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
+
+import java.util.List;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 
@@ -44,7 +47,6 @@ public class SymbolView extends UiComponent<SymbolView>
     ) {
         var current = symbolElement.current();
         if (!(current instanceof SymbolElement symbol)) return;
-
         if (event.isLeftClick()) {
             // Cycle to next symbol in the same category
             var nextSymbol = symbol.resolveSymbol().nextInCategory();
@@ -53,30 +55,17 @@ public class SymbolView extends UiComponent<SymbolView>
                 element -> element.withTextureSource(nextSymbol.textureSource())
             );
         }
-
         if (event.isRightClick()) {
             // Open symbol menu
-            var colorResolver = sign.colorResolver();
-            var entries = SignRegistries.SYMBOLS.all().stream()
-                .map(s -> new TextureList.Entry(
-                    s.textureSource().resolve(colorResolver),
-                    s.identifier(),
-                    s.resolveCategory()
-                ))
-                .toList();
-
-            // Find sign background primary color
-            var backgroundColor = UiUtil.primaryColorOf(sign.frontSource().resolveImage(sign.colorResolver()));
-            new TextureSelectScreen(l("Select Symbol"), entries, backgroundColor)
-                .textureScale(3.0f)
-                .onTextureSelected(entry -> {
-                    var newSymbol = SignRegistries.SYMBOLS.get(entry.identifier());
-                    if (newSymbol == null) return;
-                    sign.updateSymbolElement(
-                        symbolElement.id(),
-                        element -> element.withTextureSource(newSymbol.textureSource())
-                    );
-                }).open();
+            TextureSelectScreen.forTextureCategories(
+                sign.frontSource(),
+                sign.colorResolver(),
+                List.of(TextureCategory.SYMBOL_TEXTURES),
+                textureSource -> sign.updateSymbolElement(
+                    symbolElement.id(),
+                    element -> element.withTextureSource(textureSource)
+                )
+            ).open();
         }
     }
 

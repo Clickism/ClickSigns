@@ -2,15 +2,17 @@ package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
-import de.clickism.clicksigns.ui.screen.texture.TextureList;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -22,12 +24,21 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
     public static final int TEXTURE_SIZE = 16;
 
     private final TextureSource source;
+    private final @Nullable TextureSource background;
     private final ColorResolver colorResolver;
-    private Consumer<TextureSource> onTextureSelected;
+    private final Collection<TextureCategory> categories;
+    private Consumer<TextureSource> onTextureSelected = source -> {};
 
-    public TextureButton(TextureSource source, ColorResolver colorResolver) {
+    public TextureButton(
+        TextureSource source,
+        @Nullable TextureSource background,
+        ColorResolver colorResolver,
+        Collection<TextureCategory> categories
+    ) {
         this.source = source;
+        this.background = background;
         this.colorResolver = colorResolver;
+        this.categories = categories;
     }
 
     public TextureButton onTextureSelected(Consumer<TextureSource> onTextureSelected) {
@@ -37,10 +48,17 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
 
     @Override
     protected void build() {
+        grow();
+        childGap(4);
+        if (background != null) {
+            var backgroundColor = UiUtil.primaryColorOf(background.resolveImage(colorResolver));
+            padding(4);
+            style(style()
+                .backgroundColor(backgroundColor));
+        }
         var texture = source.resize(TEXTURE_SIZE, TEXTURE_SIZE)
             .resolve(colorResolver);
-        grow();
-        add(image(texture.location(), TEXTURE_SIZE, TEXTURE_SIZE)
+        add(UiUtil.imageOf(texture)
             .keepAspectRatio(true)
             .grow()
             .style(style()
@@ -65,41 +83,30 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                         var nextStaticTexture = staticTexture.nextInCategory();
                         var nextTexture = nextStaticTexture.textureSource();
                         onTextureSelected.accept(nextTexture);
+                    } else if (SignRegistries.SYMBOLS.has(source.base())) {
+                        // Is symbol, cycle to next symbol in the same category
+                        var symbol = SignRegistries.SYMBOLS.get(source.base());
+                        var nextSymbol = symbol.nextInCategory();
+                        var nextTexture = nextSymbol.textureSource();
+                        onTextureSelected.accept(nextTexture);
                     }
                 } else {
-                    // Open texture menu
-                    var tileSetEntries = SignRegistries.TILE_SETS.all().stream()
-                        .map(tileSet -> new TextureList.Entry(
-                            tileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE)
-                                .resolve(colorResolver),
-                            tileSet.identifier(),
-                            tileSet.resolveCategory()
-                        ));
-
-                    var staticEntries = SignRegistries.STATIC_TEXTURES.all().stream()
-                        .map(staticTexture -> new TextureList.Entry(
-                            staticTexture.textureSource().resolve(colorResolver),
-                            staticTexture.identifier(),
-                            staticTexture.resolveCategory()
-                        ));
-
-                    var entries = Stream.concat(tileSetEntries, staticEntries)
-                        .toList();
-
-                    new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries)
-                        .textureScale(3.0f) // Smaller scale for tilesets
-                        .onTextureSelected(entry -> {
-                            var tileSet = SignRegistries.TILE_SETS.get(entry.identifier());
-                            if (tileSet != null) {
-                                onTextureSelected.accept(tileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE));
-                                return;
-                            }
-                            var staticTexture = SignRegistries.STATIC_TEXTURES.get(entry.identifier());
-                            if (staticTexture != null) {
-                                onTextureSelected.accept(staticTexture.textureSource());
-                            }
-                        }).open();
+                    TextureSelectScreen.forTextureCategories(
+                        background,
+                        colorResolver,
+                        categories,
+                        onTextureSelected
+                    ).open();
                 }
+            }));
+        add(button(t("✎", "clicksigns.ui.textures.edit"))
+            .buttonColor(UiColor.TEAL)
+            .growWidth()
+            .height(14)
+            .onClick(event -> {
+                new TextureEditScreen(source, background, colorResolver, categories)
+                    .onTextureEdited(onTextureSelected)
+                    .open();
             }));
     }
 }

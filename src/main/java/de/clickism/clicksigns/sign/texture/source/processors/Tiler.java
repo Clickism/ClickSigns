@@ -89,6 +89,9 @@ public record Tiler(
         // Calculate bounds
         int centerStart = cornerSize;
         int centerEnd = outputSize - cornerSize;
+        if (centerSize <= 0) {
+            throw new IllegalArgumentException("Input size must be greater than twice the corner size.");
+        }
         if (coord >= centerStart && coord < centerEnd) {
             // Inside center
             int local = (coord - centerStart) % centerSize;

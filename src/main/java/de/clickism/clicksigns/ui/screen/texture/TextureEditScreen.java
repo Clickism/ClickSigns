@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
@@ -19,8 +20,10 @@ import de.clickism.clickui.UiElement;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;
 import de.clickism.clickui.style.Border;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -32,7 +35,9 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  */
 public class TextureEditScreen extends UiScreen<TextureEditScreen> implements CommonComponents {
     private final EditableTextureSource textureSource;
+    private final @Nullable TextureSource background;
     private final ColorResolver colorResolver;
+    private final Collection<TextureCategory> categories;
 
     private Consumer<TextureSource> onTextureEdited = source -> {};
 
@@ -41,11 +46,19 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
      *
      * @param textureSource the texture source to edit
      * @param colorResolver the color resolver to use for resolving colors in the texture
+     * @param categories    the collection of texture categories to allow for selection in the editor
      */
-    public TextureEditScreen(TextureSource textureSource, ColorResolver colorResolver) {
+    public TextureEditScreen(
+        TextureSource textureSource,
+        @Nullable TextureSource background,
+        ColorResolver colorResolver,
+        Collection<TextureCategory> categories
+    ) {
         this.textureSource = new EditableTextureSource(textureSource);
         this.textureSource.onTextureSourceChanged(this::invalidateTree);
+        this.background = background;
         this.colorResolver = colorResolver;
+        this.categories = categories;
     }
 
     /**
@@ -87,7 +100,18 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                                         fancyHeader(t("clicksigns.texture.editor.base.header")),
                                         // Input image
                                         new ImageWithPicker(inputSource, colorResolver, 112)
-                                            .growWidth(),
+                                            .growWidth()
+                                            .extraTooltip(describeRightClick(t("clicksigns.ui.textureButton.tooltip.rightClick")))
+                                            .onClick(event -> {
+                                                if (!event.isRightClick()) return;
+                                                // Open texture menu on right click
+                                                TextureSelectScreen.forTextureCategories(
+                                                    background,
+                                                    colorResolver,
+                                                    categories,
+                                                    newTexture -> textureSource.base(newTexture.base())
+                                                ).open();
+                                            }),
 
                                         textureInfo(inputSource, false)
                                     )

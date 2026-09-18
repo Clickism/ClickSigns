@@ -2,6 +2,7 @@ package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.element.*;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.*;
 import de.clickism.clicksigns.ui.components.sign.SymbolView;
@@ -13,6 +14,7 @@ import de.clickism.clickui.UiElement;
 import de.clickism.clickui.layout.Align;
 import net.minecraft.network.chat.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
@@ -287,6 +289,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 plate.frontSource(),
                 plate.backSource(),
                 roadSign.colorResolver(),
+                TextureCategory.SIGN_TEXTURES,
                 plate.size()
             )
                 .onFrontSelected(source -> {
@@ -341,20 +344,17 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                         event.playSound();
                         SymbolView.handleSymbolChange(roadSign, roadSign.getElement(id), event);
                     }),
-                button(t("✎", "clicksigns.ui.textures.edit"))
-                    .buttonColor(UiColor.TEAL)
-                    .growWidth()
-                    .height(14)
-                    .onClick(event -> {
-                        new TextureEditScreen(symbol.textureSource(), colorResolver)
-                            .onTextureEdited(texture -> {
-                                roadSign.updateSymbolElement(
-                                    id,
-                                    element -> element.withTextureSource(texture)
-                                );
-                            })
-                            .open();
-                    })
+                new TextureButton(
+                    symbol.textureSource(),
+                    roadSign.frontSource(),
+                    colorResolver,
+                    List.of(TextureCategory.SYMBOL_TEXTURES)
+                ).onTextureSelected(texture -> {
+                    roadSign.updateSymbolElement(
+                        id,
+                        element -> element.withTextureSource(texture)
+                    );
+                })
             ));
     }
 

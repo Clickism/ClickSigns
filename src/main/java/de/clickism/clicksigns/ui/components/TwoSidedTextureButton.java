@@ -2,12 +2,14 @@ package de.clickism.clicksigns.ui.components;
 
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -17,6 +19,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
  */
 public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> implements CommonComponents {
     private final ColorResolver colorResolver;
+    private final Collection<TextureCategory> categories;
     private final TextureSource frontSource;
     private TextureSource backSource;
     private Consumer<TextureSource> onFrontSelected = source -> {};
@@ -27,11 +30,13 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
         TextureSource frontSource,
         TextureSource backSource,
         ColorResolver colorResolver,
+        Collection<TextureCategory> categories,
         Size desiredSize
     ) {
         this.frontSource = frontSource;
         this.backSource = backSource;
         this.colorResolver = colorResolver;
+        this.categories = categories;
         this.desiredSize = desiredSize;
     }
 
@@ -66,43 +71,15 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
                 .children(
                     withHeader(
                         t("clicksigns.ui.textures.front"),
-                        box()
-                            .childGap(4)
-                            .growWidth()
-                            .children(
-                                new TextureButton(frontSource, colorResolver)
-                                    .onTextureSelected(textureSource ->
-                                        onFrontSelected.accept(textureSource.resize(desiredSize))),
-                                button(t("✎", "clicksigns.ui.textures.edit"))
-                                    .buttonColor(UiColor.TEAL)
-                                    .growWidth()
-                                    .height(14)
-                                    .onClick(event -> {
-                                        new TextureEditScreen(frontSource, colorResolver)
-                                            .onTextureEdited(onFrontSelected)
-                                            .open();
-                                    })
-                            )
+                        new TextureButton(frontSource, null, colorResolver, categories)
+                            .onTextureSelected(textureSource ->
+                                onFrontSelected.accept(textureSource.resize(desiredSize)))
                     ),
                     withHeader(
                         t("clicksigns.ui.textures.back"),
-                        box()
-                            .childGap(4)
-                            .growWidth()
-                            .children(
-                                new TextureButton(backSource, colorResolver)
-                                    .onTextureSelected(textureSource ->
-                                        onBackSelected.accept(textureSource.resize(desiredSize))),
-                                button(t("✎", "clicksigns.ui.textures.edit"))
-                                    .buttonColor(UiColor.TEAL)
-                                    .growWidth()
-                                    .height(14)
-                                    .onClick(event -> {
-                                        new TextureEditScreen(backSource, colorResolver)
-                                            .onTextureEdited(onBackSelected)
-                                            .open();
-                                    })
-                            )
+                        new TextureButton(backSource, null, colorResolver, categories)
+                            .onTextureSelected(textureSource ->
+                                onBackSelected.accept(textureSource.resize(desiredSize)))
                     )
                 )
             );

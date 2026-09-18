@@ -16,6 +16,6 @@ public class AlphaMaskControls extends ProcessorControls<AlphaMask, AlphaMaskCon
 
     @Override
     protected UiElement<?> controls() {
-        return smallHeader(t("clicksigns.texture.processor.alphaMask.description"));
+        return smallParagraph(t("clicksigns.texture.processor.alphaMask.description"));
     }
 }

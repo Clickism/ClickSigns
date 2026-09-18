@@ -68,19 +68,6 @@ public record RoadSign(
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
 
-    public RoadSign {
-        // Ensure that all plate elements match the sign's textures
-        elements = elements.stream()
-            .map(element -> {
-                if (element instanceof PlateElement plate && plate.matchSignTextures()) {
-                    return plate.matchTextures(frontSource, backSource);
-                } else {
-                    return element;
-                }
-            })
-            .toList();
-    }
-
     /**
      * Gets the default front texture source for road signs.
      *

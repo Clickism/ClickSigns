@@ -7,9 +7,12 @@ import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
+import de.clickism.clickui.UiElement;
+import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.render.TooltipRenderer;
 import de.clickism.clickui.style.Border;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
@@ -24,6 +27,8 @@ public class ImageWithPicker extends UiComponent<ImageWithPicker> implements Com
     private final Image image;
     private final int size;
     private @Nullable Integer hoveredPixel = null;
+
+    private UiElement<?> extraTooltip = null;
 
     /**
      * Constructs an ImageWithPicker component.
@@ -45,9 +50,15 @@ public class ImageWithPicker extends UiComponent<ImageWithPicker> implements Com
         });
     }
 
+    public ImageWithPicker extraTooltip(UiElement<?> extraTooltip) {
+        this.extraTooltip = extraTooltip;
+        return this;
+    }
+
     @Override
     protected void build() {
         this
+            .debug(true)
             .padding(2)
             .style(style()
                 .borderPosition(Border.Position.INSIDE)
@@ -67,39 +78,51 @@ public class ImageWithPicker extends UiComponent<ImageWithPicker> implements Com
     @Override
     public void render(RenderContext context) {
         // Update color
-        var imageX = context.mouseX() - bounds().x() - padding().left();
-        var imageY = context.mouseY() - bounds().y() - padding().top();
-        var renderedWidth = bounds().width() - padding().horizontal();
-        var renderedHeight = bounds().height() - padding().vertical();
+        var bounds = renderBounds();
+        var imageX = context.mouseX() - bounds.x() - padding().left();
+        var imageY = context.mouseY() - bounds.y() - padding().top();
+        float renderedWidth = bounds.width() - padding().horizontal();
+        float renderedHeight = bounds.height() - padding().vertical();
         if (renderedWidth <= 0 || renderedHeight <= 0) {
+            hoveredPixel = null;
             return;
         }
-        imageX = imageX * image.width() / renderedWidth;
-        imageY = imageY * image.height() / renderedHeight;
+        imageX = Mth.floor(imageX * (image.width() / renderedWidth));
+        imageY = Mth.floor(imageY * (image.height() / renderedHeight));
         if (imageX >= 0 && imageX < image.width() && imageY >= 0 && imageY < image.height()) {
             hoveredPixel = image.pixelAt(imageX, imageY);
-            // Render tooltip
-            var colorHex = l(String.format("#%06x", (0xFFFFFF & hoveredPixel)));
-            var colorBox = box()
-                .horizontal()
-                .childGap(2)
-                .alignCenter()
-                .children(
-                    box()
-                        .size(10)
-                        .style(style().backgroundColor(UiColor.rgba(hoveredPixel))),
-                    text(colorHex).padding(1, 0, 0, 0)
-                );
-            var tooltip = box()
-                .childGap(2)
-                .children(
-                    colorBox,
-                    box().height(1).growWidth()
-                        .style(style().backgroundColor(UiColor.LIGHT_GRAY.alpha(0.3f))),
-                    describeLeftClick(l("Copy Color"))
-                );
+        } else {
+            hoveredPixel = null;
+        }
+        // Render tooltip
+        var tooltip = tooltipToShow();
+        if (tooltip != null) {
             tooltip.invalidateLayout();
             new TooltipRenderer(tooltip, context).render();
         }
+    }
+
+    private @Nullable UiElement<?> tooltipToShow() {
+        if (hoveredPixel == null) return null;
+        var colorHex = l(String.format("#%06x", (0xFFFFFF & hoveredPixel)));
+        var colorBox = box()
+            .horizontal()
+            .childGap(2)
+            .alignCenter()
+            .children(
+                box()
+                    .size(10)
+                    .style(style().backgroundColor(UiColor.rgba(hoveredPixel))),
+                text(colorHex).padding(1, 0, 0, 0)
+            );
+        return box()
+            .childGap(2)
+            .children(
+                colorBox,
+                box().height(1).growWidth()
+                    .style(style().backgroundColor(UiColor.LIGHT_GRAY.alpha(0.3f))),
+                describeLeftClick(l("Copy Color")),
+                extraTooltip
+            );
     }
 }

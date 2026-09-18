@@ -41,6 +41,7 @@ public class EditableTextureSource {
 
     public void base(ResourceLocation base) {
         this.base = base;
+        notifyListeners();
     }
 
     public List<Editable<TextureProcessor>> processors() {

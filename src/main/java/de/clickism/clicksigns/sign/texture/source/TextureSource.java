@@ -9,7 +9,9 @@ import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.*;
 
 public record TextureSource(
@@ -19,8 +21,8 @@ public record TextureSource(
     /**
      * The error texture to use when loading or generating a texture fails.
      */
-    public static final Texture ERROR_TEXTURE =
-        new Texture(ClickSigns.identifier("error.png"), 32, 16);
+    public static final Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16);
+    public static final Image ERROR_IMAGE = new Image(1, 1, new int[]{0xFFFF0000}); // Single red pixel
 
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
     private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
@@ -114,8 +116,9 @@ public record TextureSource(
      * @param colorResolver the color resolver to use for processing
      * @return the resolved texture, or the error texture if loading or processing fails
      */
-    public Texture resolve(ColorResolver colorResolver) {
-        var identity = identity(new TextureContext(colorResolver));
+    public @NotNull Texture resolve(ColorResolver colorResolver) {
+        var context = new TextureContext(colorResolver);
+        var identity = identity(context);
         // Check cache
         if (TEXTURE_CACHE.containsKey(identity)) {
             return TEXTURE_CACHE.get(identity);
@@ -123,14 +126,10 @@ public record TextureSource(
         // Generate texture
         Image image;
         try {
-            image = resolveImage(colorResolver);
+            image = generateAndCache(context);
         } catch (Exception e) {
             // Only send error message once per unique texture source, to avoid spamming the log
-            if (ERROR_CACHE.contains(identity)) {
-                return ERROR_TEXTURE;
-            }
-            ERROR_CACHE.add(identity);
-            ClickSigns.LOGGER.error("Failed to resolve texture source {}: {}", identity, e.getMessage(), e);
+            sendErrorOnce(identity, "Failed to resolve texture source " + identity, e);
             return ERROR_TEXTURE;
         }
         // Upload texture to Minecraft and cache it
@@ -145,10 +144,22 @@ public record TextureSource(
      * Resolves the texture source into an image by loading the base image and applying all processors in order.
      *
      * @param colorResolver the color resolver to use for processing
-     * @return the resolved image, or null if loading or processing fails
+     * @return the resolved image, or the error image if loading or processing fails
      */
-    public Image resolveImage(ColorResolver colorResolver) {
+    public @NotNull Image resolveImage(ColorResolver colorResolver) {
         var context = new TextureContext(colorResolver);
+        // Generate image
+        try {
+            return generateAndCache(context);
+        } catch (Exception e) {
+            // Only send error message once per unique texture source, to avoid spamming the log
+            var identity = identity(context);
+            sendErrorOnce(identity, "Failed to resolve image for texture source " + identity, e);
+            return ERROR_IMAGE;
+        }
+    }
+
+    private Image generateAndCache(TextureContext context) throws Exception {
         var identity = identity(context);
         if (IMAGE_CACHE.containsKey(identity)) {
             return IMAGE_CACHE.get(identity);
@@ -165,10 +176,10 @@ public record TextureSource(
      * @param context the texture context containing additional information for processing
      * @return the resolved image, or null if loading or processing fails
      */
-    private Image generate(TextureContext context) {
+    private Image generate(TextureContext context) throws Exception {
         var image = Image.open(base);
         if (image == null) {
-            throw new RuntimeException("Failed to open base image at location " + base);
+            throw new IOException("Failed to open base image at location " + base);
         }
         for (var processor : processors) {
             try {
@@ -183,9 +194,18 @@ public record TextureSource(
         return image;
     }
 
+    private void sendErrorOnce(String identity, String message, Exception e) {
+        if (ERROR_CACHE.contains(identity)) {
+            return;
+        }
+        ERROR_CACHE.add(identity);
+        ClickSigns.LOGGER.error("{}: {}", message, e.getMessage(), e);
+    }
+
     /**
      * Returns a unique identity string for this texture source and its parameters, used for caching.
      *
+     * @param context the texture context containing additional information for processing
      * @return a unique identity string for this texture source
      */
     private String identity(TextureContext context) {
