@@ -14,6 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Represents a source for a texture, consisting of a base resource location and a list of texture processors to apply.
+ *
+ * @param base       the base resource location for the texture source
+ * @param processors the list of texture processors to apply to the base image
+ */
 public record TextureSource(
     ResourceLocation base,
     List<TextureProcessor> processors
@@ -134,7 +140,7 @@ public record TextureSource(
         }
         // Upload texture to Minecraft and cache it
         var location = getOrAssignResourceLocation(identity);
-        Image.upload(location, image);
+        MinecraftImages.upload(location, image);
         var texture = new Texture(location, image.width(), image.height());
         TEXTURE_CACHE.put(identity, texture);
         return texture;
@@ -177,7 +183,7 @@ public record TextureSource(
      * @return the resolved image, or null if loading or processing fails
      */
     private Image generate(TextureContext context) throws Exception {
-        var image = Image.open(base);
+        var image = MinecraftImages.open(base);
         if (image == null) {
             throw new IOException("Failed to open base image at location " + base);
         }

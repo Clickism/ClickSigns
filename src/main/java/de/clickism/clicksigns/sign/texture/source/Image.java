@@ -1,12 +1,5 @@
 package de.clickism.clicksigns.sign.texture.source;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
-import org.jetbrains.annotations.Nullable;
-
 /**
  * Represents an image with its dimensions and pixel data.
  *
@@ -29,43 +22,14 @@ public record Image(
         this(width, height, new int[width * height]);
     }
 
-    public static @Nullable Image open(ResourceLocation location) {
-        var minecraft = Minecraft.getInstance();
-        try (var nativeImage = NativeImage.read(minecraft.getResourceManager().open(location))) {
-            int height = nativeImage.getHeight();
-            int width = nativeImage.getWidth();
-            var pixels = new int[width * height];
-            // Copy all pixels
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    int abgr = nativeImage.getPixelRGBA(x, y);
-                    int argb = FastColor.ARGB32.color(
-                        FastColor.ABGR32.alpha(abgr),
-                        FastColor.ABGR32.red(abgr),
-                        FastColor.ABGR32.green(abgr),
-                        FastColor.ABGR32.blue(abgr)
-                    );
-                    pixels[y * width + x] = argb;
-                }
-            }
-            return new Image(width, height, pixels);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     /**
-     * Uploads the given image to the Minecraft texture manager at the specified resource location.
+     * Returns the color of the pixel at the specified (x, y) coordinates.
      *
-     * @param location the resource location where the image will be uploaded
-     * @param image    the image to upload
+     * @param x the x-coordinate of the pixel
+     * @param y the y-coordinate of the pixel
+     * @return the color of the pixel as an ARGB integer
+     * @throws IndexOutOfBoundsException if the (x, y) coordinates are out of bounds for this image
      */
-    public static void upload(ResourceLocation location, Image image) {
-        var minecraft = Minecraft.getInstance();
-        var nativeImage = image.toNativeImage();
-        minecraft.getTextureManager().register(location, new DynamicTexture(nativeImage));
-    }
-
     public int pixelAt(int x, int y) {
         if (!withinBounds(x, y)) {
             throw new IndexOutOfBoundsException(
@@ -75,6 +39,14 @@ public record Image(
         return pixels[y * width + x];
     }
 
+    /**
+     * Sets the color of the pixel at the specified (x, y) coordinates.
+     *
+     * @param x     the x-coordinate of the pixel
+     * @param y     the y-coordinate of the pixel
+     * @param color the color to set the pixel to, as an ARGB integer
+     * @throws IndexOutOfBoundsException if the (x, y) coordinates are out of bounds for this image
+     */
     public void setPixelAt(int x, int y, int color) {
         if (!withinBounds(x, y)) {
             throw new IndexOutOfBoundsException(
@@ -84,10 +56,22 @@ public record Image(
         pixels[y * width + x] = color;
     }
 
+    /**
+     * Checks if the specified (x, y) coordinates are within the bounds of this image.
+     *
+     * @param x the x-coordinate to check
+     * @param y the y-coordinate to check
+     * @return true if the coordinates are within bounds, false otherwise
+     */
     public boolean withinBounds(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    /**
+     * Iterates over each pixel in the image and applies the given PixelConsumer to it.
+     *
+     * @param consumer the PixelConsumer to apply to each pixel
+     */
     public void forEachPixel(PixelConsumer consumer) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -97,25 +81,13 @@ public record Image(
         }
     }
 
+    /**
+     * Creates a copy of this Image, including its pixel data.
+     *
+     * @return a new Image instance with the same dimensions and pixel data
+     */
     public Image copy() {
         return new Image(width, height, pixels.clone());
-    }
-
-    public NativeImage toNativeImage() {
-        var nativeImage = new NativeImage(NativeImage.Format.RGBA, width, height, false);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int argb = pixelAt(x, y);
-                int abgr = FastColor.ABGR32.color(
-                    FastColor.ARGB32.alpha(argb),
-                    FastColor.ARGB32.blue(argb),
-                    FastColor.ARGB32.green(argb),
-                    FastColor.ARGB32.red(argb)
-                );
-                nativeImage.setPixelRGBA(x, y, abgr);
-            }
-        }
-        return nativeImage;
     }
 
     @FunctionalInterface
