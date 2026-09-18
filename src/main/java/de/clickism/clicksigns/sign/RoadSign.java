@@ -2,7 +2,7 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.element.PlateElement;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;

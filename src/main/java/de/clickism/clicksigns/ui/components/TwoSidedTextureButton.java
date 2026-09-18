@@ -1,12 +1,10 @@
 package de.clickism.clicksigns.ui.components;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.util.Size;
-import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
 import java.util.Collection;

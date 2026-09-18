@@ -71,7 +71,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      */
     private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
-        var color = roadSign.colorResolver().resolveInt(style.color());
+        var color = roadSign.colorResolver().resolve(style.color());
         var font = Util.font();
         context.withTextTransform(font, () -> {
             int offsetY = 0;
@@ -110,7 +110,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
             : 0;
         // Render background
         style.backgroundColor()
-            .map(roadSign.colorResolver()::resolveInt)
+            .map(roadSign.colorResolver()::resolve)
             .ifPresent(color -> {
                 context.withTranslation(outlineWidth, outlineWidth, 0, () -> {
                     context.textureRenderer().renderColor(
@@ -123,7 +123,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
 
         // Render outline
         style.outlineColor()
-            .map(roadSign.colorResolver()::resolveInt)
+            .map(roadSign.colorResolver()::resolve)
             .ifPresent(color -> {
                 var thickness = style.outlineWidth();
                 if (thickness <= 0) return;

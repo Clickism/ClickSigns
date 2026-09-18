@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.screen.texture.processor;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;

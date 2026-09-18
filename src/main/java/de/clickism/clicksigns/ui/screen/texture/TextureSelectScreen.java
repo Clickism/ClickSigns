@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.UiConstants;

@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.components.sign;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clickui.UiComponent;

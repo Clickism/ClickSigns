@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.TileSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

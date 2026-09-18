@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.registry;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;

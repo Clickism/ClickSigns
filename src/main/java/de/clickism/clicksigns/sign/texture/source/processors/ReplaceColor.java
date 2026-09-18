@@ -53,8 +53,8 @@ public record ReplaceColor(
     public Image process(Image input, TextureContext context) {
         boolean replaceAll = fromColor == null || fromColor.isEmpty();
         // Convert colors to integers
-        int fromColorArgb = context.colorResolver().resolveInt(fromColor);
-        int toColorArgb = context.colorResolver().resolveInt(toColor);
+        int fromColorArgb = context.colorResolver().resolve(fromColor);
+        int toColorArgb = context.colorResolver().resolve(toColor);
         input.forEachPixel((x, y, color) -> {
             if (replaceAll || color == fromColorArgb) {
                 int alpha = (color >> 24) & 0xFF;
@@ -67,8 +67,8 @@ public record ReplaceColor(
 
     @Override
     public String identity(TextureContext context) {
-        var from = context.colorResolver().resolveInt(fromColor);
-        var to = context.colorResolver().resolveInt(toColor);
+        var from = context.colorResolver().resolve(fromColor);
+        var to = context.colorResolver().resolve(toColor);
         return "ReplaceColor[from=" + from + ", to=" + to + "]";
     }
 

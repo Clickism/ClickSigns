@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.element;
 
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.util.Size;

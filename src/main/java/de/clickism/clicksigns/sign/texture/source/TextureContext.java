@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.sign.texture.source;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 
 public record TextureContext(
     ColorResolver colorResolver

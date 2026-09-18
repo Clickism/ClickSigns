@@ -1,21 +1,17 @@
 package de.clickism.clicksigns.ui.components.sign;
 
-import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.editable.Editable;
-import de.clickism.clicksigns.ui.screen.texture.TextureList;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
 
 import java.util.List;
-
-import static de.clickism.clicksigns.util.ComponentUtil.l;
 
 public class SymbolView extends UiComponent<SymbolView>
     implements ElementProvider {

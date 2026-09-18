@@ -5,7 +5,7 @@ import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.serialization.codec.CommonCodec;
 import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.util.PixelSized;
 import net.minecraft.resources.ResourceLocation;

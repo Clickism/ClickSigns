@@ -4,7 +4,7 @@ import de.clickism.clicksigns.serialization.TypeKeyed;
 import de.clickism.clicksigns.serialization.codec.CommonCodec;
 import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;

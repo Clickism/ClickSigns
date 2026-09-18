@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.components;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
@@ -8,7 +8,6 @@ import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
-import de.clickism.clickui.layout.Rect;
 import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.render.TooltipRenderer;
 import de.clickism.clickui.style.Border;

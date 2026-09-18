@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.components.sign;
 
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.UiUtil;
@@ -172,7 +172,7 @@ public class SignTextField extends TextField implements ElementProvider {
 
     @Override
     protected int textColor(boolean placeholder) {
-        var color = colorResolver.resolveInt(element.style().color());
+        var color = colorResolver.resolve(element.style().color());
         if (placeholder) {
             color = UiColor.rgba(color).multiplyAlpha(0.5f).color();
         }
@@ -257,7 +257,7 @@ public class SignTextField extends TextField implements ElementProvider {
         var background = element.paddedSize();
         var x = bounds.x() + element.backgroundOffset();
         var y = bounds.y() + element.backgroundOffset();
-        var color = colorResolver.resolveInt(element.style().backgroundColor().orElseThrow());
+        var color = colorResolver.resolve(element.style().backgroundColor().orElseThrow());
         // Fill background
         context.graphics().fill(
             x,
@@ -281,7 +281,7 @@ public class SignTextField extends TextField implements ElementProvider {
         var bounds = bounds();
         var background = element.paddedSize();
         var thickness = element.style().outlineWidth();
-        var color = colorResolver.resolveInt(element.style().outlineColor().orElseThrow());
+        var color = colorResolver.resolve(element.style().outlineColor().orElseThrow());
         // Render outline
         UiUtil.renderOutline(
             context.graphics(),
