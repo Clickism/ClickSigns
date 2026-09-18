@@ -131,8 +131,15 @@ public record RoadSign(
      * @return a new texture source with the back texture masked by the front texture
      */
     public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
-        // Resize back to make sure it covers the front texture, and then mask it with the front texture
+        // Resize back to make sure it covers the front texture
         backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
+        // Remove all previous alpha masks
+        var processors = backSource.processors().stream()
+            .filter(processor -> !(processor instanceof AlphaMask))
+            .toList();
+        // Reapply the processors to the back texture source
+        backSource = backSource.withProcessors(processors);
+        // Add a new alpha mask processor to the back texture source
         return backSource.addProcessor(new AlphaMask(frontSource, true));
     }
 

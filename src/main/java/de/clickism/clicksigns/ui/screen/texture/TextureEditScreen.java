@@ -2,27 +2,22 @@ package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.sign.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.texture.source.Image;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
-import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.ColorField;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.NumberControl;
 import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.UiColor;
-import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;
-import de.clickism.clickui.render.RenderContext;
-import de.clickism.clickui.render.TooltipRenderer;
 import de.clickism.clickui.style.Border;
 import net.minecraft.ChatFormatting;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +76,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                                     .growHeight()
                                     .children(
                                         fancyHeader(l("Base Texture")),
-                                        new ImageBox(inputSource)
+                                        new ImageWithPicker(inputSource, colorResolver, 112)
                                             .growWidth(),
 
                                         withHeader(
@@ -117,7 +112,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                                 button(l("+ Add Processor"))
                                     .disabled(textureSource.processors().size() >= TextureSource.MAX_PROCESSOR_COUNT)
                                     .growWidth()
-                                    .buttonColor(UiColor.LIME)
+                                    .buttonColor(UiColor.TEAL)
                                     .onClick(event -> {
                                         new TextureProcessorSelectScreen()
                                             .onProcessorSelected(textureSource::addProcessor)
@@ -131,12 +126,11 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                             .children(
                                 darkBoxOutlined()
                                     .grow()
-                                    .padding(8)
                                     .maxWidth(120)
                                     .childGap(8)
                                     .children(
                                         fancyHeader(l("Output Texture")),
-                                        new ImageBox(outputSource)
+                                        new ImageWithPicker(outputSource, colorResolver, 112)
                                             .growWidth(),
 
                                         withHeader(
@@ -198,7 +192,7 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                 .padding(4)
                 .children(
                     // Preview
-                    new ImageBox(partialSource)
+                    new ImageWithPicker(partialSource, colorResolver, 45)
                         .size(45),
                     // Processor controls
                     view,
@@ -233,80 +227,6 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                 ));
         }
         return list;
-    }
-
-    private class ImageBox extends UiComponent<ImageBox> {
-        private final TextureSource source;
-        private final Image image;
-
-        private @Nullable Integer hoveredPixel = null;
-
-        public ImageBox(TextureSource source) {
-            this.source = source;
-            this.image = source.resolveImage(colorResolver);
-            this.onClick(event -> {
-                if (hoveredPixel != null) {
-                    var colorHex = String.format("#%06x", (0xFFFFFF & hoveredPixel));
-                    UiUtil.copyToClipboard(colorHex);
-                    event.playSound();
-                }
-            });
-        }
-
-        @Override
-        protected void build() {
-            // TODO: Fix image fitting/keep aspect ratio problems, heights are too much?
-            var texture = source.resolve(colorResolver);
-            this
-                .padding(2)
-                .style(style()
-                    .borderPosition(Border.Position.INSIDE)
-                    .borderColor(UiColor.LIGHT_GRAY.alpha(0.2f))
-                    .backgroundColor(UiColor.BLACK)
-                    .whenHovered(style()
-                        .borderColor(UiColor.LIGHT_GRAY.alpha(1f))))
-                .children(
-                    UiUtil.imageOf(texture)
-                        .keepAspectRatio(true)
-                        .grow()
-                );
-        }
-
-        @Override
-        public void render(RenderContext context) {
-            // Update color
-            var imageX = context.mouseX() - bounds().x() - padding().left();
-            var imageY = context.mouseY() - bounds().y() - padding().top();
-            var renderedWidth = bounds().width() - padding().horizontal();
-            var renderedHeight = bounds().height() - padding().vertical();
-            imageX = imageX * image.width() / renderedWidth;
-            imageY = imageY * image.height() / renderedHeight;
-            if (imageX >= 0 && imageX < image.width() && imageY >= 0 && imageY < image.height()) {
-                hoveredPixel = image.pixelAt(imageX, imageY);
-                // Render tooltip
-                var colorHex = l(String.format("#%06x", (0xFFFFFF & hoveredPixel)));
-                var colorBox = box()
-                    .horizontal()
-                    .childGap(2)
-                    .alignCenter()
-                    .children(
-                        box()
-                            .size(10)
-                            .style(style().backgroundColor(UiColor.rgba(hoveredPixel))),
-                        text(colorHex).padding(1, 0, 0, 0)
-                    );
-                var tooltip = box()
-                    .childGap(2)
-                    .children(
-                        colorBox,
-                        box().height(1).growWidth()
-                            .style(style().backgroundColor(UiColor.LIGHT_GRAY.alpha(0.3f))),
-                        describeLeftClick(l("Copy Color"))
-                    );
-                tooltip.invalidateLayout();
-                new TooltipRenderer(tooltip, context).render();
-            }
-        }
     }
 
     private UiElement<?> processorView(Editable<TextureProcessor> processor) {
@@ -408,6 +328,18 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                                         );
                                     })
                             )
+                        )
+                );
+        } else if (current instanceof AlphaMask) {
+            return box()
+                .grow()
+                .childGap(4)
+                .children(
+                    smallHeader(l("Alpha Mask").copy().withStyle(ChatFormatting.BOLD)).padding(0),
+                    darkBox()
+                        .grow()
+                        .children(
+                            smallParagraph(l("Used for matching back textures with front textures. Not editable."))
                         )
                 );
         } else {

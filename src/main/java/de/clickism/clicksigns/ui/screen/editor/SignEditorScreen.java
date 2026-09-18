@@ -31,6 +31,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
      */
     private final Ref<SignElementControls> elementControlsRef = ref();
     private final Ref<SignPropertyControls> propertyControlsRef = ref();
+    private final Ref<SignEditorView> signViewRef = ref();
 
     /**
      * Create a new sign edit screen for the given sign.
@@ -44,6 +45,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
             // Invalidate both the element controls and property controls
             this.elementControlsRef.get().invalidateTree();
             this.propertyControlsRef.get().invalidateTree();
+            this.signViewRef.get().invalidateTree(); // So that size is also updated, when changed through texture editor
         });
         // Create context
         this.context = new SignEditorContext(editableSign);
@@ -89,6 +91,7 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
                     .childGap(8)
                     .children(
                         new SignEditorView(this.context, this.actionHandler)
+                            .ref(signViewRef)
                             .grow()
                             .alignCenter()
                             .onConfirm(event -> {
