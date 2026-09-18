@@ -134,8 +134,7 @@ public record TextureSource(
                 UiColor.rgba(defaultResolver.resolve("white"))
             );
             var colorResolver = ColorResolver.withDefault()
-                .define("foreground", foregroundColor.color())
-                .define("background", primaryColor.color());
+                .define("foreground", foregroundColor.color());
             DYNAMIC_COLOR_RESOLVERS.put(base, colorResolver);
             return colorResolver;
         } catch (Exception e) {
