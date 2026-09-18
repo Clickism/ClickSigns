@@ -110,9 +110,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @return unmodifiable collection of all registered categories
      */
     public Collection<Category<T>> allCategories() {
-        var normalCategories = categories.values().stream()
-            .sorted((c1, c2) -> c1.name().compareToIgnoreCase(c2.name()))
-            .toList();
+        var normalCategories = categories.values();
         var uncategorized = uncategorized();
         return Stream.concat(normalCategories.stream(), Stream.of(uncategorized))
             .toList();

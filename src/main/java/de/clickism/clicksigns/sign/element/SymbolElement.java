@@ -35,7 +35,7 @@ public record SymbolElement(
      * @return the default symbol element
      */
     public static SymbolElement createDefault() {
-        var symbolId = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
+        var symbolId = ClickSigns.signAsset("symbols/arrows/street/right_curvy.png");
         return new SymbolElement(0, 0,
             Alignment.CENTER,
             symbolId,

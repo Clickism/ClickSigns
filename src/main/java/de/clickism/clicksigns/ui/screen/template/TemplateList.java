@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.screen.template;
 
 import de.clickism.clicksigns.ClickSignsClient;
+import de.clickism.clicksigns.registry.Category;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.components.CommonComponents;
@@ -53,17 +54,19 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
             }
         } else {
             // Add resource templates
-            SignRegistries.RESOURCE_TEMPLATES.allCategories().forEach(category -> {
-                var entries = category.resolveEntries().stream()
-                    .sorted(Comparator.comparing(template -> template.meta().name()))
-                    .toList();
-                if (entries.isEmpty()) return;
-                box.add(category(l(category.name())));
-                entries.forEach(template -> {
-                    box.add(entry(template));
-                    templates.add(template);
+            SignRegistries.RESOURCE_TEMPLATES.allCategories().stream()
+                .sorted(Comparator.comparing(Category::name))
+                .forEach(category -> {
+                    var entries = category.resolveEntries().stream()
+                        .sorted(Comparator.comparing(template -> template.meta().name()))
+                        .toList();
+                    if (entries.isEmpty()) return;
+                    box.add(category(l(category.name())));
+                    entries.forEach(template -> {
+                        box.add(entry(template));
+                        templates.add(template);
+                    });
                 });
-            });
         }
     }
 

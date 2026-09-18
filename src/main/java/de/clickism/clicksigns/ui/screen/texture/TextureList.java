@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -57,44 +58,48 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
             .crossAlign(Align.CENTER);
         add(box);
 
-        categoryToEntries.forEach((category, entries) -> {
-            box.add(box()
-                .padding(4)
-                .growWidth()
-                .alignCenter()
-                .style(style()
-                    .borderColor(UiColor.LIGHT_GRAY)
-                    .backgroundColor(UiColor.BLACK_A80))
-                .children(
-                    text(category.name())
-                ));
-            // Add symbols
-            var row = box()
-                .horizontal()
-                .wrapChildren(true)
-                .childGap(4)
-                .crossAlign(Align.START);
+        categoryToEntries.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey(Comparator.comparing(Category::name)))
+            .forEach(mapEntry -> {
+                var category = mapEntry.getKey();
+                var entries = mapEntry.getValue();
+                box.add(box()
+                    .padding(4)
+                    .growWidth()
+                    .alignCenter()
+                    .style(style()
+                        .borderColor(UiColor.LIGHT_GRAY)
+                        .backgroundColor(UiColor.BLACK_A80))
+                    .children(
+                        text(category.name())
+                    ));
+                // Add symbols
+                var row = box()
+                    .horizontal()
+                    .wrapChildren(true)
+                    .childGap(4)
+                    .crossAlign(Align.START);
 
-            box.add(row);
-            entries.forEach(entry -> {
-                var texture = entry.texture();
-                for (int i = 0; i < 1; i++) {
-                    row.add(
-                        UiUtil.imageOf(texture, textureScale)
-                            .tooltip(describeLeftClick(
-                                t("clicksigns.ui.textureList.tooltip.leftClick")
-                            ))
-                            .style(style()
-                                .whenHovered(style()
-                                    .borderColor(UiColor.RED)
-                                    .backgroundColor(UiColor.RED.alpha(0.1f))))
-                            .onClick(event -> {
-                                onTextureSelected.accept(entry);
-                            })
-                    );
-                }
+                box.add(row);
+                entries.forEach(entry -> {
+                    var texture = entry.texture();
+                    for (int i = 0; i < 1; i++) {
+                        row.add(
+                            UiUtil.imageOf(texture, textureScale)
+                                .tooltip(describeLeftClick(
+                                    t("clicksigns.ui.textureList.tooltip.leftClick")
+                                ))
+                                .style(style()
+                                    .whenHovered(style()
+                                        .borderColor(UiColor.RED)
+                                        .backgroundColor(UiColor.RED.alpha(0.1f))))
+                                .onClick(event -> {
+                                    onTextureSelected.accept(entry);
+                                })
+                        );
+                    }
+                });
             });
-        });
     }
 
     /**
