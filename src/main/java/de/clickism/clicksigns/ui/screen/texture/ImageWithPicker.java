@@ -23,9 +23,8 @@ import static de.clickism.clicksigns.util.ComponentUtil.l;
 public class ImageWithPicker extends UiComponent<ImageWithPicker> implements CommonComponents {
     private final Texture texture;
     private final Image image;
-
-    private @Nullable Integer hoveredPixel = null;
     private final int size;
+    private @Nullable Integer hoveredPixel = null;
 
     /**
      * Constructs an ImageWithPicker component.
@@ -49,7 +48,6 @@ public class ImageWithPicker extends UiComponent<ImageWithPicker> implements Com
 
     @Override
     protected void build() {
-        // TODO: Fix image fitting/keep aspect ratio problems, heights are too much?
         this
             .padding(2)
             .style(style()

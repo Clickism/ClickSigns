@@ -49,6 +49,14 @@ public interface CommonComponents extends BaseComponents {
                     ));
     }
 
+    default Text islandHeader(Component text) {
+        return h4(text)
+            .padding(6, 12)
+            .style(style()
+                .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
+                .backgroundColor(UiColor.BLACK.alpha(0.5f)));
+    }
+
     default Text paragraph(Component text) {
         return text(text)
             .growWidth()
@@ -74,14 +82,12 @@ public interface CommonComponents extends BaseComponents {
                 .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f)));
     }
 
-    default Box withHeader(Component header, UiElement<?> content) {
+    default Box withHeader(Component header, UiElement<?>... content) {
         return box()
             .growWidth()
             .childGap(4)
-            .children(
-                smallHeader(header).padding(0),
-                content
-            );
+            .children(smallHeader(header).padding(0))
+            .children(content);
     }
 
     default Text smallParagraph(Component text) {

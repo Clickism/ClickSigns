@@ -10,12 +10,10 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class EditableTextureSource {
-    private ResourceLocation base;
-
     private final Map<UUID, Editable<TextureProcessor>> processorMap = new HashMap<>();
     private final List<Editable<TextureProcessor>> processors;
-
     private final List<Runnable> onChangeListeners = new ArrayList<>();
+    private ResourceLocation base;
 
     public EditableTextureSource(TextureSource textureSource) {
         this.base = textureSource.base();
@@ -47,21 +45,6 @@ public class EditableTextureSource {
 
     public List<Editable<TextureProcessor>> processors() {
         return Collections.unmodifiableList(processors);
-    }
-
-    /**
-     * Returns a list of processors up to and including the specified processor.
-     *
-     * @param processor The processor to find in the list.
-     * @return A list of processors up to and including the specified processor, or an empty list if the processor is not found.
-     */
-    public List<Editable<TextureProcessor>> processorsUntil(Editable<TextureProcessor> processor) {
-        int index = processors.indexOf(processor);
-        if (index == -1) {
-            return Collections.emptyList();
-        }
-        return processors.subList(0, index + 1).stream()
-            .toList();
     }
 
     public void addProcessor(TextureProcessor processor) {

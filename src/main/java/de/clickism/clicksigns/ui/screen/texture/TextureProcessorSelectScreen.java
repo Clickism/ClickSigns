@@ -8,14 +8,25 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.style.Border;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
+/**
+ * Screen for selecting a {@link TextureProcessor}.
+ */
 public class TextureProcessorSelectScreen extends UiScreen<TextureProcessorSelectScreen> implements CommonComponents {
     private Consumer<TextureProcessor> onProcessorSelected = processor -> {};
 
+    /**
+     * Sets a listener that will be called when a texture processor is selected.
+     *
+     * @param onProcessorSelected the listener to call when a texture processor is selected
+     * @return this TextureProcessorSelectScreen instance for method chaining
+     */
     public TextureProcessorSelectScreen onProcessorSelected(Consumer<TextureProcessor> onProcessorSelected) {
         this.onProcessorSelected = onProcessorSelected;
         return this;
@@ -28,24 +39,24 @@ public class TextureProcessorSelectScreen extends UiScreen<TextureProcessorSelec
             .padding(8)
             .childGap(8)
             .children(
-                // TODO: convert into function
-                h4(l("Select Texture Processor"))
-                    .padding(6, 12)
-                    .style(style()
-                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .backgroundColor(UiColor.BLACK.alpha(0.5f))),
-
+                islandHeader(l("Select Texture Processor")),
                 darkBoxOutlined()
                     .maxWidth(200)
                     .padding(8)
                     .children(
-                        processorButton(new Tiler(2, 16, 16)),
-                        processorButton(new ReplaceColor("", "green"))
+                        processorButton(
+                            t("clicksigns.texture.processor.tiler"),
+                            new Tiler(2, 16, 16)
+                        ),
+                        processorButton(
+                            t("clicksigns.texture.processor.replaceColor"),
+                            new ReplaceColor("", "green")
+                        )
                     )
             );
     }
 
-    private UiElement<?> processorButton(TextureProcessor processor) {
+    private UiElement<?> processorButton(Component label, TextureProcessor processor) {
         return box()
             .growWidth()
             .height(24)
@@ -61,7 +72,7 @@ public class TextureProcessorSelectScreen extends UiScreen<TextureProcessorSelec
                 event.screen().close();
             })
             .children(
-                text(processor.getClass().getSimpleName())
+                text(label)
             );
     }
 }

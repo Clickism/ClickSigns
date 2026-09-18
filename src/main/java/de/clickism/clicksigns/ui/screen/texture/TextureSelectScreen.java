@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
 import de.clickism.clicksigns.ui.UiConstants;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;
@@ -9,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
+public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implements CommonComponents {
     private final Component title;
     private final Collection<TextureList.Entry> entries;
     private final UiColor backgroundColor;
@@ -44,21 +45,15 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> {
             .padding(8)
             .childGap(8)
             .children(
-                h4(title)
-                    .padding(6, 12)
-                    .style(style()
-                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .backgroundColor(UiColor.BLACK.alpha(0.5f))),
-                box()
+                islandHeader(title),
+                darkBoxOutlined()
                     .grow()
                     .scrollable(false)
                     .maxHeight(400)
                     .crossAlign(Align.CENTER)
                     .maxWidth(300)
                     .style(style()
-                        .borderColor(UiColor.LIGHT_GRAY.alpha(0.5f))
-                        .backgroundColor(backgroundColor)
-                    )
+                        .backgroundColor(backgroundColor))
                     .children(
                         new TextureList(entries, textureScale)
                             .onTextureSelected(texture -> {

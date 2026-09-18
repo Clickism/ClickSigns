@@ -40,7 +40,6 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
         add(fancyHeader(t("clicksigns.editor.element.header")));
 
         // Text controls
-        // TODO: Fix in ClickUI, text fields scissor breaks when scrolling
         var element = editableElement.current();
         var id = editableElement.id();
         if (element instanceof TextElement text) {
@@ -321,7 +320,6 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
 
     private void addSymbolControls(SymbolElement symbol, UUID id) {
         add(smallHeader(t("clicksigns.editor.element.symbol.symbol")));
-        // TODO: Texture edit screen
         var roadSign = context.roadSign();
         var colorResolver = roadSign.colorResolver();
         add(box()

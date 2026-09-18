@@ -4,11 +4,11 @@ import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.util.ComponentUtil;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public record Template(
     Meta meta,
@@ -47,8 +47,8 @@ public record Template(
          * @return a new Meta instance with placeholder values
          */
         public static Meta placeholder() {
-            var name = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.name"));
-            var author = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.author"));
+            var name = t("clicksigns.template.placeholder.name").getString();
+            var author = t("clicksigns.template.placeholder.author").getString();
             return new Meta(name, author);
         }
     }

@@ -113,6 +113,27 @@
 
   "clicksigns.category.uncategorized": "Uncategorized",
 
+  "clicksigns.texture.processor.tiler": "Tiler",
+  "clicksigns.texture.processor.cornerSize": "Corner Size",
+  "clicksigns.texture.processor.width": "Width",
+  "clicksigns.texture.processor.height": "Height",
+  "clicksigns.texture.processor.replaceColor": "Replace Color",
+  "clicksigns.texture.processor.replaceColor.from": "From (Optional)",
+  "clicksigns.texture.processor.replaceColor.to": "To",
+  "clicksigns.texture.processor.alphaMask": "Alpha Mask",
+  "clicksigns.texture.processor.alphaMask.description": "Used for matching back textures with front textures. Not editable.",
+  "clicksigns.texture.processor.unknown": "Unknown Processor",
+  "clicksigns.texture.processor.unknown.description": "Not editable.",
+
+  "clicksigns.texture.editor.header": "Texture Pipeline Editor",
+  "clicksigns.texture.editor.base.header": "Base Texture",
+  "clicksigns.texture.editor.output.header": "Output Texture",
+  "clicksigns.texture.editor.textureInfo.size": "Texture Size",
+  "clicksigns.texture.editor.textureInfo.path": "Resource Path",
+
+  "clicksigns.texture.editor.processors.headers": "Texture Processors",
+  "clicksigns.texture.editor.processors.add": "Add Processor",
+
   "item.clicksigns.road_sign": "Road Sign",
   "block.clicksigns.road_sign": "Road Sign"
 }
