@@ -58,7 +58,6 @@ public class ImageWithPicker extends UiComponent<ImageWithPicker> implements Com
     @Override
     protected void build() {
         this
-            .debug(true)
             .padding(2)
             .style(style()
                 .borderPosition(Border.Position.INSIDE)
