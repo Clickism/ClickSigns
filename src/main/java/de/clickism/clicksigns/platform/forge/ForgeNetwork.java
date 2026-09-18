@@ -14,7 +14,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
  */
 public class ForgeNetwork extends Network {
     /**
-     * The fabric network instance
+     * The forge network instance
      */
     public static final ForgeNetwork INSTANCE = new ForgeNetwork();
 
@@ -31,7 +31,7 @@ public class ForgeNetwork extends Network {
     }
 
     @Override
-    public void register() {
+    public void registerServer() {
         CHANNEL.registerMessage(0, ForgePacket.class,
             // Encoder
             (packet, buf) -> buf.writeBytes(writePacket(packet.packet())),
@@ -50,6 +50,11 @@ public class ForgeNetwork extends Network {
                 });
                 context.setPacketHandled(true);
             });
+    }
+
+    @Override
+    public void registerClient() {
+        // No need to register anything for the client side in Forge
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.screen.template;
 
-import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.ClickSignsClient;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import de.clickism.clicksigns.ui.UiUtil;
@@ -70,9 +70,9 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
      * @return a unique name that does not conflict with existing template names
      */
     private static String nextAvailableName(String baseName, String indexFormat) {
-        ClickSigns.LOCAL_TEMPLATE_MANAGER.reload(); // Reload templates
+        ClickSignsClient.LOCAL_TEMPLATE_MANAGER.reload(); // Reload templates
         int index = 1;
-        var names = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
+        var names = ClickSignsClient.LOCAL_TEMPLATE_MANAGER.templates().stream()
             .map(template -> template.meta().name())
             .collect(Collectors.toSet());
         String newName = baseName;
@@ -129,7 +129,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .disabled(!isValid.get())
                         .growWidth()
                         .onClick(event -> {
-                            ClickSigns.LOCAL_TEMPLATE_MANAGER.saveAsTemplate(
+                            ClickSignsClient.LOCAL_TEMPLATE_MANAGER.saveAsTemplate(
                                 readMeta(),
                                 roadSign.build(),
                                 includeTexts.get().checked()

@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.screen.template;
 
-import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.ClickSignsClient;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.components.CommonComponents;
@@ -41,7 +41,7 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
         templates.clear();
         if (showLocal.get()) {
             // Add local templates
-            var localTemplates = ClickSigns.LOCAL_TEMPLATE_MANAGER.templates().stream()
+            var localTemplates = ClickSignsClient.LOCAL_TEMPLATE_MANAGER.templates().stream()
                 .sorted(Comparator.comparing(template -> template.meta().name()))
                 .toList();
             if (!localTemplates.isEmpty()) {

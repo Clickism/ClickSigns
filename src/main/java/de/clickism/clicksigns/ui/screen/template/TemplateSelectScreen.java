@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.ui.screen.template;
 
-import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.ClickSignsClient;
 import de.clickism.clicksigns.sign.template.Template;
 import de.clickism.clicksigns.ui.UiConstants;
 import de.clickism.clicksigns.ui.components.sign.SignTextField;
@@ -34,7 +34,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
         if (showLocal.get() && !reloadedLocal) {
             reloadedLocal = true;
             // Reload local templates to ensure they are up to date
-            ClickSigns.LOCAL_TEMPLATE_MANAGER.reload();
+            ClickSignsClient.LOCAL_TEMPLATE_MANAGER.reload();
         }
 
         var selected = this.selected.get();
@@ -121,7 +121,7 @@ public class TemplateSelectScreen extends UiScreen<TemplateSelectScreen> {
                                             .growWidth()
                                             .onClick(event -> {
                                                 // Delete template
-                                                ClickSigns.LOCAL_TEMPLATE_MANAGER.deleteTemplate(selected);
+                                                ClickSignsClient.LOCAL_TEMPLATE_MANAGER.deleteTemplate(selected);
                                                 // Find the next template to select
                                                 var templateList = listRef.get();
                                                 var templates = templateList.templates();
