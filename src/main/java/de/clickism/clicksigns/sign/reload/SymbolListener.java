@@ -66,7 +66,7 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
                 // Create symbol with modified id to avoid conflicts
                 var newSymbol = new Symbol(
                     symbol.identifierForCategory(symbol.identifier(), categoryId),
-                    symbol.texture(),
+                    symbol.textureSource(),
                     categoryId
                 );
                 // Register new symbol

@@ -11,7 +11,7 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 public class SymbolRenderer implements ElementRenderer<SymbolElement> {
     @Override
     public void render(SymbolElement element, RenderContext context, RoadSign roadSign) {
-        var texture = element.symbol().texture().resolve(roadSign.colorResolver());
+        var texture = element.textureSource().resolve(roadSign.colorResolver());
         context.textureRenderer().renderTexture(texture);
     }
 

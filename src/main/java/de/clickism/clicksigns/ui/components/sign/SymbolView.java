@@ -47,10 +47,10 @@ public class SymbolView extends UiComponent<SymbolView>
 
         if (event.isLeftClick()) {
             // Cycle to next symbol in the same category
-            var nextSymbol = symbol.symbol().nextInCategory();
+            var nextSymbol = symbol.resolveSymbol().nextInCategory();
             sign.updateSymbolElement(
                 symbolElement.id(),
-                element -> element.withSymbol(nextSymbol)
+                element -> element.withTextureSource(nextSymbol.textureSource())
             );
         }
 
@@ -59,7 +59,7 @@ public class SymbolView extends UiComponent<SymbolView>
             var colorResolver = sign.colorResolver();
             var entries = SignRegistries.SYMBOLS.all().stream()
                 .map(s -> new TextureList.Entry(
-                    s.texture().resolve(colorResolver),
+                    s.textureSource().resolve(colorResolver),
                     s.identifier(),
                     s.resolveCategory()
                 ))
@@ -74,7 +74,7 @@ public class SymbolView extends UiComponent<SymbolView>
                     if (newSymbol == null) return;
                     sign.updateSymbolElement(
                         symbolElement.id(),
-                        element -> element.withSymbol(newSymbol)
+                        element -> element.withTextureSource(newSymbol.textureSource())
                     );
                 }).open();
         }
@@ -82,7 +82,7 @@ public class SymbolView extends UiComponent<SymbolView>
 
     @Override
     protected void build() {
-        var texture = element.symbol().texture().resolve(colorResolver);
+        var texture = element.textureSource().resolve(colorResolver);
         add(UiUtil.imageOf(texture));
     }
 

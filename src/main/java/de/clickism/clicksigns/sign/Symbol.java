@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
  * Represents a symbol that can be displayed on a road sign.
  *
  * @param identifier unique identifier for the symbol
- * @param texture    texture source for the symbol's texture
+ * @param textureSource    texture source for the symbol's texture
  */
 public record Symbol(
     ResourceLocation identifier,
-    TextureSource texture,
+    TextureSource textureSource,
     @Nullable ResourceLocation categoryId
 ) implements Categorized<Symbol> {
     /**

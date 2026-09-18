@@ -43,9 +43,9 @@ public interface SignElementCodec {
                         styleTag.putInt("lineGap", text.style().lineGap());
                         tag.putTag("style", styleTag);
                     } else if (element instanceof SymbolElement symbol) {
-                        tag.putResourceLocation("symbol", symbol.symbol().identifier());
+                        tag.putResourceLocation("symbol", symbol.symbolId());
                         var textureTag = tag.createTag();
-                        TextureSource.codec().writeTag(textureTag, symbol.symbol().texture());
+                        TextureSource.codec().writeTag(textureTag, symbol.textureSource());
                         tag.putTag("texture", textureTag);
                     } else if (element instanceof PlateElement plate) {
                         var frontTag = tag.createTag();
@@ -91,11 +91,10 @@ public interface SignElementCodec {
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }
                         case SymbolElement.TYPE -> {
-                            var id = tag.getResourceLocation("symbol").orElseThrow();
+                            var symbolId = tag.getResourceLocation("symbol").orElseThrow();
                             var textureTag = tag.getTag("texture").orElseThrow();
                             var texture = TextureSource.codec().readTag(textureTag);
-                            var symbol = SignRegistries.SYMBOLS.get(id).withTexture(texture);
-                            yield new SymbolElement(localX, localY, alignment, symbol);
+                            yield new SymbolElement(localX, localY, alignment, symbolId, texture);
                         }
                         case PlateElement.TYPE -> {
                             var frontTag = tag.getTag("front").orElseThrow();
@@ -130,8 +129,8 @@ public interface SignElementCodec {
                         buf.writeInt(style.textAlignment().ordinal());
                         buf.writeInt(style.lineGap());
                     } else if (element instanceof SymbolElement symbol) {
-                        buf.writeResourceLocation(symbol.symbol().identifier());
-                        TextureSource.codec().writePacket(buf, symbol.symbol().texture());
+                        buf.writeResourceLocation(symbol.symbolId());
+                        TextureSource.codec().writePacket(buf, symbol.textureSource());
                     } else if (element instanceof PlateElement plate) {
                         TextureSource.codec().writePacket(buf, plate.frontSource());
                         TextureSource.codec().writePacket(buf, plate.backSource());
@@ -169,10 +168,9 @@ public interface SignElementCodec {
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }
                         case SymbolElement.TYPE -> {
-                            var id = buf.readResourceLocation();
+                            var symbolId = buf.readResourceLocation();
                             var source = TextureSource.codec().readPacket(buf);
-                            var symbol = SignRegistries.SYMBOLS.get(id).withTexture(source);
-                            yield new SymbolElement(localX, localY, alignment, symbol);
+                            yield new SymbolElement(localX, localY, alignment, symbolId, source);
                         }
                         case PlateElement.TYPE -> {
                             var front = TextureSource.codec().readPacket(buf);

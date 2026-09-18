@@ -348,9 +348,13 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                     .growWidth()
                     .height(14)
                     .onClick(event -> {
-                        new TextureEditScreen(symbol.symbol().texture(), colorResolver)
-                            // TODO: Implement callback
-//                            .onTextureEdited(onFrontSelected)
+                        new TextureEditScreen(symbol.textureSource(), colorResolver)
+                            .onTextureEdited(texture -> {
+                                roadSign.updateSymbolElement(
+                                    id,
+                                    element -> element.withTextureSource(texture)
+                                );
+                            })
                             .open();
                     })
             ));
