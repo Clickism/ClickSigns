@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.color;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ColorParser {
     public @Nullable Integer parseHex(String hex) throws IllegalArgumentException {
         if (!hex.startsWith("#")) return null;
         try {
-            return Integer.parseUnsignedInt(hex.substring(1), 16);
+            return Color.decode(hex).getRGB();
         } catch (NumberFormatException e) {
             return null;
         }

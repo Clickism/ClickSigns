@@ -34,6 +34,16 @@ public class ColorResolverRegistry {
     }
 
     /**
+     * Checks if a color resolver is registered for a specific texture.
+     *
+     * @param texture the resource location of the texture
+     * @return true if a color resolver is registered for the texture, false otherwise
+     */
+    public boolean hasResolver(ResourceLocation texture) {
+        return resolvers.containsKey(texture);
+    }
+
+    /**
      * Clears all registered color resolvers.
      */
     public void clear() {

@@ -7,7 +7,9 @@ import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.util.PixelSized;
+import de.clickism.clickui.UiColor;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +36,8 @@ public record TextureSource(
     private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
     private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
     private static final HashSet<String> ERROR_CACHE = new HashSet<>();
+
+    private static final Map<ResourceLocation, ColorResolver> DYNAMIC_COLOR_RESOLVERS = new HashMap<>();
 
     public static final int MAX_PROCESSOR_COUNT = 20;
 
@@ -113,7 +117,30 @@ public record TextureSource(
      * @return the color resolver for the base resource location, or a default resolver if none is registered
      */
     public ColorResolver colorResolver() {
-        return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base);
+        // Check if registered
+        if (SignRegistries.TILE_SET_COLOR_RESOLVERS.hasResolver(base)) {
+            return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base);
+        }
+        // Check if a dynamic resolver is available
+        if (DYNAMIC_COLOR_RESOLVERS.containsKey(base)) {
+            return DYNAMIC_COLOR_RESOLVERS.get(base);
+        }
+        // Create with default colors based on primary color
+        var defaultResolver = ColorResolver.withDefault();
+        try {
+            var primaryColor = UiUtil.primaryColorOf(baseImage());
+            var foregroundColor = primaryColor.pickBetterContrasting(
+                UiColor.rgba(defaultResolver.resolve("black")),
+                UiColor.rgba(defaultResolver.resolve("white"))
+            );
+            var colorResolver = ColorResolver.withDefault()
+                .define("foreground", foregroundColor.color())
+                .define("background", primaryColor.color());
+            DYNAMIC_COLOR_RESOLVERS.put(base, colorResolver);
+            return colorResolver;
+        } catch (Exception e) {
+            return defaultResolver;
+        }
     }
 
     /**
@@ -183,10 +210,7 @@ public record TextureSource(
      * @return the resolved image, or null if loading or processing fails
      */
     private Image generate(TextureContext context) throws Exception {
-        var image = MinecraftImages.open(base);
-        if (image == null) {
-            throw new IOException("Failed to open base image at location " + base);
-        }
+        var image = baseImage();
         for (var processor : processors) {
             try {
                 image = processor.process(image, context);
@@ -196,6 +220,20 @@ public record TextureSource(
             } catch (Exception e) {
                 throw new RuntimeException("Failed to process image with processor " + processor.identity(context), e);
             }
+        }
+        return image;
+    }
+
+    /**
+     * Loads the base image from the resource location.
+     *
+     * @return the loaded base image
+     * @throws IOException if the base image cannot be loaded
+     */
+    private Image baseImage() throws Exception {
+        var image = MinecraftImages.open(base);
+        if (image == null) {
+            throw new IOException("Failed to open base image at location " + base);
         }
         return image;
     }

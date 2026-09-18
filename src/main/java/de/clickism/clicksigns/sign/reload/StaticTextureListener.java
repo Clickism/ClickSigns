@@ -2,6 +2,9 @@ package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.StaticTexture;
+import de.clickism.clicksigns.sign.color.ColorResolver;
+import de.clickism.clicksigns.ui.UiUtil;
+import de.clickism.clickui.UiColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
