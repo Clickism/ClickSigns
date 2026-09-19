@@ -28,12 +28,12 @@ public record ReplaceColor(
         return CommonCodec.of(
             TagCodec.of(
                 (writer, value) -> {
-                    writer.putString("toColor", value.toColor);
-                    writer.putString("fromColor", value.fromColor);
+                    writer.putString("to", value.toColor);
+                    writer.putString("from", value.fromColor);
                 },
                 reader -> new ReplaceColor(
-                    reader.getString("fromColor").orElse(null),
-                    reader.getString("toColor").orElseThrow()
+                    reader.getString("from").orElse(null),
+                    reader.getString("to").orElseThrow()
                 )
             ),
             PacketCodec.of(

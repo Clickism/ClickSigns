@@ -7,21 +7,21 @@ import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public class TextureList extends UiComponent<TextureList> implements CommonComponents {
 
     private final Map<Category<?>, List<Entry>> categoryToEntries;
+    private final Map<Category<?>, Component> categoryDescriptions = new HashMap<>();
     private final float textureScale;
     private Consumer<Entry> onTextureSelected = texture -> {};
 
@@ -47,6 +47,18 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
         return this;
     }
 
+    /**
+     * Sets the category descriptions for the texture list.
+     *
+     * @param categoryDescriptions a map of categories to their corresponding descriptions
+     * @return this TextureList instance for method chaining
+     */
+    public TextureList categoryDescriptions(Map<Category<?>, Component> categoryDescriptions) {
+        this.categoryDescriptions.clear();
+        this.categoryDescriptions.putAll(categoryDescriptions);
+        return this;
+    }
+
     @Override
     protected void build() {
         // Scrollable box
@@ -63,6 +75,11 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
             .forEach(mapEntry -> {
                 var category = mapEntry.getKey();
                 var entries = mapEntry.getValue();
+                var label = l(category.name());
+                var description = categoryDescriptions.get(category);
+                if (description != null) {
+                    label = label.copy().append(" ").append(description);
+                }
                 box.add(box()
                     .padding(4)
                     .growWidth()
@@ -71,7 +88,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
                         .borderColor(UiColor.LIGHT_GRAY)
                         .backgroundColor(UiColor.BLACK_A80))
                     .children(
-                        text(category.name())
+                        text(label)
                     ));
                 // Add symbols
                 var row = box()
@@ -109,6 +126,15 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
      * @param identifier the identifier of the texture, i.E. tile set name
      * @param category   the category of the texture
      */
-    public record Entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category) {
+    public record Entry(
+        Texture texture,
+        ResourceLocation identifier,
+        @NotNull Category<?> category
+    ) {
+
+    }
+
+    public static Entry entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category) {
+        return new Entry(texture, identifier, category);
     }
 }

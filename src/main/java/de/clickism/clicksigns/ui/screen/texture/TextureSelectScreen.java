@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.ui.screen.texture;
 
+import de.clickism.clicksigns.registry.Category;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
@@ -10,10 +11,13 @@ import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiScreen;
 import de.clickism.clickui.layout.Align;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -31,6 +35,8 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
     private Consumer<TextureList.Entry> onTextureSelected = entry -> {};
     private float textureScale = UiConstants.UI_SCALE;
 
+    private final Map<Category<?>, Component> categoryDescriptions = new HashMap<>();
+
     public TextureSelectScreen(Component title, Collection<TextureList.Entry> entries, UiColor backgroundColor) {
         this.title = title;
         this.entries = entries;
@@ -45,6 +51,12 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
     public TextureSelectScreen textureScale(float textureScale) {
         this.textureScale = textureScale;
         invalidateTree();
+        return this;
+    }
+
+    public TextureSelectScreen categoryDescriptions(Map<Category<?>, Component> categoryDescriptions) {
+        this.categoryDescriptions.clear();
+        this.categoryDescriptions.putAll(categoryDescriptions);
         return this;
     }
 
@@ -70,6 +82,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
                                 onTextureSelected.accept(texture);
                                 close();
                             })
+                            .categoryDescriptions(categoryDescriptions)
                             .grow()
                     )
             );
@@ -127,11 +140,24 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
         Collection<TextureCategory> categoriesToShow,
         Consumer<TextureSource> onTextureSelected
     ) {
+        var categoryDescriptions = new HashMap<Category<?>, Component>();
         var entries = categoriesToShow.stream()
-            .flatMap(category -> entriesForCategory(category, colorResolver))
+            .flatMap(category -> {
+                var categoryEntries = entriesForCategory(category, colorResolver).toList();
+                var description = categoryDescriptionFor(category);
+                if (description != null) {
+                    categoryEntries.forEach(entry -> {
+                        categoryDescriptions.put(entry.category(), description);
+                    });
+                }
+                return categoryEntries.stream();
+            })
             .toList();
         return new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries, backgroundColor)
-            .textureScale(3.0f)
+            .textureScale(categoriesToShow.contains(TextureCategory.SYMBOL_TEXTURES)
+                ? 4.0f
+                : 2.0f)
+            .categoryDescriptions(categoryDescriptions)
             .onTextureSelected(entry -> {
                 if (entry == null) return;
                 var identifier = entry.identifier();
@@ -165,7 +191,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
         switch (category) {
             case TILE_SET_TEXTURES -> {
                 return SignRegistries.TILE_SETS.all().stream()
-                    .map(tileSet -> new TextureList.Entry(
+                    .map(tileSet -> TextureList.entry(
                         tileSet.textureSource(TEXTURE_SIZE, TEXTURE_SIZE)
                             .resolve(colorResolver),
                         tileSet.identifier(),
@@ -174,7 +200,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
             }
             case STATIC_TEXTURES -> {
                 return SignRegistries.STATIC_TEXTURES.all().stream()
-                    .map(staticTexture -> new TextureList.Entry(
+                    .map(staticTexture -> TextureList.entry(
                         staticTexture.textureSource().resolve(colorResolver),
                         staticTexture.identifier(),
                         staticTexture.resolveCategory()
@@ -182,7 +208,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
             }
             case SYMBOL_TEXTURES -> {
                 return SignRegistries.SYMBOLS.all().stream()
-                    .map(symbol -> new TextureList.Entry(
+                    .map(symbol -> TextureList.entry(
                         symbol.textureSource().resolve(colorResolver),
                         symbol.identifier(),
                         symbol.resolveCategory()
@@ -192,5 +218,15 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
                 return Stream.empty();
             }
         }
+    }
+
+    private static @Nullable Component categoryDescriptionFor(TextureCategory category) {
+        return switch (category) {
+            case TILE_SET_TEXTURES -> t("clicksigns.ui.textures.tileset").copy()
+                .withStyle(ChatFormatting.DARK_GRAY);
+            case STATIC_TEXTURES -> t("clicksigns.ui.textures.static").copy()
+                .withStyle(ChatFormatting.DARK_GRAY);
+            default -> null;
+        };
     }
 }

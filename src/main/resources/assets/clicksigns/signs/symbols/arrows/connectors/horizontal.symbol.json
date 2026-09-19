@@ -1,7 +1,0 @@
-{
-  "processors": {
-    "replaceColor": {
-      "to": "green"
-    }
-  }
-}

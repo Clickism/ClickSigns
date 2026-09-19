@@ -2,6 +2,7 @@ package de.clickism.clicksigns.sign.reload;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.Symbol;
@@ -43,9 +44,10 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
         if (definition != null && definition.texture != null) {
             var textureJson = definition.texture;
             textureJson.addProperty("base", location.toString());
-            var newSource = TextureSource.codec().tagReader().readOrNull(new JsonTagImpl(textureJson));
-            if (newSource != null) {
-                textureSource = newSource;
+            try {
+                textureSource = TextureSource.codec().tagReader().read(new JsonTagImpl(textureJson));
+            } catch (Exception e) {
+                ClickSigns.LOGGER.error("Failed to read texture processors for symbol: {}: {}", location, e.getMessage());
             }
         }
         var symbol = new Symbol(location, textureSource, categoryId);
