@@ -72,12 +72,16 @@ public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> im
                         new TextureButton(frontSource, null, colorResolver, categories)
                             .onTextureSelected(textureSource ->
                                 onFrontSelected.accept(textureSource.resize(desiredSize)))
+                            // Don't resize if edited
+                            .onTextureEdited(onFrontSelected)
                     ),
                     withHeader(
                         t("clicksigns.ui.textures.back"),
                         new TextureButton(backSource, null, colorResolver, categories)
                             .onTextureSelected(textureSource ->
                                 onBackSelected.accept(textureSource.resize(desiredSize)))
+                            // Don't resize if edited
+                            .onTextureEdited(onBackSelected)
                     )
                 )
             );

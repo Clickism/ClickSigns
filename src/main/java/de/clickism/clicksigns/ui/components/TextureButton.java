@@ -29,6 +29,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
     private final ColorResolver colorResolver;
     private final Collection<TextureCategory> categories;
     private Consumer<TextureSource> onTextureSelected = source -> {};
+    private @Nullable Consumer<TextureSource> onTextureEdited;
 
     public TextureButton(
         TextureSource source,
@@ -44,6 +45,11 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
 
     public TextureButton onTextureSelected(Consumer<TextureSource> onTextureSelected) {
         this.onTextureSelected = onTextureSelected;
+        return this;
+    }
+
+    public TextureButton onTextureEdited(Consumer<TextureSource> onTextureEdited) {
+        this.onTextureSelected = onTextureEdited;
         return this;
     }
 
@@ -118,7 +124,9 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
                 .fontScale(0.8f))
             .onClick(event -> {
                 new TextureEditScreen(source, background, colorResolver, categories)
-                    .onTextureEdited(onTextureSelected)
+                    .onTextureEdited(onTextureEdited != null
+                        ? onTextureEdited
+                        : onTextureSelected)
                     .open();
             }));
     }

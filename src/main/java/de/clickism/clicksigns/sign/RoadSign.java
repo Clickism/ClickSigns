@@ -194,6 +194,21 @@ public record RoadSign(
      * @return a new road sign with the updated texture
      */
     public RoadSign withFront(TextureSource frontSource) {
+        // If size is different, resize from the center, so move elements accordingly
+        var elements = this.elements;
+        var texture = frontSource.resolve(colorResolver());
+        if (texture.width() != width() || texture.height() != height()) {
+            var deltaX = (texture.width() - width()) / 2.0;
+            var deltaY = (texture.height() - height()) / 2.0;
+            var newElements = new ArrayList<SignElement>();
+            for (var element : elements) {
+                newElements.add(element.withPosition(
+                    (int) (element.x() + deltaX),
+                    (int) (element.y() + deltaY)
+                ));
+            }
+            elements = newElements;
+        }
         return new RoadSign(frontSource, backSource, elements, alignment);
     }
 

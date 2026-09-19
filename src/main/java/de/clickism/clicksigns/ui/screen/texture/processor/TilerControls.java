@@ -47,7 +47,7 @@ public class TilerControls extends ProcessorControls<Tiler, TilerControls> {
                     })
             ),
             withHeader(
-                t("clicksigns.texture.processor.width"),
+                t("clicksigns.texture.processor.height"),
                 new NumberControl()
                     .value(tiler.outputHeight())
                     .fastChangeAmount(8)
