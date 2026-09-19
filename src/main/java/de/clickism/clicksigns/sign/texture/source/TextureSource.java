@@ -249,7 +249,7 @@ public record TextureSource(
             return;
         }
         ERROR_CACHE.add(identity);
-        ClickSigns.LOGGER.error("{}: {}", message, e.getMessage(), e);
+        ClickSigns.LOGGER.error("{}: {}", message, e.getMessage());
     }
 
     /**

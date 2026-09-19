@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.ui.editable;
 
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
@@ -146,6 +146,23 @@ public class EditableRoadSign {
      */
     public Editable<SignElement> getElement(UUID id) {
         return elements.get(id);
+    }
+
+    /**
+     * Moves the sign element with the specified UUID up in the rendering order.
+     *
+     * @param id the UUID of the sign element to move up
+     */
+    public void pushElementUp(UUID id) {
+        if (id == null) return;
+        var editable = elements.get(id);
+        if (editable == null) return;
+        elements.remove(id);
+        var newMap = new LinkedHashMap<>(elements);
+        newMap.put(id, editable);
+        elements.clear();
+        elements.putAll(newMap);
+        notifyListeners();
     }
 
     /**

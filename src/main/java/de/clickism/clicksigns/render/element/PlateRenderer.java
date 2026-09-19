@@ -33,8 +33,9 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     @Override
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
         var intersects = intersects(roadSign, element);
+        int index = roadSign.elements().indexOf(element);
         int z = intersects
-            ? RenderLayers.PLATE_FRONT
+            ? index
             : RenderLayers.SIGN_FRONT;
         context.withZ(z, () -> {
             // Render front
@@ -46,7 +47,7 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
         var backTexture = masked.resolve(roadSign.colorResolver());
         // If not intersecting with the road sign, align with the front, so that there is not a gap inbetween
         z = intersects
-            ? RenderLayers.PLATE_BACK
+            ? RenderLayers.PLATE_BACK - index
             : RenderLayers.SIGN_BACK;
         context.withZ(z, () -> {
             context.withFlip(element.width() / BLOCK_PIXELS, () -> {
@@ -56,7 +57,7 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     }
 
     @Override
-    public int renderLayer() {
-        return 0; // Handle layer in the render method
+    public int zIndexOf(PlateElement element, RoadSign roadSign) {
+        return 0;
     }
 }

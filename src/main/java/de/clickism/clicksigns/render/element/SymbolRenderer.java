@@ -11,12 +11,10 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 public class SymbolRenderer implements ElementRenderer<SymbolElement> {
     @Override
     public void render(SymbolElement element, RenderContext context, RoadSign roadSign) {
-        var texture = element.textureSource().resolve(roadSign.colorResolver());
-        context.textureRenderer().renderTexture(texture);
-    }
-
-    @Override
-    public int renderLayer() {
-        return RenderLayers.SYMBOL;
+        int zIndex = roadSign.elements().indexOf(element);
+        context.withZ(zIndex, () -> {
+            var texture = element.textureSource().resolve(roadSign.colorResolver());
+            context.textureRenderer().renderTexture(texture);
+        });
     }
 }

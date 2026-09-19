@@ -110,20 +110,8 @@ public class SignView extends UiComponent<SignView> {
         signConfig.accept(mainSignElement, roadSign);
         add(mainSignElement);
 
-        // Add plate elements
-        roadSign.elements().stream()
-            .filter(element -> element.current() instanceof PlateElement)
-            .forEach(element -> addElementView(element, maxBounds));
-
-        // Add symbol elements
-        roadSign.elements().stream()
-            .filter(element -> element.current() instanceof SymbolElement)
-            .forEach(element -> addElementView(element, maxBounds));
-
-        // Add text elements
-        roadSign.elements().stream()
-            .filter(element -> element.current() instanceof TextElement)
-            .forEach(element -> addElementView(element, maxBounds));
+        // Add all elements
+        roadSign.elements().forEach(element -> addElementView(element, maxBounds));
     }
 
     @Override

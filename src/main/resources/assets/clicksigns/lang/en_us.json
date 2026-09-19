@@ -71,6 +71,7 @@
   "clicksigns.editor.element.text.formatting.italic": "Italic",
   "clicksigns.editor.element.text.formatting.underline": "Underline",
   "clicksigns.editor.element.text.formatting.strikethrough": "Strikethrough",
+  "clicksigns.editor.element.text.pushUp": "Push Element Up",
 
   "clicksigns.editor.element.plate.matchSignTextures": "Match Sign Textures",
   "clicksigns.editor.element.plate.textures": "Plate Textures",

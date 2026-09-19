@@ -374,8 +374,17 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                     el -> el.withAlignment(newAlignment));
             })));
 
-        // Delete button
         add(smallHeader(t("clicksigns.editor.element.other.header")));
+
+        // Push up button
+        add(button(t("↑", "clicksigns.editor.element.text.pushUp"))
+            .buttonColor(UiColor.LIGHT_GRAY)
+            .growWidth()
+            .onClick(event -> {
+                context.roadSign().pushElementUp(id);
+            }));
+
+        // Delete button
         add(button(t("🗑", "clicksigns.editor.element.other.removeElement"))
             .growWidth()
             .buttonColor(UiColor.MAROON)

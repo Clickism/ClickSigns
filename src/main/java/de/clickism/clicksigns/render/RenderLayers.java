@@ -11,9 +11,7 @@ public interface RenderLayers {
 
     // Front layers
     int SIGN_FRONT = 1;
-    int PLATE_FRONT = 2;
-    int SYMBOL = 3;
-    int TEXT = 4;
+    int SIGN_SURFACE = 2;
 
     // Back layers
     int SIGN_BACK = -1;

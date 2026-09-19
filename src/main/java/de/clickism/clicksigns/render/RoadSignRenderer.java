@@ -126,7 +126,7 @@ public final class RoadSignRenderer {
         var renderer = rendererForElement(element);
         var x = element.alignedX() / BLOCK_PIXELS;
         var y = element.alignedY() / BLOCK_PIXELS;
-        var z = renderer.renderLayer() * RenderLayers.Z_FIGHTING_OFFSET;
+        var z = renderer.zIndexOf(element, roadSign) * RenderLayers.Z_FIGHTING_OFFSET;
         context.withTranslation(x, y, z, () -> {
             renderer.render(element, context, roadSign);
         });

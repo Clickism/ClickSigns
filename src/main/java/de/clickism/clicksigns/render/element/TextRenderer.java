@@ -3,18 +3,20 @@ package de.clickism.clicksigns.render.element;
 import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 
+import java.util.List;
+
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Renders a {@link TextElement} on a {@link RoadSign}.
  */
-// TODO: Handle overlapping text elements
 public class TextRenderer implements ElementRenderer<TextElement> {
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
     private static final float COLOR_DARKEN_FACTOR = 0.74f;
@@ -47,20 +49,18 @@ public class TextRenderer implements ElementRenderer<TextElement> {
         var scale = TEXT_RENDER_SCALE * element.scale();
         // Apply scale
         context.withScale(scale, () -> {
-            // Render background and outline
-            renderStyle(element, context, roadSign);
-            // Render text
-            var textPos = element.textOffset();
-            context.withTranslation(textPos.x, textPos.y, 0, () -> {
+            int zIndex = roadSign.elements().indexOf(element);
+            context.withZ(zIndex, () -> {
+                // Render background and outline
+                renderStyle(element, context, roadSign);
                 // Render text
-                renderText(element, context, roadSign);
+                var textPos = element.textOffset();
+                context.withTranslation(textPos.x, textPos.y, 0, () -> {
+                    // Render text
+                    renderText(element, context, roadSign);
+                });
             });
         });
-    }
-
-    @Override
-    public int renderLayer() {
-        return RenderLayers.TEXT;
     }
 
     /**
