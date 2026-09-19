@@ -1,3 +1,9 @@
 {
-  "name": "Default Inset"
+  "name": "Default Inset",
+  "default": {
+    "cornerSize": 4,
+    "colors": {
+      "foreground": "white"
+    }
+  }
 }

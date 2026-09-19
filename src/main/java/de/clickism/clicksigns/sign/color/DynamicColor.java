@@ -39,8 +39,7 @@ public @interface DynamicColor {
         .define("black", 0x292929)
         .define("blue", 0x0D468A)
         .define("brown", 0x844635)
-        .define("green", 0x009345)
+        .define("green", 0x008754)
         .define("yellow", 0xFFBC21)
-        .define("red", 0xCE353A)
-        .define("orange", 0xFF8C00);
+        .define("red", 0xCE353A);
 }

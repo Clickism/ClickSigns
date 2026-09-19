@@ -1,6 +1,10 @@
 {
   "name": "Arrow Connectors",
-  "replaceColor": {
-    "to": "foreground"
+  "default": {
+    "processors": {
+      "replaceColor": {
+        "to": "foreground"
+      }
+    }
   }
 }

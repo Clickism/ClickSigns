@@ -22,7 +22,7 @@ public record ReplaceColor(
     @Nullable String fromColor,
     String toColor
 ) implements TextureProcessor {
-    public static final String TYPE = "replace_color";
+    public static final String TYPE = "replaceColor";
 
     public static CommonCodec<ReplaceColor> codec() {
         return CommonCodec.of(

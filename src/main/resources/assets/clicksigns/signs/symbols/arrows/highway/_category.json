@@ -1,6 +1,10 @@
 {
   "name": "Arrows (Highway)",
-  "replaceColor": {
-    "to": "foreground"
+  "default": {
+    "processors": {
+      "replaceColor": {
+        "to": "foreground"
+      }
+    }
   }
 }

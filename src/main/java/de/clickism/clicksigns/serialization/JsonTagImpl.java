@@ -3,93 +3,102 @@ package de.clickism.clicksigns.serialization;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.clickism.clicksigns.ClickSigns;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Implementation of TagReader and TagWriter using GSON's JsonObject.
  */
 public record JsonTagImpl(JsonObject jsonObject) implements TagReader, TagWriter {
     @Override
-    public Optional<String> getString(String key) {
+    public Result<String> getString(String key) {
         JsonElement element = jsonObject.get(key);
         if (element == null || !element.isJsonPrimitive() || !element.getAsJsonPrimitive().isString()) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a string or does not exist.");
         }
-        return Optional.of(element.getAsString());
+        return Result.success(element.getAsString());
     }
 
     @Override
-    public Optional<Integer> getInt(String key) {
+    public Result<Integer> getInt(String key) {
         JsonElement element = jsonObject.get(key);
         if (!isNumber(element)) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a number or does not exist.");
         }
-        return Optional.of(element.getAsInt());
+        return Result.success(element.getAsInt());
     }
 
     @Override
-    public Optional<Float> getFloat(String key) {
+    public Result<Float> getFloat(String key) {
         JsonElement element = jsonObject.get(key);
         if (!isNumber(element)) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a number or does not exist.");
         }
-        return Optional.of(element.getAsFloat());
+        return Result.success(element.getAsFloat());
     }
 
     @Override
-    public Optional<Double> getDouble(String key) {
+    public Result<Double> getDouble(String key) {
         JsonElement element = jsonObject.get(key);
         if (!isNumber(element)) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a number or does not exist.");
         }
-        return Optional.of(element.getAsDouble());
+        return Result.success(element.getAsDouble());
     }
 
     @Override
-    public Optional<Long> getLong(String key) {
+    public Result<Long> getLong(String key) {
         JsonElement element = jsonObject.get(key);
         if (!isNumber(element)) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a number or does not exist.");
         }
-        return Optional.of(element.getAsLong());
+        return Result.success(element.getAsLong());
     }
 
     @Override
-    public Optional<Boolean> getBoolean(String key) {
+    public Result<Boolean> getBoolean(String key) {
         JsonElement element = jsonObject.get(key);
         if (element == null || !element.isJsonPrimitive() || !element.getAsJsonPrimitive().isBoolean()) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a boolean or does not exist.");
         }
-        return Optional.of(element.getAsBoolean());
+        return Result.success(element.getAsBoolean());
     }
 
     @Override
-    public <T> Optional<Collection<T>> getCollection(String key, Reader<T> reader) {
+    public <T> Result<Collection<T>> getCollection(String key, Reader<T> reader) {
         JsonElement element = jsonObject.get(key);
         if (element == null || !element.isJsonArray()) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a collection or does not exist.");
         }
 
         JsonArray array = element.getAsJsonArray();
 
         var collection = array.asList().stream()
             .filter(JsonElement::isJsonObject)
-            .map(item -> reader.read(new JsonTagImpl(item.getAsJsonObject())))
+            .map(item -> {
+                try {
+                    return reader.read(new JsonTagImpl(item.getAsJsonObject()));
+                } catch (Exception e) {
+                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}'", key, e);
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
             .toList();
 
-        return Optional.of(collection);
+        return Result.success(collection);
     }
 
     @Override
-    public Optional<TagReader> getTag(String key) {
+    public Result<TagReader> getTag(String key) {
         JsonElement element = jsonObject.get(key);
         if (element == null || !element.isJsonObject()) {
-            return Optional.empty();
+            return Result.failure("Key '" + key + "' is not a tag or does not exist.");
         }
-        return Optional.of(new JsonTagImpl(element.getAsJsonObject()));
+        return Result.success(new JsonTagImpl(element.getAsJsonObject()));
     }
 
     @Override

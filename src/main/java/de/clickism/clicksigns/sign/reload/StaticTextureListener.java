@@ -1,25 +1,31 @@
 package de.clickism.clicksigns.sign.reload;
 
+import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.StaticTexture;
-import de.clickism.clicksigns.sign.color.ColorResolver;
-import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clickui.UiColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Static texture reload listener.
  */
-public class StaticTextureListener extends CategorizedReloadListener<StaticTextureListener.CategoryJson> {
+public class StaticTextureListener extends DefinedTextureListener<StaticTextureListener.StaticDefinition, StaticTextureListener.CategoryJson> {
+    private static final String STATIC_EXTENSION = ".static.json";
     private static final String STATIC_DIRECTORY = "static";
 
     /**
      * Creates a new static texture listener.
      */
     public StaticTextureListener() {
-        super(SignRegistries.STATIC_TEXTURES, STATIC_DIRECTORY, ".png", CategoryJson.class);
+        super(SignRegistries.STATIC_TEXTURES, STATIC_DIRECTORY, STATIC_EXTENSION, CategoryJson.class, StaticDefinition.class);
+    }
+
+    @Override
+    public void onReload(ResourceManager manager) {
+        SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.clear();
+        super.onReload(manager);
     }
 
     @Override
@@ -28,13 +34,26 @@ public class StaticTextureListener extends CategorizedReloadListener<StaticTextu
     }
 
     @Override
-    protected void processResource(
+    protected void processImage(
         ResourceLocation location,
         Resource resource,
+        @Nullable StaticDefinition definition,
         @Nullable ResourceLocation categoryId,
-        @Nullable CategoryJson category
+        @Nullable StaticTextureListener.CategoryJson category
     ) {
+        if (definition != null) {
+            var resolver = definition.colors.toColorResolver();
+            SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.register(location, resolver);
+        }
         SignRegistries.STATIC_TEXTURES.register(new StaticTexture(location, categoryId));
+    }
+
+    /**
+     * Definition for static textures
+     */
+    protected record StaticDefinition(
+        ColorDefinition colors
+    ) {
     }
 
     /**
@@ -43,7 +62,9 @@ public class StaticTextureListener extends CategorizedReloadListener<StaticTextu
      * @param name name of the category
      */
     protected record CategoryJson(
-        String name
-    ) {
+        String name,
+        @SerializedName("default")
+        @Nullable StaticDefinition defaultDefinition
+    ) implements CategoryWithDefault<StaticDefinition> {
     }
 }

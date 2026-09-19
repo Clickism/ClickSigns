@@ -1,4 +1,6 @@
 {
   "name": "Default Backs",
-  "isBack": true
+  "default": {
+    "cornerSize": 4
+  }
 }

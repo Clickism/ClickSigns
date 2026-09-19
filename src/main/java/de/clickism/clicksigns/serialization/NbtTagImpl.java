@@ -1,11 +1,12 @@
 package de.clickism.clicksigns.serialization;
 
+import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Implementation of TagReader and TagWriter using NBT's.
@@ -27,9 +28,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<String> getString(String key) {
-        if (!tag.contains(key, Tag.TAG_STRING)) return Optional.empty();
-        return Optional.of(tag.getString(key));
+    public Result<String> getString(String key) {
+        if (!tag.contains(key, Tag.TAG_STRING))
+            return Result.failure("Key '" + key + "' is not a string or does not exist.");
+        return Result.success(tag.getString(key));
     }
 
     @Override
@@ -38,9 +40,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<Integer> getInt(String key) {
-        if (!tag.contains(key, Tag.TAG_INT)) return Optional.empty();
-        return Optional.of(tag.getInt(key));
+    public Result<Integer> getInt(String key) {
+        if (!tag.contains(key, Tag.TAG_INT))
+            return Result.failure("Key '" + key + "' is not an integer or does not exist.");
+        return Result.success(tag.getInt(key));
     }
 
     @Override
@@ -49,9 +52,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<Float> getFloat(String key) {
-        if (!tag.contains(key, Tag.TAG_FLOAT)) return Optional.empty();
-        return Optional.of(tag.getFloat(key));
+    public Result<Float> getFloat(String key) {
+        if (!tag.contains(key, Tag.TAG_FLOAT))
+            return Result.failure("Key '" + key + "' is not a float or does not exist.");
+        return Result.success(tag.getFloat(key));
     }
 
     @Override
@@ -60,9 +64,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<Double> getDouble(String key) {
-        if (!tag.contains(key, Tag.TAG_DOUBLE)) return Optional.empty();
-        return Optional.of(tag.getDouble(key));
+    public Result<Double> getDouble(String key) {
+        if (!tag.contains(key, Tag.TAG_DOUBLE))
+            return Result.failure("Key '" + key + "' is not a double or does not exist.");
+        return Result.success(tag.getDouble(key));
     }
 
     @Override
@@ -71,9 +76,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<Long> getLong(String key) {
-        if (!tag.contains(key, Tag.TAG_LONG)) return Optional.empty();
-        return Optional.of(tag.getLong(key));
+    public Result<Long> getLong(String key) {
+        if (!tag.contains(key, Tag.TAG_LONG))
+            return Result.failure("Key '" + key + "' is not a long or does not exist.");
+        return Result.success(tag.getLong(key));
     }
 
     @Override
@@ -82,9 +88,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<Boolean> getBoolean(String key) {
-        if (!tag.contains(key, Tag.TAG_BYTE)) return Optional.empty();
-        return Optional.of(tag.getBoolean(key));
+    public Result<Boolean> getBoolean(String key) {
+        if (!tag.contains(key, Tag.TAG_BYTE))
+            return Result.failure("Key '" + key + "' is not a boolean or does not exist.");
+        return Result.success(tag.getBoolean(key));
     }
 
     @Override
@@ -103,14 +110,23 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public <T> Optional<Collection<T>> getCollection(String key, Reader<T> reader) {
-        if (!tag.contains(key, Tag.TAG_LIST)) return Optional.empty();
+    public <T> Result<Collection<T>> getCollection(String key, Reader<T> reader) {
+        if (!tag.contains(key, Tag.TAG_LIST))
+            return Result.failure("Key '" + key + "' is not a list or does not exist.");
         var list = tag.getList(key, Tag.TAG_COMPOUND);
         var collection = list.stream()
             .filter(element -> element instanceof CompoundTag)
-            .map(element -> reader.read(new NbtTagImpl((CompoundTag) element)))
+            .map(element -> {
+                try {
+                    return reader.read(new NbtTagImpl((CompoundTag) element));
+                } catch (Exception e) {
+                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}'", key, e);
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
             .toList();
-        return Optional.of(collection);
+        return Result.success(collection);
     }
 
     @Override
@@ -126,9 +142,10 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public Optional<TagReader> getTag(String key) {
-        if (!tag.contains(key, Tag.TAG_COMPOUND)) return Optional.empty();
-        return Optional.of(new NbtTagImpl(tag.getCompound(key)));
+    public Result<TagReader> getTag(String key) {
+        if (!tag.contains(key, Tag.TAG_COMPOUND))
+            return Result.failure("Key '" + key + "' is not a compound tag or does not exist.");
+        return Result.success(new NbtTagImpl(tag.getCompound(key)));
     }
 
     @Override

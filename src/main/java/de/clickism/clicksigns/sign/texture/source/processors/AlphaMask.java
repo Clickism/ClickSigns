@@ -19,7 +19,7 @@ public record AlphaMask(
     TextureSource mask,
     boolean mirrorX
 ) implements TextureProcessor {
-    public static final String TYPE = "alpha_mask";
+    public static final String TYPE = "alphaMask";
 
     public static CommonCodec<AlphaMask> codec() {
         return CommonCodec.of(

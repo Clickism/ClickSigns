@@ -1,9 +1,11 @@
 package de.clickism.clicksigns.sign.reload;
 
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
@@ -13,18 +15,15 @@ import java.util.List;
 /**
  * Symbol reload listener.
  */
-// TODO: A way to define color replacement only for a single symbol, and similar for other props/tilesets (hidden categories?)
-//  Just refactor includeCategories logic, maybe not needed? Maybe like nested categories, or just JSON files to override data idk
-//  so that you can have different logic for different symbols in the same category
-public class SymbolListener extends CategorizedReloadListener<SymbolListener.CategoryJson> {
+public class SymbolListener extends DefinedTextureListener<SymbolListener.SymbolDefinition, SymbolListener.CategoryJson> {
     private static final String SYMBOL_DIRECTORY = "symbols";
-    private static final String SYMBOL_EXTENSION = ".png";
+    private static final String SYMBOL_EXTENSION = ".symbol.json";
 
     /**
      * Creates a new symbol listener.
      */
     public SymbolListener() {
-        super(SignRegistries.SYMBOLS, SYMBOL_DIRECTORY, SYMBOL_EXTENSION, CategoryJson.class);
+        super(SignRegistries.SYMBOLS, SYMBOL_DIRECTORY, SYMBOL_EXTENSION, CategoryJson.class, SymbolDefinition.class);
     }
 
     @Override
@@ -33,25 +32,23 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
     }
 
     @Override
-    protected void processResource(
+    protected void processImage(
         ResourceLocation location,
         Resource resource,
+        @Nullable SymbolListener.SymbolDefinition definition,
         @Nullable ResourceLocation categoryId,
-        @Nullable CategoryJson category
+        @Nullable SymbolListener.CategoryJson category
     ) {
-        TextureSource source;
-        if (category != null && category.replaceColor != null) {
-            var replaceColor = category.replaceColor;
-            source = new TextureSource(
-                location,
-                List.of(
-                    new ReplaceColor(replaceColor.from(), replaceColor.to())
-                )
-            );
-        } else {
-            source = TextureSource.ofStatic(location);
+        TextureSource textureSource = TextureSource.ofStatic(location);
+        if (definition != null && definition.texture != null) {
+            var textureJson = definition.texture;
+            textureJson.addProperty("base", location.toString());
+            var newSource = TextureSource.codec().tagReader().readOrNull(new JsonTagImpl(textureJson));
+            if (newSource != null) {
+                textureSource = newSource;
+            }
         }
-        var symbol = new Symbol(location, source, categoryId);
+        var symbol = new Symbol(location, textureSource, categoryId);
         SignRegistries.SYMBOLS.register(symbol);
     }
 
@@ -76,6 +73,17 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
     }
 
     /**
+     * Symbol JSON format for symbol definitions.
+     *
+     * @param texture supposed to be a {@link TextureSource} object, without the "base" field,
+     *                as that is automatically set to the symbol's identifier.
+     */
+    protected record SymbolDefinition(
+        @Nullable JsonObject texture
+    ) {
+    }
+
+    /**
      * Category JSON format for symbol categories.
      * Important: The category JSON will assign its category to all symbols in the same directory as the JSON file.
      *
@@ -85,19 +93,8 @@ public class SymbolListener extends CategorizedReloadListener<SymbolListener.Cat
     protected record CategoryJson(
         String name,
         @Nullable List<ResourceLocation> includeCategories,
-        @Nullable SymbolListener.ReplaceColorJson replaceColor
-    ) {
-    }
-
-    /**
-     * Color replacement JSON format for symbol categories.
-     *
-     * @param from color to replace.
-     * @param to   color to replace with.
-     */
-    protected record ReplaceColorJson(
-        @Nullable String from,
-        String to
-    ) {
+        @SerializedName("default")
+        @Nullable SymbolDefinition defaultDefinition
+    ) implements CategoryWithDefault<SymbolDefinition> {
     }
 }

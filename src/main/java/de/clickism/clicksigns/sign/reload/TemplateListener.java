@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Template reload listener.
  */
-public class TemplateListener extends CategorizedReloadListener<TemplateListener.CategoryJson> {
+public class TemplateListener extends SimpleReloadListener<TemplateListener.CategoryJson> {
     public static final String TEMPLATE_EXTENSION = ".template.json";
     private static final String TEMPLATE_DIRECTORY = "templates";
 
@@ -36,8 +36,12 @@ public class TemplateListener extends CategorizedReloadListener<TemplateListener
         @Nullable CategoryJson category
     ) {
         var json = fromJsonOrThrow(resource, JsonObject.class);
-        var template = TEMPLATE_PARSER.parse(json, location, categoryId);
-        SignRegistries.RESOURCE_TEMPLATES.register(template);
+        try {
+            var template = TEMPLATE_PARSER.parse(json, location, categoryId);
+            SignRegistries.RESOURCE_TEMPLATES.register(template);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse template: " + location, e);
+        }
     }
 
     /**

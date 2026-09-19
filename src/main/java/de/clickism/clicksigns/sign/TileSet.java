@@ -16,13 +16,11 @@ import java.util.List;
  * @param identifier the identifier and resource location of the tileset texture
  * @param categoryId optional category id for this tileset, used for grouping tilesets in the sign editor
  * @param cornerSize size of the corners in pixels
- * @param isBack     whether this tileset is for the back of the sign
  */
 public record TileSet(
     ResourceLocation identifier,
     @Nullable ResourceLocation categoryId,
-    int cornerSize,
-    boolean isBack
+    int cornerSize
 ) implements Categorized<TileSet> {
     @Override
     public CategorizedRegistry<TileSet> registry() {

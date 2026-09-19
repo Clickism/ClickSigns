@@ -24,7 +24,7 @@ public class TemplateParser implements JsonHandler {
         JsonObject json,
         ResourceLocation location,
         ResourceLocation categoryId
-    ) {
+    ) throws Exception {
         var templateJson = fromJsonOrThrow(json, TemplateJson.class);
         return templateJson.parse(location, categoryId);
     }
@@ -69,7 +69,7 @@ public class TemplateParser implements JsonHandler {
         /**
          * Converts the JSON into a template object
          */
-        private Template parse(ResourceLocation id, ResourceLocation categoryId) {
+        private Template parse(ResourceLocation id, ResourceLocation categoryId) throws Exception {
             var tag = new JsonTagImpl(sign);
             var parsedSign = RoadSignCodec.codec().readTag(tag);
             return new Template(
