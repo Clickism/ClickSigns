@@ -35,7 +35,7 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
         var intersects = intersects(roadSign, element);
         int index = roadSign.elements().indexOf(element);
         int z = intersects
-            ? index
+            ? RenderLayers.SIGN_SURFACE + index
             : RenderLayers.SIGN_FRONT;
         context.withZ(z, () -> {
             // Render front
