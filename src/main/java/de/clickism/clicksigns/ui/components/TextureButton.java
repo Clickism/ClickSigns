@@ -49,7 +49,7 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
     }
 
     public TextureButton onTextureEdited(Consumer<TextureSource> onTextureEdited) {
-        this.onTextureSelected = onTextureEdited;
+        this.onTextureEdited = onTextureEdited;
         return this;
     }
 
