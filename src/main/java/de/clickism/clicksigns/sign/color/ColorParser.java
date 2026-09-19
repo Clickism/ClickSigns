@@ -19,6 +19,9 @@ public class ColorParser {
      * @throws IllegalArgumentException if the color format is unsupported or invalid
      */
     public int parse(String color, ColorResolver colorResolver) throws IllegalArgumentException {
+        if (color == null || color.isEmpty()) {
+            throw new IllegalArgumentException("Color cannot be null or empty");
+        }
         var parts = color.trim().split(":", 2);
         var mainColor = parseColor(parts[0], colorResolver);
         if (parts.length > 1) {
@@ -32,6 +35,9 @@ public class ColorParser {
     }
 
     private int parseColor(String color, ColorResolver colorResolver) throws IllegalArgumentException {
+        if (color == null || color.isEmpty()) {
+            throw new IllegalArgumentException("Color cannot be null or empty");
+        }
         // Hex color
         if (color.startsWith("#") || color.matches("^[0-9a-fA-F]{6}$")) {
             var hexColor = parseHex(color);

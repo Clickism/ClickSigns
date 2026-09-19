@@ -33,6 +33,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 /**
  * A screen for editing a texture source, allowing users to modify the base texture and apply various texture processors.
  */
+// TODO: Set max height to texture buttons!
 public class TextureEditScreen extends UiScreen<TextureEditScreen> implements CommonComponents {
     private final EditableTextureSource textureSource;
     private final @Nullable TextureSource background;

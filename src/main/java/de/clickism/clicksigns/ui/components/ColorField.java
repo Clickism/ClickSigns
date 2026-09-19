@@ -64,7 +64,6 @@ public class ColorField extends Field<ColorField> {
     private void updateColor() {
         var value = this.value();
         color = UiColor.rgba(colorResolver.resolveOrDefault(value, color.color()));
-        this.updateStyle();
     }
 
     public ColorField onColorChanged(Consumer<String> listener) {
