@@ -112,6 +112,7 @@ public interface CommonComponents extends BaseComponents {
                 .backgroundColor(UiColor.BLACK_A20))
             .children(
                 checkbox()
+                    .size(16)
                     .checked(initial)
                     .onCheckedChange(onCheckedChange),
                 text(text)
