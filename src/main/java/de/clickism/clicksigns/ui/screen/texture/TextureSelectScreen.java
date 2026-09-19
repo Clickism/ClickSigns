@@ -155,7 +155,7 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
             .toList();
         return new TextureSelectScreen(t("clicksigns.ui.textureButton.textureMenu.header"), entries, backgroundColor)
             .textureScale(categoriesToShow.contains(TextureCategory.SYMBOL_TEXTURES)
-                ? 4.0f
+                ? 3.0f
                 : 2.0f)
             .categoryDescriptions(categoryDescriptions)
             .onTextureSelected(entry -> {

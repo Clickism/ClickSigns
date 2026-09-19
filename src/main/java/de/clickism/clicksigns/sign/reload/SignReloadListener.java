@@ -14,7 +14,6 @@ import java.util.function.BiConsumer;
  * Reload listener for road sign related data.
  * Provides a common root path and category logic.
  */
-// TODO: Support x.static.json files and common color definition parsing for static textures and tilesets (and registry for it)
 public interface SignReloadListener extends ReloadListener {
     /**
      * Root path for all road sign related textures/data.

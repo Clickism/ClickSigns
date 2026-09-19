@@ -5,6 +5,7 @@ import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.UiUtil;
+import de.clickism.clicksigns.ui.screen.editor.SignEditorScreen;
 import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
@@ -65,7 +66,8 @@ public class TextureButton extends UiComponent<TextureButton> implements CommonC
         imageBox.add(
             UiUtil.imageOf(texture)
                 .keepAspectRatio(true)
-                .grow()
+                .growWidth()
+                .maxHeight(SignEditorScreen.PANEL_BODY_WIDTH)
         );
         imageBox
             .padding(background != null

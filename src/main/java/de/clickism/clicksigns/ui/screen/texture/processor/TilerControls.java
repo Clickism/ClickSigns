@@ -36,7 +36,8 @@ public class TilerControls extends ProcessorControls<Tiler, TilerControls> {
                 t("clicksigns.texture.processor.width"),
                 new NumberControl()
                     .value(tiler.outputWidth())
-                    .fastChangeAmount(8)
+                    .changeAmount(8)
+                    .fineChangeAmount(1)
                     .minValue(RoadSign.MIN_SIGN_SIZE.width())
                     .maxValue(RoadSign.MAX_SIGN_SIZE.width())
                     .onValueChanged(newValue -> {
@@ -50,7 +51,8 @@ public class TilerControls extends ProcessorControls<Tiler, TilerControls> {
                 t("clicksigns.texture.processor.height"),
                 new NumberControl()
                     .value(tiler.outputHeight())
-                    .fastChangeAmount(8)
+                    .changeAmount(8)
+                    .fineChangeAmount(1)
                     .minValue(RoadSign.MIN_SIGN_SIZE.height())
                     .maxValue(RoadSign.MAX_SIGN_SIZE.height())
                     .onValueChanged(newValue -> {

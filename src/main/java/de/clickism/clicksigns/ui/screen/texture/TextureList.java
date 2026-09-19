@@ -94,7 +94,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
                 var row = box()
                     .horizontal()
                     .wrapChildren(true)
-                    .childGap(4)
+                    .childGap(2)
                     .crossAlign(Align.START);
 
                 box.add(row);

@@ -10,10 +10,7 @@ import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.ImageWithPicker;
 import de.clickism.clicksigns.ui.editable.Editable;
-import de.clickism.clicksigns.ui.screen.texture.processor.AlphaMaskControls;
-import de.clickism.clicksigns.ui.screen.texture.processor.ReplaceColorControls;
-import de.clickism.clicksigns.ui.screen.texture.processor.TilerControls;
-import de.clickism.clicksigns.ui.screen.texture.processor.UnknownControls;
+import de.clickism.clicksigns.ui.screen.texture.processor.*;
 import de.clickism.clicksigns.util.ComponentUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiElement;
@@ -33,7 +30,6 @@ import static de.clickism.clicksigns.util.ComponentUtil.t;
 /**
  * A screen for editing a texture source, allowing users to modify the base texture and apply various texture processors.
  */
-// TODO: Set max height to texture buttons!
 public class TextureEditScreen extends UiScreen<TextureEditScreen> implements CommonComponents {
     private final EditableTextureSource textureSource;
     private final @Nullable TextureSource background;
@@ -225,7 +221,10 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                 List.copyOf(partialProcessors)
             );
             // Memoize the processor controls
-            var controls = memo(processor.id() + "-view", () -> processorControls(processor));
+            var controls = memo(
+                processor.id() + "-view",
+                () -> ProcessorControls.create(processor, textureSource, colorResolver)
+            );
             // Add processor entry
             list.add(darkBoxOutlined()
                 .style(style()
@@ -274,21 +273,5 @@ public class TextureEditScreen extends UiScreen<TextureEditScreen> implements Co
                 ));
         }
         return list;
-    }
-
-    /**
-     * Creates the appropriate controls for a given texture processor based on its type.
-     *
-     * @param processor the editable texture processor for which to create controls
-     * @return the UI element containing the controls for the specified texture processor
-     */
-    private UiElement<?> processorControls(Editable<TextureProcessor> processor) {
-        var current = processor.current();
-        return switch (current.typeKey()) {
-            case Tiler.TYPE -> new TilerControls(textureSource, colorResolver, processor);
-            case ReplaceColor.TYPE -> new ReplaceColorControls(textureSource, colorResolver, processor);
-            case AlphaMask.TYPE -> new AlphaMaskControls(textureSource, colorResolver, processor);
-            default -> new UnknownControls(textureSource, colorResolver, processor);
-        };
     }
 }

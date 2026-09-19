@@ -17,6 +17,8 @@ import java.util.function.Consumer;
  */
 public class SignEditorScreen extends UiScreen<SignEditorScreen>
     implements CommonComponents {
+    public static final int PANEL_WIDTH = 130;
+    public static final int PANEL_BODY_WIDTH = PANEL_WIDTH - 16;
     /**
      * Main editor context
      */
@@ -114,10 +116,9 @@ public class SignEditorScreen extends UiScreen<SignEditorScreen>
     }
 
     private Box panel() {
-        var panelWidth = 130;
         return box()
             .scrollable(true)
-            .width(panelWidth)
+            .width(PANEL_WIDTH)
             .growHeight()
             .padding(8)
             .style(style()

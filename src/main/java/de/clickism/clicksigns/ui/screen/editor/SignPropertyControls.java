@@ -8,10 +8,12 @@ import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.components.TwoSidedTextureButton;
 import de.clickism.clicksigns.ui.screen.template.TemplateExportScreen;
+import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -51,7 +53,16 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
                 .growWidth()
                 .buttonColor(UiColor.LIME)
                 .onClick(event -> {
-                    spawnElement(SymbolElement.createDefault());
+                    TextureSelectScreen.forTextureCategories(
+                        roadSign.frontSource(),
+                        roadSign.colorResolver(),
+                        List.of(TextureCategory.SYMBOL_TEXTURES),
+                        selected -> {
+                            var symbol = SymbolElement.createDefault()
+                                    .withTextureSource(selected);
+                            spawnElement(symbol);
+                        }
+                    ).open();
                 }),
             button(t("+", "clicksigns.editor.sign.elements.addText"))
                 .growWidth()

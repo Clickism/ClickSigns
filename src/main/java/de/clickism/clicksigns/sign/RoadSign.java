@@ -74,7 +74,7 @@ public record RoadSign(
      * @return the default front texture source
      */
     public static TextureSource defaultFrontSource() {
-        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/default/white.png"))
+        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/street/white.png"))
             .textureSource(32, 16);
     }
 
