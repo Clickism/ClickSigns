@@ -42,8 +42,8 @@ public record PlateElement(
     public static PlateElement createDefault() {
         return new PlateElement(0, 0,
             Alignment.CENTER,
-            RoadSign.defaultFrontSource().resize(8, 6),
-            RoadSign.defaultBackSource().resize(8, 6),
+            RoadSign.defaultFrontSource().resize(12, 8),
+            RoadSign.defaultBackSource().resize(12, 8),
             true
         );
     }
