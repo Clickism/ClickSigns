@@ -37,7 +37,7 @@ public @interface DynamicColor {
         .define("text_dark", 0x292929)
         .define("white", 0xFFFFFF)
         .define("black", 0x292929)
-        .define("blue", 0x2739EB)
+        .define("blue", 0x0D468A)
         .define("brown", 0x844635)
         .define("green", 0x009345)
         .define("yellow", 0xFFBC21)
