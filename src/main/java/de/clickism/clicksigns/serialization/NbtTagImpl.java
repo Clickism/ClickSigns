@@ -120,7 +120,7 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
                 try {
                     return reader.read(new NbtTagImpl((CompoundTag) element));
                 } catch (Exception e) {
-                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}'", key, e);
+                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}': {}", key, e.getMessage());
                     return null;
                 }
             })

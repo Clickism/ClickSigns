@@ -82,7 +82,7 @@ public record JsonTagImpl(JsonObject jsonObject) implements TagReader, TagWriter
                 try {
                     return reader.read(new JsonTagImpl(item.getAsJsonObject()));
                 } catch (Exception e) {
-                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}'", key, e);
+                    ClickSigns.LOGGER.error("Failed to read item from collection for key '{}': {}", key, e.getMessage());
                     return null;
                 }
             })

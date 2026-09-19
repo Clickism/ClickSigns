@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
 import com.google.gson.JsonObject;
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +41,7 @@ public class TemplateListener extends SimpleReloadListener<TemplateListener.Cate
             var template = TEMPLATE_PARSER.parse(json, location, categoryId);
             SignRegistries.RESOURCE_TEMPLATES.register(template);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse template: " + location, e);
+            ClickSigns.LOGGER.error("Failed to parse template {}: {}", location, e.getMessage());
         }
     }
 

@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.sign.texture.source;
 
+import java.util.Arrays;
+
 /**
  * Represents an image with its dimensions and pixel data.
  *
@@ -79,6 +81,15 @@ public record Image(
                 consumer.accept(x, y, color);
             }
         }
+    }
+
+    /**
+     * Fills the entire image with the specified color.
+     *
+     * @param color the color to fill the image with, as an ARGB integer
+     */
+    public void fill(int color) {
+        Arrays.fill(pixels, color);
     }
 
     /**

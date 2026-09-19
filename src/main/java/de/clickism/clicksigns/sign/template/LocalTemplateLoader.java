@@ -36,7 +36,7 @@ public class LocalTemplateLoader implements JsonHandler {
                     var template = loadTemplate(path);
                     consumer.accept(path, template);
                 } catch (Exception e) {
-                    ClickSigns.LOGGER.error("Failed to load template from path: {}", path, e);
+                    ClickSigns.LOGGER.error("Failed to load template from path: {}: {}", path, e.getMessage());
                 }
             });
         } catch (Exception e) {
