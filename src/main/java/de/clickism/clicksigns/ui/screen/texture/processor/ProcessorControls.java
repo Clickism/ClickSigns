@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.ui.screen.texture.processor;
 
-import com.google.common.base.CaseFormat;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
+import de.clickism.clicksigns.sign.texture.source.processors.*;
 import de.clickism.clicksigns.ui.components.CommonComponents;
 import de.clickism.clicksigns.ui.editable.Editable;
 import de.clickism.clicksigns.ui.screen.texture.EditableTextureSource;
@@ -10,8 +10,6 @@ import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-
-import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public abstract class ProcessorControls<P extends TextureProcessor, S extends UiComponent<S>> extends UiComponent<S>
     implements CommonComponents {
@@ -38,14 +36,12 @@ public abstract class ProcessorControls<P extends TextureProcessor, S extends Ui
         );
     }
 
-    protected String name() {
-        var name = processor.current().getClass().getSimpleName();
-        // Convert to lower case
-        return CaseFormat.UPPER_CAMEL.converterTo(CaseFormat.LOWER_CAMEL).convert(name);
+    protected Component name() {
+        return processor.current().translatedName();
     }
 
     private Component nameComponent() {
-        return t("clicksigns.texture.processor." + name(), ChatFormatting.BOLD);
+        return name().copy().withStyle(ChatFormatting.BOLD);
     }
 
     protected abstract UiElement<?> controls();
@@ -56,5 +52,27 @@ public abstract class ProcessorControls<P extends TextureProcessor, S extends Ui
             .childGap(4)
             .horizontal()
             .children(controls);
+    }
+
+    /**
+     * Creates the appropriate controls for a given texture processor based on its type.
+     *
+     * @param processor the editable texture processor for which to create controls
+     * @return the UI element containing the controls for the specified texture processor
+     */
+    public static UiElement<?> create(
+        Editable<TextureProcessor> processor,
+        EditableTextureSource textureSource,
+        ColorResolver colorResolver
+    ) {
+        var current = processor.current();
+        return switch (current.typeKey()) {
+            case Tiler.TYPE -> new TilerControls(textureSource, colorResolver, processor);
+            case ReplaceColor.TYPE -> new ReplaceColorControls(textureSource, colorResolver, processor);
+            case AlphaMask.TYPE -> new AlphaMaskControls(textureSource, colorResolver, processor);
+            case Rotate.TYPE -> new RotateControls(textureSource, colorResolver, processor);
+            case Flip.TYPE -> new FlipControls(textureSource, colorResolver, processor);
+            default -> new UnknownControls(textureSource, colorResolver, processor);
+        };
     }
 }
