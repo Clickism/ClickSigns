@@ -63,7 +63,12 @@
   "clicksigns.editor.element.text.padding.vertical": "Vertical",
   "clicksigns.editor.element.text.fontSize": "Font Size",
   "clicksigns.editor.element.text.lineAlignment": "Line Alignment",
+  "clicksigns.editor.element.text.formatting": "Text Formatting",
   "clicksigns.editor.element.text.lineGap": "Line Gap",
+  "clicksigns.editor.element.text.formatting.bold": "Bold",
+  "clicksigns.editor.element.text.formatting.italic": "Italic",
+  "clicksigns.editor.element.text.formatting.underline": "Underline",
+  "clicksigns.editor.element.text.formatting.strikethrough": "Strikethrough",
 
   "clicksigns.editor.element.plate.matchSignTextures": "Match Sign Textures",
   "clicksigns.editor.element.plate.textures": "Plate Textures",

@@ -131,12 +131,13 @@ public class SignTextField extends TextField implements ElementProvider {
         var lineText = elementToShow().lines();
         int newLine = Mth.clamp(linePos.line + delta, 0, lineText.size() - 1);
         // Calculate new position in the line visually, based on the x position of the cursor in the current line
-        var font = Util.font();
-        int cursorX = font.width(lineText.get(linePos.line).substring(0, linePos.pos)) + element.lineXOffset(lineText.get(linePos.line));
+        int cursorX = formattedWidth(lineText.get(linePos.line).substring(0, linePos.pos))
+                      + element.lineXOffset(lineText.get(linePos.line));
         int newPos = 0;
         for (int i = 0; i < lineText.get(newLine).length(); i++) {
-            int charWidth = font.width(lineText.get(newLine).substring(i, i + 1));
-            int charX = font.width(lineText.get(newLine).substring(0, i)) + element.lineXOffset(lineText.get(newLine));
+            int charWidth = formattedWidth(lineText.get(newLine).substring(i, i + 1));
+            int charX = formattedWidth(lineText.get(newLine).substring(0, i))
+                        + element.lineXOffset(lineText.get(newLine));
             if (charX + charWidth / 2 >= cursorX) {
                 newPos = i;
                 break;
@@ -218,7 +219,10 @@ public class SignTextField extends TextField implements ElementProvider {
         // Calculate character index based on x position
         var lineText = lines.get(lineIndex);
         x -= element.lineXOffset(lineText); // Adjust x based on line offset
-        int charIndex = Util.font().plainSubstrByWidth(lineText, x).length();
+        int charIndex = Util.font()
+            .getSplitter()
+            .formattedHeadByWidth(lineText, x, element.style().asComponentStyle())
+            .length();
         // Calculate cursor position
         int lineCursorPos = 0;
         for (int i = 0; i < lineIndex; i++) {
@@ -312,9 +316,9 @@ public class SignTextField extends TextField implements ElementProvider {
             var font = context.font();
             var lineText = line.substring(startChar, endChar);
             var textPos = textPosition();
-            int highlightX = textPos.x() + font.width(line.substring(0, startChar)) + element.lineXOffset(line);
+            int highlightX = textPos.x() + formattedWidth(line.substring(0, startChar)) + element.lineXOffset(line);
             int highlightY = textPos.y() + lineIndex * font.lineHeight + (lineIndex * element.style().lineGap());
-            int highlightWidth = font.width(lineText);
+            int highlightWidth = formattedWidth(lineText);
             super.renderHighlight(context, highlightX, highlightY, highlightWidth);
         }
     }
@@ -333,7 +337,7 @@ public class SignTextField extends TextField implements ElementProvider {
         var lineText = line.substring(0, Math.min(charIndex, line.length()));
         var textPos = textPosition();
         // Calculate the position of the cursor
-        x = textPos.x() + font.width(lineText) + element.lineXOffset(line);
+        x = textPos.x() + formattedWidth(lineText) + element.lineXOffset(line);
         y = textPos.y() + lineIndex * font.lineHeight + (lineIndex * this.element.style().lineGap());
         context.graphics().pose().pushPose();
         context.graphics().pose().translate(0, 0, 100); // Move cursor to front
@@ -357,7 +361,8 @@ public class SignTextField extends TextField implements ElementProvider {
         var lineY = y;
         for (var line : lines) {
             var lineX = x + element.lineXOffset(line);
-            graphics.drawString(font, line, lineX, lineY, color, false); // No shadow
+            var formatted = element.formattedText(line);
+            graphics.drawString(font, formatted, lineX, lineY, color, false); // No shadow
             lineY += font.lineHeight + this.element.style().lineGap();
         }
         // No suggestion support
@@ -399,6 +404,10 @@ public class SignTextField extends TextField implements ElementProvider {
                * TEXT_RENDER_SCALE
                * element.scale()
                * UI_SCALE;
+    }
+
+    private int formattedWidth(String text) {
+        return Util.font().width(elementToShow().formattedText(text));
     }
 
     /**

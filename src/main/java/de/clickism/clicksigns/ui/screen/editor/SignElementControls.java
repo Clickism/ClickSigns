@@ -3,15 +3,11 @@ package de.clickism.clicksigns.ui.screen.editor;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
-import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.ui.components.*;
-import de.clickism.clicksigns.ui.components.sign.SymbolView;
-import de.clickism.clicksigns.ui.screen.texture.TextureEditScreen;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
-import de.clickism.clickui.layout.Align;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -252,36 +248,61 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 })
             ));
         }
+
+        // Formattings
+        add(smallHeader(t("clicksigns.editor.element.text.formatting")));
+        children(
+            checkboxWithText(
+                t("clicksigns.editor.element.text.formatting.bold"),
+                text.style().isBold(),
+                checked -> {
+                    context.roadSign().updateTextElement(id, element ->
+                        element.withStyle(s -> s.setFormatting(TextStyle.Formatting.BOLD, checked)));
+                }
+            ),
+            checkboxWithText(
+                t("clicksigns.editor.element.text.formatting.italic"),
+                text.style().isItalic(),
+                checked -> {
+                    context.roadSign().updateTextElement(id, element ->
+                        element.withStyle(s -> s.setFormatting(TextStyle.Formatting.ITALIC, checked)));
+                }
+            ),
+            checkboxWithText(
+                t("clicksigns.editor.element.text.formatting.underline"),
+                text.style().isUnderline(),
+                checked -> {
+                    context.roadSign().updateTextElement(id, element ->
+                        element.withStyle(s -> s.setFormatting(TextStyle.Formatting.UNDERLINE, checked)));
+                }
+            ),
+            checkboxWithText(
+                t("clicksigns.editor.element.text.formatting.strikethrough"),
+                text.style().isStrikethrough(),
+                checked -> {
+                    context.roadSign().updateTextElement(id, element ->
+                        element.withStyle(s -> s.setFormatting(TextStyle.Formatting.STRIKETHROUGH, checked)));
+                }
+            )
+        );
     }
 
     private void addPlateControls(PlateElement plate, UUID id) {
         add(smallHeader(t("clicksigns.editor.element.plate.textures")));
 
         var roadSign = context.roadSign();
-        add(box()
-            .horizontal()
-            .growWidth()
-            .crossAlign(Align.CENTER)
-            .childGap(4)
-            .padding(2)
-            .style(style()
-                .backgroundColor(UiColor.BLACK_A20))
-            .children(
-                checkbox()
-                    .checked(plate.matchSignTextures())
-                    .onCheckedChange(checked -> {
-                        roadSign.updatePlateElement(id, element ->
-                            element
-                                // Make sure textures match again
-                                .withFrontSource(roadSign.frontSource().resize(element.size()))
-                                .withBackSource(roadSign.backSource().resize(element.size()))
-                                .withMatchSignTextures(checked));
-                    }),
-                text(t("clicksigns.editor.element.plate.matchSignTextures"))
-                    .style(style()
-                        .fontScale(0.8f)
-                        .alpha(0.8f)
-                    )));
+        add(checkboxWithText(
+            t("clicksigns.editor.element.plate.matchSignTextures"),
+            plate.matchSignTextures(),
+            checked -> {
+                roadSign.updatePlateElement(id, element ->
+                    element
+                        // Make sure textures match again
+                        .withFrontSource(roadSign.frontSource().resize(element.size()))
+                        .withBackSource(roadSign.backSource().resize(element.size()))
+                        .withMatchSignTextures(checked));
+            }
+        ));
 
         if (!plate.matchSignTextures()) {
             // Show texture options

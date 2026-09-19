@@ -1,9 +1,14 @@
 package de.clickism.clicksigns.sign.element;
 
+import de.clickism.clicksigns.sign.color.DynamicColor;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Style for text elements, used for rendering.
@@ -23,7 +28,8 @@ public record TextStyle(
     int paddingX,
     int paddingY,
     TextAlignment textAlignment,
-    int lineGap
+    int lineGap,
+    Set<Formatting> formattings
 ) {
     public static final int MAX_OUTLINE_WIDTH = 10;
     public static final int MAX_PADDING = 20;
@@ -39,7 +45,8 @@ public record TextStyle(
         2,
         1,
         TextAlignment.CENTER,
-        0
+        0,
+        Set.of()
     );
 
     /**
@@ -60,7 +67,8 @@ public record TextStyle(
         int paddingX,
         int paddingY,
         TextAlignment textAlignment,
-        int lineGap
+        int lineGap,
+        Set<Formatting> formattings
     ) {
         this(
             color,
@@ -70,7 +78,8 @@ public record TextStyle(
             paddingX,
             paddingY,
             textAlignment,
-            lineGap
+            lineGap,
+            formattings
         );
     }
 
@@ -107,8 +116,8 @@ public record TextStyle(
      * @param newColor the new RGBA color of the text
      * @return a new text style with the updated color
      */
-    public TextStyle withColor(@NotNull String newColor) {
-        return new TextStyle(newColor, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap);
+    public TextStyle withColor(@NotNull @DynamicColor String newColor) {
+        return new TextStyle(newColor, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -117,11 +126,11 @@ public record TextStyle(
      * @param newBackgroundColor the new RGBA color of the text background, or null for no background
      * @return a new text style with the updated background color
      */
-    public TextStyle withBackgroundColor(@Nullable String newBackgroundColor) {
+    public TextStyle withBackgroundColor(@DynamicColor String newBackgroundColor) {
         newBackgroundColor = newBackgroundColor != null && newBackgroundColor.isEmpty()
             ? null
             : newBackgroundColor;
-        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap);
+        return new TextStyle(color, Optional.ofNullable(newBackgroundColor), outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -130,11 +139,11 @@ public record TextStyle(
      * @param newOutlineColor the new RGBA color of the text outline, or null for no outline
      * @return a new text style with the updated outline color
      */
-    public TextStyle withOutlineColor(@Nullable String newOutlineColor) {
+    public TextStyle withOutlineColor(@DynamicColor String newOutlineColor) {
         newOutlineColor = newOutlineColor != null && newOutlineColor.isEmpty()
             ? null
             : newOutlineColor;
-        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY, textAlignment, lineGap);
+        return new TextStyle(color, backgroundColor, Optional.ofNullable(newOutlineColor), outlineWidth, paddingX, paddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -144,7 +153,7 @@ public record TextStyle(
      * @return a new text style with the updated outline width
      */
     public TextStyle withOutlineWidth(int newOutlineWidth) {
-        return new TextStyle(color, backgroundColor, outlineColor, newOutlineWidth, paddingX, paddingY, textAlignment, lineGap);
+        return new TextStyle(color, backgroundColor, outlineColor, newOutlineWidth, paddingX, paddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -154,7 +163,7 @@ public record TextStyle(
      * @return a new text style with the updated horizontal padding
      */
     public TextStyle withPaddingX(int newPaddingX) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, newPaddingX, paddingY, textAlignment, lineGap);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, newPaddingX, paddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -164,7 +173,7 @@ public record TextStyle(
      * @return a new text style with the updated vertical padding
      */
     public TextStyle withPaddingY(int newPaddingY) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY, textAlignment, lineGap);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, newPaddingY, textAlignment, lineGap, formattings);
     }
 
     /**
@@ -174,7 +183,7 @@ public record TextStyle(
      * @return a new text style with the updated text alignment
      */
     public TextStyle withTextAlignment(TextAlignment newTextAlignment) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, newTextAlignment, lineGap);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, newTextAlignment, lineGap, formattings);
     }
 
     /**
@@ -184,7 +193,62 @@ public record TextStyle(
      * @return a new text style with the updated line gap
      */
     public TextStyle withLineGap(int newLineGap) {
-        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, newLineGap);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, newLineGap, formattings);
+    }
+
+    public TextStyle withFormatting(Set<Formatting> newFormatting) {
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap, newFormatting);
+    }
+
+    public TextStyle setFormatting(Formatting formatting, boolean enabled) {
+        return enabled
+            ? withAddedFormatting(formatting)
+            : withRemovedFormatting(formatting);
+    }
+
+    public TextStyle withAddedFormatting(Formatting formatting) {
+        var newFormatting = new HashSet<>(this.formattings);
+        newFormatting.add(formatting);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap, newFormatting);
+    }
+
+    public TextStyle withRemovedFormatting(Formatting formatting) {
+        var newFormatting = new HashSet<>(this.formattings);
+        newFormatting.remove(formatting);
+        return new TextStyle(color, backgroundColor, outlineColor, outlineWidth, paddingX, paddingY, textAlignment, lineGap, newFormatting);
+    }
+
+    public boolean isBold() {
+        return formattings.contains(Formatting.BOLD);
+    }
+
+    public boolean isItalic() {
+        return formattings.contains(Formatting.ITALIC);
+    }
+
+    public boolean isUnderline() {
+        return formattings.contains(Formatting.UNDERLINE);
+    }
+
+    public boolean isStrikethrough() {
+        return formattings.contains(Formatting.STRIKETHROUGH);
+    }
+
+    public Style asComponentStyle() {
+        var style = Style.EMPTY;
+        if (isBold()) {
+            style = style.withBold(true);
+        }
+        if (isItalic()) {
+            style = style.withItalic(true);
+        }
+        if (isUnderline()) {
+            style = style.withUnderlined(true);
+        }
+        if (isStrikethrough()) {
+            style = style.withStrikethrough(true);
+        }
+        return style;
     }
 
     /**
@@ -194,5 +258,12 @@ public record TextStyle(
         LEFT,
         CENTER,
         RIGHT
+    }
+
+    public enum Formatting {
+        BOLD,
+        ITALIC,
+        UNDERLINE,
+        STRIKETHROUGH
     }
 }

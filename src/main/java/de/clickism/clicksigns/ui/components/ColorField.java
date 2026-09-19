@@ -36,9 +36,7 @@ public class ColorField extends Field<ColorField> {
             });
         this.updateStyle();
         this.onValueChanged(value -> {
-            // Update color
-            color = UiColor.rgba(colorResolver.resolveOrDefault(value, color.color()));
-            this.updateStyle();
+            updateStyle();
             // Call the external listener
             onColorChanged.accept(value);
         });
@@ -55,11 +53,18 @@ public class ColorField extends Field<ColorField> {
      * Updates the style of the ColorField based on the current color.
      */
     private void updateStyle() {
+        this.updateColor();
         this.style(style()
             .textColor(color)
             .backgroundColor(
                 color.pickBetterContrasting(UiColor.BLACK, UiColor.WHITE)
             ));
+    }
+
+    private void updateColor() {
+        var value = this.value();
+        color = UiColor.rgba(colorResolver.resolveOrDefault(value, color.color()));
+        this.updateStyle();
     }
 
     public ColorField onColorChanged(Consumer<String> listener) {

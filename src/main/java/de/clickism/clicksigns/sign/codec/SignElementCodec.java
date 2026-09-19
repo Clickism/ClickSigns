@@ -7,7 +7,11 @@ import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.ui.components.CommonComponents;
 import net.minecraft.network.FriendlyByteBuf;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Codec for serializing and deserializing {@link SignElement} objects.
@@ -41,6 +45,18 @@ public interface SignElementCodec {
                         styleTag.putInt("paddingY", style.paddingY());
                         styleTag.putInt("textAlignment", text.style().textAlignment().ordinal());
                         styleTag.putInt("lineGap", text.style().lineGap());
+                        if (style.isBold()) {
+                            styleTag.putBoolean("bold", true);
+                        }
+                        if (style.isItalic()) {
+                            styleTag.putBoolean("italic", true);
+                        }
+                        if (style.isUnderline()) {
+                            styleTag.putBoolean("underlined", true);
+                        }
+                        if (style.isStrikethrough()) {
+                            styleTag.putBoolean("strikethrough", true);
+                        }
                         tag.putTag("style", styleTag);
                     } else if (element instanceof SymbolElement symbol) {
                         tag.putResourceLocation("symbol", symbol.symbolId());
@@ -78,6 +94,19 @@ public interface SignElementCodec {
                             var textAlignmentString = styleTag.getString("textAlignment").orElse("CENTER");
                             var textAlignment = TextStyle.TextAlignment.valueOf(textAlignmentString);
                             var lineGap = styleTag.getInt("lineGap").orElse(0);
+                            Set<TextStyle.Formatting> formattings = new HashSet<>();
+                            if (styleTag.getBoolean("bold").orElse(false)) {
+                                formattings.add(TextStyle.Formatting.BOLD);
+                            }
+                            if (styleTag.getBoolean("italic").orElse(false)) {
+                                formattings.add(TextStyle.Formatting.ITALIC);
+                            }
+                            if (styleTag.getBoolean("underlined").orElse(false)) {
+                                formattings.add(TextStyle.Formatting.UNDERLINE);
+                            }
+                            if (styleTag.getBoolean("strikethrough").orElse(false)) {
+                                formattings.add(TextStyle.Formatting.STRIKETHROUGH);
+                            }
                             var style = new TextStyle(
                                 color,
                                 backgroundColor,
@@ -86,7 +115,8 @@ public interface SignElementCodec {
                                 paddingX,
                                 paddingY,
                                 textAlignment,
-                                lineGap
+                                lineGap,
+                                formattings
                             );
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }
@@ -128,6 +158,10 @@ public interface SignElementCodec {
                         buf.writeInt(style.paddingY());
                         buf.writeInt(style.textAlignment().ordinal());
                         buf.writeInt(style.lineGap());
+                        buf.writeBoolean(style.isBold());
+                        buf.writeBoolean(style.isItalic());
+                        buf.writeBoolean(style.isUnderline());
+                        buf.writeBoolean(style.isStrikethrough());
                     } else if (element instanceof SymbolElement symbol) {
                         buf.writeResourceLocation(symbol.symbolId());
                         TextureSource.codec().writePacket(buf, symbol.textureSource());
@@ -155,6 +189,19 @@ public interface SignElementCodec {
                             var paddingY = buf.readInt();
                             var textAlignment = TextStyle.TextAlignment.values()[buf.readInt()];
                             var lineGap = buf.readInt();
+                            Set<TextStyle.Formatting> formattings = new HashSet<>();
+                            if (buf.readBoolean()) {
+                                formattings.add(TextStyle.Formatting.BOLD);
+                            }
+                            if (buf.readBoolean()) {
+                                formattings.add(TextStyle.Formatting.ITALIC);
+                            }
+                            if (buf.readBoolean()) {
+                                formattings.add(TextStyle.Formatting.UNDERLINE);
+                            }
+                            if (buf.readBoolean()) {
+                                formattings.add(TextStyle.Formatting.STRIKETHROUGH);
+                            }
                             var style = new TextStyle(
                                 color,
                                 backgroundColor,
@@ -163,7 +210,8 @@ public interface SignElementCodec {
                                 paddingX,
                                 paddingY,
                                 textAlignment,
-                                lineGap
+                                lineGap,
+                                formattings
                             );
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }

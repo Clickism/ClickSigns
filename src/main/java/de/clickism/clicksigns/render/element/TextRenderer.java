@@ -7,6 +7,7 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.FormattedCharSequence;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
@@ -71,6 +72,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      */
     private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
+        var componentStyle = style.asComponentStyle();
         var color = roadSign.colorResolver().resolve(style.color());
         var font = Util.font();
         context.withTextTransform(font, () -> {
@@ -79,8 +81,9 @@ public class TextRenderer implements ElementRenderer<TextElement> {
             for (int i = element.lines().size() - 1; i >= 0; i--) {
                 var line = element.lines().get(i);
                 int offsetX = element.lineXOffset(line);
+                var formatted = FormattedCharSequence.forward(line, componentStyle);
                 font.drawInBatch(
-                    line,
+                    formatted,
                     offsetX, -offsetY,
                     multiplyColor(color, COLOR_DARKEN_FACTOR),
                     false,

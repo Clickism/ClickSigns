@@ -33,7 +33,7 @@ public class ColorParser {
 
     private int parseColor(String color, ColorResolver colorResolver) throws IllegalArgumentException {
         // Hex color
-        if (color.startsWith("#")) {
+        if (color.startsWith("#") || color.matches("^[0-9a-fA-F]{6}$")) {
             var hexColor = parseHex(color);
             if (hexColor == null) {
                 throw new IllegalArgumentException("Invalid hex color: " + color);
@@ -56,8 +56,10 @@ public class ColorParser {
      * @return the parsed Color object, or null if the string is not a valid hex color
      */
     public @Nullable Integer parseHex(String hex) throws IllegalArgumentException {
-        if (!hex.startsWith("#")) return null;
         try {
+            if (!hex.startsWith("#")) {
+                hex = "#" + hex;
+            }
             return Color.decode(hex).getRGB();
         } catch (NumberFormatException e) {
             return null;

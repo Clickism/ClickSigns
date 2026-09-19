@@ -5,8 +5,11 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.elements.Box;
 import de.clickism.clickui.elements.Text;
+import de.clickism.clickui.layout.Align;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+
+import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -96,6 +99,26 @@ public interface CommonComponents extends BaseComponents {
             .style(style()
                 .fontScale(0.8f)
                 .alpha(0.8f));
+    }
+
+    default UiElement<?> checkboxWithText(Component text, boolean initial, Consumer<Boolean> onCheckedChange) {
+        return box()
+            .horizontal()
+            .growWidth()
+            .crossAlign(Align.CENTER)
+            .childGap(4)
+            .padding(2)
+            .style(style()
+                .backgroundColor(UiColor.BLACK_A20))
+            .children(
+                checkbox()
+                    .checked(initial)
+                    .onCheckedChange(onCheckedChange),
+                text(text)
+                    .style(style()
+                        .fontScale(0.8f)
+                        .alpha(0.8f)
+                    ));
     }
 
     default UiElement<?> action(Component text) {

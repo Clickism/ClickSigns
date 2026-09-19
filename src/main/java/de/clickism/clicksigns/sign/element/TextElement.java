@@ -3,6 +3,7 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.util.Util;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.List;
@@ -84,7 +85,7 @@ public record TextElement(
      * @return the X offset for the line of text
      */
     public int lineXOffset(String line) {
-        var lineWidth = Util.font().width(line);
+        var lineWidth = Util.font().width(formattedText(line));
         var totalWidth = unpaddedSize().width();
         return switch (style.textAlignment()) {
             case LEFT -> 0;
@@ -161,12 +162,23 @@ public record TextElement(
     public Size unpaddedSize() {
         var lines = lines();
         var maxLineWidth = lines.stream()
+            .map(this::formattedText)
             .mapToInt(Util.font()::width)
             .max()
             .orElse(0);
         var lineHeight = Util.font().lineHeight;
         var height = lineHeight * lines.size() + (lines.size() - 1) * style.lineGap();
         return new Size(maxLineWidth, height);
+    }
+
+    /**
+     * Returns a FormattedCharSequence for the given text, applying the text style.
+     *
+     * @param text the text to format
+     * @return a FormattedCharSequence with the applied text style
+     */
+    public FormattedCharSequence formattedText(String text) {
+        return FormattedCharSequence.forward(text, style.asComponentStyle());
     }
 
     /**
