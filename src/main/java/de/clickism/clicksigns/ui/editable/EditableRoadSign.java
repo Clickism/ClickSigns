@@ -103,7 +103,7 @@ public class EditableRoadSign {
     private void matchPlateTextures() {
         var sign = build();
         for (var element : elements.values()) {
-            if (element.current() instanceof PlateElement plate) {
+            if (element.current() instanceof PlateElement plate && plate.matchSignTextures()) {
                 element.update(current ->
                     plate.matchTextures(sign.frontSource(), sign.backSource()));
             }
