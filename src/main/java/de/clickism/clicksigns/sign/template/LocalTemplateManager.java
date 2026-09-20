@@ -56,10 +56,11 @@ public class LocalTemplateManager {
     }
 
     public void saveAsTemplate(Template.Meta meta, RoadSign sign, boolean includeTexts) {
-        var path = root.resolve(meta.name().toLowerCase() + ".template.json");
+        var pathName = cleanName(meta.name());
+        var path = root.resolve(pathName + ".template.json");
         int counter = 1;
         while (path.toFile().exists()) {
-            path = root.resolve(meta.name().toLowerCase() + "_" + counter + ".template.json");
+            path = root.resolve(pathName + "_" + counter + ".template.json");
             counter++;
         }
         saveAsTemplate(path, meta, sign, includeTexts);
@@ -67,5 +68,9 @@ public class LocalTemplateManager {
 
     public void saveAsTemplate(Path path, Template.Meta meta, RoadSign sign, boolean includeTexts) {
         loader.saveAsTemplate(path, meta, sign, includeTexts);
+    }
+
+    public static String cleanName(String name) {
+        return name.toLowerCase().replaceAll("[^a-z0-9_\\-.]", "_");
     }
 }

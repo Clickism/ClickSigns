@@ -103,7 +103,7 @@ public class SignView extends UiComponent<SignView> {
         // Calculate maximum bounds of the sign and its elements
         var maxBounds = maxRelativeBounds();
         // Add main texture
-        var texture = roadSign.build().frontTexture();
+        var texture = roadSign.frontSource().resolve(roadSign.colorResolver());
         var mainSignElement = UiUtil.imageOf(texture)
             .relative(-maxBounds.x(), -maxBounds.y());
         this.mainSignElement = mainSignElement;
@@ -187,7 +187,7 @@ public class SignView extends UiComponent<SignView> {
     private Point elementPosition(SignElement element, Rect maxBounds) {
         float x = element.alignedX() * UI_SCALE;
         // Y position is inverted
-        float signHeight = this.roadSign.build().height();
+        float signHeight = this.roadSign.height();
         float y = (signHeight - element.alignedY()
                    - element.height()) * UI_SCALE;
         return new Point((int) x - maxBounds.x(), (int) y - maxBounds.y());
@@ -200,7 +200,7 @@ public class SignView extends UiComponent<SignView> {
      * @return a UiElement representing the view for the given SignElement
      */
     protected UiElement<?> createViewFor(Editable<SignElement> editableElement) {
-        var colorResolver = roadSign.build().colorResolver();
+        var colorResolver = roadSign.colorResolver();
         var element = editableElement.current();
         if (element instanceof PlateElement plate) {
             return new PlateView(plate, colorResolver);
@@ -230,14 +230,14 @@ public class SignView extends UiComponent<SignView> {
      */
     private Rect maxRelativeBounds() {
         // Size based on bounds of the elements
-        var sign = roadSign.build();
         // Relative bounds
         int minX = 0;
         int minY = 0;
-        int maxX = sign.width();
-        int maxY = sign.height();
+        int maxX = roadSign.width();
+        int maxY = roadSign.height();
 
-        for (var element : sign.elements()) {
+        for (var editable : roadSign.elements()) {
+            var element = editable.current();
             minX = Mth.floor(Math.min(minX, element.alignedX()));
             minY = Mth.floor(Math.min(minY, element.alignedY()));
             maxX = Mth.ceil(Math.max(maxX, element.alignedX() + element.width()));
@@ -249,7 +249,7 @@ public class SignView extends UiComponent<SignView> {
 
         minX = Mth.floor(minX * UI_SCALE);
         // Convert to UI coord
-        minY = sign.height() * UI_SCALE
+        minY = roadSign.height() * UI_SCALE
                - Mth.floor(maxY * UI_SCALE);
 
         // Give in UI coordinates
