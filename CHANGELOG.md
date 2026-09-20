@@ -35,13 +35,14 @@ However, the mod is close to being feature complete, and the full release will l
  a sign, allowing you to create more complex signs.
 - Templates are now fully optional, and are a way to save the signs that you make.
  There are now two types of templates:
-  - **Local Templates**: These are saved to your local machine and can be used in any world/server.
+    - **Local Templates**: These are saved to your local machine and can be used in any world/server. (Stored in
+      .minecraft/sign_templates)
   - **Resource Templates**: These are loaded from a resource pack, and are given by the resource pack creator (or are built in to the mod).
 - You can still add custom textures using resource packs, but now you need to create **wayyy** fewer textures, as the symbols/arrows are added dynamically, and size variations are generated using tilesets.
 - **Texture Pipelines:** The mod internally uses a texture pipeline to generate textures for the sign, for example tiling a texture to a given size, or replacing a color in an arrow to contrast with the sign's background. These tools are also available to you via the **Texture Pipeline Editor**, giving you infinite power to create practially any texture you want. To use the texture editor, click on the "Edit" button under a texture button.
   - Currently available processors are: **Tiler**, **Replace Color**, **Flip** and **Rotate**.
 - Added many new textures/symbols:
   - Some EU signs (more to be added)
-  - Street, highway, and rounded textures (with different styles)
+  - Street, highway, and rounded textures (with different styles) with more realistic colors.
   - Many new arrows, including connectors, flat arrows, roundabouts, curved arrows, and more.
 
