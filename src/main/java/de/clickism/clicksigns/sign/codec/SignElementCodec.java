@@ -91,8 +91,8 @@ public interface SignElementCodec {
                             var outlineWidth = styleTag.getInt("outlineWidth").orElseThrow();
                             var paddingX = styleTag.getInt("paddingX").orElseThrow();
                             var paddingY = styleTag.getInt("paddingY").orElseThrow();
-                            var textAlignmentString = styleTag.getString("textAlignment").orElse("CENTER");
-                            var textAlignment = TextStyle.TextAlignment.valueOf(textAlignmentString);
+                            var textAlignmentOrdinal = styleTag.getInt("textAlignment").orElse(TextStyle.TextAlignment.CENTER.ordinal());
+                            var textAlignment = TextStyle.TextAlignment.values()[textAlignmentOrdinal];
                             var lineGap = styleTag.getInt("lineGap").orElse(0);
                             Set<TextStyle.Formatting> formattings = new HashSet<>();
                             if (styleTag.getBoolean("bold").orElse(false)) {
