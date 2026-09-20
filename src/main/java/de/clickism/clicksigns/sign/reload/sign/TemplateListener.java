@@ -1,8 +1,9 @@
-package de.clickism.clicksigns.sign.reload;
+package de.clickism.clicksigns.sign.reload.sign;
 
 import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.reload.SimpleReloadListener;
 import de.clickism.clicksigns.sign.template.TemplateParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

@@ -1,10 +1,10 @@
 package de.clickism.clicksigns;
 
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.sign.reload.StaticTextureListener;
-import de.clickism.clicksigns.sign.reload.SymbolListener;
-import de.clickism.clicksigns.sign.reload.TemplateListener;
-import de.clickism.clicksigns.sign.reload.TileSetListener;
+import de.clickism.clicksigns.sign.reload.sign.StaticTextureListener;
+import de.clickism.clicksigns.sign.reload.sign.SymbolListener;
+import de.clickism.clicksigns.sign.reload.sign.TemplateListener;
+import de.clickism.clicksigns.sign.reload.sign.TileSetListener;
 import de.clickism.clicksigns.sign.template.LocalTemplateManager;
 
 /**

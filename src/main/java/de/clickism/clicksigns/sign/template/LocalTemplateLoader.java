@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 
-import static de.clickism.clicksigns.sign.reload.TemplateListener.TEMPLATE_EXTENSION;
+import static de.clickism.clicksigns.sign.reload.sign.TemplateListener.TEMPLATE_EXTENSION;
 
 public class LocalTemplateLoader implements JsonHandler {
     public static final String LOCAL_TEMPLATE_NAMESPACE = "local";

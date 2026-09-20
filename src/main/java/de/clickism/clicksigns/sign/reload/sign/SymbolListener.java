@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.reload;
+package de.clickism.clicksigns.sign.reload.sign;
 
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
@@ -6,6 +6,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.reload.DefinedTextureListener;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

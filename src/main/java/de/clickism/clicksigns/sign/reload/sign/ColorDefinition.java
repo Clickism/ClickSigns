@@ -1,4 +1,4 @@
-package de.clickism.clicksigns.sign.reload;
+package de.clickism.clicksigns.sign.reload.sign;
 
 import de.clickism.clicksigns.sign.color.ColorResolver;
 

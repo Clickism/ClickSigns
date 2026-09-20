@@ -1,8 +1,9 @@
-package de.clickism.clicksigns.sign.reload;
+package de.clickism.clicksigns.sign.reload.sign;
 
 import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.TileSet;
+import de.clickism.clicksigns.sign.reload.DefinedTextureListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
