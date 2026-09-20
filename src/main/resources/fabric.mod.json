@@ -33,7 +33,7 @@
   },
   "mixins": [],
   "depends": {
-    "fabricloader": ">=${fabric_loader_version}",
+    "fabricloader": "*",
     "minecraft": "${minecraft_version}",
     "java": ">=17",
     "fabric-api": "*"
