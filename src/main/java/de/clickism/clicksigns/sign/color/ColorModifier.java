@@ -5,7 +5,7 @@ import net.minecraft.util.FastColor;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.minecraft.util.FastColor.ABGR32.*;
+import static net.minecraft.util.FastColor.ARGB32.*;
 
 public interface ColorModifier {
     Map<String, ColorModifier> ALL = new HashMap<>();
