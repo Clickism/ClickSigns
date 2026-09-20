@@ -60,7 +60,7 @@ public class LocalTemplateLoader implements JsonHandler {
             Files.createDirectories(path.getParent());
             Files.writeString(path, GSON.toJson(jsonObject));
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save template to path: " + path, e);
+            ClickSigns.LOGGER.error("Failed to save template to path: {}", path, e);
         }
     }
 

@@ -6,9 +6,7 @@ import de.clickism.clicksigns.serialization.codec.CommonCodec;
 import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.color.ColorResolver;
-import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
-import de.clickism.clicksigns.sign.texture.source.processors.ReplaceColor;
-import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
+import de.clickism.clicksigns.sign.texture.source.processors.*;
 import net.minecraft.network.chat.Component;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
@@ -20,6 +18,8 @@ public interface TextureProcessor extends TypeKeyed {
             case Tiler.TYPE -> Tiler.codec();
             case ReplaceColor.TYPE -> ReplaceColor.codec();
             case AlphaMask.TYPE -> AlphaMask.codec();
+            case Flip.TYPE -> Flip.codec();
+            case Rotate.TYPE -> Rotate.codec();
             default -> throw new UnsupportedOperationException(
                 "Serialization of TextureProcessor of type: " + typeKey + " is not supported."
             );

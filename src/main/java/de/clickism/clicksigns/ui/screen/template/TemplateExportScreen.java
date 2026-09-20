@@ -141,13 +141,17 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .disabled(!isValid.get())
                         .growWidth()
                         .onClick(event -> {
-                            var json = new TemplateParser().toJson(
-                                Template.Meta.placeholder(),
-                                roadSign.build(),
-                                includeTexts.get().checked()
-                            );
-                            var string = GSON.toJson(json);
-                            UiUtil.copyToClipboard(string);
+                            try {
+                                var json = new TemplateParser().toJson(
+                                    Template.Meta.placeholder(),
+                                    roadSign.build(),
+                                    includeTexts.get().checked()
+                                );
+                                var string = GSON.toJson(json);
+                                UiUtil.copyToClipboard(string);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                         })
                 )
         );
