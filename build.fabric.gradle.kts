@@ -116,7 +116,7 @@ publishMods {
         minecraftVersions.addAll(mcVersions)
     }
     github {
-        displayName.set("${property("mod.version")} (Forge)")
+        displayName.set("${property("mod.version")} (Fabric)")
         type.set(STABLE)
         accessToken.set(System.getenv("GITHUB_TOKEN"))
         repository.set("Clickism/ClickSigns")
