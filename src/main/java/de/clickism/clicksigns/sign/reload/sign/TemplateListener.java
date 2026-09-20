@@ -31,6 +31,11 @@ public class TemplateListener extends SimpleReloadListener<TemplateListener.Cate
     }
 
     @Override
+    protected int priority(CategoryJson category) {
+        return category.priority();
+    }
+
+    @Override
     protected void processResource(
         ResourceLocation location,
         Resource resource,
@@ -52,7 +57,8 @@ public class TemplateListener extends SimpleReloadListener<TemplateListener.Cate
      * @param name name of the category
      */
     protected record CategoryJson(
-        String name
+        String name,
+        int priority
     ) {
     }
 }

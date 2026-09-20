@@ -71,11 +71,15 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
         add(box);
 
         categoryToEntries.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey(Comparator.comparing(Category::name)))
+            // Sort via last path segment of the category, so that we can "hack" the order by using a prefix in the category path
+            .sorted(Map.Entry.comparingByKey(
+                Comparator.comparingInt((Category<?> c) -> -c.priority())
+                .thenComparing(Category::displayName))
+            )
             .forEach(mapEntry -> {
                 var category = mapEntry.getKey();
                 var entries = mapEntry.getValue();
-                var label = l(category.name());
+                var label = l(category.displayName());
                 var description = categoryDescriptions.get(category);
                 if (description != null) {
                     label = label.copy().append(" ").append(description);

@@ -36,6 +36,11 @@ public class TileSetListener extends DefinedTextureListener<TileSetListener.Tile
     }
 
     @Override
+    protected int priority(CategoryJson category) {
+        return category.priority();
+    }
+
+    @Override
     protected void processImage(
         ResourceLocation location,
         Resource resource,
@@ -75,9 +80,11 @@ public class TileSetListener extends DefinedTextureListener<TileSetListener.Tile
      * Category JSON format for tileset category definitions.
      *
      * @param name name of the category
+     * @param priority priority of the category
      */
     protected record CategoryJson(
         String name,
+        int priority,
         @SerializedName("default")
         @Nullable TileSetDefinition defaultDefinition
     ) implements CategoryWithDefault<TileSetDefinition> {

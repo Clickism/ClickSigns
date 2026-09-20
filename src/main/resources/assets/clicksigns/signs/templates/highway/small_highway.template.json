@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "name": "Small Highway",
+    "author": "ClickToPlay"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/blue.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 42,
+          "outputHeight": 24
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 42,
+          "outputHeight": 24
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 31,
+        "y": 12,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/highway/forward.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/highway/forward.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "text",
+        "x": 5,
+        "y": 8,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "New Town\nVillage",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 0,
+          "lineGap": 4
+        }
+      },
+      {
+        "type": "text",
+        "x": 11,
+        "y": 17,
+        "alignment": "CENTER",
+        "scale": 1.2222222,
+        "text": "A 5",
+        "style": {
+          "color": "foreground",
+          "backgroundColor": "blue:l11",
+          "outlineColor": "white",
+          "outlineWidth": 1,
+          "paddingX": 4,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

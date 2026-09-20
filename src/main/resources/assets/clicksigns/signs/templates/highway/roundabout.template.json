@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "name": "Roundabout",
+    "author": "ClickToPlay"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/rounded/white.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 6,
+          "outputWidth": 56,
+          "outputHeight": 48
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 56,
+          "outputHeight": 48
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 12,
+        "y": 16,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/circle.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/circle.png",
+          "processors": []
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 17,
+        "y": 22,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/right_diagonal.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/right_diagonal.png",
+          "processors": []
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 20,
+        "y": 16,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/right.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/right.png",
+          "processors": []
+        }
+      },
+      {
+        "type": "text",
+        "x": 39,
+        "y": 16,
+        "alignment": "CENTER",
+        "scale": 1.1111112,
+        "text": "New Village\nMountains\nLake",
+        "style": {
+          "color": "white",
+          "backgroundColor": "green",
+          "outlineColor": "black",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 2,
+          "textAlignment": 1,
+          "lineGap": 2
+        }
+      },
+      {
+        "type": "text",
+        "x": 22,
+        "y": 39,
+        "alignment": "CENTER",
+        "scale": 1.1111112,
+        "text": "City Center\nIndustrial",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 3
+        }
+      },
+      {
+        "type": "text",
+        "x": 23,
+        "y": 30,
+        "alignment": "CENTER",
+        "scale": 1.1111112,
+        "text": "🚊 Train Station",
+        "style": {
+          "color": "white",
+          "backgroundColor": "blue",
+          "outlineColor": "black",
+          "outlineWidth": 1,
+          "paddingX": 4,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

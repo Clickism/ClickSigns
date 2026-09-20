@@ -34,6 +34,11 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
     }
 
     @Override
+    protected int priority(CategoryJson category) {
+        return category.priority();
+    }
+
+    @Override
     protected void processImage(
         ResourceLocation location,
         Resource resource,
@@ -95,6 +100,7 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
      */
     protected record CategoryJson(
         String name,
+        int priority,
         @Nullable List<ResourceLocation> includeCategories,
         @SerializedName("default")
         @Nullable SymbolDefinition defaultDefinition

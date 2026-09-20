@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "name": "Default",
+    "author": "ClickToPlay"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/street/white.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 16
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 16
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 5,
+        "y": 8,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/street/right_curvy.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/street/right_curvy.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "text",
+        "x": 9,
+        "y": 12,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 9,
+        "y": 8,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 9,
+        "y": 4,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

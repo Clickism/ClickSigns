@@ -60,7 +60,8 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
                 ClickSigns.LOGGER.error("Category {} in {} has no name. Ignoring...", identifier.toString(), subDirectory);
                 return;
             }
-            registry.createAndRegisterCategory(identifier, name);
+            var priority = priority(json);
+            registry.createAndRegisterCategory(identifier, name, priority);
         });
         // Process resources
         extensionProcessors.forEach((fileSuffix, processor) -> {
@@ -84,6 +85,14 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
      * @return the category name
      */
     protected abstract String categoryName(C category);
+
+    /**
+     * Gets the priority of the category.
+     *
+     * @param category the category to get the priority of
+     * @return the priority of the category
+     */
+    protected abstract int priority(C category);
 
     /**
      * Processes a category after all resources have been processed.

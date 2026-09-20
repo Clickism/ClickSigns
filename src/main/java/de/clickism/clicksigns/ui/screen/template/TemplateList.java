@@ -55,13 +55,13 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
         } else {
             // Add resource templates
             SignRegistries.RESOURCE_TEMPLATES.allCategories().stream()
-                .sorted(Comparator.comparing(Category::name))
+                .sorted(Comparator.comparing(Category::displayName))
                 .forEach(category -> {
                     var entries = category.resolveEntries().stream()
                         .sorted(Comparator.comparing(template -> template.meta().name()))
                         .toList();
                     if (entries.isEmpty()) return;
-                    box.add(category(l(category.name())));
+                    box.add(category(l(category.displayName())));
                     entries.forEach(template -> {
                         box.add(entry(template));
                         templates.add(template);

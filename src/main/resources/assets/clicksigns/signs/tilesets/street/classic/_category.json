@@ -1,10 +1,10 @@
 {
-  "name": "Plain",
+  "name": "Street Classic",
   "default": {
     "cornerSize": 4,
     "colors": {
       "foreground": "white"
     }
   },
-  "priority": -90
+  "priority": -1
 }

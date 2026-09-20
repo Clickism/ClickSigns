@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static de.clickism.clicksigns.util.ComponentUtil.t;
-
 /**
  * Represents a category of symbols.
  */
@@ -17,17 +15,20 @@ public class Category<T extends Categorized<T>> {
     private final String name;
     private final Set<ResourceLocation> entries = new HashSet<>();
     private final CategorizedRegistry<T> registry;
+    private final int priority;
 
     /**
      * Creates a new category with the given name.
      *
      * @param identifier the unique identifier for this category
      * @param name       the name of the category
+     * @param priority   the priority of the category
      */
-    public Category(ResourceLocation identifier, String name, CategorizedRegistry<T> registry) {
+    public Category(ResourceLocation identifier, String name, CategorizedRegistry<T> registry, int priority) {
         this.identifier = identifier;
         this.name = name;
         this.registry = registry;
+        this.priority = priority;
     }
 
     /**
@@ -53,8 +54,17 @@ public class Category<T extends Categorized<T>> {
      *
      * @return the name of this category
      */
-    public String name() {
+    public String displayName() {
         return name;
+    }
+
+    /**
+     * Gets the priority of this category.
+     *
+     * @return the priority of this category
+     */
+    public int priority() {
+        return priority;
     }
 
     /**

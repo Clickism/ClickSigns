@@ -49,7 +49,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
         return new Category<>(
             ClickSigns.identifier("uncategorized"),
             t("clicksigns.category.uncategorized").getString(),
-            this
+            this,
+            Integer.MIN_VALUE
         );
     }
 
@@ -153,8 +154,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created category
      */
-    public Category<T> createCategory(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, this);
+    public Category<T> createCategory(ResourceLocation identifier, String name, int priority) {
+        return new Category<>(identifier, name, this, priority);
     }
 
     /**
@@ -164,8 +165,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created and registered category
      */
-    public Category<T> createAndRegisterCategory(ResourceLocation identifier, String name) {
-        var category = createCategory(identifier, name);
+    public Category<T> createAndRegisterCategory(ResourceLocation identifier, String name, int priority) {
+        var category = createCategory(identifier, name, priority);
         registerCategory(category);
         return category;
     }
