@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("net.neoforged.moddev.legacyforge") version "2.0.141"
+    id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -87,4 +88,34 @@ tasks.processResources {
 
 tasks.named("createMinecraftArtifacts") {
     dependsOn(tasks.named("stonecutterGenerate"))
+}
+
+publishMods {
+    displayName.set("ClickSigns ${property("mod.version")} for Forge")
+    file.set(tasks.jar.get().archiveFile)
+    version.set(project.version.toString())
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
+    type.set(BETA)
+    modLoaders.add("forge")
+    val mcVersions = property("mod.publishing_target_minecraft_versions").toString().split(',')
+    modrinth {
+        accessToken.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("xaXWiLzT")
+        requires("fabric-api")
+        minecraftVersions.addAll(mcVersions)
+        environment.set(CLIENT_AND_SERVER)
+    }
+    curseforge {
+        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+        projectId.set("1161795")
+        client.set(true)
+        server.set(true)
+        requires("fabric-api")
+        minecraftVersions.addAll(mcVersions)
+    }
+    github {
+        accessToken.set(System.getenv("GITHUB_TOKEN"))
+        repository.set("Clickism/ClickSigns")
+        commitish = "master"
+    }
 }
