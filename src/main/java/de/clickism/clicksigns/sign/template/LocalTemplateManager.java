@@ -39,10 +39,6 @@ public class LocalTemplateManager {
         return Collections.unmodifiableCollection(templates.values());
     }
 
-    public boolean isLocal(Template template) {
-        return templates.containsValue(template);
-    }
-
     public void deleteTemplate(Template template) {
         var path = templates.entrySet().stream()
             .filter(entry -> entry.getValue().equals(template))
