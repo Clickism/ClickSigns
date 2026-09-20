@@ -16,6 +16,10 @@ much more complex and realistic signs than ever before.
 > The information in this readme is mostly outdated for the new version, and will be updated soon.
 >
 > 2.0 is currently in beta, and will soon be released as a full version
+>
+> Here's a tiny showcase of what's possible in 2.0:
+>
+> ![](https://cdn.modrinth.com/data/xaXWiLzT/images/035b3f5761c075339fb6ff47c37772dd8c149f8b.png)
 
 ### How to: Create & Edit Road Signs
 To craft a *Road Sign*, put **8 iron ingots** around **any sign**:
