@@ -93,8 +93,10 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
     }
 
     private UiElement<?> entry(Template template) {
-        return text(template.identifier().getNamespace() + " : " + template.meta().name())
-            .padding(5, 12, 4, 12)
+        var namespace = template.identifier().getNamespace();
+        var name = SignRegistries.PACK_NAMES.getOrDefault(namespace, capitalize(namespace));
+        return text(name + " : " + template.meta().name())
+            .padding(5, 12, 4, 24)
             .growWidth()
             .tooltip(box()
                 .padding(4)
@@ -114,6 +116,11 @@ public class TemplateList extends UiComponent<TemplateList> implements CommonCom
                 selected = template;
                 onTemplateSelected.accept(template);
             });
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     public TemplateList onTemplateSelected(Consumer<Template> onTemplateSelected) {

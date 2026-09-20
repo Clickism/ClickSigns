@@ -1,10 +1,7 @@
 package de.clickism.clicksigns;
 
 import de.clickism.clicksigns.platform.Platform;
-import de.clickism.clicksigns.sign.reload.sign.StaticTextureListener;
-import de.clickism.clicksigns.sign.reload.sign.SymbolListener;
-import de.clickism.clicksigns.sign.reload.sign.TemplateListener;
-import de.clickism.clicksigns.sign.reload.sign.TileSetListener;
+import de.clickism.clicksigns.sign.reload.sign.*;
 import de.clickism.clicksigns.sign.template.LocalTemplateManager;
 
 /**
@@ -23,6 +20,7 @@ public class ClickSignsClient {
         // Local template manager
         LOCAL_TEMPLATE_MANAGER.initialize();
         // Add reload listeners
+        Platform.get().addReloadListener(new PackListener());
         Platform.get().addReloadListener(new TileSetListener());
         Platform.get().addReloadListener(new StaticTextureListener());
         Platform.get().addReloadListener(new SymbolListener());

@@ -27,6 +27,9 @@ public interface SignReloadListener extends ReloadListener {
      * @return the full path with the root path as prefix
      */
     default String fromRoot(String path) {
+        if (path == null || path.isEmpty()) {
+            return ROOT_DIR;
+        }
         return ROOT_DIR + "/" + path;
     }
 

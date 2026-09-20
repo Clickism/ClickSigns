@@ -53,7 +53,7 @@ public class TileSetListener extends DefinedTextureListener<TileSetListener.Tile
         }
         if (definition.colors != null) {
             var resolver = definition.colors.toColorResolver();
-            SignRegistries.TILE_SET_COLOR_RESOLVERS.register(location, resolver);
+            SignRegistries.TILE_SET_COLOR_RESOLVERS.put(location, resolver);
         }
         SignRegistries.TILE_SETS.register(definition.toTileSet(location, categoryId));
     }

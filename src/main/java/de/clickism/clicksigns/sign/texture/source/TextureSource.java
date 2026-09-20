@@ -122,11 +122,11 @@ public record TextureSource(
      */
     public ColorResolver colorResolver() {
         // Check if registered
-        if (SignRegistries.TILE_SET_COLOR_RESOLVERS.hasResolver(base)) {
-            return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base);
+        if (SignRegistries.TILE_SET_COLOR_RESOLVERS.containsKey(base)) {
+            return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base, ColorResolver.withDefault());
         }
-        if (SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.hasResolver(base)) {
-            return SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.getOrDefault(base);
+        if (SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.containsKey(base)) {
+            return SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.getOrDefault(base, ColorResolver.withDefault());
         }
         // Check if a dynamic resolver is available
         if (DYNAMIC_COLOR_RESOLVERS.containsKey(base)) {

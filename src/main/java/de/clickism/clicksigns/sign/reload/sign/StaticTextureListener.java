@@ -49,7 +49,7 @@ public class StaticTextureListener extends DefinedTextureListener<StaticTextureL
     ) {
         if (definition != null) {
             var resolver = definition.colors.toColorResolver();
-            SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.register(location, resolver);
+            SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.put(location, resolver);
         }
         SignRegistries.STATIC_TEXTURES.register(new StaticTexture(location, categoryId));
     }
