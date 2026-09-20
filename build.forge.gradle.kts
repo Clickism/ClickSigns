@@ -101,7 +101,6 @@ publishMods {
     modrinth {
         accessToken.set(System.getenv("MODRINTH_TOKEN"))
         projectId.set("xaXWiLzT")
-        requires("fabric-api")
         minecraftVersions.addAll(mcVersions)
         environment.set(CLIENT_AND_SERVER)
     }
@@ -110,7 +109,6 @@ publishMods {
         projectId.set("1161795")
         client.set(true)
         server.set(true)
-        requires("fabric-api")
         minecraftVersions.addAll(mcVersions)
     }
     github {
