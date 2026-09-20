@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "name": "Roundabout 2",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/rounded/blue.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 6,
+          "outputWidth": 64,
+          "outputHeight": 34
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 64,
+          "outputHeight": 34
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 16,
+        "y": 11,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/ellipse.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/ellipse.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 25,
+        "y": 16,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/right_diagonal.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/right_diagonal.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 14,
+        "y": 19,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/up.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/up.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 26,
+        "y": 10,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/circular/right.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/circular/right.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "text",
+        "x": 46,
+        "y": 10,
+        "alignment": "CENTER",
+        "scale": 1.3333334,
+        "text": "City Center",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 40,
+        "y": 20,
+        "alignment": "CENTER",
+        "scale": 1.4444444,
+        "text": "Farms",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 17,
+        "y": 26,
+        "alignment": "CENTER",
+        "scale": 1.3333334,
+        "text": "Nether",
+        "style": {
+          "color": "foreground",
+          "backgroundColor": "brown",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

@@ -3,17 +3,10 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.sign.reload.SignReloadListener;
-import de.clickism.clicksigns.sign.reload.SymbolListener;
-import de.clickism.clicksigns.sign.reload.TemplateListener;
-import de.clickism.clicksigns.sign.reload.TileSetListener;
-import de.clickism.clicksigns.sign.template.local.LocalTemplateManager;
-import net.minecraft.network.chat.Component;
+import de.clickism.clicksigns.sign.reload.*;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// TODO: Add loading/saving/sharing templates
 
 /**
  * Main mod class
@@ -29,24 +22,13 @@ public class ClickSigns {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     /**
-     * Manager for local templates stored in .minecraft/sign_templates
-     */
-    public static final LocalTemplateManager LOCAL_TEMPLATE_MANAGER = new LocalTemplateManager();
-
-    /**
-     * Initializes the mod, registers block, block entity types, packets and reload listeners
+     * Initializes the server mod.
      */
     public static void initialize() {
         ClickSignsBlocks.initialize();
         ClickSignsBlockEntityTypes.initialize();
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
-        Platform.network().register(); // Register network
-        // Local template manager
-        LOCAL_TEMPLATE_MANAGER.initialize();
-        // Add reload listener
-        Platform.get().addReloadListener(new TileSetListener());
-        Platform.get().addReloadListener(new SymbolListener());
-        Platform.get().addReloadListener(new TemplateListener());
+        Platform.network().registerServer(); // Register network
     }
 
     /**

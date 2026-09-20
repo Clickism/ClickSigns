@@ -1,0 +1,10 @@
+{
+  "name": "Plain",
+  "default": {
+    "cornerSize": 4,
+    "colors": {
+      "foreground": "white"
+    }
+  },
+  "priority": -90
+}

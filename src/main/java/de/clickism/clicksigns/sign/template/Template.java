@@ -4,22 +4,17 @@ import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.util.ComponentUtil;
-import de.clickism.clicksigns.util.PixelSized;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 public record Template(
     Meta meta,
-    Sign sign,
+    RoadSign signData,
     // Other data
-    // TODO: Maybe remove identifier at all? or make it nullable. Not needed for local templates
-    ResourceLocation identifier,
+    @NotNull ResourceLocation identifier,
     @Nullable ResourceLocation categoryId
 ) implements Categorized<Template> {
     /**
@@ -27,8 +22,8 @@ public record Template(
      *
      * @return a new RoadSign instance based on this template and the specified dimensions
      */
-    public RoadSign build() {
-        return sign.build();
+    public RoadSign roadSign() {
+        return signData.withAlignment(RoadSign.DEFAULT_ALIGNMENT);
     }
 
     @Override
@@ -39,13 +34,11 @@ public record Template(
     /**
      * Metadata for a sign template.
      *
-     * @param name        the display name of the template
-     * @param description a brief description of the template
-     * @param author      the author of the template
+     * @param name   the display name of the template
+     * @param author the author of the template
      */
     public record Meta(
         String name,
-        @Nullable String description,
         @Nullable String author
     ) {
         /**
@@ -54,41 +47,9 @@ public record Template(
          * @return a new Meta instance with placeholder values
          */
         public static Meta placeholder() {
-            var name = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.name"));
-            var description = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.description"));
-            var author = ComponentUtil.render(Component.translatable("clicksigns.template.placeholder.author"));
-            return new Meta(name, description, author);
-        }
-    }
-
-    /**
-     * Sign data for a sign template.
-     *
-     * @param width    the width of the sign in pixels
-     * @param height   the height of the sign in pixels
-     * @param front    the front texture source of the sign
-     * @param back     the back texture source of the sign
-     * @param elements the list of sign elements for the sign
-     */
-    public record Sign(
-        int width,
-        int height,
-        TextureSource front,
-        TextureSource back,
-        List<SignElement> elements
-    ) implements PixelSized {
-        /**
-         * Builds a road sign based on this sign data.
-         *
-         * @return a new RoadSign instance based on this sign data and the specified dimensions
-         */
-        private RoadSign build() {
-            return new RoadSign(
-                front.resize(width, height),
-                back.resize(width, height),
-                elements,
-                RoadSign.DEFAULT_ALIGNMENT
-            );
+            var name = t("clicksigns.template.placeholder.name").getString();
+            var author = t("clicksigns.template.placeholder.author").getString();
+            return new Meta(name, author);
         }
     }
 }

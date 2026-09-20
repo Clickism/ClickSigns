@@ -83,7 +83,13 @@ public abstract class Network {
      * Registers the network handlers.
      * Should be called during mod initialization.
      */
-    public abstract void register();
+    public abstract void registerServer();
+
+    /**
+     * Registers the network handlers for the client side.
+     * Should be called during client mod initialization.
+     */
+    public abstract void registerClient();
 
     /**
      * Handles a packet received on the server side.

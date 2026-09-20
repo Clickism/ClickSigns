@@ -1,19 +1,17 @@
 package de.clickism.clicksigns.sign.template;
 
 import com.google.gson.JsonObject;
+import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.sign.codec.RoadSignCodec;
+import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.JsonHandler;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
 
 /**
  * Template parsing logic.
  */
 public class TemplateParser implements JsonHandler {
-    private static final SignElementParser ELEMENT_PARSER = new SignElementParser();
-
     /**
      * Parses the given JSON into a template object.
      *
@@ -26,7 +24,7 @@ public class TemplateParser implements JsonHandler {
         JsonObject json,
         ResourceLocation location,
         ResourceLocation categoryId
-    ) {
+    ) throws Exception {
         var templateJson = fromJsonOrThrow(json, TemplateJson.class);
         return templateJson.parse(location, categoryId);
     }
@@ -40,15 +38,20 @@ public class TemplateParser implements JsonHandler {
      * @return the JSON object representing the template
      */
     public JsonObject toJson(Template.Meta meta, RoadSign roadSign, boolean includeTexts) {
-        var signJson = new TemplateJson.SignJson(
-            roadSign.width(),
-            roadSign.height(),
-            TextureSource.textureLocationOf(roadSign.frontSource()),
-            TextureSource.textureLocationOf(roadSign.backSource()),
-            roadSign.elements().stream()
-                .map(element -> ELEMENT_PARSER.toJson(element, includeTexts))
-                .toList()
-        );
+        var tag = new JsonTagImpl(new JsonObject());
+        if (!includeTexts) {
+            // Strip texts if not including them
+            roadSign = roadSign.withElements(roadSign.elements().stream()
+                .map(element -> {
+                    if (element instanceof TextElement text) {
+                        return text.withText("");
+                    }
+                    return element;
+                })
+                .toList());
+        }
+        RoadSignCodec.codec().writeTag(tag, roadSign);
+        var signJson = tag.jsonObject();
         var templateJson = new TemplateJson(meta, signJson);
         return toJsonObject(templateJson);
     }
@@ -61,53 +64,20 @@ public class TemplateParser implements JsonHandler {
      */
     private record TemplateJson(
         Template.Meta meta,
-        SignJson sign
+        JsonObject sign
     ) {
         /**
          * Converts the JSON into a template object
          */
-        private Template parse(ResourceLocation id, ResourceLocation categoryId) {
+        private Template parse(ResourceLocation id, ResourceLocation categoryId) throws Exception {
+            var tag = new JsonTagImpl(sign);
+            var parsedSign = RoadSignCodec.codec().readTag(tag);
             return new Template(
                 meta,
-                sign.parse(),
+                parsedSign,
                 id,
                 categoryId
             );
-        }
-
-        /**
-         * Json format for sign data in templates.
-         *
-         * @param width    the width of the sign in pixels
-         * @param height   the height of the sign in pixels
-         * @param front    the front texture source of the sign
-         * @param back     the back texture source of the sign
-         * @param elements the list of sign elements for the sign
-         */
-        private record SignJson(
-            int width,
-            int height,
-            ResourceLocation front,
-            ResourceLocation back,
-            List<JsonObject> elements
-        ) {
-            /**
-             * Converts the JSON into a sign object
-             *
-             * @return the parsed sign object
-             */
-            private Template.Sign parse() {
-                var parsedElements = elements.stream()
-                    .map(ELEMENT_PARSER::parse)
-                    .toList();
-                return new Template.Sign(
-                    width,
-                    height,
-                    TextureSource.parse(front, width, height),
-                    TextureSource.parse(back, width, height),
-                    parsedElements
-                );
-            }
         }
     }
 }

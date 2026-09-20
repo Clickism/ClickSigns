@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.registry;
 
-import de.clickism.clicksigns.sign.Category;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 

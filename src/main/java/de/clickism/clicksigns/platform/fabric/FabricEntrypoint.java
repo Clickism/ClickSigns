@@ -2,6 +2,7 @@ package de.clickism.clicksigns.platform.fabric;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.ClickSignsClient;
 import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -19,6 +20,7 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClickSignsClient.initialize();
         BlockEntityRenderers.register(ClickSignsBlockEntityTypes.ROAD_SIGN.get(), RoadSignBlockEntityRenderer::new);
     }
 }

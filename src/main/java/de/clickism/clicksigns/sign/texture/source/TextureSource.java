@@ -2,214 +2,342 @@ package de.clickism.clicksigns.sign.texture.source;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.ColorResolver;
+import de.clickism.clicksigns.serialization.codec.CommonCodec;
+import de.clickism.clicksigns.serialization.codec.PacketCodec;
+import de.clickism.clicksigns.serialization.codec.TagCodec;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.util.PixelSized;
-import de.clickism.clicksigns.util.nbt.NbtReader;
-import de.clickism.clicksigns.util.nbt.NbtWriter;
-import de.clickism.clicksigns.util.nbt.TypeKeyed;
-import net.minecraft.network.FriendlyByteBuf;
+import de.clickism.clickui.UiColor;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
- * Represents a source for a texture, which can be resolved to obtain the actual texture.
- * This allows for lazy loading and generation of textures as needed.
+ * Represents a source for a texture, consisting of a base resource location and a list of texture processors to apply.
+ *
+ * @param base       the base resource location for the texture source
+ * @param processors the list of texture processors to apply to the base image
  */
-// TODO: Move color resolver to the texture source, so all textures can define color resolvers?
-// TODO: Maybe texture source should be more like a pipeline, with a base texture and a list of transformations applied?
-// TODO: Way to replace colors in tiled textures, and way to define a tileset as having multiple base variations of default colors? Maybe.
-public sealed interface TextureSource extends TypeKeyed permits StaticTextureSource, TiledTextureSource, ColorizedTextureSource {
+public record TextureSource(
+    ResourceLocation base,
+    List<TextureProcessor> processors
+) {
     /**
      * The error texture to use when loading or generating a texture fails.
      */
-    Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 32, 16, null);
-    /**
-     * Writer for packets
-     */
-    FriendlyByteBuf.Writer<TextureSource> PACKET_WRITER = (buf, texture) -> {
-        var type = texture.typeKey();
-        buf.writeUtf(type);
-        if (texture instanceof TiledTextureSource tiled) {
-            // Tiled texture
-            buf.writeResourceLocation(tiled.tileSetId());
-            buf.writeInt(tiled.width());
-            buf.writeInt(tiled.height());
-        } else if (texture instanceof StaticTextureSource staticTextureSource) {
-            // Static texture
-            buf.writeResourceLocation(staticTextureSource.location());
-        } else if (texture instanceof ColorizedTextureSource colorized) {
-            // Colorized texture
-            buf.writeResourceLocation(colorized.baseTexture());
-            buf.writeNullable(colorized.fromColor(), FriendlyByteBuf::writeUtf);
-            buf.writeUtf(colorized.toColor());
-        } else {
-            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
+    public static final Texture ERROR_TEXTURE = new Texture(ClickSigns.identifier("error.png"), 16, 16);
+    public static final Image ERROR_IMAGE = new Image(16, 16);
+
+    static {
+        ERROR_IMAGE.fill(0xFFFF00FF); // Fill with magenta color to indicate error
+    }
+
+    private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
+    private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
+    private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
+    private static final HashSet<String> ERROR_CACHE = new HashSet<>();
+
+    private static final Map<ResourceLocation, ColorResolver> DYNAMIC_COLOR_RESOLVERS = new HashMap<>();
+
+    public static final int MAX_PROCESSOR_COUNT = 20;
+
+    public TextureSource {
+        if (processors.size() > MAX_PROCESSOR_COUNT) {
+            throw new IllegalArgumentException(
+                "Too many texture processors: " + processors.size() + " (max " + MAX_PROCESSOR_COUNT + ")"
+            );
         }
-    };
-    /**
-     * Reader for packets
-     */
-    FriendlyByteBuf.Reader<TextureSource> PACKET_READER = (buf) -> {
-        var type = buf.readUtf();
-        return switch (type) {
-            case TiledTextureSource.TYPE -> {
-                var tileSetId = buf.readResourceLocation();
-                var pixelWidth = buf.readInt();
-                var pixelHeight = buf.readInt();
-                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
-            }
-            case ColorizedTextureSource.TYPE -> {
-                var baseTexture = buf.readResourceLocation();
-                var fromColor = buf.readNullable(FriendlyByteBuf::readUtf);
-                var toColor = buf.readUtf();
-                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
-            }
-            case StaticTextureSource.TYPE -> {
-                var location = buf.readResourceLocation();
-                yield new StaticTextureSource(location);
-            }
-            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
-        };
-    };
-    /**
-     * Writer for NBT
-     */
-    NbtWriter.Writer<TextureSource> NBT_WRITER = (tag, texture) -> {
-        var typeKey = texture.typeKey();
-        tag.putString("type", typeKey);
-        if (texture instanceof TiledTextureSource tiled) {
-            // Tiled texture
-            tag.putResourceLocation("tileSet", tiled.tileSetId());
-            tag.putInt("width", tiled.width());
-            tag.putInt("height", tiled.height());
-        } else if (texture instanceof StaticTextureSource staticTextureSource) {
-            // Static texture
-            tag.putResourceLocation("location", staticTextureSource.location());
-        } else if (texture instanceof ColorizedTextureSource colorized) {
-            // Colorized texture
-            tag.putResourceLocation("baseTexture", colorized.baseTexture());
-            if (colorized.fromColor() != null) {
-                tag.putString("fromColor", colorized.fromColor());
-            }
-            tag.putString("toColor", colorized.toColor());
-        } else {
-            throw new IllegalArgumentException("Unknown texture source type: " + texture.getClass());
-        }
-    };
-    /**
-     * Reader for NBT
-     */
-    NbtReader.Reader<TextureSource> NBT_READER = (tag) -> {
-        var type = tag.getString("type").orElseThrow();
-        return switch (type) {
-            case TiledTextureSource.TYPE -> {
-                var tileSetId = tag.getResourceLocation("tileSet").orElseThrow();
-                var pixelWidth = tag.getInt("width").orElseThrow();
-                var pixelHeight = tag.getInt("height").orElseThrow();
-                yield new TiledTextureSource(tileSetId, pixelWidth, pixelHeight);
-            }
-            case ColorizedTextureSource.TYPE -> {
-                var baseTexture = tag.getResourceLocation("baseTexture").orElseThrow();
-                var fromColor = tag.getString("fromColor").orElse(null);
-                var toColor = tag.getString("toColor").orElseThrow();
-                yield new ColorizedTextureSource(baseTexture, fromColor, toColor);
-            }
-            case StaticTextureSource.TYPE -> {
-                var location = tag.getResourceLocation("location").orElseThrow();
-                yield new StaticTextureSource(location);
-            }
-            default -> throw new IllegalArgumentException("Unknown texture source type: " + type);
-        };
-    };
+        processors = List.copyOf(processors);
+    }
 
     /**
-     * Parses the given texture identifier as tileset or static texture.
+     * Returns a unique resource location for the given key, generating a new one if it doesn't exist.
+     *
+     * @param key the key to get or assign a resource location for
+     * @return the resource location associated with the key
+     */
+    private static ResourceLocation getOrAssignResourceLocation(String key) {
+        var prefix = "generated/";
+        var uuid = UUID.randomUUID();
+        return RESOURCE_LOCATIONS.computeIfAbsent(key, k -> ClickSigns.identifier(prefix + uuid));
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and no processors.
+     *
+     * @param base the base resource location for the texture source
+     * @return a new texture source with the given base and no processors
+     */
+    public static TextureSource ofStatic(ResourceLocation base) {
+        return new TextureSource(base, List.of());
+    }
+
+    /**
+     * Creates a new texture source with the given base resource location and a list of processors.
+     *
+     * @param base       the base resource location for the texture source
+     * @param processors the list of processors to apply to the base image
+     * @return a new texture source with the given base and processors
+     */
+    public static TextureSource of(ResourceLocation base, List<TextureProcessor> processors) {
+        return new TextureSource(base, processors);
+    }
+
+    public static CommonCodec<TextureSource> codec() {
+        return CommonCodec.of(
+            TagCodec.of(
+                (writer, value) -> {
+                    writer.putResourceLocation("base", value.base());
+                    writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeTag);
+                },
+                reader -> new TextureSource(
+                    reader.getResourceLocation("base").orElseThrow(),
+                    reader.getCollection("processors", TextureProcessor.codec()::readTag).orElseThrow().stream()
+                        .toList()
+                )
+            ),
+            PacketCodec.of(
+                (buf, value) -> {
+                    buf.writeResourceLocation(value.base());
+                    buf.writeCollection(value.processors(), TextureProcessor.codec()::writePacket);
+                },
+                buf -> {
+                    return new TextureSource(
+                        buf.readResourceLocation(),
+                        buf.readList(TextureProcessor.codec()::readPacket)
+                    );
+                }
+            )
+        );
+    }
+
+    /**
+     * Returns the color resolver associated with the base resource location of this texture source.
+     *
+     * @return the color resolver for the base resource location, or a default resolver if none is registered
+     */
+    public ColorResolver colorResolver() {
+        // Check if registered
+        if (SignRegistries.TILE_SET_COLOR_RESOLVERS.containsKey(base)) {
+            return SignRegistries.TILE_SET_COLOR_RESOLVERS.getOrDefault(base, ColorResolver.withDefault());
+        }
+        if (SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.containsKey(base)) {
+            return SignRegistries.STATIC_TEXTURE_COLOR_RESOLVERS.getOrDefault(base, ColorResolver.withDefault());
+        }
+        // Check if a dynamic resolver is available
+        if (DYNAMIC_COLOR_RESOLVERS.containsKey(base)) {
+            return DYNAMIC_COLOR_RESOLVERS.get(base);
+        }
+        // Create with default colors based on primary color
+        var defaultResolver = ColorResolver.withDefault();
+        try {
+            var primaryColor = UiUtil.primaryColorOf(baseImage());
+            var foregroundColor = primaryColor.pickBetterContrasting(
+                UiColor.rgba(defaultResolver.resolve("black")),
+                UiColor.rgba(defaultResolver.resolve("white"))
+            );
+            var colorResolver = ColorResolver.withDefault()
+                .define("foreground", foregroundColor.color());
+            DYNAMIC_COLOR_RESOLVERS.put(base, colorResolver);
+            return colorResolver;
+        } catch (Exception e) {
+            return defaultResolver;
+        }
+    }
+
+    /**
+     * Resolves the texture source into a texture by loading the base image and applying all processors in order.
+     *
+     * @param colorResolver the color resolver to use for processing
+     * @return the resolved texture, or the error texture if loading or processing fails
+     */
+    public @NotNull Texture resolve(ColorResolver colorResolver) {
+        var context = new TextureContext(colorResolver);
+        var identity = identity(context);
+        // Check cache
+        if (TEXTURE_CACHE.containsKey(identity)) {
+            return TEXTURE_CACHE.get(identity);
+        }
+        // Generate texture
+        Image image;
+        try {
+            image = generateAndCache(context);
+        } catch (Exception e) {
+            // Only send error message once per unique texture source, to avoid spamming the log
+            sendErrorOnce(identity, "Failed to resolve texture source " + identity, e);
+            return ERROR_TEXTURE;
+        }
+        // Upload texture to Minecraft and cache it
+        var location = getOrAssignResourceLocation(identity);
+        MinecraftImages.upload(location, image);
+        var texture = new Texture(location, image.width(), image.height());
+        TEXTURE_CACHE.put(identity, texture);
+        return texture;
+    }
+
+    /**
+     * Resolves the texture source into an image by loading the base image and applying all processors in order.
+     *
+     * @param colorResolver the color resolver to use for processing
+     * @return the resolved image, or the error image if loading or processing fails
+     */
+    public @NotNull Image resolveImage(ColorResolver colorResolver) {
+        var context = new TextureContext(colorResolver);
+        // Generate image
+        try {
+            return generateAndCache(context);
+        } catch (Exception e) {
+            // Only send error message once per unique texture source, to avoid spamming the log
+            var identity = identity(context);
+            sendErrorOnce(identity, "Failed to resolve image for texture source " + identity, e);
+            return ERROR_IMAGE;
+        }
+    }
+
+    private Image generateAndCache(TextureContext context) throws Exception {
+        var identity = identity(context);
+        if (IMAGE_CACHE.containsKey(identity)) {
+            return IMAGE_CACHE.get(identity);
+        }
+        // Generate image
+        var image = generate(context);
+        IMAGE_CACHE.put(identity, image);
+        return image;
+    }
+
+    /**
+     * Resolves the texture source into an image by loading the base image and applying all processors in order.
+     *
+     * @param context the texture context containing additional information for processing
+     * @return the resolved image, or null if loading or processing fails
+     */
+    private Image generate(TextureContext context) throws Exception {
+        var image = baseImage();
+        for (var processor : processors) {
+            try {
+                image = processor.process(image, context);
+                if (image == null) {
+                    throw new RuntimeException("Processor " + processor.identity(context) + " returned null image");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to process image with processor " + processor.identity(context), e);
+            }
+        }
+        return image;
+    }
+
+    /**
+     * Loads the base image from the resource location.
+     *
+     * @return the loaded base image
+     * @throws IOException if the base image cannot be loaded
+     */
+    private Image baseImage() throws Exception {
+        var image = MinecraftImages.open(base);
+        if (image == null) {
+            throw new IOException("Failed to open base image at location " + base);
+        }
+        return image;
+    }
+
+    private void sendErrorOnce(String identity, String message, Exception e) {
+        if (ERROR_CACHE.contains(identity)) {
+            return;
+        }
+        ERROR_CACHE.add(identity);
+        ClickSigns.LOGGER.error("{}: {}", message, e.getMessage());
+    }
+
+    /**
+     * Returns a unique identity string for this texture source and its parameters, used for caching.
+     *
+     * @param context the texture context containing additional information for processing
+     * @return a unique identity string for this texture source
+     */
+    private String identity(TextureContext context) {
+        var sb = new StringBuilder();
+        sb.append(base.toString());
+        for (var processor : processors) {
+            sb.append("+").append(processor.identity(context));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * A texture source is resizable if it contains exactly one resizable processor, and
+     * possibly other non-resizable processors.
      * <p>
-     * Only support static or tiled textures for templates!
+     * This limitation is due to the fact that resizable processors can change the size of the image, and
+     * having multiple resizable processors would make it ambiguous which one should determine the final size.
      *
-     * @param location the texture identifier to parse
-     * @param width    the width of the texture in pixels
-     * @param height   the height of the texture in pixels
-     * @return texture source
+     * @return checks if the texture source is resizable
      */
-    static TextureSource parse(ResourceLocation location, int width, int height) {
-        if (SignRegistries.TILE_SETS.has(location)) {
-            return new TiledTextureSource(location, width, height);
-        }
-        return new StaticTextureSource(location);
+    public boolean isResizable() {
+        var count = processors.stream()
+            .filter(p -> p instanceof ResizableTextureProcessor)
+            .count();
+        return count == 1;
     }
 
     /**
-     * Gets the texture location of the given texture source.
+     * Returns a new texture source with the given width and height, if this texture source is resizable.
      * <p>
-     * Only support static or tiled textures for templates!
+     * If this texture source is not resizable, returns the same texture source without any changes.
      *
-     * @param source the texture source to get the location of
-     * @return the texture location of the source
+     * @param width  the desired width of the new texture source
+     * @param height the desired height of the new texture source
+     * @return a new texture source with the given width and height, or the same texture source if not resizable
      */
-    static ResourceLocation textureLocationOf(TextureSource source) {
-        if (source instanceof StaticTextureSource staticSource) {
-            return staticSource.location();
+    public TextureSource resize(int width, int height) {
+        if (!isResizable()) {
+            return this;
         }
-        if (source instanceof TiledTextureSource tiledSource) {
-            return tiledSource.tileSetId();
+        var newProcessors = new ArrayList<TextureProcessor>();
+        for (var processor : processors) {
+            if (processor instanceof ResizableTextureProcessor resizable) {
+                newProcessors.add(resizable.resize(width, height));
+            } else {
+                newProcessors.add(processor);
+            }
         }
-        throw new IllegalArgumentException("Unsupported texture source type: " + source.getClass().getName());
+        return new TextureSource(base, newProcessors);
     }
 
     /**
-     * Resolves the texture from this source, loading or generating it as necessary.
-     *
-     * @param colorResolver the color resolver to use for resolving colors in colorized textures, if needed
-     * @return the resolved texture
-     */
-    Texture resolve(ColorResolver colorResolver);
-
-    /**
-     * Gets the color resolver defined for this texture source.
+     * Returns a new texture source with the given pixel size, if this texture source is resizable.
      * <p>
-     * For example, a mostly white texture source may define a color resolver
-     * that maps "foreground" to black and "background" to white.
-     * <p>
-     * This should not be confused with the color resolver passed to the resolve method,
-     * which is meant to decide how to render this texture. This color resolver is meant
-     * for eaxmple for resolving other textures that are to be rendered on top of this texture,
-     * such as text or symbols.
+     * If this texture source is not resizable, returns the same texture source without any changes.
      *
-     * @return the color resolver for this texture source
+     * @param pixelSized the desired pixel size of the new texture source
+     * @return a new texture source with the given pixel size, or the same texture source if not resizable
      */
-    default ColorResolver colorResolver() {
-        return ColorResolver.withDefault();
+    public TextureSource resize(PixelSized pixelSized) {
+        return resize(pixelSized.width(), pixelSized.height());
     }
 
     /**
-     * If the texture source supports resizing, returns a resized version of this texture source.
-     * Otherwise, returns the same texture source.
+     * Returns a new texture source with the given list of processors, replacing the existing processors.
      *
-     * @param width  the new width of the texture in pixels
-     * @param height the new height of the texture in pixels
-     * @return a new TextureSource that will produce a texture of the specified dimensions when resolved
+     * @param newProcessors the new list of processors to apply to the base image
+     * @return a new texture source with the given processors
      */
-    default TextureSource resize(int width, int height) {
-        return this; // By default, don't support resizing
+    public TextureSource withProcessors(List<TextureProcessor> newProcessors) {
+        return new TextureSource(base, newProcessors);
     }
 
     /**
-     * Whether this texture source supports resizing.
+     * Returns a new texture source with the given processor added to the end of the existing processors.
      *
-     * @return true if this texture source supports resizing, false otherwise
+     * @param processor the processor to add to the texture source
+     * @return a new texture source with the given processor added
      */
-    default boolean canResize() {
-        return false; // By default, don't support resizing
-    }
-
-    /**
-     * Resizes this texture source to fit the dimensions of the given PixelSized object, if supported.
-     *
-     * @param sized the PixelSized object to fit the texture to
-     * @return a new TextureSource that will produce a texture of the specified dimensions when resolved
-     */
-    default TextureSource resizeToFit(PixelSized sized) {
-        return resize(sized.width(), sized.height());
+    public TextureSource addProcessor(TextureProcessor processor) {
+        var newProcessors = new ArrayList<>(processors);
+        newProcessors.add(processor);
+        return new TextureSource(base, newProcessors);
     }
 }

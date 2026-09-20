@@ -1,16 +1,13 @@
 package de.clickism.clicksigns.registry;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.sign.Category;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
@@ -52,7 +49,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
         return new Category<>(
             ClickSigns.identifier("uncategorized"),
             t("clicksigns.category.uncategorized").getString(),
-            this
+            this,
+            Integer.MIN_VALUE
         );
     }
 
@@ -113,7 +111,10 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @return unmodifiable collection of all registered categories
      */
     public Collection<Category<T>> allCategories() {
-        return Collections.unmodifiableCollection(categories.values());
+        var normalCategories = categories.values();
+        var uncategorized = uncategorized();
+        return Stream.concat(normalCategories.stream(), Stream.of(uncategorized))
+            .toList();
     }
 
     /**
@@ -153,8 +154,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created category
      */
-    public Category<T> createCategory(ResourceLocation identifier, String name) {
-        return new Category<>(identifier, name, this);
+    public Category<T> createCategory(ResourceLocation identifier, String name, int priority) {
+        return new Category<>(identifier, name, this, priority);
     }
 
     /**
@@ -164,8 +165,8 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created and registered category
      */
-    public Category<T> createAndRegisterCategory(ResourceLocation identifier, String name) {
-        var category = createCategory(identifier, name);
+    public Category<T> createAndRegisterCategory(ResourceLocation identifier, String name, int priority) {
+        var category = createCategory(identifier, name, priority);
         registerCategory(category);
         return category;
     }

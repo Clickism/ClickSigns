@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "name": "Flipped Triangle",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/static/eu/red_outline_triangle.png",
+      "processors": [
+        {
+          "type": "flip",
+          "flipX": false,
+          "flipY": true
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 16
+        }
+      ]
+    },
+    "elements": [],
+    "alignment": "TOP_CENTER"
+  }
+}

@@ -27,6 +27,9 @@ public interface SignReloadListener extends ReloadListener {
      * @return the full path with the root path as prefix
      */
     default String fromRoot(String path) {
+        if (path == null || path.isEmpty()) {
+            return ROOT_DIR;
+        }
         return ROOT_DIR + "/" + path;
     }
 
@@ -108,7 +111,7 @@ public interface SignReloadListener extends ReloadListener {
      */
     default ResourceLocation stripExtension(ResourceLocation location, String extension) {
         var path = stripExtension(location.getPath(), extension);
-        return new ResourceLocation(location.getNamespace(), path);
+        return ResourceLocation.tryBuild(location.getNamespace(), path);
     }
 
     /**
@@ -124,7 +127,7 @@ public interface SignReloadListener extends ReloadListener {
         if (path.endsWith(oldExtension)) {
             path = path.substring(0, path.length() - oldExtension.length()) + newExtension;
         }
-        return new ResourceLocation(location.getNamespace(), path);
+        return ResourceLocation.tryBuild(location.getNamespace(), path);
     }
 
     /**

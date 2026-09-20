@@ -4,7 +4,6 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
-import de.clickism.clicksigns.sign.texture.source.StaticTextureSource;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -13,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
  * Represents a symbol that can be displayed on a road sign.
  *
  * @param identifier unique identifier for the symbol
- * @param texture    texture source for the symbol's texture
+ * @param textureSource    texture source for the symbol's texture
  */
 public record Symbol(
     ResourceLocation identifier,
-    TextureSource texture,
+    TextureSource textureSource,
     @Nullable ResourceLocation categoryId
 ) implements Categorized<Symbol> {
     /**
@@ -25,7 +24,7 @@ public record Symbol(
      */
     public static final Symbol ERROR_SYMBOL = new Symbol(
         ClickSigns.identifier("error_symbol"),
-        new StaticTextureSource(ClickSigns.identifier("error_symbol.png")),
+        TextureSource.ofStatic(ClickSigns.identifier("error.png")),
         null
     );
 
@@ -49,15 +48,6 @@ public record Symbol(
     public ResourceLocation identifierForCategory(ResourceLocation location, ResourceLocation categoryId) {
         var normalized = categoryId.getNamespace() + "__" + categoryId.getPath();
         return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
-    }
-
-    /**
-     * Checks if this symbol is the error symbol.
-     *
-     * @return true if this symbol is the error symbol, false otherwise
-     */
-    public boolean isError() {
-        return this.identifier.equals(ERROR_SYMBOL.identifier);
     }
 
     @Override

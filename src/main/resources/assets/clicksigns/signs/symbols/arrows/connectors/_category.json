@@ -1,0 +1,13 @@
+{
+  "name": "Arrow Connectors",
+  "default": {
+    "texture": {
+      "processors": [
+        {
+          "type": "replaceColor",
+          "to": "foreground"
+        }
+      ]
+    }
+  }
+}

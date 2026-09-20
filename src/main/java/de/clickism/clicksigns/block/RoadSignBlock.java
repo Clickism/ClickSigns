@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.block;
 
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
+import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,7 +26,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     // Shapes for each facing direction
-    private static final double THICKNESS = 0.03;
+    public static final double THICKNESS = 0.03;
     private static final VoxelShape NORTH_SHAPE = Shapes.box(0, 0, 0, 1, 1, THICKNESS);
     private static final VoxelShape SOUTH_SHAPE = NORTH_SHAPE.move(0, 0, 1 - THICKNESS);
     private static final VoxelShape WEST_SHAPE = Shapes.box(0, 0, 0, THICKNESS, 1, 1);
@@ -72,7 +73,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RoadSignBlockEntity roadSignEntity) {
-            new de.clickism.clicksigns.ui.SignOverviewScreen(roadSignEntity).open();
+            new SignOverviewScreen(roadSignEntity).open();
 //            GuiUtils.openScreen(new SignOverviewScreen(null, roadSignEntity));
         }
         return InteractionResult.SUCCESS;

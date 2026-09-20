@@ -10,6 +10,13 @@ ClickSigns is a simple fabric mod that lets you create custom highway & street s
 - **Make your own road signs (Resourcepack Guide):** [Wiki](https://github.com/Clickism/ClickSigns/wiki/Making-Custom-Road-Sign-Templates)
 - *P.S: There will be more and more road signs added through regular updates & extensions*
 
+> [!IMPORTANT]
+> ClickSigns 2.0 has been completely rewritten from scratch. ClickSigns is now fully dynamic, with no limitations, allowing you to create
+much more complex and realistic signs than ever before.
+> The information in this readme is mostly outdated for the new version, and will be updated soon.
+>
+> 2.0 is currently in beta, and will soon be released as a full version
+
 ### How to: Create & Edit Road Signs
 To craft a *Road Sign*, put **8 iron ingots** around **any sign**:
 
@@ -32,7 +39,7 @@ Then, place it on a wall, on iron bars or anywhere you'd like, then click on the
   
 - _On the left side_, you have a list of all the templates **you have installed.**
 - The templates are displayed in the format: *"Width x Height : Pack : Name : (Details)"*
-- _On the right side_, you have all the details regarding the selected template.
+- _On the right side_, you have all the details regarding the selectedRef template.
 - You can use the arrows to look at different variants here as well.
 - **Using Filters:** To use the filters, either click on the direction you want, or input the width/height you're searching. If you for example select both **Left** and **Forward**, it will only show you the sign templates that have both directions.
 
