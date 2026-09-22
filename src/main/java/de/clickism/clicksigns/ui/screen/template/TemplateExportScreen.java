@@ -143,7 +143,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .onClick(event -> {
                             try {
                                 var json = new TemplateParser().toJson(
-                                    Template.Meta.placeholder(),
+                                    readMeta(),
                                     roadSign.build(),
                                     includeTexts.get().checked()
                                 );
