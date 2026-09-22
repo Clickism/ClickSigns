@@ -105,6 +105,8 @@
   "clicksigns.templateExport.export.save": "Save to Local Templates",
   "clicksigns.templateExport.export.copyJson": "Copy Template JSON",
   "clicksigns.templateExport.newTemplate": "New Template",
+  "clicksigns.templateExport.info.name": "Name",
+  "clicksigns.templateExport.info.author": "Author",
 
   "clicksigns.templateList.noneSelected": "No template selected",
   "clicksigns.templateList.apply": "Apply Template",

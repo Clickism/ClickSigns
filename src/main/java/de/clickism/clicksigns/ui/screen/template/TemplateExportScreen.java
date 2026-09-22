@@ -98,7 +98,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                     .borderColor(UiColor.WHITE_A30))
                 .children(
                     fancyHeader(t("clicksigns.templateExport.header")),
-                    smallHeader(t("clicksigns.template.info.name").copy()
+                    smallHeader(t("clicksigns.templateExport.info.name").copy()
                         .append(l("§r§c*"))),
                     memo(() -> textField()
                         .value(nextAvailableName(t("clicksigns.templateExport.newTemplate").getString(), " #%d"))
@@ -106,7 +106,7 @@ public class TemplateExportScreen extends UiScreen<TemplateExportScreen>
                         .onValueChanged(this::updateValidity)
                         .ref(nameField)
                         .growWidth()),
-                    smallHeader(t("clicksigns.template.info.author")),
+                    smallHeader(t("clicksigns.templateExport.info.author")),
                     memo(() -> textField()
                         .value(playerName())
                         .maxLength(64)
