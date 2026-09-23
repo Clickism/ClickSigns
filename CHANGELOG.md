@@ -1,3 +1,3 @@
 - Fix missing translation in template export screen
 - Fix Forge version not working because of unobf. jar being published
-- Use written meta when clicking "Copy to Json" in template export screen
+- Use written name/author when clicking "Copy to Json" in template export screen
