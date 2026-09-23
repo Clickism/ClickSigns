@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("net.neoforged.moddev.legacyforge") version "2.0.141"
+    id("net.neoforged.moddev.legacyforge") version "2.0.147"
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
@@ -90,9 +90,13 @@ tasks.named("createMinecraftArtifacts") {
     dependsOn(tasks.named("stonecutterGenerate"))
 }
 
+tasks.jar {
+    finalizedBy("reobfJar")
+}
+
 publishMods {
     displayName.set("ClickSigns ${property("mod.version")} for Forge")
-    file.set(tasks.jar.get().archiveFile)
+    file.set(tasks.getByName<Jar>("reobfJar").archiveFile)
     version.set(project.version.toString())
     changelog.set(rootProject.file("CHANGELOG.md").readText())
     type.set(BETA)
