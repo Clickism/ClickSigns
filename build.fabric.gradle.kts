@@ -116,10 +116,7 @@ publishMods {
         minecraftVersions.addAll(mcVersions)
     }
     github {
-        displayName.set("${property("mod.version")} (Fabric)")
-        type.set(STABLE)
         accessToken.set(System.getenv("GITHUB_TOKEN"))
-        repository.set("Clickism/ClickSigns")
-        commitish = "master"
+        parent(project(":").tasks.named("publishGithub"))
     }
 }
