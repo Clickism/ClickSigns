@@ -42,12 +42,21 @@ legacyForge {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
-    val updateChecker = "de.clickism:modrinth-update-checker:1.1"
-    jarJar(implementation(updateChecker)!!)
-    "additionalRuntimeClasspath"(updateChecker)
+    // Small helper to add dependencies to both the jarjar and runtime classpath
+    fun jarJarAndRuntime(dependencyNotation: Any) {
+        jarJar(implementation(dependencyNotation)!!)
+        "additionalRuntimeClasspath"(dependencyNotation)
+    }
+
+    // Dependencies
+    jarJarAndRuntime("de.clickism:modrinth-update-checker:1.1")
     jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
         isChanging = true
     })
+
+    // Configured
+    jarJarAndRuntime("de.clickism:configured-core:${property("deps.configured")}")
+    jarJarAndRuntime("de.clickism:configured-json:${property("deps.configured")}")
 }
 
 sourceSets {

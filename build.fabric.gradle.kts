@@ -54,6 +54,10 @@ dependencies {
         isChanging = true
         isTransitive = false
     })
+
+    // Configured
+    implementation(include("de.clickism:configured-core:${property("deps.configured")}")!!)
+    implementation(include("de.clickism:configured-json:${property("deps.configured")}")!!)
 }
 
 tasks.processResources {

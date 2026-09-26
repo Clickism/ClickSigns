@@ -38,7 +38,20 @@ public class ClickSigns {
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
         Platform.network().registerServer(); // Register network
 
+        // Load config
+        ClickSignsConfig.CONFIG.load();
+
         // Check for updates
+        if (ClickSignsConfig.CHECK_UPDATES.get()) {
+            ClickSigns.LOGGER.info("Checking for updates...");
+            checkUpdates();
+        }
+    }
+
+    /**
+     * Checks for updates on Modrinth and notifies the user if a newer version is available.
+     */
+    private static void checkUpdates() {
         var minecraftVersion = DetectedVersion.BUILT_IN.getName();
         var loader = Platform.get().name();
         ModrinthUpdateChecker.loader(MOD_ID, loader)
