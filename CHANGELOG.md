@@ -1,4 +1,4 @@
-- Added modrinth update checker to check for updates on startup
+- Added [Modrinth Update Checker](https://github.com/Clickism/ModrinthUpdateChecker) to check for updates on startup
 - Added config in `.minecraf/config/ClickSigns/config.jsonc`.
   - `check_updates`: Whether to check for updates on startup. Default: `true`
 - Added scale to symbol elements.
