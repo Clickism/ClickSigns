@@ -360,9 +360,10 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 ).onTextureSelected(texture -> {
                     roadSign.updateSymbolElement(
                         id,
-                        element -> element
-                            .withTextureSource(texture)
-                            .withScale(element.resolveSymbol().defaultScale())
+                        element -> {
+                            element = element.withTextureSource(texture);
+                            return element.withScale(element.resolveSymbol().defaultScale());
+                        }
                     );
                 })
             ));

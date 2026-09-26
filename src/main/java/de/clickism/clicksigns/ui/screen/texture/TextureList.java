@@ -74,7 +74,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
             // Sort via last path segment of the category, so that we can "hack" the order by using a prefix in the category path
             .sorted(Map.Entry.comparingByKey(
                 Comparator.comparingInt((Category<?> c) -> -c.priority())
-                .thenComparing(Category::displayName))
+                    .thenComparing(Category::displayName))
             )
             .forEach(mapEntry -> {
                 var category = mapEntry.getKey();
@@ -106,7 +106,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
                     var texture = entry.texture();
                     for (int i = 0; i < 1; i++) {
                         row.add(
-                            UiUtil.imageOf(texture, textureScale)
+                            UiUtil.imageOf(texture, textureScale * entry.displayScale())
                                 .tooltip(describeLeftClick(
                                     t("clicksigns.ui.textureList.tooltip.leftClick")
                                 ))
@@ -133,12 +133,34 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
     public record Entry(
         Texture texture,
         ResourceLocation identifier,
-        @NotNull Category<?> category
+        @NotNull Category<?> category,
+        float displayScale
     ) {
 
     }
 
+    /**
+     * Creates a new Entry with the given texture, identifier, and category.
+     *
+     * @param texture    the texture to render
+     * @param identifier the identifier of the texture, i.E. tile set name
+     * @param category   the category of the texture
+     * @return a new Entry instance
+     */
     public static Entry entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category) {
-        return new Entry(texture, identifier, category);
+        return new Entry(texture, identifier, category, 1.0f);
+    }
+
+    /**
+     * Creates a new Entry with the given texture, identifier, category, and display scale.
+     *
+     * @param texture      the texture to render
+     * @param identifier   the identifier of the texture, i.E. tile set name
+     * @param category     the category of the texture
+     * @param displayScale the scale at which to display the texture in the list
+     * @return a new Entry instance
+     */
+    public static Entry entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category, float displayScale) {
+        return new Entry(texture, identifier, category, displayScale);
     }
 }

@@ -211,7 +211,8 @@ public class TextureSelectScreen extends UiScreen<TextureSelectScreen> implement
                     .map(symbol -> TextureList.entry(
                         symbol.textureSource().resolve(colorResolver),
                         symbol.identifier(),
-                        symbol.resolveCategory()
+                        symbol.resolveCategory(),
+                        symbol.defaultScale()
                     ));
             }
             default -> {
