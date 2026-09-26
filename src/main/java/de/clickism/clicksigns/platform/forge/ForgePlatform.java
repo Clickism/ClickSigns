@@ -5,6 +5,7 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,10 +16,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +68,19 @@ public class ForgePlatform implements Platform {
     @Override
     public Network getNetwork() {
         return ForgeNetwork.INSTANCE;
+    }
+
+    @Override
+    public String name() {
+        return "forge";
+    }
+
+    @Override
+    public @Nullable String modVersion(String modId) {
+        return ModList.get()
+            .getModContainerById(modId)
+            .map(container -> container.getModInfo().getVersion().toString())
+            .orElse(null);
     }
 
     @Override

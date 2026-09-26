@@ -49,6 +49,7 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation(include("de.clickism:modrinth-update-checker:1.1")!!)
     include(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-fabric") {
         isChanging = true
         isTransitive = false

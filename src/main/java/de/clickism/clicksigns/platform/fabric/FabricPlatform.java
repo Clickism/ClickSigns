@@ -5,10 +5,14 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +55,24 @@ public class FabricPlatform implements Platform {
      */
     public void initialize() {
         registerReloadListener();
+        registerEvents();
     }
 
     @Override
     public Network getNetwork() {
         return FabricNetwork.INSTANCE;
+    }
+
+    @Override
+    public String name() {
+        return "fabric";
+    }
+
+    @Override
+    public @Nullable String modVersion(String modId) {
+        return FabricLoader.getInstance().getModContainer(modId)
+            .map(container -> container.getMetadata().getVersion().getFriendlyString())
+            .orElse(null);
     }
 
     @Override
@@ -135,5 +153,11 @@ public class FabricPlatform implements Platform {
                     reloadListeners.forEach(listener -> listener.onReload(manager));
                 }
             });
+    }
+
+    private void registerEvents() {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ClickSigns.UPDATE_NOTIFIER.notify(handler.getPlayer());
+        });
     }
 }

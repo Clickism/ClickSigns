@@ -13,7 +13,6 @@ version = "$modVersion+$minecraftVersion-$loader"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
 legacyForge {
@@ -40,8 +39,12 @@ legacyForge {
     }
 }
 
+
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    val updateChecker = "de.clickism:modrinth-update-checker:1.1"
+    jarJar(implementation(updateChecker)!!)
+    "additionalRuntimeClasspath"(updateChecker)
     jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
         isChanging = true
     })

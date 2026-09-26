@@ -32,6 +32,17 @@ public class ComponentUtil {
     }
 
     /**
+     * Creates a translatable component for the given translation key with specified arguments.
+     *
+     * @param key  the translation key for the text
+     * @param args the arguments to format the translated text
+     * @return a component with the translated text and formatted arguments
+     */
+    public static Component t(String key, Object... args) {
+        return Component.translatable(key, args);
+    }
+
+    /**
      * Creates a literal component for the given text with specified formatting.
      *
      * @param text       the text to display

@@ -1,4 +1,8 @@
 {
+  "clicksigns.update.newer_version": "§eA newer version of ClickSigns is available: %1$s",
+  "clicksigns.update.changelog": "§eChangelog: %1$s",
+  "clicksigns.update.download": "§a§nDownload Link",
+
   "clicksigns.confirm": "Confirm",
 
   "clicksigns.textPlaceholder": "Text",

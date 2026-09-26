@@ -3,7 +3,9 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.network.PacketRegistry;
-import de.clickism.clicksigns.sign.reload.*;
+import de.clickism.clicksigns.sign.reload.SignReloadListener;
+import de.clickism.modrinthupdatechecker.ModrinthUpdateChecker;
+import net.minecraft.DetectedVersion;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +19,15 @@ public class ClickSigns {
      */
     public static final String MOD_ID = "clicksigns";
     /**
+     * Capitalized mod id of ClickSigns
+     */
+    public static final String CAPITALIZED_MOD_ID = "ClickSigns";
+    /**
      * Main logger
      */
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final Logger LOGGER = LoggerFactory.getLogger(CAPITALIZED_MOD_ID);
+
+    public static final UpdateNotifier UPDATE_NOTIFIER = new UpdateNotifier();
 
     /**
      * Initializes the server mod.
@@ -29,6 +37,24 @@ public class ClickSigns {
         ClickSignsBlockEntityTypes.initialize();
         PacketRegistry.register(RoadSignUpdatePacket.TYPE);
         Platform.network().registerServer(); // Register network
+
+        // Check for updates
+        var minecraftVersion = DetectedVersion.BUILT_IN.getName();
+        var loader = Platform.get().name();
+        ModrinthUpdateChecker.loader(MOD_ID, loader)
+            .minecraftVersion(minecraftVersion)
+            .includeChangelog(true)
+            .onVersion(version -> {
+                var current = Platform.get().modVersion(MOD_ID);
+                if (version.versionNumber().equals(current)) return;
+                // Newer version
+                UPDATE_NOTIFIER.newerVersion(version);
+                LOGGER.info(
+                    "\nNewer version available for {}: {}\nChangelog:\n{}".indent(4),
+                    CAPITALIZED_MOD_ID, version.strippedVersionNumber(), version.changelog()
+                );
+            })
+            .check();
     }
 
     /**

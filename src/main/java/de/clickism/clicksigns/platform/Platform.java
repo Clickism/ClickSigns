@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -27,11 +28,11 @@ public interface Platform {
     static Platform get() {
         //? if fabric {
         return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;
-        //? } elif forge {
+        //?} elif forge {
         /*return de.clickism.clicksigns.platform.forge.ForgePlatform.INSTANCE;
-         *///? } else {
+         *///?} else {
         /*throw new UnsupportedOperationException("No platform implementation found");
-         *///? }
+         *///?}
     }
 
     /**
@@ -49,6 +50,21 @@ public interface Platform {
      * @return Network instance
      */
     Network getNetwork();
+
+    /**
+     * Gets the name of the current platform
+     *
+     * @return Platform name
+     */
+    String name();
+
+    /**
+     * Gets the version of a mod by its id
+     *
+     * @param modId Mod id
+     * @return Mod version
+     */
+    @Nullable String modVersion(String modId);
 
     /**
      * Registers a new item
