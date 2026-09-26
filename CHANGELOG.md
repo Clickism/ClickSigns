@@ -6,3 +6,6 @@
   - Symbol definitions can now include a `defaultScale` field.
 - Plate elements can now be as small as `1 x 1` (down from `4 x 4`).
 - Added **Tiny Arrows** with 12 symbols, that all have a default scale of `60 %`.
+- Added new symbols to **Flat Arrows**:
+  - Full circle and ellipse
+  - Full peanut and half peanut
