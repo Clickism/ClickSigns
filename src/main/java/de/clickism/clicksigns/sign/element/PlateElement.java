@@ -26,7 +26,7 @@ public record PlateElement(
     TextureSource backSource,
     boolean matchSignTextures
 ) implements SignElement {
-    public static final Size MIN_PLATE_SIZE = new Size(4, 4);
+    public static final Size MIN_PLATE_SIZE = new Size(1, 1);
     public static final Size MAX_PLATE_SIZE = RoadSign.MAX_SIGN_SIZE;
 
     /**
