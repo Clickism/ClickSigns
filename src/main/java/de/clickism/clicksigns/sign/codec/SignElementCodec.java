@@ -1,13 +1,11 @@
 package de.clickism.clicksigns.sign.codec;
 
-import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.serialization.codec.CommonCodec;
 import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.element.*;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.ui.components.CommonComponents;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.HashSet;
@@ -63,6 +61,7 @@ public interface SignElementCodec {
                         var textureTag = tag.createTag();
                         TextureSource.codec().writeTag(textureTag, symbol.textureSource());
                         tag.putTag("texture", textureTag);
+                        tag.putFloat("scale", symbol.scale());
                     } else if (element instanceof PlateElement plate) {
                         var frontTag = tag.createTag();
                         var backTag = tag.createTag();
@@ -124,7 +123,8 @@ public interface SignElementCodec {
                             var symbolId = tag.getResourceLocation("symbol").orElseThrow();
                             var textureTag = tag.getTag("texture").orElseThrow();
                             var texture = TextureSource.codec().readTag(textureTag);
-                            yield new SymbolElement(localX, localY, alignment, symbolId, texture);
+                            var scale = tag.getFloat("scale").orElse(1.0f);
+                            yield new SymbolElement(localX, localY, alignment, symbolId, texture, scale);
                         }
                         case PlateElement.TYPE -> {
                             var frontTag = tag.getTag("front").orElseThrow();
@@ -165,6 +165,7 @@ public interface SignElementCodec {
                     } else if (element instanceof SymbolElement symbol) {
                         buf.writeResourceLocation(symbol.symbolId());
                         TextureSource.codec().writePacket(buf, symbol.textureSource());
+                        buf.writeFloat(symbol.scale());
                     } else if (element instanceof PlateElement plate) {
                         TextureSource.codec().writePacket(buf, plate.frontSource());
                         TextureSource.codec().writePacket(buf, plate.backSource());
@@ -218,7 +219,8 @@ public interface SignElementCodec {
                         case SymbolElement.TYPE -> {
                             var symbolId = buf.readResourceLocation();
                             var source = TextureSource.codec().readPacket(buf);
-                            yield new SymbolElement(localX, localY, alignment, symbolId, source);
+                            var scale = buf.readFloat();
+                            yield new SymbolElement(localX, localY, alignment, symbolId, source, scale);
                         }
                         case PlateElement.TYPE -> {
                             var front = TextureSource.codec().readPacket(buf);

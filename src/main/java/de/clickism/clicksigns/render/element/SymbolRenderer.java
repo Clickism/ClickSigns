@@ -14,7 +14,7 @@ public class SymbolRenderer implements ElementRenderer<SymbolElement> {
         int zIndex = roadSign.elements().indexOf(element);
         context.withZ(zIndex, () -> {
             var texture = element.textureSource().resolve(roadSign.colorResolver());
-            context.textureRenderer().renderTexture(texture);
+            context.textureRenderer().renderTexture(texture, element.scale());
         });
     }
 }

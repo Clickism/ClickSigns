@@ -3,8 +3,8 @@ package de.clickism.clicksigns.sign.element;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
-import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,14 +16,19 @@ import net.minecraft.resources.ResourceLocation;
  * @param alignment     alignment of the symbol
  * @param symbolId      id of the root symbol
  * @param textureSource texture of the symbol, can diverge from the root via texture overrides, etc.
+ * @param scale         scale of the symbol, where 1.0 is the default size
  */
 public record SymbolElement(
     int x,
     int y,
     Alignment alignment,
     ResourceLocation symbolId,
-    TextureSource textureSource
+    TextureSource textureSource,
+    float scale
 ) implements SignElement {
+    public static final float MIN_SCALE = 0.1f;
+    public static final float MAX_SCALE = 10.0f;
+
     /**
      * Type key
      */
@@ -39,7 +44,8 @@ public record SymbolElement(
         return new SymbolElement(0, 0,
             Alignment.CENTER,
             symbolId,
-            SignRegistries.SYMBOLS.get(symbolId).textureSource()
+            SignRegistries.SYMBOLS.get(symbolId).textureSource(),
+            1.0f
         );
     }
 
@@ -59,12 +65,12 @@ public record SymbolElement(
 
     @Override
     public float width() {
-        return textureSource.resolve(ColorResolver.empty()).width();
+        return scale * textureSource.resolve(ColorResolver.empty()).width();
     }
 
     @Override
     public float height() {
-        return textureSource.resolve(ColorResolver.empty()).height();
+        return scale * textureSource.resolve(ColorResolver.empty()).height();
     }
 
     /**
@@ -81,7 +87,7 @@ public record SymbolElement(
         if (!base.equals(symbolId) && SignRegistries.SYMBOLS.has(base)) {
             symbolId = base; // Switch to the new symbol if it exists in the registry
         }
-        return new SymbolElement(x(), y(), alignment(), symbolId, textureSource);
+        return new SymbolElement(x(), y(), alignment(), symbolId, textureSource, scale);
     }
 
     /**
@@ -92,7 +98,7 @@ public record SymbolElement(
      * @return a new symbol element with the given position, keeping the other properties the same
      */
     public SymbolElement withPosition(int x, int y) {
-        return new SymbolElement(x, y, alignment(), symbolId, textureSource);
+        return new SymbolElement(x, y, alignment(), symbolId, textureSource, scale);
     }
 
     /**
@@ -102,6 +108,16 @@ public record SymbolElement(
      * @return a new symbol element with the given alignment, keeping the other properties the same
      */
     public SymbolElement withAlignment(Alignment alignment) {
-        return new SymbolElement(x(), y(), alignment, symbolId, textureSource);
+        return new SymbolElement(x(), y(), alignment, symbolId, textureSource, scale);
+    }
+
+    /**
+     * Creates a new symbol element with the given scale, keeping the other properties the same.
+     *
+     * @param scale scale of the symbol, where 1.0 is the default size
+     * @return a new symbol element with the given scale, keeping the other properties the same
+     */
+    public SymbolElement withScale(float scale) {
+        return new SymbolElement(x(), y(), alignment(), symbolId, textureSource, scale);
     }
 }

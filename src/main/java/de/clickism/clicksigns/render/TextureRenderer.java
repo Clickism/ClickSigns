@@ -28,9 +28,19 @@ public class TextureRenderer {
      * @param texture the texture to render
      */
     public void renderTexture(Texture texture) {
+        renderTexture(texture, 1.0f);
+    }
+
+    /**
+     * Renders a texture from (0,0) to (texture.blockWidth() * scale, texture.blockHeight() * scale)
+     *
+     * @param texture the texture to render
+     * @param scale   the scale factor to apply to the texture dimensions
+     */
+    public void renderTexture(Texture texture, float scale) {
         var textureLocation = texture.location();
         var buffer = context.source().getBuffer(RenderType.entityTranslucentCull(textureLocation));
-        render(buffer, texture.blockWidth(), texture.blockHeight(), 0xFFFFFFFF);
+        render(buffer, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
     }
 
     /**

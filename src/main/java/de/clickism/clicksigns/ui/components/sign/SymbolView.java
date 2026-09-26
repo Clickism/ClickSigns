@@ -13,6 +13,8 @@ import de.clickism.clickui.event.events.MouseClickEvent;
 
 import java.util.List;
 
+import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
+
 public class SymbolView extends UiComponent<SymbolView>
     implements ElementProvider {
 
@@ -68,7 +70,7 @@ public class SymbolView extends UiComponent<SymbolView>
     @Override
     protected void build() {
         var texture = element.textureSource().resolve(colorResolver);
-        add(UiUtil.imageOf(texture));
+        add(UiUtil.imageOf(texture, UI_SCALE * element.scale()));
     }
 
     @Override

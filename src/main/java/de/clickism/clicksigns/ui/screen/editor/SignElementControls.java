@@ -343,9 +343,11 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
     }
 
     private void addSymbolControls(SymbolElement symbol, UUID id) {
-        add(smallHeader(t("clicksigns.editor.element.symbol.symbol")));
         var roadSign = context.roadSign();
         var colorResolver = roadSign.colorResolver();
+
+        // Texture selection
+        add(smallHeader(t("clicksigns.editor.element.symbol.symbol")));
         add(box()
             .childGap(4)
             .alignCenter()
@@ -358,10 +360,31 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 ).onTextureSelected(texture -> {
                     roadSign.updateSymbolElement(
                         id,
-                        element -> element.withTextureSource(texture)
+                        element -> element
+                            .withTextureSource(texture)
+                            .withScale(element.resolveSymbol().defaultScale())
                     );
                 })
             ));
+
+        // Scale
+        add(smallHeader(t("clicksigns.editor.element.symbol.scale")));
+        add(memo(
+            id + "-symbol-scale",
+            () -> new NumberControl()
+                .unit(l("%"))
+                .changeAmount(10)
+                .fastChangeAmount(50)
+                .minValue((int) (SymbolElement.MIN_SCALE * 100))
+                .maxValue((int) (SymbolElement.MAX_SCALE * 100))
+                .onValueChanged(newPercentage -> {
+                    var newScale = ((float) newPercentage) / 100f; // Convert percentage to scale
+                    context.roadSign().updateSymbolElement(id, element ->
+                        element.withScale(newScale));
+                }))
+            // Update value on every render to reflect changes from other sources (e.g., symbol change)
+            .value((int) (symbol.scale() * 100f))
+        );
     }
 
     private void addCommonControls(SignElement element, UUID id) {

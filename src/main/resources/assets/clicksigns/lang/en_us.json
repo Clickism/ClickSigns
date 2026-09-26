@@ -82,6 +82,7 @@
   "clicksigns.editor.element.plate.size": "Plate Size",
 
   "clicksigns.editor.element.symbol.symbol": "Symbol Texture",
+  "clicksigns.editor.element.symbol.scale": "Scale",
 
   "clicksigns.editor.element.general.alignment": "Alignment",
   "clicksigns.editor.element.other.header": "Other",

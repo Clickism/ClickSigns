@@ -11,12 +11,15 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a symbol that can be displayed on a road sign.
  *
- * @param identifier unique identifier for the symbol
- * @param textureSource    texture source for the symbol's texture
+ * @param identifier    unique identifier for the symbol
+ * @param textureSource texture source for the symbol's texture
+ * @param defaultScale  default scale factor for the symbol's texture
+ * @param categoryId    optional category identifier for the symbol
  */
 public record Symbol(
     ResourceLocation identifier,
     TextureSource textureSource,
+    float defaultScale,
     @Nullable ResourceLocation categoryId
 ) implements Categorized<Symbol> {
     /**
@@ -25,30 +28,9 @@ public record Symbol(
     public static final Symbol ERROR_SYMBOL = new Symbol(
         ClickSigns.identifier("error_symbol"),
         TextureSource.ofStatic(ClickSigns.identifier("error.png")),
+        1f,
         null
     );
-
-    /**
-     * Creates a new symbol with the same identifier and category, but with a different texture.
-     *
-     * @param newTexture the new texture source for the symbol
-     * @return a new symbol with the updated texture
-     */
-    public Symbol withTexture(TextureSource newTexture) {
-        return new Symbol(this.identifier, newTexture, this.categoryId);
-    }
-
-    /**
-     * Creates a new symbol identifier for a symbol included from another category, to avoid conflicts with the original symbol.
-     *
-     * @param location   original symbol identifier
-     * @param categoryId id of the category to include the symbol in
-     * @return a new resource location for the included symbol, based on the original location and the category name
-     */
-    public ResourceLocation identifierForCategory(ResourceLocation location, ResourceLocation categoryId) {
-        var normalized = categoryId.getNamespace() + "__" + categoryId.getPath();
-        return ResourceLocation.tryBuild(location.getNamespace(), location.getPath() + "__" + normalized);
-    }
 
     @Override
     public CategorizedRegistry<Symbol> registry() {

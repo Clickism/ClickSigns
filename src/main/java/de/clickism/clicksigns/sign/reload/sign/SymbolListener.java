@@ -12,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Symbol reload listener.
  */
@@ -56,28 +54,11 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
                 ClickSigns.LOGGER.error("Failed to read texture processors for symbol: {}: {}", location, e.getMessage());
             }
         }
-        var symbol = new Symbol(location, textureSource, categoryId);
+        float defaultScale = definition != null && definition.defaultScale != null
+            ? definition.defaultScale
+            : 1f;
+        var symbol = new Symbol(location, textureSource, defaultScale, categoryId);
         SignRegistries.SYMBOLS.register(symbol);
-    }
-
-    @Override
-    protected void processCategory(ResourceLocation categoryId, CategoryJson category) {
-        // Resolves included symbols for all categories and registers them with modified identifiers to avoid conflicts.
-        if (category.includeCategories == null) return;
-        category.includeCategories.forEach(includedId -> {
-            var included = SignRegistries.SYMBOLS.getCategoryOrNull(includedId);
-            if (included == null) return;
-            included.resolveEntries().forEach(symbol -> {
-                // Create symbol with modified id to avoid conflicts
-                var newSymbol = new Symbol(
-                    symbol.identifierForCategory(symbol.identifier(), categoryId),
-                    symbol.textureSource(),
-                    categoryId
-                );
-                // Register new symbol
-                SignRegistries.SYMBOLS.register(newSymbol);
-            });
-        });
     }
 
     /**
@@ -87,7 +68,8 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
      *                as that is automatically set to the symbol's identifier.
      */
     protected record SymbolDefinition(
-        @Nullable JsonObject texture
+        @Nullable JsonObject texture,
+        @Nullable Float defaultScale
     ) {
     }
 
@@ -95,13 +77,11 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
      * Category JSON format for symbol categories.
      * Important: The category JSON will assign its category to all symbols in the same directory as the JSON file.
      *
-     * @param name              name of the category
-     * @param includeCategories included list of other categories
+     * @param name name of the category
      */
     protected record CategoryJson(
         String name,
         int priority,
-        @Nullable List<ResourceLocation> includeCategories,
         @SerializedName("default")
         @Nullable SymbolDefinition defaultDefinition
     ) implements CategoryWithDefault<SymbolDefinition> {
