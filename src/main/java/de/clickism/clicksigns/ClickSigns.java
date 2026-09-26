@@ -49,10 +49,10 @@ public class ClickSigns {
                 if (version.versionNumber().equals(current)) return;
                 // Newer version
                 UPDATE_NOTIFIER.newerVersion(version);
-                LOGGER.info(
-                    "\nNewer version available for {}: {}\nChangelog:\n{}".indent(4),
-                    CAPITALIZED_MOD_ID, version.strippedVersionNumber(), version.changelog()
-                );
+                var message = "\n\nNewer version available for " + CAPITALIZED_MOD_ID
+                              + ": " + version.strippedVersionNumber()
+                              + "\nChangelog:\n" + version.changelog();
+                LOGGER.info(message.indent(4));
             })
             .check();
     }
