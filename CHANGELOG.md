@@ -1,3 +1,3 @@
-- Fix missing translation in template export screen
-- Fix Forge version not working because of unobf. jar being published
-- Use written name/author when clicking "Copy to Json" in template export screen
+- Added modrinth update checker to check for updates on startup
+- Added config in `.minecraf/config/ClickSigns/config.jsonc`.
+  - `check_updates`: Whether to check for updates on startup. Default: `true`
