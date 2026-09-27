@@ -6,6 +6,7 @@ import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.input.TextField;
+import de.clickism.clickui.event.events.KeyEvent;
 import de.clickism.clickui.layout.Point;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
@@ -152,7 +153,8 @@ public class SignTextField extends TextField implements ElementProvider {
     }
 
     @Override
-    protected boolean handleKeyPress(int code) {
+    protected boolean handleKeyPress(KeyEvent event) {
+        int code = event.code();
         if (code == GLFW.GLFW_KEY_ENTER || code == GLFW.GLFW_KEY_KP_ENTER) {
             // Insert newline
             insertText("\n");
@@ -168,7 +170,7 @@ public class SignTextField extends TextField implements ElementProvider {
             moveCursorVertically(1);
             return true;
         }
-        return super.handleKeyPress(code);
+        return super.handleKeyPress(event);
     }
 
     @Override
@@ -237,7 +239,7 @@ public class SignTextField extends TextField implements ElementProvider {
         var bounds = bounds();
         // Apply render scale
         var renderScale = renderScale();
-        renderWithScale(context, bounds.x(), bounds.y(), renderScale, renderScale, () -> {
+        context.graphics().withScaleAbout(bounds.x(), bounds.y(), renderScale, renderScale, () -> {
             // Render background
             renderBackground(context);
             // Render outline
@@ -339,15 +341,12 @@ public class SignTextField extends TextField implements ElementProvider {
         // Calculate the position of the cursor
         x = textPos.x() + formattedWidth(lineText) + element.lineXOffset(line);
         y = textPos.y() + lineIndex * font.lineHeight + (lineIndex * this.element.style().lineGap());
-        context.graphics().pose().pushPose();
-        context.graphics().pose().translate(0, 0, 100); // Move cursor to front
         super.renderCursor(context, x,
             // Render one above to render on top of underline if not underline
             inline
                 ? y
                 : y - 1,
             inline);
-        context.graphics().pose().popPose();
     }
 
     @Override
@@ -362,35 +361,10 @@ public class SignTextField extends TextField implements ElementProvider {
         for (var line : lines) {
             var lineX = x + element.lineXOffset(line);
             var formatted = element.formattedText(line);
-            graphics.drawString(font, formatted, lineX, lineY, color, false); // No shadow
+            graphics.text(formatted, lineX, lineY, color, false); // No shadow
             lineY += font.lineHeight + this.element.style().lineGap();
         }
         // No suggestion support
-    }
-
-    /**
-     * Renders the given runnable with the specified scale applied.
-     *
-     * @param context  the render context
-     * @param cornerX  the x-coordinate of the pivot point for scaling
-     * @param cornerY  the y-coordinate of the pivot point for scaling
-     * @param scaleX   the scale factor in the x direction
-     * @param scaleY   the scale factor in the y direction
-     * @param runnable the rendering code to execute
-     */
-    private void renderWithScale(RenderContext context, int cornerX, int cornerY, float scaleX, float scaleY, Runnable runnable) {
-        var graphics = context.graphics();
-        graphics.pose().pushPose();
-        // Move pivot to (x, y)
-        graphics.pose().translate(cornerX, cornerY, 0);
-        // Scale around that point
-        graphics.pose().scale(scaleX, scaleY, 1.0f);
-        // Move back so it draws correctly
-        graphics.pose().translate(-cornerX, -cornerY, 0);
-        // Render
-        runnable.run();
-        // Pop pose
-        graphics.pose().popPose();
     }
 
     /**

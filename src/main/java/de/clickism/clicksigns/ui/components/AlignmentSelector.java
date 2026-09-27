@@ -128,8 +128,8 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
 
         // Rotate the graphics context around the center of the button
         var graphics = context.graphics();
-        graphics.pose().pushPose();
-        graphics.pose().rotateAround(Axis.ZP.rotationDegrees(degrees), centerX, centerY, 0);
+        graphics.push();
+        graphics.rotateDegreesAbout(centerX, centerY, degrees);
         // Draw the icon
         var isCenter = alignment == Alignment.CENTER || (textOnly && alignment == Alignment.TEXT_CENTER);
         var icon = isCenter
@@ -139,8 +139,7 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
         var font = context.font();
         var iconWidth = font.width(icon);
         var iconHeight = font.lineHeight;
-        graphics.drawString(
-            font,
+        graphics.text(
             icon,
             // Draw in center
             centerX - iconWidth / 2,
@@ -149,6 +148,6 @@ public class AlignmentSelector extends UiComponent<AlignmentSelector> {
             false // No shadow since looksa bit weird when rotated
         );
         // Pop pose
-        graphics.pose().popPose();
+        graphics.pop();
     }
 }
