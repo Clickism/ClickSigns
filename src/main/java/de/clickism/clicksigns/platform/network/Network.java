@@ -18,7 +18,10 @@ public abstract class Network {
      */
     @SuppressWarnings("unchecked")
     protected static <T extends Packet> void handleClient(T packet) {
-        PacketType<T> type = (PacketType<T>) packet.type();
+        //? if < 1.21
+        //PacketType<T> type = (PacketType<T>) packet.type();
+        //? if >= 1.21
+        PacketType<T> type = (PacketType<T>) packet.clickType();
         type.clientHandler().handle(packet);
     }
 
@@ -33,10 +36,16 @@ public abstract class Network {
     protected static <T extends Packet> FriendlyByteBuf writePacket(T packet) {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         // Write packet id
-        var type = (PacketType<T>) packet.type();
+        //? if < 1.21
+        //var type = (PacketType<T>) packet.type();
+        //? if >= 1.21
+        var type = (PacketType<T>) packet.clickType();
         buf.writeResourceLocation(type.id());
         // Write packet data
-        type.writer().accept(buf, packet);
+        //? if < 1.21
+        //type.writer().accept(buf, packet);
+        //? if >= 1.21
+        type.packet().encode(buf, packet);
         return buf;
     }
 
@@ -54,7 +63,10 @@ public abstract class Network {
             throw new IllegalStateException("Received packet with unknown id: " + id);
         }
         // Read packet data
-        return type.reader().apply(buf);
+        //? if < 1.21
+        //return type.reader().apply(buf);
+        //? if >= 1.21
+        return type.packet().decode(buf);
     }
 
     /**
@@ -101,7 +113,10 @@ public abstract class Network {
      */
     @SuppressWarnings("unchecked")
     protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
-        var type = (PacketType<T>) packet.type();
+        //? if < 1.21
+        //var type = (PacketType<T>) packet.type();
+        //? if >= 1.21
+        var type = (PacketType<T>) packet.clickType();
         server.execute(() -> type.serverHandler().handle(packet, player));
     }
 }

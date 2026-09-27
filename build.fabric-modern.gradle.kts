@@ -11,6 +11,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 sourceSets {
@@ -41,6 +42,11 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation(include("de.clickism:modrinth-update-checker:1.1")!!)
+    include(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-fabric") {
+        isChanging = true
+        isTransitive = false
+    })
 }
 
 tasks.processResources {

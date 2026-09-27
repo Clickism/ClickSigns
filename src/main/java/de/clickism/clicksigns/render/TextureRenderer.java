@@ -110,7 +110,8 @@ public class TextureRenderer {
      */
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
         var xAxis = context.direction().getAxis() == Direction.Axis.X;
-        buffer.vertex(pose.pose(), x, y, 0)
+        //? if < 1.21 {
+        /*buffer.vertex(pose.pose(), x, y, 0)
             .color(color)
             .uv(u, v)
             .overlayCoords(OverlayTexture.NO_OVERLAY)
@@ -122,5 +123,18 @@ public class TextureRenderer {
                 ? 0
                 : 1)
             .endVertex();
+        *///?} elif >= 1.21 {
+        buffer.addVertex(pose.pose(), x, y, 0)
+                .setColor(color)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(context.light())
+                // Texture is facing towards -Z
+                .setNormal(pose, xAxis
+                        ? 1
+                        : 0, 0, xAxis
+                        ? 0
+                        : 1);
+        //?}
     }
 }

@@ -16,6 +16,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+//? if >= 1.21 {
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.block.BaseEntityBlock;
+//?}
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -26,6 +30,13 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     // Shapes for each facing direction
+    //? if >= 1.21 {
+    public static final MapCodec<RoadSignBlock> CODEC = simpleCodec(RoadSignBlock::new);
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+    //?}
     public static final double THICKNESS = 0.03;
     private static final VoxelShape NORTH_SHAPE = Shapes.box(0, 0, 0, 1, 1, THICKNESS);
     private static final VoxelShape SOUTH_SHAPE = NORTH_SHAPE.move(0, 0, 1 - THICKNESS);
@@ -60,13 +71,17 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         return Shapes.empty();
     }
 
-    @Override
-    public @NotNull InteractionResult use(
+    @Override @NotNull
+    //? if < 1.21.1
+    //public InteractionResult use(
+    //? if >= 1.21.1
+    protected InteractionResult useWithoutItem(
         @NotNull BlockState state,
         @NotNull Level level,
         @NotNull BlockPos pos,
         @NotNull Player player,
-        @NotNull InteractionHand hand,
+        //? if < 1.21
+        //@NotNull InteractionHand hand,
         @NotNull BlockHitResult hit
     ) {
         if (!level.isClientSide) return InteractionResult.SUCCESS;

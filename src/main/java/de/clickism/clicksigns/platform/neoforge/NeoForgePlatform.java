@@ -14,11 +14,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,18 @@ public class NeoForgePlatform implements Platform {
     @Override
     public Network getNetwork() {
         return NeoForgeNetwork.INSTANCE;
+    }
+
+    public String name() {
+        return "neoforge";
+    }
+
+    @Override
+    public @Nullable String modVersion(String modId) {
+        return ModList.get()
+                .getModContainerById(modId)
+                .map(container -> container.getModInfo().getVersion().toString())
+                .orElse(null);
     }
 
     @Override

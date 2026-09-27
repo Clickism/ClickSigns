@@ -37,6 +37,6 @@ public class NeoForgeEntrypoint {
     public static void register(final RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("0");
 
-        NeoForgeNetwork.INSTANCE.register(registrar);
+        NeoForgeNetwork.INSTANCE.registerServer(registrar);
     }
 }

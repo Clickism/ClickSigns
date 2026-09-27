@@ -22,11 +22,17 @@ public class NeoForgeNetwork extends Network {
         // Singleton class
     }
 
-    @Override public void register() {
-        
+    @Override
+    public void registerServer() {
+        // Handled independently because neoforge is special
     }
 
-    public void register(PayloadRegistrar registrar) {
+    @Override
+    public void registerClient() {
+        // No need to register anything for the client side in Neoforge
+    }
+
+    public void registerServer(PayloadRegistrar registrar) {
         registrar.playBidirectional(
                 RoadSignUpdatePacket.TYPE,
                 RoadSignUpdatePacket.SUBTYPE.packet(),

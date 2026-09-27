@@ -1,19 +1,18 @@
 plugins {
-    id("net.neoforged.moddev") version "2.0.141"
     id("java")
+    id("net.neoforged.moddev") version "2.0.147"
 }
 val modVersion = property("mod.version").toString()
+val minecraftVersion = property("mod.minecraft_version").toString()
+val loader = stonecutter.current.project.substringAfterLast('-')
 
 group = project.property("maven_group").toString()
-version = "${modVersion}+${stonecutter.current.project}"
+version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://thedarkcolour.github.io/KotlinForForge/")
-}
-
-dependencies {
-    implementation("thedarkcolour:kotlinforforge-neoforge:${property("deps.forge_kotlin")}")
 }
 
 neoForge {
@@ -38,6 +37,23 @@ neoForge {
             sourceSet(sourceSets["main"])
         }
     }
+}
+
+dependencies {
+
+    fun jarJarAndRuntime(dependencyNotation: Any) {
+        jarJar(implementation(dependencyNotation)!!)
+        add("additionalRuntimeClasspath", dependencyNotation)
+    }
+
+    implementation("thedarkcolour:kotlinforforge-neoforge:${property("deps.forge_kotlin")}")
+    jarJarAndRuntime("de.clickism:modrinth-update-checker:1.1")
+    jarJar(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-neoforge") {
+        isChanging = true
+    })
+    jarJarAndRuntime("de.clickism:configured-core:${property("deps.configured")}")!!
+    jarJarAndRuntime("de.clickism:configured-json:${property("deps.configured")}")!!
+
 }
 
 sourceSets {
@@ -73,3 +89,4 @@ tasks.processResources {
     }
     inputs.properties(properties)
 }
+

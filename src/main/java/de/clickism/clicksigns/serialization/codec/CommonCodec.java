@@ -3,7 +3,10 @@ package de.clickism.clicksigns.serialization.codec;
 import de.clickism.clicksigns.serialization.TagReader;
 import de.clickism.clicksigns.serialization.TagWriter;
 import net.minecraft.network.FriendlyByteBuf;
-
+//? if >= 1.21 {
+import net.minecraft.network.codec.StreamEncoder;
+import net.minecraft.network.codec.StreamDecoder;
+//?}
 import java.util.Optional;
 
 public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
@@ -22,7 +25,8 @@ public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
                 return nbtCodec.tagReader();
             }
 
-            @Override
+            //? if < 1.21 {
+            /*@Override
             public FriendlyByteBuf.Writer<T> packetWriter() {
                 return packetCodec.packetWriter();
             }
@@ -31,6 +35,16 @@ public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
             public FriendlyByteBuf.Reader<T> packetReader() {
                 return packetCodec.packetReader();
             }
+            *///?} elif >= 1.21 {
+            public StreamEncoder<FriendlyByteBuf,T> packetWriter() {
+                return packetCodec.packetWriter();
+            }
+
+            @Override
+            public StreamDecoder<FriendlyByteBuf,T> packetReader() {
+                return packetCodec.packetReader();
+            }
+            //?}
         };
     }
 
@@ -42,11 +56,21 @@ public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
         return tagReader().read(reader);
     }
 
-    default void writePacket(FriendlyByteBuf buf, T value) {
+    //? if < 1.21 {
+    /*default void writePacket(FriendlyByteBuf buf, T value) {
         packetWriter().accept(buf, value);
     }
 
     default T readPacket(FriendlyByteBuf buf) {
         return packetReader().apply(buf);
     }
+    *///?} elif >= 1.21 {
+    default void writePacket(FriendlyByteBuf buf, T value) {
+        packetWriter().encode(buf, value);
+    }
+
+    default T readPacket(FriendlyByteBuf buf) {
+        return packetReader().decode(buf);
+    }
+    //?}
 }

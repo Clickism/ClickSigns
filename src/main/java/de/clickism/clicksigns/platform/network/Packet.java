@@ -17,10 +17,10 @@ public interface Packet /*?if >= 1.21.1 {*/ extends CustomPacketPayload /*?} */ 
      *
      * @return the packet type of this packet
      */
-    PacketType<? extends Packet> subtype();
-    //? if < 1.21.1 {
+    PacketType<? extends Packet> clickType();
+    //? if < 1.21 {
     /*PacketType<? extends Packet> type();
-    *///? } elif >= 1.21.1 {
+    *///? } elif >= 1.21 {
     Type<? extends Packet> type();
     //?}
 }

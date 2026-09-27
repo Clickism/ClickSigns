@@ -35,7 +35,7 @@ public class ClickSigns {
     public static void initialize() {
         ClickSignsBlocks.initialize();
         ClickSignsBlockEntityTypes.initialize();
-        PacketRegistry.register(RoadSignUpdatePacket.TYPE);
+        PacketRegistry.register(RoadSignUpdatePacket.SUBTYPE);
         Platform.network().registerServer(); // Register network
 
         // Load config

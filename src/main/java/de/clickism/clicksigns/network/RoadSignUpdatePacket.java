@@ -9,6 +9,10 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+//? if >= 1.21.1 {
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+//? }
 
 /**
  * Packet for updating a road sign
@@ -17,48 +21,35 @@ import net.minecraft.core.BlockPos;
  * @param roadSign new road sign data
  */
 public record RoadSignUpdatePacket(
-    BlockPos pos,
-    RoadSign roadSign
+        BlockPos pos,
+        RoadSign roadSign
 ) implements Packet {
-
-    public static final PacketType<RoadSignUpdatePacket> TYPE = new PacketType<>(
-        ClickSigns.identifier("road_sign_update"),
-        // Writer
-        (buf, packet) -> {
-            try {
-                buf.writeBlockPos(packet.pos());
-                RoadSignCodec.codec().writePacket(buf, packet.roadSign());
-            } catch (Exception e) {
-                ClickSigns.LOGGER.error("Error writing RoadSignUpdatePacket", e);
-            }
-        },
-        // Reader
-        (buf) -> {
-            try {
-                BlockPos pos = buf.readBlockPos();
-                RoadSign roadSign = RoadSignCodec.codec().readPacket(buf);
-                return new RoadSignUpdatePacket(pos, roadSign);
-            } catch (Exception e) {
-                ClickSigns.LOGGER.error("Error reading RoadSignUpdatePacket", e);
-                return null;
-            }
-        },
-        // Server Handler
-        (packet, player) -> {
-            try {
+    public static final PacketType<RoadSignUpdatePacket> SUBTYPE = new PacketType<>(
+            ClickSigns.identifier("road_sign_update"),
+            //? if >= 1.21
+            StreamCodec.of(
+                    (buf, packet) -> {
+                        buf.writeBlockPos(packet.pos());
+                        RoadSignCodec.codec().writePacket(buf, packet.roadSign());
+                    },
+                    (buf) -> {
+                        BlockPos pos = buf.readBlockPos();
+                        RoadSign roadSign = RoadSignCodec.codec().readPacket(buf);
+                        return new RoadSignUpdatePacket(pos, roadSign);
+                    }
+            //? if >= 1.21
+            )
+            // Server Handler
+            ,(packet, player) -> {
                 var level = player.serverLevel();
                 var blockEntity = level.getBlockEntity(packet.pos());
                 if (!(blockEntity instanceof RoadSignBlockEntity roadSignBlockEntity)) return;
                 // Update road sign
                 roadSignBlockEntity.updateRoadSign(packet.roadSign());
                 Platform.network().sendToAllInLevel(level, packet);
-            } catch (Exception e) {
-                ClickSigns.LOGGER.error("Error handling RoadSignUpdatePacket", e);
-            }
-        },
-        // Client Handler
-        (packet) -> {
-            try {
+            },
+            // Client Handler
+            (packet) -> {
                 var client = Minecraft.getInstance();
                 var level = client.level;
                 if (level == null) return;
@@ -66,14 +57,23 @@ public record RoadSignUpdatePacket(
                 if (!(blockEntity instanceof RoadSignBlockEntity roadSignBlockEntity)) return;
                 // Update road sign
                 roadSignBlockEntity.updateRoadSign(packet.roadSign());
-            } catch (Exception e) {
-                ClickSigns.LOGGER.error("Error handling RoadSignUpdatePacket on client", e);
             }
-        }
     );
 
+    @Override
+    public PacketType<?> clickType() {
+        return SUBTYPE;
+    }
+    //? if < 1.21.1 {
+    /*public static final PacketType<RoadSignUpdatePacket> TYPE = SUBTYPE;
     @Override
     public PacketType<?> type() {
         return TYPE;
     }
+    *///? } elif >= 1.21.1 {
+    public static final Type<RoadSignUpdatePacket> TYPE = new CustomPacketPayload.Type<RoadSignUpdatePacket>(SUBTYPE.id());
+    public Type<? extends Packet> type() {
+        return TYPE;
+    };
+    //? }
 }

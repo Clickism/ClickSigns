@@ -9,6 +9,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+//? if >= 1.21.1 {
+import de.clickism.clicksigns.network.RoadSignUpdatePacket;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+//? }
 
 /**
  * Fabric implementation of the network system.
@@ -27,32 +31,65 @@ public class FabricNetwork extends Network {
 
     @Override
     public void registerServer() {
-        ServerPlayNetworking.registerGlobalReceiver(
-            CHANNEL,
-            (server, player, handler, buf, responseSender) -> {
-                handleServer(readPacket(buf), server, player);
-            }
+        //? if >= 1.21 {
+        PayloadTypeRegistry.playS2C().register(
+                RoadSignUpdatePacket.TYPE,
+                RoadSignUpdatePacket.SUBTYPE.packet()
         );
+        PayloadTypeRegistry.playC2S().register(
+                RoadSignUpdatePacket.TYPE,
+                RoadSignUpdatePacket.SUBTYPE.packet()
+        );
+        ServerPlayNetworking.registerGlobalReceiver(
+                RoadSignUpdatePacket.TYPE,
+                (payload, context) -> {
+                    handleServer(payload, context.server(), context.player());
+                }
+        );
+        ClientPlayNetworking.registerGlobalReceiver(
+                RoadSignUpdatePacket.TYPE,
+                (payload, context) -> {
+                    handleClient(payload);
+                }
+        );
+        //? } elif < 1.21 {
+        /*ServerPlayNetworking.registerGlobalReceiver(
+                CHANNEL,
+                (server, player, handler, buf, responseSender) -> {
+                    handleServer(readPacket(buf), server, player);
+                }
+        );
+        *///?}
     }
 
     @Override
     public void registerClient() {
-        ClientPlayNetworking.registerGlobalReceiver(
-            CHANNEL,
-            (client, handler, buf, responseSender) -> {
-                handleClient(readPacket(buf));
-            }
+        //? if >= 1.21 {
+
+        //? } elif < 1.21 {
+        /*ClientPlayNetworking.registerGlobalReceiver(
+                CHANNEL,
+                (client, handler, buf, responseSender) -> {
+                    handleClient(readPacket(buf));
+                }
         );
+        *///?}
     }
 
     @Override
     public void sendToServer(Packet packet) {
-        ClientPlayNetworking.send(CHANNEL, writePacket(packet));
+        //? if < 1.21
+        //ClientPlayNetworking.send(CHANNEL, writePacket(packet));
+        //? if >= 1.21
+        ClientPlayNetworking.send(packet);
     }
 
     @Override
     public void sendToPlayer(ServerPlayer player, Packet packet) {
-        ServerPlayNetworking.send(player, CHANNEL, writePacket(packet));
+        //? if < 1.21
+        //ServerPlayNetworking.send(player, CHANNEL, writePacket(packet));
+        //? if >= 1.21
+        ServerPlayNetworking.send(player, packet);
     }
 
     @Override

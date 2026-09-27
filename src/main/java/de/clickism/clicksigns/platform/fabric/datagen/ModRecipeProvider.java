@@ -10,7 +10,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 //? if < 1.20.4
-/*import net.minecraft.data.recipes.FinishedRecipe;*/
+//import net.minecraft.data.recipes.FinishedRecipe;
 //? if >= 1.20.4
 import net.minecraft.data.recipes.RecipeOutput;
 import java.util.function.Consumer;
@@ -39,7 +39,7 @@ class ModRecipeProvider extends FabricRecipeProvider {
     @Override
     public void buildRecipes(
             //? if < 1.20.4
-            /*Consumer<FinishedRecipe> exporter*/
+            //Consumer<FinishedRecipe> exporter
             //? if >= 1.20.4
             RecipeOutput exporter
     ) {

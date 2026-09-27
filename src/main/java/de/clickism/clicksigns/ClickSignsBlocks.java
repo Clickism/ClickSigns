@@ -18,7 +18,10 @@ public class ClickSignsBlocks {
      */
     public static final Supplier<Block> ROAD_SIGN = Platform.get().registerBlockWithItem(
         "road_sign",
-        BlockBehaviour.Properties.copy(Blocks.STONE),
+        //? if < 1.21
+        //BlockBehaviour.Properties.copy(Blocks.STONE),
+        //? if >= 1.21
+        BlockBehaviour.Properties.ofFullCopy(Blocks.STONE),
         RoadSignBlock::new
     );
 
