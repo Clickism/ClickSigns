@@ -59,7 +59,7 @@ public class ClickSigns {
             .includeChangelog(true)
             .onVersion(version -> {
                 var current = Platform.get().modVersion(MOD_ID);
-                if (version.versionNumber().equals(current)) return;
+                if (version.strippedVersionNumber().equals(current)) return;
                 // Newer version
                 UPDATE_NOTIFIER.newerVersion(version);
                 var message = "\n\nNewer version available for " + CAPITALIZED_MOD_ID
