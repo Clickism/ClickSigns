@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "name": "Trains",
+    "author": "ClickToPlay"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/transit/blue_underline.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 3,
+          "outputWidth": 40,
+          "outputHeight": 8
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 40,
+          "outputHeight": 8
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "text",
+        "x": 20,
+        "y": 4,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "Trains",
+        "style": {
+          "color": "white",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 5,
+        "y": 4,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/tiny/left_long.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/tiny/left_long.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        },
+        "scale": 0.5
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

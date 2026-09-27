@@ -1,0 +1,9 @@
+{
+  "name": "Transit",
+  "default": {
+    "cornerSize": 3,
+    "colors": {
+      "foreground": "white"
+    }
+  }
+}
