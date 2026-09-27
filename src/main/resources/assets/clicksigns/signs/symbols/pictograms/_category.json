@@ -1,0 +1,14 @@
+{
+  "name": "Pictograms",
+  "default": {
+    "texture": {
+      "processors": [
+        {
+          "type": "replaceColor",
+          "to": "foreground"
+        }
+      ]
+    },
+    "defaultScale": 0.6
+  }
+}
