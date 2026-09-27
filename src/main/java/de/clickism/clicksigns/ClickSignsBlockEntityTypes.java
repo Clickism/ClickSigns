@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 
 public class ClickSignsBlockEntityTypes {
     public static final Supplier<BlockEntityType<RoadSignBlockEntity>> ROAD_SIGN = Platform.get().registerBlockEntityType(
-            "road_sign",
-            RoadSignBlockEntity::new,
-            ClickSignsBlocks.ROAD_SIGN
+        "road_sign",
+        RoadSignBlockEntity::new,
+        ClickSignsBlocks.ROAD_SIGN
     );
 
     public static void initialize() {

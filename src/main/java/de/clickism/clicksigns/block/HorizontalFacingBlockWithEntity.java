@@ -21,14 +21,14 @@ public abstract class HorizontalFacingBlockWithEntity extends BaseEntityBlock {
     protected HorizontalFacingBlockWithEntity(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
-                .setValue(HORIZONTAL_FACING, Direction.NORTH));
+            .setValue(HORIZONTAL_FACING, Direction.NORTH));
     }
 
     @Override
     public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(
-                HORIZONTAL_FACING,
-                rotation.rotate(state.getValue(HORIZONTAL_FACING))
+            HORIZONTAL_FACING,
+            rotation.rotate(state.getValue(HORIZONTAL_FACING))
         );
     }
 
@@ -45,6 +45,6 @@ public abstract class HorizontalFacingBlockWithEntity extends BaseEntityBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState()
-                .setValue(HORIZONTAL_FACING, context.getHorizontalDirection());
+            .setValue(HORIZONTAL_FACING, context.getHorizontalDirection());
     }
 }

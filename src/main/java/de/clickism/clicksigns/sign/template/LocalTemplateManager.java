@@ -1,0 +1,76 @@
+package de.clickism.clicksigns.sign.template;
+
+import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.sign.RoadSign;
+import net.minecraft.client.Minecraft;
+
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Handles loading/saving of personal templates stored in .minecraft/sign_templates
+ */
+public class LocalTemplateManager {
+    private static final String LOCAL_TEMPLATE_DIR = "sign_templates";
+
+    private final Map<Path, Template> templates = new ConcurrentHashMap<>();
+
+    private final Path root;
+    private final LocalTemplateLoader loader;
+
+    public LocalTemplateManager() {
+        this.root = Minecraft.getInstance().gameDirectory.toPath().resolve(LOCAL_TEMPLATE_DIR);
+        this.loader = new LocalTemplateLoader(root);
+    }
+
+    public void initialize() {
+        loader.tryProcessAll(templates::put);
+    }
+
+    public void reload() {
+        templates.clear();
+        initialize();
+    }
+
+    public Collection<Template> templates() {
+        return Collections.unmodifiableCollection(templates.values());
+    }
+
+    public void deleteTemplate(Template template) {
+        var path = templates.entrySet().stream()
+            .filter(entry -> entry.getValue().equals(template))
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
+        if (path != null) {
+            try {
+                loader.deleteTemplate(path);
+                templates.remove(path);
+            } catch (Exception e) {
+                ClickSigns.LOGGER.error("Failed to delete local template: {}", template.meta().name(), e);
+            }
+        }
+    }
+
+    public void saveAsTemplate(Template.Meta meta, RoadSign sign, boolean includeTexts) {
+        var pathName = cleanName(meta.name());
+        var path = root.resolve(pathName + ".template.json");
+        int counter = 1;
+        while (path.toFile().exists()) {
+            path = root.resolve(pathName + "_" + counter + ".template.json");
+            counter++;
+        }
+        saveAsTemplate(path, meta, sign, includeTexts);
+    }
+
+    public void saveAsTemplate(Path path, Template.Meta meta, RoadSign sign, boolean includeTexts) {
+        loader.saveAsTemplate(path, meta, sign, includeTexts);
+    }
+
+    public static String cleanName(String name) {
+        return name.toLowerCase().replaceAll("[^a-z0-9_\\-.]", "_");
+    }
+}

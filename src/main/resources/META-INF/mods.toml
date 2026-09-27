@@ -23,3 +23,11 @@ description="An innovative mod that lets you create custom highway & street sign
 #[[dependencies.clicksigns]]
 #modId = "minecraft"
 #type = "required"
+
+[[dependencies.clicksigns]]
+modId="clickui"
+mandatory=true
+type="required"
+versionRange="*"
+side="BOTH"
+ordering="AFTER"

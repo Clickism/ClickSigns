@@ -24,8 +24,8 @@ class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerators generator) {
         generator.generateFlatItem(
-                ClickSignsBlocks.ROAD_SIGN.get().asItem(),
-                ModelTemplates.FLAT_ITEM
+            ClickSignsBlocks.ROAD_SIGN.get().asItem(),
+            ModelTemplates.FLAT_ITEM
         );
     }
 }

@@ -1,6 +1,5 @@
 package de.clickism.clicksigns.platform.network;
 
-import de.clickism.clicksigns.ClickSigns;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -11,6 +10,53 @@ import net.minecraft.server.level.ServerPlayer;
  * Network system abstraction.
  */
 public abstract class Network {
+    /**
+     * Handles a packet received on the client side.
+     *
+     * @param packet the packet to be handled
+     * @param <T>    the type of the packet
+     */
+    @SuppressWarnings("unchecked")
+    protected static <T extends Packet> void handleClient(T packet) {
+        PacketType<T> type = (PacketType<T>) packet.type();
+        type.clientHandler().handle(packet);
+    }
+
+    /**
+     * Writes a packet to a new buffer, with the packet type id as header.
+     *
+     * @param packet the packet to be written
+     * @param <T>    the type of the packet
+     * @return buffer containing the packet data
+     */
+    @SuppressWarnings("unchecked")
+    protected static <T extends Packet> FriendlyByteBuf writePacket(T packet) {
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
+        // Write packet id
+        var type = (PacketType<T>) packet.type();
+        buf.writeResourceLocation(type.id());
+        // Write packet data
+        type.writer().accept(buf, packet);
+        return buf;
+    }
+
+    /**
+     * Reads a packet from the given buffer, retrieving the packet type id from the header.
+     *
+     * @param buf buffer to read from
+     * @return the read packet
+     */
+    protected static Packet readPacket(FriendlyByteBuf buf) {
+        // Read packet id
+        var id = buf.readResourceLocation();
+        var type = PacketRegistry.get(id);
+        if (type == null) {
+            throw new IllegalStateException("Received packet with unknown id: " + id);
+        }
+        // Read packet data
+        return type.reader().apply(buf);
+    }
+
     /**
      * Sends the given packet to the server.
      *
@@ -37,7 +83,13 @@ public abstract class Network {
      * Registers the network handlers.
      * Should be called during mod initialization.
      */
-    public abstract void register();
+    public abstract void registerServer();
+
+    /**
+     * Registers the network handlers for the client side.
+     * Should be called during client mod initialization.
+     */
+    public abstract void registerClient();
 
     /**
      * Handles a packet received on the server side.
@@ -49,76 +101,7 @@ public abstract class Network {
      */
     @SuppressWarnings("unchecked")
     protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
-        var type = (PacketType<T>) packet
-                //? if < 1.21.1
-                /* .type();*/
-                //? if >= 1.21.1
-                .subtype();
-
+        var type = (PacketType<T>) packet.type();
         server.execute(() -> type.serverHandler().handle(packet, player));
-        ClickSigns.LOGGER.info("Succeeded at handling server");
-    }
-
-    /**
-     * Handles a packet received on the client side.
-     *
-     * @param packet the packet to be handled
-     * @param <T>    the type of the packet
-     */
-    @SuppressWarnings("unchecked")
-    protected static <T extends Packet> void handleClient(T packet) {
-
-        PacketType<T> type = (PacketType<T>) packet
-                //? if < 1.21.1
-                /* .type(); */
-                //? if >= 1.21.1
-                .subtype();
-        type.clientHandler().handle(packet);
-        ClickSigns.LOGGER.info("Succeeded at handling client");
-    }
-
-    /**
-     * Writes a packet to a new buffer, with the packet type id as header.
-     *
-     * @param packet the packet to be written
-     * @param <T>    the type of the packet
-     * @return buffer containing the packet data
-     */
-    @SuppressWarnings("unchecked")
-    protected static <T extends Packet> FriendlyByteBuf writePacket(T packet) {
-        var buf = new FriendlyByteBuf(Unpooled.buffer());
-        // Write packet id
-        var type = (PacketType<T>) packet
-                //? if < 1.21.1
-                /*.type(); */
-                //? if >= 1.21.1
-                .subtype();
-        buf.writeResourceLocation(type.id());
-        // Write packet data
-        //? if < 1.21.1
-        /*type.writer().accept(buf, packet);*/
-        //? if >= 1.21.1
-        type.packet().encode(buf, packet);
-        return buf;
-    }
-
-    /**
-     * Reads a packet from the given buffer, retrieving the packet type id from the header.
-     *
-     * @param buf buffer to read from
-     * @return the read packet
-     */
-    protected static Packet readPacket(FriendlyByteBuf buf) {
-        // Read packet id
-        var id = buf.readResourceLocation();
-        var type = PacketRegistry.get(id);
-        if (type == null) {
-            throw new IllegalStateException("Received packet with unknown id: " + id);
-        }
-        // Read packet data
-        //? if < 1.21.1
-        /*return type.reader().apply(buf);*/
-        //? if >= 1.21.1
-        return type.packet().decode(buf);
     }
 }

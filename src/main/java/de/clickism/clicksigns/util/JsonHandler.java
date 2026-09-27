@@ -16,9 +16,9 @@ public interface JsonHandler {
      * Gson instance for JSON parsing in reload listeners
      */
     Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .setPrettyPrinting()
-            .create();
+        .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+        .setPrettyPrinting()
+        .create();
 
     /**
      * Parses a JSON resource into an instance of the specified class.

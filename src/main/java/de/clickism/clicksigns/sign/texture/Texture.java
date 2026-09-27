@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
  * @param height   height of the texture image in pixels
  */
 public record Texture(
-        ResourceLocation location,
-        int width,
-        int height
+    ResourceLocation location,
+    int width,
+    int height
 ) implements PixelSized {
 }

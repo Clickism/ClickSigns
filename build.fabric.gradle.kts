@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
+    id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -11,6 +12,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 sourceSets {
@@ -37,11 +39,26 @@ base {
     archivesName.set(property("archives_base_name").toString())
 }
 
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor(0, "seconds")
+    }
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation(include("de.clickism:modrinth-update-checker:1.1")!!)
+    include(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-fabric") {
+        isChanging = true
+        isTransitive = false
+    })
+
+    // Configured
+    implementation(include("de.clickism:configured-core:${property("deps.configured")}")!!)
+    implementation(include("de.clickism:configured-json:${property("deps.configured")}")!!)
 }
 
 tasks.processResources {
@@ -73,5 +90,39 @@ loom {
         if (runtimeEnvironment.get() == "client") {
             programArguments.set(listOf("--username=ClickToPlay"))
         }
+    }
+}
+
+tasks.register<Delete>("cleanLoomCache") {
+    description = "Cleans the Loom cache for remapped mods"
+    delete(rootProject.file(".gradle/loom-cache/remapped_mods"))
+}
+
+publishMods {
+    displayName.set("ClickSigns ${property("mod.version")} for Fabric")
+    file.set(tasks.remapJar.get().archiveFile)
+    version.set(project.version.toString())
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
+    type.set(BETA)
+    modLoaders.add("fabric")
+    val mcVersions = property("mod.publishing_target_minecraft_versions").toString().split(',')
+    modrinth {
+        accessToken.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("xaXWiLzT")
+        requires("fabric-api")
+        minecraftVersions.addAll(mcVersions)
+        environment.set(CLIENT_AND_SERVER)
+    }
+    curseforge {
+        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+        projectId.set("1161795")
+        client.set(true)
+        server.set(true)
+        requires("fabric-api")
+        minecraftVersions.addAll(mcVersions)
+    }
+    github {
+        accessToken.set(System.getenv("GITHUB_TOKEN"))
+        parent(project(":").tasks.named("publishGithub"))
     }
 }

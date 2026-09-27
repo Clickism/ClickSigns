@@ -1,9 +1,11 @@
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
-import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.ClickSignsClient;
+import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -19,6 +21,7 @@ public class ForgeEntrypoint {
         ClickSigns.initialize();
         // Initialize forge platform with event bus
         ForgePlatform.INSTANCE.initialize(context.getModEventBus());
+        MinecraftForge.EVENT_BUS.register(new ForgeEvents());
     }
 
     @SubscribeEvent
@@ -28,6 +31,6 @@ public class ForgeEntrypoint {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-
+        ClickSignsClient.initialize();
     }
 }

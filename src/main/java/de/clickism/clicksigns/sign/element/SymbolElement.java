@@ -1,63 +1,104 @@
 package de.clickism.clicksigns.sign.element;
 
-import de.clickism.clicksigns.sign.ColorResolver;
-import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.ClickSigns;
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.Alignment;
+import de.clickism.clicksigns.sign.Symbol;
+import de.clickism.clicksigns.sign.color.ColorResolver;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Symbol element on a road sign.
  *
- * @param localX    local X coordinate
- * @param localY    local Y coordinate
- * @param alignment alignment of the symbol
- * @param symbol    symbol to display
+ * @param x             local X coordinate
+ * @param y             local Y coordinate
+ * @param alignment     alignment of the symbol
+ * @param symbolId      id of the root symbol
+ * @param textureSource texture of the symbol, can diverge from the root via texture overrides, etc.
+ * @param scale         scale of the symbol, where 1.0 is the default size
  */
-// TODO: Add scale?
 public record SymbolElement(
-        int localX,
-        int localY,
-        Alignment alignment,
-        Symbol symbol
+    int x,
+    int y,
+    Alignment alignment,
+    ResourceLocation symbolId,
+    TextureSource textureSource,
+    float scale
 ) implements SignElement {
+    public static final float MIN_SCALE = 0.1f;
+    public static final float MAX_SCALE = 10.0f;
+
     /**
      * Type key
      */
     public static final String TYPE = "symbol";
+
+    /**
+     * Creates a new symbol element with default properties.
+     *
+     * @return the default symbol element
+     */
+    public static SymbolElement createDefault() {
+        var symbolId = ClickSigns.signAsset("symbols/arrows/street/right_curvy.png");
+        return new SymbolElement(0, 0,
+            Alignment.CENTER,
+            symbolId,
+            SignRegistries.SYMBOLS.get(symbolId).textureSource(),
+            1.0f
+        );
+    }
 
     @Override
     public String typeKey() {
         return TYPE;
     }
 
-    @Override
-    public int signWidth() {
-        return symbol.texture().resolve(ColorResolver.empty()).width();
+    /**
+     * Resolves the symbol from the registry using the symbol ID.
+     *
+     * @return the resolved symbol, or null if not found
+     */
+    public Symbol resolveSymbol() {
+        return SignRegistries.SYMBOLS.get(symbolId);
     }
 
     @Override
-    public int signHeight() {
-        return symbol.texture().resolve(ColorResolver.empty()).height();
+    public float width() {
+        return scale * textureSource.resolve(ColorResolver.empty()).width();
+    }
+
+    @Override
+    public float height() {
+        return scale * textureSource.resolve(ColorResolver.empty()).height();
     }
 
     /**
-     * Creates a new symbol element with the given symbol, keeping the other properties the same.
+     * Creates a new symbol element with the given texture source, keeping the other properties the same.
+     * If the base of the texture source matches a different symbol in the registry, it will switch to that symbol.
      *
-     * @param symbol symbol to display
-     * @return a new symbol element with the given symbol, keeping the other properties the same
+     * @param textureSource new texture source for the symbol
+     * @return a new symbol element with the given texture source, keeping the other properties the same
      */
-    public SymbolElement withSymbol(Symbol symbol) {
-        return new SymbolElement(localX(), localY(), alignment(), symbol);
+    public SymbolElement withTextureSource(TextureSource textureSource) {
+        // If base matches up, we keep the symbolId
+        var base = textureSource.base();
+        var symbolId = this.symbolId();
+        if (!base.equals(symbolId) && SignRegistries.SYMBOLS.has(base)) {
+            symbolId = base; // Switch to the new symbol if it exists in the registry
+        }
+        return new SymbolElement(x(), y(), alignment(), symbolId, textureSource, scale);
     }
 
     /**
      * Creates a new symbol element with the given position, keeping the other properties the same.
      *
-     * @param localX local X coordinate
-     * @param localY local Y coordinate
+     * @param x local X coordinate
+     * @param y local Y coordinate
      * @return a new symbol element with the given position, keeping the other properties the same
      */
-    public SymbolElement withPosition(int localX, int localY) {
-        return new SymbolElement(localX, localY, alignment(), symbol);
+    public SymbolElement withPosition(int x, int y) {
+        return new SymbolElement(x, y, alignment(), symbolId, textureSource, scale);
     }
 
     /**
@@ -67,6 +108,16 @@ public record SymbolElement(
      * @return a new symbol element with the given alignment, keeping the other properties the same
      */
     public SymbolElement withAlignment(Alignment alignment) {
-        return new SymbolElement(localX(), localY(), alignment, symbol);
+        return new SymbolElement(x(), y(), alignment, symbolId, textureSource, scale);
+    }
+
+    /**
+     * Creates a new symbol element with the given scale, keeping the other properties the same.
+     *
+     * @param scale scale of the symbol, where 1.0 is the default size
+     * @return a new symbol element with the given scale, keeping the other properties the same
+     */
+    public SymbolElement withScale(float scale) {
+        return new SymbolElement(x(), y(), alignment(), symbolId, textureSource, scale);
     }
 }

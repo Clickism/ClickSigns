@@ -45,14 +45,14 @@ class ModRecipeProvider extends FabricRecipeProvider {
     ) {
         // Generate road sign recipe
         ShapedRecipeBuilder
-                .shaped(RecipeCategory.DECORATIONS, ClickSignsBlocks.ROAD_SIGN.get(), 4)
-                .pattern("###")
-                .pattern("#*#")
-                .pattern("###")
-                .define('#', Items.IRON_INGOT)
-                .define('*', ItemTags.SIGNS)
-                .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
-                .save(exporter, ClickSigns.identifier("road_sign"));
+            .shaped(RecipeCategory.DECORATIONS, ClickSignsBlocks.ROAD_SIGN.get(), 4)
+            .pattern("###")
+            .pattern("#*#")
+            .pattern("###")
+            .define('#', Items.IRON_INGOT)
+            .define('*', ItemTags.SIGNS)
+            .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
+            .save(exporter, ClickSigns.identifier("road_sign"));
     }
 
     @Override

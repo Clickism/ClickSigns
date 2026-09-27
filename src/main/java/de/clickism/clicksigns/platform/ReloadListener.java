@@ -1,11 +1,7 @@
 package de.clickism.clicksigns.platform;
 
 import de.clickism.clicksigns.util.JsonHandler;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-
-import java.util.function.BiConsumer;
 
 /**
  * Reload listener interface

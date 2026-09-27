@@ -1,19 +1,12 @@
 package de.clickism.clicksigns.util;
 
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
+/**
+ * Collection of utility methods for creating and manipulating Minecraft chat components.
+ */
 public class ComponentUtil {
-    /**
-     * Creates a translatable tooltip component.
-     *
-     * @param key the translation key for the tooltip text
-     * @return a tooltip component with the translated text
-     */
-    public static Tooltip translatableTooltip(String key) {
-        return Tooltip.create(Component.translatable(key));
-    }
-
     /**
      * Creates a translatable component with an icon prefix.
      *
@@ -21,9 +14,43 @@ public class ComponentUtil {
      * @param key  the translation key for the text
      * @return a component with the icon and translated text
      */
-    public static Component translatableWithIcon(String icon, String key) {
+    public static Component t(String icon, String key, ChatFormatting... formatting) {
         return Component.literal(icon + " ")
-                .append(Component.translatable(key));
+            .append(Component.translatable(key))
+            .withStyle(formatting);
+    }
+
+    /**
+     * Creates a translatable component for the given translation key with specified formatting.
+     *
+     * @param key        the translation key for the text
+     * @param formatting the formatting to apply to the text
+     * @return a component with the translated text and specified formatting
+     */
+    public static Component t(String key, ChatFormatting... formatting) {
+        return Component.translatable(key).withStyle(formatting);
+    }
+
+    /**
+     * Creates a translatable component for the given translation key with specified arguments.
+     *
+     * @param key  the translation key for the text
+     * @param args the arguments to format the translated text
+     * @return a component with the translated text and formatted arguments
+     */
+    public static Component t(String key, Object... args) {
+        return Component.translatable(key, args);
+    }
+
+    /**
+     * Creates a literal component for the given text with specified formatting.
+     *
+     * @param text       the text to display
+     * @param formatting the formatting to apply to the text
+     * @return a component with the literal text and specified formatting
+     */
+    public static Component l(String text, ChatFormatting... formatting) {
+        return Component.literal(text).withStyle(formatting);
     }
 
     /**
@@ -32,7 +59,7 @@ public class ComponentUtil {
      * @return a component with the translated text for "Confirm"
      */
     public static Component confirm() {
-        return Component.translatable("clicksigns.text.confirm");
+        return Component.translatable("clicksigns.confirm");
     }
 
     /**
@@ -41,16 +68,6 @@ public class ComponentUtil {
      * @return a component with the icon and translated text for "Confirm"
      */
     public static Component confirmWithIcon() {
-        return translatableWithIcon("✔", "clicksigns.text.confirm");
-    }
-
-    /**
-     * Renders a component to a string representation.
-     *
-     * @param component the component to render
-     * @return the string representation of the component
-     */
-    public static String render(Component component) {
-        return component.getString();
+        return t("✔", "clicksigns.confirm");
     }
 }

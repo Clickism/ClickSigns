@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "name": "Rounded Exit",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/rounded/blue.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 6,
+          "outputWidth": 48,
+          "outputHeight": 26
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 48,
+          "outputHeight": 26
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "text",
+        "x": 30,
+        "y": 13,
+        "alignment": "CENTER",
+        "scale": 1.4444444,
+        "text": "",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 9,
+        "y": 13,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/highway/left_diagonal.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/highway/left_diagonal.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

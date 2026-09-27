@@ -1,19 +1,15 @@
 package de.clickism.clicksigns.block;
 
-import com.mojang.serialization.MapCodec;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
-import de.clickism.clicksigns.gui.GuiUtils;
-import de.clickism.clicksigns.gui.screen.overview.SignOverviewScreen;
+import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -30,9 +26,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     // Shapes for each facing direction
-    //? if >= 1.20.4
-    public static final MapCodec<RoadSignBlock> CODEC = simpleCodec(RoadSignBlock::new);
-    private static final double THICKNESS = 0.03;
+    public static final double THICKNESS = 0.03;
     private static final VoxelShape NORTH_SHAPE = Shapes.box(0, 0, 0, 1, 1, THICKNESS);
     private static final VoxelShape SOUTH_SHAPE = NORTH_SHAPE.move(0, 0, 1 - THICKNESS);
     private static final VoxelShape WEST_SHAPE = Shapes.box(0, 0, 0, THICKNESS, 1, 1);
@@ -42,12 +36,6 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         super(properties);
     }
 
-    //? if >= 1.20.4 {
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
-    }//? }
-
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RoadSignBlockEntity(pos, state);
@@ -55,57 +43,48 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     @Override
     public @NotNull VoxelShape getCollisionShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        @NotNull BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         return getShape(state, level, pos, context);
     }
 
     @Override
     public @NotNull VoxelShape getOcclusionShape(
-            @NotNull BlockState state
-            //? if < 26.1 {
-            ,@NotNull BlockGetter level,
-            @NotNull BlockPos pos
-            //?}
+        @NotNull BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos
     ) {
         return Shapes.empty();
     }
 
     @Override
-    //? if < 1.21.1
-    /*public*/
-    //? if >= 1.21.1
-    protected
-    @NotNull InteractionResult /*? if < 1.21.1 {*/ /*use*/ /*?} elif >= 1.21.1 {*/ useWithoutItem /*?}*/(
-            @NotNull BlockState state,
-            @NotNull Level level,
-            @NotNull BlockPos pos,
-            @NotNull Player player,
-            //? if < 1.21.1
-            /*@NotNull InteractionHand hand,*/
-            @NotNull BlockHitResult hit
+    public @NotNull InteractionResult use(
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull Player player,
+        @NotNull InteractionHand hand,
+        @NotNull BlockHitResult hit
     ) {
-        if (!level.isClientSide/*? if >= 26.1 {*/()/*?}*/) {
-            return InteractionResult.SUCCESS;
-        }
-
+        if (!level.isClientSide) return InteractionResult.SUCCESS;
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RoadSignBlockEntity roadSignEntity) {
-            GuiUtils.openScreen(new SignOverviewScreen(null, roadSignEntity));
+            new SignOverviewScreen(roadSignEntity).open();
+//            GuiUtils.openScreen(new SignOverviewScreen(null, roadSignEntity));
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public @NotNull VoxelShape getShape(
-            BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+        BlockState state,
+        @NotNull BlockGetter level,
+        @NotNull BlockPos pos,
+        @NotNull CollisionContext context
     ) {
         // Return shape based on facing direction
         var facing = state.getValue(HORIZONTAL_FACING);
@@ -122,7 +101,4 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.INVISIBLE;
     }
-    //? if >= 1.21.1 {
-
-    //? }
 }

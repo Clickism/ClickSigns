@@ -1,0 +1,9 @@
+{
+  "name": "Highway",
+  "default": {
+    "cornerSize": 4,
+    "colors": {
+      "foreground": "white"
+    }
+  }
+}

@@ -2,64 +2,133 @@ package de.clickism.clicksigns.sign;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
+import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import de.clickism.clicksigns.sign.texture.source.TiledTextureSource;
+import de.clickism.clicksigns.sign.texture.source.processors.AlphaMask;
 import de.clickism.clicksigns.util.PixelSized;
-import de.clickism.clicksigns.util.nbt.NbtReader;
-import de.clickism.clicksigns.util.nbt.NbtWriter;
-import net.minecraft.network.FriendlyByteBuf;
-//? if >= 1.21.1
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import de.clickism.clicksigns.util.Size;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Road sign class.
+ * Represents a road sign with a front texture, back texture, and elements.
+ *
+ * <h3>Overview</h3>
+ *
+ * <h4>Textures</h4>
+ * The front texture is the main texture of the road sign, and is used for calculating the size of the sign.
+ * The back texture is just used for rendering.
+ *
+ * <h4>Alignment</h4>
+ * The alignment of the road sign determines how the road sign is aligned relative to the block it is placed on.
+ * Unlike how element alignments work, it will always try to cover the block if possible, and align the rest of the sign.
+ *
+ * <h4>Elements</h4>
+ * The elements of the road sign are used for rendering symbols, texts, etc. on the road sign.
+ * Their render order is determined by their type, that means all elements of the same type will render in the same
+ * z-index. With the order being: (Sign Texture) -> Plate -> Symbol -> Text.
+ *
+ * <h3>Coordinate System</h3>
+ * The coordinate system of the road sign starts with <strong>(0, 0) in the bottom left corner</strong> of the road sign,
+ * with the x-axis going to the right and the y-axis going up. The coordinates are in pixels.
+ * <p>
+ * <strong>Note:</strong> This is different from how the UI coordinate system works,
+ * which has (0, 0) in the top left corner and the y-axis going down.
+ * So the conversion should be handled properly when rendering the road sign in the UI.
+ * <p>
+ * Element coordinates are restricted to integer values, but after alignment, they can be floating point values.
+ * In which case, they should be rendered as precisely as possible, without rounding, which goes for both the UI
+ * and the road sign rendering.
+ * <p>
+ * Text elements are a special case, because they have a scale alongside different style options.
+ * For more information, refer to the {@link TextElement} class.
  *
  * @param frontSource texture of the road sign
  * @param backSource  texture of the back of the road sign
  * @param elements    elements of the road sign
+ * @param alignment   alignment of the road sign
  */
 public record RoadSign(
-        TextureSource frontSource,
-        TextureSource backSource,
-        List<SignElement> elements,
-        Alignment alignment,
-        @Nullable ResourceLocation templateId
+    TextureSource frontSource,
+    TextureSource backSource,
+    List<SignElement> elements,
+    Alignment alignment
 ) implements PixelSized {
+    public static final Size MIN_SIGN_SIZE = new Size(6, 6);
+    public static final Size MAX_SIGN_SIZE = new Size(144, 144); // 9 Blocks
+
     /**
      * The default alignment for road signs when no alignment is set.
      */
     public static Alignment DEFAULT_ALIGNMENT = Alignment.TOP_CENTER;
 
     /**
-     * The default symbol texture.
+     * Gets the default front texture source for road signs.
+     *
+     * @return the default front texture source
      */
-    public static ResourceLocation DEFAULT_SYMBOL_TEXTURE = ClickSigns.signAsset("symbols/arrows/right_curvy.png");
+    public static TextureSource defaultFrontSource() {
+        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/street/white.png"))
+            .textureSource(32, 16);
+    }
 
     /**
-     * The default road sign to use when no road sign is set.
+     * Gets the default back texture source for road signs.
+     *
+     * @return the default back texture source
      */
-    public static RoadSign DEFAULT = new RoadSign(
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/default/white.png"), 32, 16),
-            new TiledTextureSource(ClickSigns.signAsset("tilesets/backs/back.png"), 32, 16),
+    public static TextureSource defaultBackSource() {
+        return SignRegistries.TILE_SETS.get(ClickSigns.signAsset("tilesets/backs/back.png"))
+            .textureSource(32, 16);
+    }
+
+    /**
+     * Creates a new road sign with default properties.
+     * <p>
+     * Warning: {@link SignRegistries} should be initialized before calling this method, otherwise it will throw an exception.
+     *
+     * @return the default road sign
+     */
+    public static RoadSign createDefault() {
+        return new RoadSign(
+            defaultFrontSource(),
+            defaultBackSource(),
             List.of(
-                    new SymbolElement(2, 8, Alignment.CENTER_RIGHT, SignRegistries.SYMBOLS.get(DEFAULT_SYMBOL_TEXTURE)),
-                    new TextElement(9, 10, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-                    new TextElement(9, 6, Alignment.TEXT_RIGHT, "", 1f, "foreground", null),
-                    new TextElement(9, 2, Alignment.TEXT_RIGHT, "", 1f, "white", "brown")
+                SymbolElement.createDefault().withPosition(5, 8),
+                TextElement.createDefault().withPosition(9, 12).withAlignment(Alignment.CENTER_RIGHT),
+                TextElement.createDefault().withPosition(9, 8).withAlignment(Alignment.CENTER_RIGHT),
+                TextElement.createDefault().withPosition(9, 4).withAlignment(Alignment.CENTER_RIGHT)
             ),
-            DEFAULT_ALIGNMENT,
-            ClickSigns.identifier("test")
-    );
+            DEFAULT_ALIGNMENT
+        );
+    }
+
+    /**
+     * Masks the back texture with the front texture, so that the back texture always
+     * matches up with the front texture.
+     *
+     * @param frontSource the front texture source
+     * @param backSource  the back texture source
+     * @return a new texture source with the back texture masked by the front texture
+     */
+    public static TextureSource maskedBackOf(TextureSource frontSource, TextureSource backSource) {
+        // Resize back to make sure it covers the front texture
+        backSource = backSource.resize(frontSource.resolve(ColorResolver.empty()));
+        // Remove all previous alpha masks
+        var processors = backSource.processors().stream()
+            .filter(processor -> !(processor instanceof AlphaMask))
+            .toList();
+        // Reapply the processors to the back texture source
+        backSource = backSource.withProcessors(processors);
+        // Add a new alpha mask processor to the back texture source
+        return backSource.addProcessor(new AlphaMask(frontSource, true));
+    }
 
     /**
      * Gets the color resolver for this road sign.
@@ -68,13 +137,7 @@ public record RoadSign(
      */
     public ColorResolver colorResolver() {
         // Use background's color resolver
-        if (frontSource instanceof TiledTextureSource tiled) {
-            var tileSet = tiled.resolveTileSet();
-            if (tileSet != null) {
-                return tileSet.colorResolver();
-            }
-        }
-        return ColorResolver.withDefault();
+        return frontSource.colorResolver();
     }
 
     /**
@@ -105,6 +168,13 @@ public record RoadSign(
         return frontTexture().height();
     }
 
+    /**
+     * Resizes the road sign to the specified width and height.
+     *
+     * @param width  the new width of the road sign
+     * @param height the new height of the road sign
+     * @return a new road sign with the updated size
+     */
     public RoadSign resized(int width, int height) {
         if (width == width() && height == height()) {
             // No need to resize
@@ -124,7 +194,22 @@ public record RoadSign(
      * @return a new road sign with the updated texture
      */
     public RoadSign withFront(TextureSource frontSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        // If size is different, resize from the center, so move elements accordingly
+        var elements = this.elements;
+        var texture = frontSource.resolve(colorResolver());
+        if (texture.width() != width() || texture.height() != height()) {
+            var deltaX = (texture.width() - width()) / 2.0;
+            var deltaY = (texture.height() - height()) / 2.0;
+            var newElements = new ArrayList<SignElement>();
+            for (var element : elements) {
+                newElements.add(element.withPosition(
+                    (int) (element.x() + deltaX),
+                    (int) (element.y() + deltaY)
+                ));
+            }
+            elements = newElements;
+        }
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -136,7 +221,7 @@ public record RoadSign(
      * @return a new road sign with the updated back texture
      */
     public RoadSign withBack(TextureSource backSource) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
 
     /**
@@ -146,47 +231,7 @@ public record RoadSign(
      * @return a new road sign with the updated elements
      */
     public RoadSign withElements(Collection<SignElement> elements) {
-        return new RoadSign(frontSource, backSource, new ArrayList<>(elements), alignment, templateId);
-    }
-
-    /**
-     * Creates a new road sign with the given element replaced.
-     *
-     * @param oldElement the element to be replaced
-     * @param newElement the new element to replace the old one
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign replaceElement(SignElement oldElement, SignElement newElement) {
-        var newElements = new ArrayList<>(elements);
-        int index = newElements.indexOf(oldElement);
-        if (index != -1) {
-            newElements.set(index, newElement);
-        }
-        return withElements(newElements);
-    }
-
-    /**
-     * Creates a new road sign with the given element removed.
-     *
-     * @param element the element to be removed
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign removeElement(SignElement element) {
-        var newElements = new ArrayList<>(elements);
-        newElements.remove(element);
-        return withElements(newElements);
-    }
-
-    /**
-     * Creates a new road sign with the given element added.
-     *
-     * @param element the element to be added
-     * @return a new road sign with the updated elements
-     */
-    public RoadSign addElement(SignElement element) {
-        var newElements = new ArrayList<>(elements);
-        newElements.add(element);
-        return withElements(newElements);
+        return new RoadSign(frontSource, backSource, new ArrayList<>(elements), alignment);
     }
 
     /**
@@ -196,83 +241,6 @@ public record RoadSign(
      * @return a new road sign with the updated alignment
      */
     public RoadSign withAlignment(Alignment alignment) {
-        return new RoadSign(frontSource, backSource, elements, alignment, templateId);
+        return new RoadSign(frontSource, backSource, elements, alignment);
     }
-
-    public boolean isWithinBounds(SignElement element) {
-        return false; // TODO: Implement
-    }
-
-    /**
-     * Codec replaces read/write functions past 1.21.1
-     */
-    //? if >= 1.21.1 {
-    public static final StreamCodec<FriendlyByteBuf, RoadSign> PACKET = StreamCodec.of(
-            (buf, sign) -> {
-                TextureSource.PACKET.encode(buf, sign.frontSource());
-                TextureSource.PACKET.encode(buf, sign.backSource());
-                buf.writeCollection(sign.elements(), SignElement.PACKET);
-                buf.writeInt(sign.alignment().ordinal());
-                buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
-            },
-            (buf) -> {
-                var front = TextureSource.PACKET.decode(buf);
-                var back = TextureSource.PACKET.decode(buf);
-                var elements = buf.readList(SignElement.PACKET);
-                var alignment = Alignment.values()[buf.readInt()];
-                var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
-                return new RoadSign(front, back, elements, alignment, templateId);
-            }
-    );
-    //? }
-    //? if < 1.21.1 {
-    /*
-    public static final FriendlyByteBuf.Writer<RoadSign> PACKET_WRITER = (buf, sign) -> {
-        TextureSource.PACKET_WRITER.accept(buf, sign.frontSource());
-        TextureSource.PACKET_WRITER.accept(buf, sign.backSource());
-        buf.writeCollection(sign.elements(), SignElement.PACKET_WRITER);
-        buf.writeInt(sign.alignment().ordinal());
-        buf.writeNullable(sign.templateId(), FriendlyByteBuf::writeResourceLocation);
-    };
-
-    public static final FriendlyByteBuf.Reader<RoadSign> PACKET_READER = (buf) -> {
-        var front = TextureSource.PACKET_READER.apply(buf);
-        var back = TextureSource.PACKET_READER.apply(buf);
-        var elements = buf.readList(SignElement.PACKET_READER);
-        var alignment = Alignment.values()[buf.readInt()];
-        var templateId = buf.readNullable(FriendlyByteBuf::readResourceLocation);
-        return new RoadSign(front, back, elements, alignment, templateId);
-    };
-    *///? }
-
-    /**
-     * Writer for NBT
-     */
-    public static final NbtWriter.Writer<RoadSign> NBT_WRITER = (tag, sign) -> {
-        var front = tag.createWriter();
-        var back = tag.createWriter();
-        TextureSource.NBT_WRITER.write(front, sign.frontSource());
-        TextureSource.NBT_WRITER.write(back, sign.backSource());
-        tag.putCompound("front", front.asCompoundTag());
-        tag.putCompound("back", back.asCompoundTag());
-        tag.putCollection("elements", sign.elements, SignElement.NBT_WRITER);
-        tag.putString("alignment", sign.alignment().name());
-        if (sign.templateId != null) {
-            tag.putResourceLocation("template", sign.templateId);
-        }
-    };
-
-    /**
-     * Reader for NBT
-     */
-    public static final NbtReader.Reader<RoadSign> NBT_READER = (tag) -> {
-        var frontCompound = tag.getCompound("front").orElseThrow();
-        var backCompound = tag.getCompound("back").orElseThrow();
-        var front = TextureSource.NBT_READER.read(frontCompound);
-        var back = TextureSource.NBT_READER.read(backCompound);
-        var elements = tag.getCollection("elements", SignElement.NBT_READER).orElse(List.of());
-        var alignment = Alignment.valueOf(tag.getString("alignment").orElse(DEFAULT_ALIGNMENT.name()));
-        var templateId = tag.getResourceLocation("template").orElse(null);
-        return new RoadSign(front, back, new ArrayList<>(elements), alignment, templateId);
-    };
 }

@@ -1,0 +1,13 @@
+{
+  "name": "Flat Arrows",
+  "default": {
+    "texture": {
+      "processors": [
+        {
+          "type": "replaceColor",
+          "to": "foreground"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "name": "Intersection Green",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/green.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 48,
+          "outputHeight": 40
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 48,
+          "outputHeight": 40
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "plate",
+        "x": 10,
+        "y": 45,
+        "alignment": "CENTER",
+        "front": {
+          "base": "clicksigns:signs/tilesets/highway/green.png",
+          "processors": [
+            {
+              "type": "tiler",
+              "cornerSize": 4,
+              "outputWidth": 20,
+              "outputHeight": 10
+            }
+          ]
+        },
+        "back": {
+          "base": "clicksigns:signs/tilesets/backs/back.png",
+          "processors": [
+            {
+              "type": "tiler",
+              "cornerSize": 4,
+              "outputWidth": 20,
+              "outputHeight": 10
+            }
+          ]
+        },
+        "match": true
+      },
+      {
+        "type": "symbol",
+        "x": 15,
+        "y": 14,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/highway/right_curvy.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/highway/right_curvy.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 9,
+        "y": 18,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/highway/forward.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/highway/forward.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 10,
+        "y": 14,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/connectors/left_70.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/connectors/left_70.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 11,
+        "y": 9,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/connectors/vertical.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/connectors/vertical.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        }
+      },
+      {
+        "type": "text",
+        "x": 33,
+        "y": 15,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "Center\nIndustrial\nNether",
+        "style": {
+          "color": "black",
+          "backgroundColor": "white",
+          "outlineColor": "black",
+          "outlineWidth": 1,
+          "paddingX": 5,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 2
+        }
+      },
+      {
+        "type": "text",
+        "x": 33,
+        "y": 26,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "A4",
+        "style": {
+          "color": "black",
+          "backgroundColor": "yellow",
+          "outlineColor": "black",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 10,
+        "y": 45,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "D-100",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 4,
+        "y": 32,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "Farms",
+        "style": {
+          "color": "white",
+          "backgroundColor": "brown",
+          "outlineColor": "white",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "text",
+        "x": 4,
+        "y": 26,
+        "alignment": "CENTER_RIGHT",
+        "scale": 1.0,
+        "text": "Housing",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

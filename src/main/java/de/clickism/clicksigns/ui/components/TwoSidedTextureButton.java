@@ -1,0 +1,89 @@
+package de.clickism.clicksigns.ui.components;
+
+import de.clickism.clicksigns.sign.color.ColorResolver;
+import de.clickism.clicksigns.sign.RoadSign;
+import de.clickism.clicksigns.sign.texture.TextureCategory;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
+import de.clickism.clicksigns.util.Size;
+import de.clickism.clickui.UiComponent;
+
+import java.util.Collection;
+import java.util.function.Consumer;
+
+import static de.clickism.clicksigns.util.ComponentUtil.t;
+
+/**
+ * A UI component that displays two texture buttons side by side, one for the front texture and one for the back texture.
+ */
+public class TwoSidedTextureButton extends UiComponent<TwoSidedTextureButton> implements CommonComponents {
+    private final ColorResolver colorResolver;
+    private final Collection<TextureCategory> categories;
+    private final TextureSource frontSource;
+    private TextureSource backSource;
+    private Consumer<TextureSource> onFrontSelected = source -> {};
+    private Consumer<TextureSource> onBackSelected = source -> {};
+    private final Size desiredSize;
+
+    public TwoSidedTextureButton(
+        TextureSource frontSource,
+        TextureSource backSource,
+        ColorResolver colorResolver,
+        Collection<TextureCategory> categories,
+        Size desiredSize
+    ) {
+        this.frontSource = frontSource;
+        this.backSource = backSource;
+        this.colorResolver = colorResolver;
+        this.categories = categories;
+        this.desiredSize = desiredSize;
+    }
+
+    public TwoSidedTextureButton onFrontSelected(Consumer<TextureSource> onFrontSelected) {
+        this.onFrontSelected = onFrontSelected;
+        this.invalidateTree();
+        return this;
+    }
+
+    public TwoSidedTextureButton onBackSelected(Consumer<TextureSource> onBackSelected) {
+        this.onBackSelected = onBackSelected;
+        this.invalidateTree();
+        return this;
+    }
+
+    public TwoSidedTextureButton maskBack() {
+        this.backSource = RoadSign.maskedBackOf(
+            frontSource.resize(TextureButton.TEXTURE_SIZE, TextureButton.TEXTURE_SIZE),
+            backSource
+        );
+        return this;
+    }
+
+    @Override
+    protected void build() {
+        this
+            .growWidth()
+            .children(box()
+                .horizontal()
+                .growWidth()
+                .childGap(4)
+                .children(
+                    withHeader(
+                        t("clicksigns.ui.textures.front"),
+                        new TextureButton(frontSource, null, colorResolver, categories)
+                            .onTextureSelected(textureSource ->
+                                onFrontSelected.accept(textureSource.resize(desiredSize)))
+                            // Don't resize if edited
+                            .onTextureEdited(onFrontSelected)
+                    ),
+                    withHeader(
+                        t("clicksigns.ui.textures.back"),
+                        new TextureButton(backSource, null, colorResolver, categories)
+                            .onTextureSelected(textureSource ->
+                                onBackSelected.accept(textureSource.resize(desiredSize)))
+                            // Don't resize if edited
+                            .onTextureEdited(onBackSelected)
+                    )
+                )
+            );
+    }
+}

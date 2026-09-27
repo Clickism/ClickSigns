@@ -1,4 +1,7 @@
 {
-  "name": "Default Backs",
-  "isBack": true
+  "name": "Backs",
+  "default": {
+    "cornerSize": 4
+  },
+  "priority": -100
 }

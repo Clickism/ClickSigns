@@ -1,6 +1,7 @@
 plugins {
     id("java")
-    id("net.neoforged.moddev.legacyforge") version "2.0.141"
+    id("net.neoforged.moddev.legacyforge") version "2.0.147"
+    id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
 val minecraftVersion = property("mod.minecraft_version").toString()
@@ -11,7 +12,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 
 repositories {
     mavenCentral()
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
+    mavenLocal()
 }
 
 legacyForge {
@@ -38,8 +39,24 @@ legacyForge {
     }
 }
 
+
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    // Small helper to add dependencies to both the jarjar and runtime classpath
+    fun jarJarAndRuntime(dependencyNotation: Any) {
+        jarJar(implementation(dependencyNotation)!!)
+        "additionalRuntimeClasspath"(dependencyNotation)
+    }
+
+    // Dependencies
+    jarJarAndRuntime("de.clickism:modrinth-update-checker:1.1")
+    jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
+        isChanging = true
+    })
+
+    // Configured
+    jarJarAndRuntime("de.clickism:configured-core:${property("deps.configured")}")
+    jarJarAndRuntime("de.clickism:configured-json:${property("deps.configured")}")
 }
 
 sourceSets {
@@ -83,4 +100,35 @@ tasks.processResources {
 
 tasks.named("createMinecraftArtifacts") {
     dependsOn(tasks.named("stonecutterGenerate"))
+}
+
+tasks.jar {
+    finalizedBy("reobfJar")
+}
+
+publishMods {
+    displayName.set("ClickSigns ${property("mod.version")} for Forge")
+    file.set(tasks.getByName<Jar>("reobfJar").archiveFile)
+    version.set(project.version.toString())
+    changelog.set(rootProject.file("CHANGELOG.md").readText())
+    type.set(BETA)
+    modLoaders.add("forge")
+    val mcVersions = property("mod.publishing_target_minecraft_versions").toString().split(',')
+    modrinth {
+        accessToken.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("xaXWiLzT")
+        minecraftVersions.addAll(mcVersions)
+        environment.set(CLIENT_AND_SERVER)
+    }
+    curseforge {
+        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+        projectId.set("1161795")
+        client.set(true)
+        server.set(true)
+        minecraftVersions.addAll(mcVersions)
+    }
+    github {
+        accessToken.set(System.getenv("GITHUB_TOKEN"))
+        parent(project(":").tasks.named("publishGithub"))
+    }
 }

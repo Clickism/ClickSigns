@@ -27,6 +27,9 @@ public interface SignReloadListener extends ReloadListener {
      * @return the full path with the root path as prefix
      */
     default String fromRoot(String path) {
+        if (path == null || path.isEmpty()) {
+            return ROOT_DIR;
+        }
         return ROOT_DIR + "/" + path;
     }
 
@@ -41,15 +44,15 @@ public interface SignReloadListener extends ReloadListener {
      * @return a map of namespace:directory to category
      */
     default <C> Map<ResourceLocation, C> loadAndRegisterCategories(
-            ResourceManager manager,
-            String subDirectory,
-            Class<C> categoryClass,
-            BiConsumer<ResourceLocation, C> registerer
+        ResourceManager manager,
+        String subDirectory,
+        Class<C> categoryClass,
+        BiConsumer<ResourceLocation, C> registerer
     ) {
         Map<ResourceLocation, C> directoryToCategory = new HashMap<>();
         manager.listResources(
-                fromRoot(subDirectory),
-                identifier -> isCategoryPath(identifier.getPath())
+            fromRoot(subDirectory),
+            identifier -> isCategoryPath(identifier.getPath())
         ).forEach((location, resource) -> {
             var directory = stripFileName(location.getPath());
             var category = fromJsonOrNull(resource, categoryClass);
@@ -108,10 +111,7 @@ public interface SignReloadListener extends ReloadListener {
      */
     default ResourceLocation stripExtension(ResourceLocation location, String extension) {
         var path = stripExtension(location.getPath(), extension);
-        //? if < 1.21.1
-        /*return new ResourceLocation(location.getNamespace(), path);*/
-        //? if >= 1.21.1
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path);
+        return ResourceLocation.tryBuild(location.getNamespace(), path);
     }
 
     /**
@@ -127,10 +127,7 @@ public interface SignReloadListener extends ReloadListener {
         if (path.endsWith(oldExtension)) {
             path = path.substring(0, path.length() - oldExtension.length()) + newExtension;
         }
-        //? if < 1.21.1
-        /*return new ResourceLocation(location.getNamespace(), path);*/
-        //? if >= 1.21.1
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path);
+        return ResourceLocation.tryBuild(location.getNamespace(), path);
     }
 
     /**
@@ -156,13 +153,13 @@ public interface SignReloadListener extends ReloadListener {
      * @param consumer     consumer to apply to each resource
      */
     default void forEachResource(
-            ResourceManager manager,
-            String subDirectory,
-            String suffix,
-            BiConsumer<ResourceLocation, Resource> consumer) {
+        ResourceManager manager,
+        String subDirectory,
+        String suffix,
+        BiConsumer<ResourceLocation, Resource> consumer) {
         manager.listResources(
-                fromRoot(subDirectory),
-                identifier -> identifier.getPath().endsWith(suffix)
+            fromRoot(subDirectory),
+            identifier -> identifier.getPath().endsWith(suffix)
         ).forEach((location, resource) -> {
             try {
                 consumer.accept(location, resource);

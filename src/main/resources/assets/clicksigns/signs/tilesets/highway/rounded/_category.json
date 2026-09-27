@@ -1,0 +1,9 @@
+{
+  "name": "Highway Rounded",
+  "default": {
+    "cornerSize": 6,
+    "colors": {
+      "foreground": "white"
+    }
+  }
+}

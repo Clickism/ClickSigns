@@ -1,0 +1,13 @@
+{
+  "name": "Arrows (Street)",
+  "default": {
+    "texture": {
+      "processors": [
+        {
+          "type": "replaceColor",
+          "to": "foreground"
+        }
+      ]
+    }
+  }
+}

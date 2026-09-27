@@ -1,111 +1,151 @@
 package de.clickism.clicksigns.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import de.clickism.clicksigns.render.element.ElementRenderer;
+import de.clickism.clicksigns.render.element.PlateRenderer;
+import de.clickism.clicksigns.render.element.SymbolRenderer;
+import de.clickism.clicksigns.render.element.TextRenderer;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.element.TextElement;
-import de.clickism.clicksigns.sign.texture.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
-import org.joml.Vector2f;
 
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
  * Road sign renderer
  */
-public final class RoadSignRenderer extends Renderer {
-    private final Direction direction;
+public final class RoadSignRenderer {
+
     private final RoadSign roadSign;
+
+    private final RenderContext context;
 
     /**
      * Creates a new road sign renderer for the given block entity and rendering context.
      */
     public RoadSignRenderer(
-            @NotNull RoadSign roadSign,
-            Direction direction,
-            PoseStack stack,
-            MultiBufferSource source,
-            int light
+        RenderContext context,
+        @NotNull RoadSign roadSign
     ) {
-        super(stack, source, light);
-        this.direction = direction;
+        this.context = context;
         this.roadSign = roadSign;
     }
 
-    public void render() {
-        stack.pushPose();
+    private void setupTransform() {
+        var stack = context.stack();
         // Face the direction of the road sign
-        faceDirection();
+        stack.translate(.5, .5, .5); // Rotate from the center of the block
+        // Rotate 180 to base around "north", so that X goes right and Y goes up
+        stack.mulPose(Axis.YP.rotationDegrees(180));
+        // Rotate to match the direction of the road sign
+        stack.mulPose(Axis.YP.rotationDegrees(-context.direction().toYRot()));
+        stack.translate(-.5, -.5, -.5);
 
-        var textureRenderer = new TextureRenderer(stack, source, light, direction);
-        var frontTexture = roadSign.frontTexture();
-        // Align according to the road sign's alignment
-        alignFromBlockCenter(0, 0, frontTexture.blockWidth(), frontTexture.blockHeight(), 0, roadSign.alignment());
-        // Render the road sign texture
-        textureRenderer.renderTexture(frontTexture, 1);
+        // Here, (0,0) is bottom left, and (width, height) is top right of the block
 
-        var textRenderer = new TextRenderer(stack, source, light, direction);
-        roadSign.elements().forEach(element -> {
-            var renderCoords = toRenderCoordinates(frontTexture, element.localX(), element.localY());
-            // Render element
-            var colorResolver = roadSign.colorResolver();
-            if (element instanceof SymbolElement symbol) {
-                // Render each element on top of the road sign
-                var texture = symbol.symbol().texture().resolve(roadSign.colorResolver());
-                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 3, symbol.alignment());
-            } else if (element instanceof TextElement text) {
-                int color = colorResolver.resolveInt(text.color());
-                int backgroundColor = 0;
-                if (text.backgroundColor() != null) {
-                    backgroundColor = colorResolver.resolveInt(text.backgroundColor());
-                }
-                textRenderer.render(text.text(), color, backgroundColor, text.scale(), renderCoords.x, renderCoords.y, 4, text.alignment());
-            } else if (element instanceof PlateElement plate) {
-                var texture = plate.front().resolve(roadSign.colorResolver());
-                textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 2, plate.alignment());
-            }
-        });
+        // Align road sign based on its alignment
 
-        // Render back
-        stack.mulPose(FLIP);
-        textureRenderer.renderTexture(roadSign.backTexture(), 2); // Render back texture more in front
+        // Alignment assumes center, so first center on block
+        float extraWidth = roadSign.blockWidth() - 1;
+        float extraHeight = roadSign.blockHeight() - 1;
+        stack.translate(-extraWidth / 2, -extraHeight / 2, 0);
 
-        // Render backs of plates
-        for (SignElement element : roadSign.elements()) {
-            if (!(element instanceof PlateElement plate)) continue;
-            var flippedX = roadSign.width() - element.localX(); // Flip X coordinate for back rendering
-            var renderCoords = toRenderCoordinates(roadSign.backTexture(), flippedX, element.localY());
-            var texture = plate.back().resolve(roadSign.colorResolver());
-            // Render behind actual back, incase the back texture is inside the sign bounds
-            textureRenderer.renderTexture(texture, renderCoords.x, renderCoords.y, 1, plate.alignment());
-        }
+        // Apply alignment offset
+        var alignment = roadSign.alignment();
+        float offsetX = alignment.offset().x * roadSign.blockWidth() / 2;
+        float offsetY = alignment.offset().y * roadSign.blockHeight() / 2;
 
-        // Finish rendering
-        stack.popPose();
-    }
+        // To make sure the sign covers the whole block, move back by half alignment offset
+        // When width/height is < 1 block, will align to the opposite side of the block, but it's fine.
+        offsetX -= alignment.offset().x / 2;
+        offsetY -= alignment.offset().y / 2;
 
-    private void faceDirection() {
-        // Move to center of block
-        stack.translate(.5, .5, .5);
-        // Rotate around Y axis based on block state direction
-        var rotation = (float) Math.toRadians(-this.direction.toYRot());
-        stack.mulPose(new Quaternionf().rotateY(rotation));
-        // Move back so the sign is flush with the block face
-        stack.translate(0, 0, .5);
+        // Align the sign based on its alignment offset
+        stack.translate(offsetX, offsetY, 0);
     }
 
     /**
-     * Converts local sign coordinates to render coordinates.
+     * Renders all elements of the road sign.
      */
-    private static Vector2f toRenderCoordinates(Texture texture, float localX, float localY) {
-        // Offset by halfWidth and halfHeight, since by default rendered in the center of the texture
-        float renderX = localX / BLOCK_PIXELS - texture.blockWidth() / 2;
-        float renderY = localY / BLOCK_PIXELS - texture.blockHeight() / 2;
-        return new Vector2f(-renderX, renderY);
+    private void renderElements() {
+        roadSign.elements().forEach(this::renderElement);
+    }
+
+    /**
+     * Renders the front texture of the road sign.
+     */
+    private void renderFront() {
+        var frontTexture = roadSign.frontTexture();
+        context.textureRenderer().renderTexture(frontTexture);
+    }
+
+    /**
+     * Renders the back texture of the road sign.
+     */
+    private void renderBack() {
+        context.withFlip(roadSign.blockWidth(), () -> {
+            var backTexture = RoadSign.maskedBackOf(roadSign.frontSource(), roadSign.backSource())
+                .resolve(roadSign.colorResolver());
+            context.textureRenderer().renderTexture(backTexture);
+        });
+    }
+
+    /**
+     * Renders the road sign with its elements and textures.
+     */
+    public void render() {
+        context.stack().pushPose();
+        // Set up the transformatiosn for the road sign based on its direction and alignment
+        setupTransform();
+        // Render the front texture of the road sign
+        context.pushZ(RenderLayers.SIGN_FRONT);
+        renderFront();
+        context.pushZ(-RenderLayers.SIGN_FRONT);
+        // Render elements
+        renderElements();
+        // Render the back texture of the road sign
+        context.pushZ(RenderLayers.SIGN_BACK);
+        renderBack();
+        context.pushZ(RenderLayers.SIGN_BACK);
+
+        // End pose
+        context.stack().popPose();
+    }
+
+
+    /**
+     * Renders a sign element using its corresponding renderer.
+     *
+     * @param element the sign element to render
+     * @param <T>     the type of the sign element, which must extend SignElement
+     */
+    private <T extends SignElement> void renderElement(T element) {
+        var renderer = rendererForElement(element);
+        var x = element.alignedX() / BLOCK_PIXELS;
+        var y = element.alignedY() / BLOCK_PIXELS;
+        var z = renderer.zIndexOf(element, roadSign) * RenderLayers.Z_FIGHTING_OFFSET;
+        context.withTranslation(x, y, z, () -> {
+            renderer.render(element, context, roadSign);
+        });
+    }
+
+    /**
+     * Returns the renderer for a given sign element based on its type.
+     *
+     * @param element the sign element for which to retrieve the renderer
+     * @param <T>     the type of the sign element, which must extend SignElement
+     * @return the renderer corresponding to the type of the sign element
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends SignElement> ElementRenderer<T> rendererForElement(T element) {
+        return (ElementRenderer<T>) switch (element.typeKey()) {
+            case TextElement.TYPE -> new TextRenderer();
+            case SymbolElement.TYPE -> new SymbolRenderer();
+            case PlateElement.TYPE -> new PlateRenderer();
+            default -> throw new IllegalArgumentException("No renderer found for element type: " + element.typeKey());
+        };
     }
 }

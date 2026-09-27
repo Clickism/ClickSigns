@@ -1,0 +1,10 @@
+{
+  "name": "Street Classic",
+  "default": {
+    "cornerSize": 4,
+    "colors": {
+      "foreground": "white"
+    }
+  },
+  "priority": -1
+}

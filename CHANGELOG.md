@@ -1,0 +1,8 @@
+- Added [Modrinth Update Checker](https://github.com/Clickism/ModrinthUpdateChecker) to check for updates on startup
+- Added config in `.minecraf/config/ClickSigns/config.jsonc`.
+  - `check_updates`: Whether to check for updates on startup. Default: `true`
+- Added scale to symbol elements.
+  - Can be set for a symbol element in the editor.
+  - Symbol definitions can now include a `defaultScale` field.
+- Plate elements can now be as small as `1 x 1` (down from `4 x 4`).
+- Added **Tiny Arrows** with 12 symbols, that all have a default scale of `60 %`.
