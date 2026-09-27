@@ -10,6 +10,8 @@
 - Added new symbols to **Flat Arrows**:
   - Full circle and ellipse
   - Full peanut and half peanut
+- Added new symbols:
+  - Exit, Inverted Exit
 - Added new tilesets:
   - **Transit**: Modern looking transit tilesets, useful for train stations, metros, airports, etc. (8 new textures)
   - **Transit Light**: Lighter colors of the transit tileset (7 new textures)
