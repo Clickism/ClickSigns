@@ -3,6 +3,7 @@ package de.clickism.clicksigns.ui;
 import de.clickism.clicksigns.sign.texture.Texture;
 import de.clickism.clickui.UiColor;
 import de.clickism.clickui.elements.Image;
+import de.clickism.clickui.render.UiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,30 +47,14 @@ public class UiUtil {
      * @param size        how many pixels wide the plus sign should be (minimum 3)
      * @param color       the color of the plus sign
      */
-    public static void renderPlusOnTop(GuiGraphics guiGraphics, int x, int y, int size, int color) {
+    public static void renderPlus(UiGraphics guiGraphics, int x, int y, int size, int color) {
         if (size < 3) {
             size = 3;
         }
         final int finalSize = size;
         final int finalY = y - 1; // Move up by 1 pixel to center the plus sign
-        renderWithZ(guiGraphics, 100, () -> {
-            guiGraphics.fill(x - finalSize / 2, finalY, x + finalSize / 2 + 1, finalY + 1, color);
-            guiGraphics.fill(x, finalY - finalSize / 2, x + 1, finalY + finalSize / 2 + 1, color);
-        });
-    }
-
-    /**
-     * Renders graphics with a specified z-index.
-     *
-     * @param guiGraphics  the GuiGraphics to render with
-     * @param z            the z-index to render at
-     * @param renderAction the action to perform for rendering
-     */
-    public static void renderWithZ(GuiGraphics guiGraphics, int z, Runnable renderAction) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, z);
-        renderAction.run();
-        guiGraphics.pose().popPose();
+        guiGraphics.fill(x - finalSize / 2, finalY, x + finalSize / 2 + 1, finalY + 1, color);
+        guiGraphics.fill(x, finalY - finalSize / 2, x + 1, finalY + finalSize / 2 + 1, color);
     }
 
     /**
@@ -84,7 +69,7 @@ public class UiUtil {
      * @param color        the color of the outline
      */
     public static void renderOutline(
-        GuiGraphics graphics,
+        UiGraphics graphics,
         int x,
         int y,
         int width,

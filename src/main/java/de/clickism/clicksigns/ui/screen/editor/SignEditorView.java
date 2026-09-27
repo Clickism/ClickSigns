@@ -74,7 +74,7 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                                 var signElement = editable.current();
                                                 var localOrigin = new Point(signElement.x(), signElement.y());
                                                 var origin = signViewRef.get().screenPositionOf(localOrigin);
-                                                UiUtil.renderPlusOnTop(
+                                                UiUtil.renderPlus(
                                                     context.graphics(),
                                                     origin.x(),
                                                     origin.y(),

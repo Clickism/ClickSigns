@@ -115,8 +115,15 @@ public class SignView extends UiComponent<SignView> {
     }
 
     @Override
-    public void render(RenderContext context) {
-        if (!renderGuidelines) return;
+    public void renderTree(RenderContext context) {
+        super.renderTree(context);
+        // Render on top of other children
+        if (renderGuidelines) {
+            renderGuidelines(context);
+        }
+    }
+
+    private void renderGuidelines(RenderContext context) {
         var children = children();
         if (children.isEmpty()) return;
         // Render guidelines for the main sign
@@ -132,8 +139,6 @@ public class SignView extends UiComponent<SignView> {
 
     private void renderGuidelinesFor(RenderContext context, Rect bounds) {
         var graphics = context.graphics();
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 10); // Render on top of other elements
         // Draw center lines
         var color = UiColor.RED.color();
         var lineWidth = 1;
@@ -145,8 +150,6 @@ public class SignView extends UiComponent<SignView> {
         var centerY = y + height / 2;
         graphics.fill(centerX, y, centerX + lineWidth, y + height, color);
         graphics.fill(x, centerY, x + width, centerY + lineWidth, color);
-
-        graphics.pose().popPose();
     }
 
     /**
