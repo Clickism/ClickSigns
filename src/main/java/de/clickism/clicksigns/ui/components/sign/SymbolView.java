@@ -50,6 +50,7 @@ public class SymbolView extends UiComponent<SymbolView>
             var nextSymbol = symbol.resolveSymbol().nextInCategory();
             sign.updateSymbolElement(
                 symbolElement.id(),
+                // Keep scale when cycling
                 element -> element.withTextureSource(nextSymbol.textureSource())
             );
         }
@@ -61,6 +62,7 @@ public class SymbolView extends UiComponent<SymbolView>
                 List.of(TextureCategory.SYMBOL_TEXTURES),
                 textureSource -> sign.updateSymbolElement(
                     symbolElement.id(),
+                    // Keep scale when selecting new symbol
                     element -> element.withTextureSource(textureSource)
                 )
             ).open();

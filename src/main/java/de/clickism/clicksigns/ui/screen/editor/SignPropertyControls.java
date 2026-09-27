@@ -59,7 +59,7 @@ class SignPropertyControls extends UiComponent<SignPropertyControls> implements 
                         List.of(TextureCategory.SYMBOL_TEXTURES),
                         selected -> {
                             var symbol = SymbolElement.createDefault()
-                                    .withTextureSource(selected);
+                                    .withTextureSourceAndDefaultScale(selected);
                             spawnElement(symbol);
                         }
                     ).open();

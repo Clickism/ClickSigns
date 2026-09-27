@@ -75,6 +75,7 @@ public record SymbolElement(
 
     /**
      * Creates a new symbol element with the given texture source, keeping the other properties the same.
+     * <p>
      * If the base of the texture source matches a different symbol in the registry, it will switch to that symbol.
      *
      * @param textureSource new texture source for the symbol
@@ -88,6 +89,21 @@ public record SymbolElement(
             symbolId = base; // Switch to the new symbol if it exists in the registry
         }
         return new SymbolElement(x(), y(), alignment(), symbolId, textureSource, scale);
+    }
+
+    /**
+     * Creates a new symbol element with the given texture source and sets the scale to the default scale of the
+     * (new) resolved symbol.
+     * <p>
+     * If the base of the texture source matches a different symbol in the registry, it will switch to that symbol.
+     *
+     * @param textureSource new texture source for the symbol
+     * @return a new symbol element with the given texture source and default scale, keeping the other properties the same
+     */
+    public SymbolElement withTextureSourceAndDefaultScale(TextureSource textureSource) {
+        var withSource = withTextureSource(textureSource);
+        var defaultScale = withSource.resolveSymbol().defaultScale();
+        return withSource.withScale(defaultScale);
     }
 
     /**

@@ -9,7 +9,6 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.UUID;
@@ -361,10 +360,7 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                 ).onTextureSelected(texture -> {
                     roadSign.updateSymbolElement(
                         id,
-                        element -> {
-                            element = element.withTextureSource(texture);
-                            return element.withScale(element.resolveSymbol().defaultScale());
-                        }
+                        element -> element.withTextureSourceAndDefaultScale(texture)
                     );
                 })
             ));
