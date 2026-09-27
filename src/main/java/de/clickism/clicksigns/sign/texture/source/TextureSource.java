@@ -7,6 +7,7 @@ import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.Texture;
+import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clickui.UiColor;
@@ -169,7 +170,7 @@ public record TextureSource(
         } catch (Exception e) {
             // Only send error message once per unique texture source, to avoid spamming the log
             sendErrorOnce(identity, "Failed to resolve texture source " + identity, e);
-            return ERROR_TEXTURE;
+            return errorTexture();
         }
         // Upload texture to Minecraft and cache it
         var location = getOrAssignResourceLocation(identity);
@@ -207,6 +208,28 @@ public record TextureSource(
         var image = generate(context);
         IMAGE_CACHE.put(identity, image);
         return image;
+    }
+
+    /**
+     * Tiles the error texture to have the same final size as the texture source
+     *
+     * @return the tiled error texture
+     */
+    private Texture errorTexture() {
+        var width = processors.stream()
+            .filter(p -> p instanceof Tiler)
+            .mapToInt(p -> ((Tiler) p).outputWidth())
+            .max()
+            .orElse(-1);
+        var height = processors.stream()
+            .filter(p -> p instanceof Tiler)
+            .mapToInt(p -> ((Tiler) p).outputHeight())
+            .max()
+            .orElse(-1);
+        if (width <= 0 || height <= 0) {
+            return ERROR_TEXTURE;
+        }
+        return new Texture(ERROR_TEXTURE.location(), width, height);
     }
 
     /**

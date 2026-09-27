@@ -5,4 +5,15 @@
   - Can be set for a symbol element in the editor.
   - Symbol definitions can now include a `defaultScale` field.
 - Plate elements can now be as small as `1 x 1` (down from `4 x 4`).
+- Error textures will now try to fit the tiled texture size in the case of a missing texture.
 - Added **Tiny Arrows** with 12 symbols, that all have a default scale of `60 %`.
+- Added new symbols to **Flat Arrows**:
+  - Full circle and ellipse
+  - Full peanut and half peanut
+- Added new symbols:
+  - Exit, Inverted Exit
+- Added new tilesets:
+  - **Transit**: Modern looking transit tilesets, useful for train stations, metros, airports, etc. (8 new textures)
+  - **Transit Light**: Lighter colors of the transit tileset (7 new textures)
+  - Added a black tileset to the **Plain** tilesets.
+- Added new templates that use the transit tilesets.

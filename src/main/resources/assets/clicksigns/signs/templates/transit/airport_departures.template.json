@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "name": "Airport Departures",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/transit/yellow_fluorescent.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 3,
+          "outputWidth": 32,
+          "outputHeight": 10
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 10
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "text",
+        "x": 19,
+        "y": 5,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "Departures",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 5,
+        "y": 5,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/tiny/forward.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/tiny/forward.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        },
+        "scale": 0.6
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

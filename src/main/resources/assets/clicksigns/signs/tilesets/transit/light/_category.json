@@ -1,0 +1,9 @@
+{
+  "name": "Transit Light",
+  "default": {
+    "cornerSize": 3,
+    "colors": {
+      "foreground": "black"
+    }
+  }
+}
