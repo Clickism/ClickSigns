@@ -9,6 +9,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.UUID;
@@ -384,7 +385,8 @@ class SignElementControls extends UiComponent<SignElementControls> implements Co
                         element.withScale(newScale));
                 }))
             // Update value on every render to reflect changes from other sources (e.g., symbol change)
-            .value((int) (symbol.scale() * 100f))
+            // Round to nearest 10 to avoid jittering
+            .value(Math.round(symbol.scale() * 10f) * 10)
         );
     }
 
