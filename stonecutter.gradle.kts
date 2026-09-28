@@ -2,7 +2,7 @@ plugins {
     id("dev.kikugie.stonecutter")
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
-stonecutter active "1.21.1-fabric"
+stonecutter active "1.20.1-fabric"
 
 stonecutter parameters {
     constants.match(
