@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.serialization.codec;
 
+import de.clickism.clicksigns.serialization.PacketReader;
+import de.clickism.clicksigns.serialization.PacketWriter;
 import de.clickism.clicksigns.serialization.TagReader;
 import de.clickism.clicksigns.serialization.TagWriter;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,12 +25,12 @@ public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
             }
 
             @Override
-            public FriendlyByteBuf.Writer<T> packetWriter() {
+            public PacketWriter<T> packetWriter() {
                 return packetCodec.packetWriter();
             }
 
             @Override
-            public FriendlyByteBuf.Reader<T> packetReader() {
+            public PacketReader<T> packetReader() {
                 return packetCodec.packetReader();
             }
         };
@@ -43,10 +45,10 @@ public interface CommonCodec<T> extends TagCodec<T>, PacketCodec<T> {
     }
 
     default void writePacket(FriendlyByteBuf buf, T value) {
-        packetWriter().accept(buf, value);
+        packetWriter().write(buf, value);
     }
 
     default T readPacket(FriendlyByteBuf buf) {
-        return packetReader().apply(buf);
+        return packetReader().read(buf);
     }
 }

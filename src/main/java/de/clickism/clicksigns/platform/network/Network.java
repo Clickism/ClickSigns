@@ -36,7 +36,7 @@ public abstract class Network {
         var type = (PacketType<T>) packet.type();
         buf.writeResourceLocation(type.id());
         // Write packet data
-        type.writer().accept(buf, packet);
+        type.writer().write(buf, packet);
         return buf;
     }
 
@@ -54,7 +54,7 @@ public abstract class Network {
             throw new IllegalStateException("Received packet with unknown id: " + id);
         }
         // Read packet data
-        return type.reader().apply(buf);
+        return type.reader().read(buf);
     }
 
     /**

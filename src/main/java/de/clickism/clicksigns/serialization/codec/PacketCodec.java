@@ -1,23 +1,24 @@
 package de.clickism.clicksigns.serialization.codec;
 
-import net.minecraft.network.FriendlyByteBuf;
+import de.clickism.clicksigns.serialization.PacketReader;
+import de.clickism.clicksigns.serialization.PacketWriter;
 
 public interface PacketCodec<T> {
-    static <T> PacketCodec<T> of(FriendlyByteBuf.Writer<T> writer, FriendlyByteBuf.Reader<T> reader) {
+    static <T> PacketCodec<T> of(PacketWriter<T> writer, PacketReader<T> reader) {
         return new PacketCodec<>() {
             @Override
-            public FriendlyByteBuf.Writer<T> packetWriter() {
+            public PacketWriter<T> packetWriter() {
                 return writer;
             }
 
             @Override
-            public FriendlyByteBuf.Reader<T> packetReader() {
+            public PacketReader<T> packetReader() {
                 return reader;
             }
         };
     }
 
-    FriendlyByteBuf.Writer<T> packetWriter();
+    PacketWriter<T> packetWriter();
 
-    FriendlyByteBuf.Reader<T> packetReader();
+    PacketReader<T> packetReader();
 }
