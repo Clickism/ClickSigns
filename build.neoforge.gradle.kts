@@ -59,11 +59,6 @@ sourceSets {
         resources.srcDir(
             "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
         )
-        java {
-            val platform = "de/clickism/clicksigns/platform"
-            exclude("$platform/fabric/**")
-            exclude("$platform/forge/**")
-        }
     }
 }
 
