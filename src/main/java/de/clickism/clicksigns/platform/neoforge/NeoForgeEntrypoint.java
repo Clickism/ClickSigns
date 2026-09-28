@@ -2,6 +2,7 @@ package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.ClickSignsClient;
 import de.clickism.clicksigns.entity.RoadSignBlockEntityRenderer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -9,6 +10,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -21,6 +23,7 @@ public class NeoForgeEntrypoint {
         ClickSigns.initialize();
         // Initialize forge platform with event bus
         NeoForgePlatform.INSTANCE.initialize(eventBus);
+        NeoForge.EVENT_BUS.register(new NeoForgeEvents());
     }
 
     @SubscribeEvent
@@ -30,7 +33,7 @@ public class NeoForgeEntrypoint {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-
+        ClickSignsClient.initialize();
     }
 
     @SubscribeEvent

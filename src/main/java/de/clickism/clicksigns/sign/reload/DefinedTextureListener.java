@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.reload;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
