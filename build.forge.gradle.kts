@@ -4,7 +4,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
-val minecraftVersion = property("mod.minecraft_version").toString()
+val minecraftVersion = stonecutter.current.project.substringBeforeLast('-')
 val loader = stonecutter.current.project.substringAfterLast('-')
 
 group = project.property("maven_group").toString()

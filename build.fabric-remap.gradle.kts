@@ -4,7 +4,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
-val minecraftVersion = property("mod.minecraft_version").toString()
+val minecraftVersion = stonecutter.current.project.substringBeforeLast('-')
 val loader = stonecutter.current.project.substringAfterLast('-')
 
 group = project.property("maven_group").toString()
@@ -13,6 +13,7 @@ version = "$modVersion+$minecraftVersion-$loader"
 repositories {
     mavenCentral()
     mavenLocal()
+    maven("https://maven.parchmentmc.org")
 }
 
 sourceSets {
@@ -46,9 +47,18 @@ configurations.all {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.officialMojangMappings())
+    // Mappings
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
+    })
+
+    // Fabric
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+
+    // Libraries
     implementation(include("de.clickism:modrinth-update-checker:1.1")!!)
     include(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-fabric") {
         isChanging = true
