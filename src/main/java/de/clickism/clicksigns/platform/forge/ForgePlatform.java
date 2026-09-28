@@ -1,3 +1,4 @@
+/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -28,13 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-/**
+/^*
  * Forge platform implementation
- */
+ ^/
 public class ForgePlatform implements Platform {
-    /**
+    /^*
      * The fabric platform instance
-     */
+     ^/
     public static final ForgePlatform INSTANCE = new ForgePlatform();
 
     private static final DeferredRegister<Item> ITEMS_REGISTRY =
@@ -53,11 +54,11 @@ public class ForgePlatform implements Platform {
         // Singleton class
     }
 
-    /**
+    /^*
      * Initializes the forge platform
      *
      * @param bus event bus
-     */
+     ^/
     public void initialize(IEventBus bus) {
         ITEMS_REGISTRY.register(bus);
         BLOCKS_REGISTRY.register(bus);
@@ -158,11 +159,11 @@ public class ForgePlatform implements Platform {
             .forEach(entry -> event.accept(entry.item.get()));
     }
 
-    /**
+    /^*
      * A creative tab entry
      *
      * @param tab  the creative tab
      * @param item the item to add
-     */
+     ^/
     private record TabEntry(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {}
-}
+}*/

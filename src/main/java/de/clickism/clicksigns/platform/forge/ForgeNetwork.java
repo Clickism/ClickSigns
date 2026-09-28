@@ -1,3 +1,4 @@
+/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -9,13 +10,13 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-/**
+/^*
  * Forge implementation of the network system.
- */
+ ^/
 public class ForgeNetwork extends Network {
-    /**
+    /^*
      * The forge network instance
-     */
+     ^/
     public static final ForgeNetwork INSTANCE = new ForgeNetwork();
 
     private static final int PROTOCOL_VERSION = 1;
@@ -74,11 +75,12 @@ public class ForgeNetwork extends Network {
         });
     }
 
-    /**
+    /^*
      * Wrapper for packets to be sent through the Forge networking API.
      * For some reason, subclasses give an error, so we need to use a wrapper.
      *
      * @param packet The packet to be sent
-     */
+     ^/
     private record ForgePacket(Packet packet) {}
 }
+*/

@@ -1,3 +1,4 @@
+/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.network.RoadSignUpdatePacket;
@@ -9,13 +10,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-/**
+/^*
  * Forge implementation of the network system.
- */
+ ^/
 public class NeoForgeNetwork extends Network {
-    /**
+    /^*
      * The fabric network instance
-     */
+     ^/
     public static final NeoForgeNetwork INSTANCE = new NeoForgeNetwork();
 
     private NeoForgeNetwork() {
@@ -72,11 +73,12 @@ public class NeoForgeNetwork extends Network {
         });
     }
 
-    /**
+    /^*
      * Wrapper for packets to be sent through the Forge networking API.
      * For some reason, subclasses give an error, so we need to use a wrapper.
      *
      * @param packet The packet to be sent
-     */
+     ^/
     private record ForgePacket(Packet packet) {}
 }
+*/

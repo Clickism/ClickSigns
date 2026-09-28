@@ -1,3 +1,4 @@
+/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -41,3 +42,4 @@ public class NeoForgeEntrypoint {
         NeoForgeNetwork.INSTANCE.registerServer(registrar);
     }
 }
+*/

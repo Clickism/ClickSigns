@@ -1,18 +1,17 @@
 plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
-stonecutter active "1.20.1-fabric"
+stonecutter active "1.21.1-fabric"
 
 stonecutter parameters {
-    constants.match(
-        node.metadata.project.substringAfterLast('-'),
-        "fabric", "neoforge", "forge"
-    )
+    val loader = current.project.substringAfterLast('-')
+    val loaders = listOf("fabric", "neoforge", "forge")
+    constants.match(loader, loaders)
+    // Disable platform-specific packages for other loaders
     files {
-        val platform = "java/de/clickism/clicksigns/platform"
-        disable(!current.project.endsWith("-fabric"), "$platform/fabric/**")
-        disable(!current.project.endsWith("-neoforge"), "$platform/neoforge/**")
-        disable(!current.project.endsWith("-forge"), "$platform/forge/**")
+        loaders.forEach {
+            disable(loader != it, "java/**/platform/$it/**")
+        }
     }
 }
 
