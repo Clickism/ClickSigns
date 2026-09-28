@@ -113,7 +113,7 @@ public class TextureRenderer {
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int setColor) {
         var xAxis = context.direction().getAxis() == Direction.Axis.X;
 
-        //~ if >=1.21.1 'vertex' -> 'addVertex', 'color' -> 'setColor', 'uv' -> 'setUv', 'overlayCoords' -> 'setOverlay', 'uv2' -> 'setLight', 'normal' -> 'setNormal', 'endVertex' -> 'endVertex' {
+        //~ if >=1.21.1 'vertex' -> 'addVertex', 'color' -> 'setColor', 'uv' -> 'setUv', 'overlayCoords' -> 'setOverlay', 'uv2' -> 'setLight', 'normal' -> 'setNormal' {
         
         buffer.addVertex(pose.pose(), x, y, 0)
             .setColor(setColor)
