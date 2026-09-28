@@ -29,10 +29,10 @@ public interface Platform {
         //? if fabric {
         return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;
         //?} elif forge {
-        /*return de.clickism.clicksigns.platform.forge.ForgePlatform.INSTANCE;
-         *///?} else {
-        /*throw new UnsupportedOperationException("No platform implementation found");
-         *///?}
+        //return de.clickism.clicksigns.platform.forge.ForgePlatform.INSTANCE;
+         //?} else {
+        //throw new UnsupportedOperationException("No platform implementation found");
+         //?}
     }
 
     /**

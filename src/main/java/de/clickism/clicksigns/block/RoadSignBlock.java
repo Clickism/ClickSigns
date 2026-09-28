@@ -1,5 +1,7 @@
 package de.clickism.clicksigns.block;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import de.clickism.clicksigns.entity.RoadSignBlockEntity;
 import de.clickism.clicksigns.ui.screen.SignOverviewScreen;
 import net.minecraft.core.BlockPos;
@@ -8,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,6 +39,15 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         super(properties);
     }
 
+    //? if >= 1.21.1 {
+    public static final MapCodec<RoadSignBlock> CODEC = simpleCodec(RoadSignBlock::new);
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+    //?}
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RoadSignBlockEntity(pos, state);
@@ -60,13 +72,16 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         return Shapes.empty();
     }
 
+    //~ if >=1.21.1 'use' -> 'useWithoutItem' {
+
     @Override
-    public @NotNull InteractionResult use(
+    public @NotNull InteractionResult useWithoutItem(
         @NotNull BlockState state,
         @NotNull Level level,
         @NotNull BlockPos pos,
         @NotNull Player player,
-        @NotNull InteractionHand hand,
+        //? if <1.21.1
+        //@NotNull InteractionHand hand,
         @NotNull BlockHitResult hit
     ) {
         if (!level.isClientSide) return InteractionResult.SUCCESS;
@@ -78,6 +93,8 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         }
         return InteractionResult.SUCCESS;
     }
+
+    //~}
 
     @Override
     public @NotNull VoxelShape getShape(

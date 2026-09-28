@@ -11,13 +11,13 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 //? if >=1.21.1 {
-/*import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-*///?} else {
-import net.minecraft.data.recipes.FinishedRecipe;
+//?} else {
+/*import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
-//?}
+*///?}
 
 /**
  * Recipe generator for the mod.
@@ -27,12 +27,12 @@ class ModRecipeProvider extends FabricRecipeProvider {
     public ModRecipeProvider(
             FabricDataOutput output
             //? if >=1.21.1
-            //,CompletableFuture<HolderLookup.Provider> registriesFuture
+            ,CompletableFuture<HolderLookup.Provider> registriesFuture
     ) {
         super(
                 output
                 //? if >=1.21.1
-                //,registriesFuture
+                ,registriesFuture
         );
     }
 
@@ -40,9 +40,9 @@ class ModRecipeProvider extends FabricRecipeProvider {
     @Override
     public void buildRecipes(
             //? if >=1.21.1 {
-            /*RecipeOutput exporter
-            *///?} else
-            Consumer<FinishedRecipe> exporter
+            RecipeOutput exporter
+            //?} else
+            //Consumer<FinishedRecipe> exporter
     ) {
         // Generate road sign recipe
         ShapedRecipeBuilder

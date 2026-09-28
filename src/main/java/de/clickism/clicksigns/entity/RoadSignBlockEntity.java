@@ -6,6 +6,7 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.serialization.NbtTagImpl;
 import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -64,23 +65,48 @@ public class RoadSignBlockEntity extends BlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
+    public @NotNull CompoundTag getUpdateTag(
+        //? if >= 1.21.1
+        HolderLookup.Provider provider
+    ) {
         var tag = new CompoundTag();
-        this.saveAdditional(tag);
+        this.saveAdditional(
+            tag
+            //? if >= 1.21.1
+            ,provider
+        );
         return tag;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(
+        CompoundTag tag
+        //? if >= 1.21.1
+        ,HolderLookup.Provider provider
+    ) {
+        super.saveAdditional(
+            tag
+            //? if >= 1.21.1
+            ,provider
+        );
         if (this.roadSign == null) return;
         var writer = new NbtTagImpl(tag);
         RoadSignCodec.codec().writeTag(writer, this.roadSign);
     }
 
+    //~ if >= 1.21.1 'load' -> 'loadAdditional' {
+
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(
+        CompoundTag tag
+        //? if >= 1.21.1
+        ,HolderLookup.Provider provider
+    ) {
+        super.loadAdditional(
+            tag
+            //? if >= 1.21.1
+            ,provider
+        );
         var reader = new NbtTagImpl(tag);
         try {
             this.roadSign = RoadSignCodec.codec().readTag(reader);
@@ -88,4 +114,6 @@ public class RoadSignBlockEntity extends BlockEntity {
             ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
         }
     }
+
+    //~}
 }

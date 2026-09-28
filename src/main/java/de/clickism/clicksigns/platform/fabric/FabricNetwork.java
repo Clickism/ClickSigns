@@ -33,7 +33,8 @@ public class FabricNetwork extends Network {
     @Override
     public void registerServer() {
         //? if >=1.21.1 {
-        /*PayloadTypeRegistry.playC2S().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(
             GlobalPacket.TYPE,
             (payload, context) -> {
@@ -41,20 +42,19 @@ public class FabricNetwork extends Network {
                 handleServer(packet, context.server(), context.player());
             }
         );
-        *///?} else {
-        ServerPlayNetworking.registerGlobalReceiver(
+        //?} else {
+        /*ServerPlayNetworking.registerGlobalReceiver(
             CHANNEL,
             (server, player, handler, buf, responseSender) -> {
                 handleServer(readPacket(buf), server, player);
             }
         );
-        //?}
+        *///?}
     }
 
     @Override
     public void registerClient() {
         //? if >=1.21.1 {
-        /*PayloadTypeRegistry.playS2C().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
         ClientPlayNetworking.registerGlobalReceiver(
             GlobalPacket.TYPE,
             (payload, context) -> {
@@ -62,30 +62,30 @@ public class FabricNetwork extends Network {
                 handleClient(packet);
             }
         );
-        *///?} else {
-        ClientPlayNetworking.registerGlobalReceiver(
+        //?} else {
+        /*ClientPlayNetworking.registerGlobalReceiver(
             CHANNEL,
             (client, handler, buf, responseSender) -> {
                 handleClient(readPacket(buf));
             }
         );
-        //?}
+        *///?}
     }
 
     @Override
     public void sendToServer(Packet packet) {
         //? if >= 1.21.1 {
-        /*ClientPlayNetworking.send(new GlobalPacket(packet));
-        *///?} else
-        ClientPlayNetworking.send(CHANNEL, writePacket(packet));
+        ClientPlayNetworking.send(new GlobalPacket(packet));
+        //?} else
+        //ClientPlayNetworking.send(CHANNEL, writePacket(packet));
     }
 
     @Override
     public void sendToPlayer(ServerPlayer player, Packet packet) {
         //? if >= 1.21.1 {
-        /*ServerPlayNetworking.send(player, new GlobalPacket(packet));
-        *///?} else
-        ServerPlayNetworking.send(player, CHANNEL, writePacket(packet));
+        ServerPlayNetworking.send(player, new GlobalPacket(packet));
+        //?} else
+        //ServerPlayNetworking.send(player, CHANNEL, writePacket(packet));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FabricNetwork extends Network {
     }
 
     //? if >= 1.21.1 {
-    /*public record GlobalPacket(Packet packet) implements CustomPacketPayload {
+    public record GlobalPacket(Packet packet) implements CustomPacketPayload {
         public static final Type<GlobalPacket> TYPE =
             new Type<>(ClickSigns.identifier("global_packet"));
 
@@ -115,5 +115,5 @@ public class FabricNetwork extends Network {
             return TYPE;
         }
     }
-    *///?}
+    //?}
 }

@@ -105,22 +105,36 @@ public class TextureRenderer {
         vertex(buffer, pose, x1, y2, 0, 0, color); // Top left
     }
 
+
+
     /**
      * Creates a vertex with the given positions and UV coordinates
      */
-    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int color) {
+    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int setColor) {
         var xAxis = context.direction().getAxis() == Direction.Axis.X;
-        buffer.vertex(pose.pose(), x, y, 0)
-            .color(color)
-            .uv(u, v)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(context.light())
+
+        //~ if >=1.21.1 'vertex' -> 'addVertex', 'color' -> 'setColor', 'uv' -> 'setUv', 'overlayCoords' -> 'setOverlay', 'uv2' -> 'setLight', 'normal' -> 'setNormal', 'endVertex' -> 'endVertex' {
+        
+        buffer.addVertex(pose.pose(), x, y, 0)
+            .setColor(setColor)
+            .setUv(u, v)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(context.light())
             // Texture is facing towards -Z
-            .normal(pose.normal(), xAxis
-                ? 1
-                : 0, 0, xAxis
-                ? 0
-                : 1)
-            .endVertex();
+            .setNormal(
+                pose
+                    //? if < 1.21.1
+                    //.setNormal()
+                ,xAxis
+                    ? 1
+                    : 0, 0,
+                xAxis
+                    ? 0
+                    : 1)
+            //? if < 1.21.1
+            //.endVertex()
+        ;
     }
+
+    //~}
 }
