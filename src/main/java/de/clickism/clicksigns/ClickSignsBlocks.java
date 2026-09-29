@@ -2,6 +2,8 @@ package de.clickism.clicksigns;
 
 import de.clickism.clicksigns.block.RoadSignBlock;
 import de.clickism.clicksigns.platform.Platform;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

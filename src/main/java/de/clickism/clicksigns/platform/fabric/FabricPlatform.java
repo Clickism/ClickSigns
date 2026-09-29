@@ -85,7 +85,10 @@ public class FabricPlatform implements Platform {
         ItemFactory<T> itemSupplier
     ) {
         var itemKey = ResourceKey.create(Registries.ITEM, ClickSigns.identifier(name));
-        var item = itemSupplier.create(settings);
+        var item = itemSupplier.create(settings
+            //? if >=26.1
+            .setId(itemKey)
+        );
         var registeredItem = Registry.register(
             BuiltInRegistries.ITEM,
             itemKey,
@@ -101,7 +104,10 @@ public class FabricPlatform implements Platform {
         BlockFactory<T> blockSupplier
     ) {
         var blockKey = ResourceKey.create(Registries.BLOCK, ClickSigns.identifier(name));
-        var block = blockSupplier.create(settings);
+        var block = blockSupplier.create(settings
+            //? if >=26.1
+            .setId(blockKey)
+        );
         var registeredBlock = Registry.register(
             BuiltInRegistries.BLOCK,
             blockKey,

@@ -15,7 +15,11 @@ stonecutter parameters {
         }
         string(current.parsed < "26.1") {
             replace("GuiGraphicsExtractor", "GuiGraphics")
+            replace("FabricPackOutput", "FabricDataOutput")
+            replace("FabricBlockLootSubProvider", "FabricBlockLootTableProvider")
+            replace("FabricTagsProvider.BlockTagsProvider", "FabricTagProvider.BlockTagProvider")
         }
+        string {  }
     }
 }
 

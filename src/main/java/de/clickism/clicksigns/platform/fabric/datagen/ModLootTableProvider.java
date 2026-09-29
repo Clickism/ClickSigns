@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.platform.fabric.datagen;
 
 import de.clickism.clicksigns.ClickSignsBlocks;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 
 //? if >= 1.21.1 {
 import net.minecraft.core.HolderLookup;
@@ -12,10 +12,10 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Loot table generator
  */
-class ModLootTableProvider extends FabricBlockLootTableProvider {
+class ModLootTableProvider extends FabricBlockLootSubProvider {
 
     public ModLootTableProvider(
-            FabricDataOutput output
+            FabricPackOutput output
             //? if >= 1.21.1
             ,CompletableFuture<HolderLookup.Provider> registryLookup
             ) {
