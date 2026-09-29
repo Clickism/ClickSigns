@@ -39,7 +39,7 @@ public class NeoForgeNetwork extends Network {
     }
 
     @SubscribeEvent
-    public static void register(RegisterPayloadHandlersEvent event) {
+    public void register(RegisterPayloadHandlersEvent event) {
         var registrar = event.registrar("1");
         registrar.playBidirectional(
             GlobalPacket.TYPE,

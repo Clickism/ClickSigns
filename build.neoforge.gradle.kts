@@ -41,16 +41,23 @@ neoForge {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    // Small helper to add dependencies to both the jarjar and runtime classpath
+    fun jarJarNonMod(dependency: Any) {
+        jarJar(implementation(dependency)!!)
+        if (neoForge.versionCapabilities.legacyClasspath()) {
+            add("additionalRuntimeClasspath", dependency)
+        }
+    }
 
     // Dependencies
-    jarJar(implementation("de.clickism:modrinth-update-checker:1.1")!!)
+    jarJarNonMod("de.clickism:modrinth-update-checker:1.1")
     jarJar(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-$loader") {
         isChanging = true
     })
 
     // Configured
-    jarJar(implementation("de.clickism:configured-core:${property("deps.configured")}")!!)
-    jarJar(implementation("de.clickism:configured-json:${property("deps.configured")}")!!)
+    jarJarNonMod("de.clickism:configured-core:${property("deps.configured")}")
+    jarJarNonMod("de.clickism:configured-json:${property("deps.configured")}")
 }
 
 sourceSets {

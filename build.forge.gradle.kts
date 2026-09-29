@@ -43,20 +43,20 @@ legacyForge {
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
     // Small helper to add dependencies to both the jarjar and runtime classpath
-    fun jarJarAndRuntime(dependencyNotation: Any) {
-        jarJar(implementation(dependencyNotation)!!)
-        "additionalRuntimeClasspath"(dependencyNotation)
+    fun jarJarNonMod(dependency: Any) {
+        jarJar(implementation(dependency)!!)
+        add("additionalRuntimeClasspath", dependency)
     }
 
     // Dependencies
-    jarJarAndRuntime("de.clickism:modrinth-update-checker:1.1")
+    jarJarNonMod("de.clickism:modrinth-update-checker:1.1")
     jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
         isChanging = true
     })
 
     // Configured
-    jarJarAndRuntime("de.clickism:configured-core:${property("deps.configured")}")
-    jarJarAndRuntime("de.clickism:configured-json:${property("deps.configured")}")
+    jarJarNonMod("de.clickism:configured-core:${property("deps.configured")}")
+    jarJarNonMod("de.clickism:configured-json:${property("deps.configured")}")
 }
 
 sourceSets {

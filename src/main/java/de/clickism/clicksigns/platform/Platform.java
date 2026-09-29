@@ -27,11 +27,11 @@ public interface Platform {
      */
     static Platform get() {
         //? if fabric {
-        //return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;
+        return de.clickism.clicksigns.platform.fabric.FabricPlatform.INSTANCE;
         //?} elif forge {
         //return de.clickism.clicksigns.platform.forge.ForgePlatform.INSTANCE;
         //? elif neoforge {
-        return de.clickism.clicksigns.platform.neoforge.NeoForgePlatform.INSTANCE;
+        //return de.clickism.clicksigns.platform.neoforge.NeoForgePlatform.INSTANCE;
          //?} else {
         //throw new UnsupportedOperationException("No platform implementation found");
          //?}
