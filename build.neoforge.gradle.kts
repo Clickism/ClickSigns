@@ -39,13 +39,12 @@ neoForge {
     }
 }
 
-
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
     // Dependencies
     jarJar(implementation("de.clickism:modrinth-update-checker:1.1")!!)
-    jarJar(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
+    jarJar(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-$loader") {
         isChanging = true
     })
 
@@ -57,8 +56,13 @@ dependencies {
 sourceSets {
     main {
         resources.srcDir(
-            "${rootDir}/versions/datagen/${sc.current.version.substringBeforeLast("-")}/src/main/generated"
+            "${rootDir}/versions/datagen/$minecraftVersion/src/main/generated"
         )
+        java {
+            val platform = "de/clickism/clicksigns/platform"
+            exclude("$platform/forge/**")
+            exclude("$platform/fabric/**")
+        }
     }
 }
 
