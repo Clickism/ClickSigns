@@ -88,7 +88,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                     false,
                     Font.DisplayMode.POLYGON_OFFSET,
                     context.light(),
-                    color,
+                    multiplyColor(color, COLOR_DARKEN_FACTOR),
                     0,
                     0 // No outline
                 );
