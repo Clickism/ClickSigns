@@ -1,10 +1,8 @@
-modLoader="javafml"
-loaderVersion="[4,)"
-
+modLoader = "javafml"
+loaderVersion = "[1,)"
 license="GPL-3.0"
 issueTrackerURL="https://github.com/Clickism/ClickSigns/issues"
 showAsResourcePack=false
-clientSideOnly=false
 
 [[mods]]
 modId="clicksigns"
@@ -17,7 +15,8 @@ description="An innovative mod that lets you create custom highway & street sign
 [[dependencies.clicksigns]]
 modId="neoforge"
 type="required"
-versionRange="*"
+versionRange="[1,)"
+ordering="NONE"
 side="BOTH"
 
 [[dependencies.clicksigns]]
@@ -26,6 +25,7 @@ type = "required"
 
 [[dependencies.clicksigns]]
 modId="clickui"
+mandatory=true
 type="required"
 versionRange="*"
 side="BOTH"
