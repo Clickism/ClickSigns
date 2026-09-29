@@ -46,7 +46,7 @@ public class TextureRenderer {
         context.submit(
             context.textureRenderType(textureLocation),
             (stack, buffer) -> {
-                render(buffer, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
+                render(buffer, stack, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
             }
         );
     }
@@ -62,7 +62,7 @@ public class TextureRenderer {
         context.submit(
             context.colorRenderType(),
             (stack, buffer) -> {
-                render(buffer, blockWidth, blockHeight, color);
+                render(buffer, stack, blockWidth, blockHeight, color);
             }
         );
     }
@@ -92,6 +92,7 @@ public class TextureRenderer {
      */
     private void render(
         VertexConsumer buffer,
+        PoseStack.Pose stack,
         float blockWidth,
         float blockHeight,
         int color
@@ -99,7 +100,7 @@ public class TextureRenderer {
         // Add quad
         quad(
             buffer,
-            context.stack().last(),
+            stack,
             0, 0,
             blockWidth,
             blockHeight,
