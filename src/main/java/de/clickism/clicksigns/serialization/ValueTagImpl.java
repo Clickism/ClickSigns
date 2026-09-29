@@ -24,6 +24,10 @@ public class ValueTagImpl {
     public record Writer(ValueOutput output) implements TagWriter {
         @Override
         public void putString(String key, String value) {
+            if (value == null) {
+                output.discard(key);
+                return;
+            }
             output.putString(key, value);
         }
 
