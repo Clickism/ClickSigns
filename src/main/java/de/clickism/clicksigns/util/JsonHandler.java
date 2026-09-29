@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public interface JsonHandler {
      * Gson instance for JSON parsing in reload listeners
      */
     Gson GSON = new GsonBuilder()
-        .registerTypeAdapter(ResourceLocation.class, new NamespaceAndPathTypeAdapter())
+        .registerTypeAdapter(Identifier.class, new NamespaceAndPathTypeAdapter())
         .setPrettyPrinting()
         .create();
 

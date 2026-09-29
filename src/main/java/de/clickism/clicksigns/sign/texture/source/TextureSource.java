@@ -11,7 +11,7 @@ import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
 import de.clickism.clicksigns.ui.UiUtil;
 import de.clickism.clicksigns.util.PixelSized;
 import de.clickism.clickui.UiColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.*;
  * @param processors the list of texture processors to apply to the base image
  */
 public record TextureSource(
-    ResourceLocation base,
+    Identifier base,
     List<TextureProcessor> processors
 ) {
     /**
@@ -39,10 +39,10 @@ public record TextureSource(
 
     private static final Map<String, Texture> TEXTURE_CACHE = new HashMap<>();
     private static final Map<String, Image> IMAGE_CACHE = new HashMap<>();
-    private static final Map<String, ResourceLocation> RESOURCE_LOCATIONS = new HashMap<>();
+    private static final Map<String, Identifier> RESOURCE_LOCATIONS = new HashMap<>();
     private static final HashSet<String> ERROR_CACHE = new HashSet<>();
 
-    private static final Map<ResourceLocation, ColorResolver> DYNAMIC_COLOR_RESOLVERS = new HashMap<>();
+    private static final Map<Identifier, ColorResolver> DYNAMIC_COLOR_RESOLVERS = new HashMap<>();
 
     public static final int MAX_PROCESSOR_COUNT = 20;
 
@@ -61,7 +61,7 @@ public record TextureSource(
      * @param key the key to get or assign a resource location for
      * @return the resource location associated with the key
      */
-    private static ResourceLocation getOrAssignResourceLocation(String key) {
+    private static Identifier getOrAssignIdentifier(String key) {
         var prefix = "generated/";
         var uuid = UUID.randomUUID();
         return RESOURCE_LOCATIONS.computeIfAbsent(key, k -> ClickSigns.identifier(prefix + uuid));
@@ -73,7 +73,7 @@ public record TextureSource(
      * @param base the base resource location for the texture source
      * @return a new texture source with the given base and no processors
      */
-    public static TextureSource ofStatic(ResourceLocation base) {
+    public static TextureSource ofStatic(Identifier base) {
         return new TextureSource(base, List.of());
     }
 
@@ -84,7 +84,7 @@ public record TextureSource(
      * @param processors the list of processors to apply to the base image
      * @return a new texture source with the given base and processors
      */
-    public static TextureSource of(ResourceLocation base, List<TextureProcessor> processors) {
+    public static TextureSource of(Identifier base, List<TextureProcessor> processors) {
         return new TextureSource(base, processors);
     }
 
@@ -92,23 +92,23 @@ public record TextureSource(
         return CommonCodec.of(
             TagCodec.of(
                 (writer, value) -> {
-                    writer.putResourceLocation("base", value.base());
+                    writer.putIdentifier("base", value.base());
                     writer.putCollection("processors", value.processors, TextureProcessor.codec()::writeTag);
                 },
                 reader -> new TextureSource(
-                    reader.getResourceLocation("base").orElseThrow(),
+                    reader.getIdentifier("base").orElseThrow(),
                     reader.getCollection("processors", TextureProcessor.codec()::readTag).orElseThrow().stream()
                         .toList()
                 )
             ),
             PacketCodec.of(
                 (buf, value) -> {
-                    buf.writeResourceLocation(value.base());
+                    buf.writeIdentifier(value.base());
                     buf.writeCollection(value.processors(), TextureProcessor.codec()::writePacket);
                 },
                 buf -> {
                     return new TextureSource(
-                        buf.readResourceLocation(),
+                        buf.readIdentifier(),
                         buf.readList(TextureProcessor.codec()::readPacket)
                     );
                 }
@@ -173,7 +173,7 @@ public record TextureSource(
             return errorTexture();
         }
         // Upload texture to Minecraft and cache it
-        var location = getOrAssignResourceLocation(identity);
+        var location = getOrAssignIdentifier(identity);
         MinecraftImages.upload(location, image);
         var texture = new Texture(location, image.width(), image.height());
         TEXTURE_CACHE.put(identity, texture);

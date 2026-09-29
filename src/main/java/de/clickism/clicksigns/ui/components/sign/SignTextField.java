@@ -13,6 +13,7 @@ import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.util.Util;
 import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
@@ -224,10 +225,14 @@ public class SignTextField extends TextField implements ElementProvider {
         x -= element.lineXOffset(lineText); // Adjust x based on line offset
         int charIndex = Util.font()
             .getSplitter()
-            .formattedHeadByWidth(lineText, x, element.style().asComponentStyle())
+            //? if >=26.1 {
+            .headByWidth(FormattedText.of(lineText), x, element.style().asComponentStyle())
+            .getString()
             .length();
-        // Calculate cursor position
-        int lineCursorPos = 0;
+            //?} else
+            /*.formattedHeadByWidth(lineText, x, element.style().asComponentStyle()).length();
+         Calculate cursor position
+*/        int lineCursorPos = 0;
         for (int i = 0; i < lineIndex; i++) {
             lineCursorPos += lines.get(i).length() + 1; // +1 for newline
         }

@@ -25,9 +25,9 @@ public record AlphaMask(
         return CommonCodec.of(
             TagCodec.of(
                 (writer, value) -> {
-                    var tag = writer.createTag();
-                    TextureSource.codec().writeTag(tag, value.mask);
-                    writer.putTag("mask", tag);
+                    writer.putTag("mask", tag -> {
+                        TextureSource.codec().writeTag(tag, value.mask);
+                    });
                     writer.putBoolean("mirrorX", value.mirrorX);
                 },
                 reader -> new AlphaMask(

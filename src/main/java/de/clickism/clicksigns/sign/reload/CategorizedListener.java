@@ -2,7 +2,7 @@ package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -101,7 +101,7 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
      * @param categoryId the category id of the category to process
      * @param category   the category to process
      */
-    protected void processCategory(ResourceLocation categoryId, C category) {
+    protected void processCategory(Identifier categoryId, C category) {
         // Nothing by default
     }
 
@@ -111,9 +111,9 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
      */
     public interface ResourceProcessor<C> {
         void process(
-            ResourceLocation location,
+            Identifier location,
             Resource resource,
-            @Nullable ResourceLocation categoryId,
+            @Nullable Identifier categoryId,
             @Nullable C category
         );
     }

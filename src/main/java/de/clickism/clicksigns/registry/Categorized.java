@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public interface Categorized<T extends Identifiable & Categorized<T>> extends Id
      *
      * @return category identifier, or null
      */
-    @Nullable ResourceLocation categoryId();
+    @Nullable Identifier categoryId();
 
     /**
      * Gets the registry this object belongs to.

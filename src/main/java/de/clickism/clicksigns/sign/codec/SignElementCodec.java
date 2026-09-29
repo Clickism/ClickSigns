@@ -33,42 +33,42 @@ public interface SignElementCodec {
                         tag.putFloat("scale", text.scale());
                         tag.putString("text", text.text());
                         // Write text style
-                        var styleTag = tag.createTag();
                         var style = text.style();
-                        styleTag.putString("color", style.color());
-                        styleTag.putString("backgroundColor", style.backgroundColor().orElse(null));
-                        styleTag.putString("outlineColor", style.outlineColor().orElse(null));
-                        styleTag.putInt("outlineWidth", style.outlineWidth());
-                        styleTag.putInt("paddingX", style.paddingX());
-                        styleTag.putInt("paddingY", style.paddingY());
-                        styleTag.putInt("textAlignment", text.style().textAlignment().ordinal());
-                        styleTag.putInt("lineGap", text.style().lineGap());
-                        if (style.isBold()) {
-                            styleTag.putBoolean("bold", true);
-                        }
-                        if (style.isItalic()) {
-                            styleTag.putBoolean("italic", true);
-                        }
-                        if (style.isUnderline()) {
-                            styleTag.putBoolean("underlined", true);
-                        }
-                        if (style.isStrikethrough()) {
-                            styleTag.putBoolean("strikethrough", true);
-                        }
-                        tag.putTag("style", styleTag);
+                        tag.putTag("style", styleTag -> {
+                            styleTag.putString("color", style.color());
+                            styleTag.putString("backgroundColor", style.backgroundColor().orElse(null));
+                            styleTag.putString("outlineColor", style.outlineColor().orElse(null));
+                            styleTag.putInt("outlineWidth", style.outlineWidth());
+                            styleTag.putInt("paddingX", style.paddingX());
+                            styleTag.putInt("paddingY", style.paddingY());
+                            styleTag.putInt("textAlignment", text.style().textAlignment().ordinal());
+                            styleTag.putInt("lineGap", text.style().lineGap());
+                            if (style.isBold()) {
+                                styleTag.putBoolean("bold", true);
+                            }
+                            if (style.isItalic()) {
+                                styleTag.putBoolean("italic", true);
+                            }
+                            if (style.isUnderline()) {
+                                styleTag.putBoolean("underlined", true);
+                            }
+                            if (style.isStrikethrough()) {
+                                styleTag.putBoolean("strikethrough", true);
+                            }
+                        });
                     } else if (element instanceof SymbolElement symbol) {
-                        tag.putResourceLocation("symbol", symbol.symbolId());
-                        var textureTag = tag.createTag();
-                        TextureSource.codec().writeTag(textureTag, symbol.textureSource());
-                        tag.putTag("texture", textureTag);
+                        tag.putIdentifier("symbol", symbol.symbolId());
+                        tag.putTag("texture", textureTag -> {
+                            TextureSource.codec().writeTag(textureTag, symbol.textureSource());
+                        });
                         tag.putFloat("scale", symbol.scale());
                     } else if (element instanceof PlateElement plate) {
-                        var frontTag = tag.createTag();
-                        var backTag = tag.createTag();
-                        TextureSource.codec().writeTag(frontTag, plate.frontSource());
-                        TextureSource.codec().writeTag(backTag, plate.backSource());
-                        tag.putTag("front", frontTag);
-                        tag.putTag("back", backTag);
+                        tag.putTag("front", front -> {
+                            TextureSource.codec().writeTag(front, plate.frontSource());
+                        });
+                        tag.putTag("back", back -> {
+                            TextureSource.codec().writeTag(back, plate.backSource());
+                        });
                         tag.putBoolean("match", plate.matchSignTextures());
                     }
                 },
@@ -120,7 +120,7 @@ public interface SignElementCodec {
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }
                         case SymbolElement.TYPE -> {
-                            var symbolId = tag.getResourceLocation("symbol").orElseThrow();
+                            var symbolId = tag.getIdentifier("symbol").orElseThrow();
                             var textureTag = tag.getTag("texture").orElseThrow();
                             var texture = TextureSource.codec().readTag(textureTag);
                             var scale = tag.getFloat("scale").orElse(1.0f);
@@ -163,7 +163,7 @@ public interface SignElementCodec {
                         buf.writeBoolean(style.isUnderline());
                         buf.writeBoolean(style.isStrikethrough());
                     } else if (element instanceof SymbolElement symbol) {
-                        buf.writeResourceLocation(symbol.symbolId());
+                        buf.writeIdentifier(symbol.symbolId());
                         TextureSource.codec().writePacket(buf, symbol.textureSource());
                         buf.writeFloat(symbol.scale());
                     } else if (element instanceof PlateElement plate) {
@@ -217,7 +217,7 @@ public interface SignElementCodec {
                             yield new TextElement(localX, localY, alignment, text, scale, style);
                         }
                         case SymbolElement.TYPE -> {
-                            var symbolId = buf.readResourceLocation();
+                            var symbolId = buf.readIdentifier();
                             var source = TextureSource.codec().readPacket(buf);
                             var scale = buf.readFloat();
                             yield new SymbolElement(localX, localY, alignment, symbolId, source, scale);

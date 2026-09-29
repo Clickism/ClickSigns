@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.serialization;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Result<T> {
@@ -23,6 +24,16 @@ public class Result<T> {
         return new Result<>(null, new Exception(message));
     }
 
+    public static <T> Result<T> ofOptional(Optional<T> optional, String failureMessage) {
+        return optional.map(Result::success)
+            .orElseGet(() -> Result.failure(failureMessage));
+    }
+
+    public static <T> Result<T> ofOptional(Optional<T> optional, Exception exception) {
+        return optional.map(Result::success)
+            .orElseGet(() -> Result.failure(exception));
+    }
+
     public boolean isSuccess() {
         return exception == null;
     }
@@ -38,9 +49,9 @@ public class Result<T> {
         return exception;
     }
 
-    public T orElseThrow() throws Exception {
+    public T orElseThrow() {
         if (isFailure()) {
-            throw exception;
+            throw new RuntimeException(exception);
         }
         return value;
     }

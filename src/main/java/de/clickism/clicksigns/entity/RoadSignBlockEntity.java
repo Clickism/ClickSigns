@@ -2,8 +2,9 @@ package de.clickism.clicksigns.entity;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.ClickSignsBlockEntityTypes;
+import de.clickism.clicksigns.serialization.TagReader;
+import de.clickism.clicksigns.serialization.TagWriter;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.serialization.NbtTagImpl;
 import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -13,8 +14,19 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+//? if >=26.1 {
+import de.clickism.clicksigns.serialization.ValueTagImpl;
+import org.jspecify.annotations.NonNull;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.util.ProblemReporter;
+//?} else
+//import de.clickism.clicksigns.serialization.NbtTagImpl;
 
 /**
  * Road sign block entity
@@ -67,18 +79,40 @@ public class RoadSignBlockEntity extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag(
         //? if >= 1.21.1
-        HolderLookup.Provider provider
+        HolderLookup.@NonNull Provider provider
     ) {
         var tag = new CompoundTag();
         this.saveAdditional(
-            tag
+            //? if >= 26.1 {
+            TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider)
+            //?} else {
+            /*tag
             //? if >= 1.21.1
             ,provider
+            *///?}
         );
         return tag;
     }
 
+
+
+    //? if >=26.1 {
+
     @Override
+    protected void saveAdditional(@NonNull ValueOutput output) {
+        super.saveAdditional(output);
+        writeRoadSign(ValueTagImpl.writer(output));
+    }
+
+    @Override
+    protected void loadAdditional(@NonNull ValueInput input) {
+        super.loadAdditional(input);
+        this.roadSign = readRoadSign(ValueTagImpl.reader(input));
+    }
+
+    //?} else {
+
+    /*@Override
     protected void saveAdditional(
         CompoundTag tag
         //? if >= 1.21.1
@@ -89,9 +123,7 @@ public class RoadSignBlockEntity extends BlockEntity {
             //? if >= 1.21.1
             ,provider
         );
-        if (this.roadSign == null) return;
-        var writer = new NbtTagImpl(tag);
-        RoadSignCodec.codec().writeTag(writer, this.roadSign);
+        writeRoadSign(new NbtTagImpl(tag));
     }
 
     //~ if >= 1.21.1 'load' -> 'loadAdditional' {
@@ -107,13 +139,23 @@ public class RoadSignBlockEntity extends BlockEntity {
             //? if >= 1.21.1
             ,provider
         );
-        var reader = new NbtTagImpl(tag);
-        try {
-            this.roadSign = RoadSignCodec.codec().readTag(reader);
-        } catch (Exception e) {
-            ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
-        }
     }
 
     //~}
+
+    *///?}
+
+    private void writeRoadSign(TagWriter writer) {
+        if (this.roadSign == null) return;
+        RoadSignCodec.codec().writeTag(writer, this.roadSign);
+    }
+
+    private RoadSign readRoadSign(TagReader reader) {
+        try {
+            return RoadSignCodec.codec().readTag(reader);
+        } catch (Exception e) {
+            ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
+            return null;
+        }
+    }
 }

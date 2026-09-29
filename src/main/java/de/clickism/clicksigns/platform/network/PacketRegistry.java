@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.platform.network;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
  * Registry for packet types.
  */
 public class PacketRegistry {
-    private static final Map<ResourceLocation, PacketType<?>> PACKET_TYPES = new HashMap<>();
+    private static final Map<Identifier, PacketType<?>> PACKET_TYPES = new HashMap<>();
 
     /**
      * Registers a packet type.
@@ -31,7 +31,7 @@ public class PacketRegistry {
      * @param id the id of the packet type
      * @return the packet type with the given id, or null if no packet type found
      */
-    public static @Nullable PacketType<?> get(ResourceLocation id) {
+    public static @Nullable PacketType<?> get(Identifier id) {
         return PACKET_TYPES.get(id);
     }
 }

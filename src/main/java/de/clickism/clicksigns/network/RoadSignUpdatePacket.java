@@ -47,7 +47,7 @@ public record RoadSignUpdatePacket(
         (packet, player) -> {
             try {
                 //~ if >=26.1 'serverLevel()' -> 'level()'
-                var level = player.serverLevel();
+                var level = player.level();
                 var blockEntity = level.getBlockEntity(packet.pos());
                 if (!(blockEntity instanceof RoadSignBlockEntity roadSignBlockEntity)) return;
                 // Update road sign

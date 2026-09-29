@@ -17,7 +17,7 @@ import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
 
 //? if >=1.21.11 {
-//import net.minecraft.server.permissions.Permissions;
+import net.minecraft.server.permissions.Permissions;
 //?}
 
 
@@ -67,15 +67,15 @@ public class UpdateNotifier {
             .append(t("clicksigns.update.download").copy()
                 .withStyle(style -> style
                     //? if >=26.1 {
-                    /*.withClickEvent(new ClickEvent.OpenUrl(
+                    .withClickEvent(new ClickEvent.OpenUrl(
                         URI.create(link)
                     ))
-                    *///?} else {
-                    .withClickEvent(new ClickEvent(
+                    //?} else {
+                    /*.withClickEvent(new ClickEvent(
                         ClickEvent.Action.OPEN_URL,
                         link
                     ))
-                    //?}
+                    *///?}
                 ));
     }
 
@@ -92,10 +92,10 @@ public class UpdateNotifier {
 
     private static boolean isOp(CommandSourceStack source) {
         //? if >=1.21.11 {
-        /*var perms = source.permissions();
+        var perms = source.permissions();
         return perms.hasPermission(Permissions.COMMANDS_ADMIN)
                || perms.hasPermission(Permissions.COMMANDS_OWNER);
-        *///?} else
-        return source.hasPermission(3);
+        //?} else
+        //return source.hasPermission(3);
     }
 }

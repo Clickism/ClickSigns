@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.registry;
 
 import de.clickism.clicksigns.ClickSigns;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -22,7 +22,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
     /**
      * Map from category id to category
      */
-    protected final Map<ResourceLocation, Category<T>> categories = new HashMap<>();
+    protected final Map<Identifier, Category<T>> categories = new HashMap<>();
 
     /**
      * Creates a new categorized registry with no default entry.
@@ -81,7 +81,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param id the identifier of the category to get
      * @return the category with the given identifier, or null if it doesn't exist
      */
-    public @Nullable Category<T> getCategoryOrNull(ResourceLocation id) {
+    public @Nullable Category<T> getCategoryOrNull(Identifier id) {
         return categories.get(id);
     }
 
@@ -91,7 +91,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param id the identifier of the category to get
      * @return the category with the given identifier, or the uncategorized category if it doesn't exist
      */
-    public Category<T> getCategoryOrUncategorized(ResourceLocation id) {
+    public Category<T> getCategoryOrUncategorized(Identifier id) {
         return categories.getOrDefault(id, uncategorized());
     }
 
@@ -101,7 +101,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param id the identifier to check for
      * @return true if a category with the given identifier exists, false otherwise
      */
-    public boolean hasCategory(ResourceLocation id) {
+    public boolean hasCategory(Identifier id) {
         return categories.containsKey(id);
     }
 
@@ -154,7 +154,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created category
      */
-    public Category<T> createCategory(ResourceLocation identifier, String name, int priority) {
+    public Category<T> createCategory(Identifier identifier, String name, int priority) {
         return new Category<>(identifier, name, this, priority);
     }
 
@@ -165,7 +165,7 @@ public class CategorizedRegistry<T extends Categorized<T>> extends Registry<T> {
      * @param name       the display name of the category
      * @return the created and registered category
      */
-    public Category<T> createAndRegisterCategory(ResourceLocation identifier, String name, int priority) {
+    public Category<T> createAndRegisterCategory(Identifier identifier, String name, int priority) {
         var category = createCategory(identifier, name, priority);
         registerCategory(category);
         return category;

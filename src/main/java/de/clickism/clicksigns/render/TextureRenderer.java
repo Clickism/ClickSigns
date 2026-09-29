@@ -7,9 +7,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 
 //? if >=26.1 {
-//import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 //?} else
-import net.minecraft.client.renderer.RenderType;
+//import net.minecraft.client.renderer.RenderType;
 
 /**
  * A utility class for rendering textures and solid colors in a given render context.
@@ -43,10 +43,12 @@ public class TextureRenderer {
      */
     public void renderTexture(Texture texture, float scale) {
         var textureLocation = texture.location();
-        var buffer = context.source().getBuffer(
-            RenderType.entityTranslucentCull(textureLocation)
+        context.submit(
+            context.textureRenderType(textureLocation),
+            (stack, buffer) -> {
+                render(buffer, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
+            }
         );
-        render(buffer, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
     }
 
     /**
@@ -57,8 +59,12 @@ public class TextureRenderer {
      * @param blockHeight the height of the quad in blocks
      */
     public void renderColor(int color, float blockWidth, float blockHeight) {
-        var buffer = context.source().getBuffer(RenderType.textBackground());
-        render(buffer, blockWidth, blockHeight, color);
+        context.submit(
+            context.colorRenderType(),
+            (stack, buffer) -> {
+                render(buffer, blockWidth, blockHeight, color);
+            }
+        );
     }
 
     /**
@@ -110,8 +116,6 @@ public class TextureRenderer {
         vertex(buffer, pose, x2, y2, 1, 0, color); // Top right
         vertex(buffer, pose, x1, y2, 0, 0, color); // Top left
     }
-
-
 
     /**
      * Creates a vertex with the given positions and UV coordinates

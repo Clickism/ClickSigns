@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.reload.DefinedTextureListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -42,10 +42,10 @@ public class TileSetListener extends DefinedTextureListener<TileSetListener.Tile
 
     @Override
     protected void processImage(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
         @Nullable TileSetDefinition definition,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable TileSetListener.CategoryJson category
     ) {
         if (definition == null) {
@@ -67,7 +67,7 @@ public class TileSetListener extends DefinedTextureListener<TileSetListener.Tile
         int cornerSize,
         @Nullable ColorDefinition colors
     ) {
-        TileSet toTileSet(ResourceLocation location, @Nullable ResourceLocation categoryId) {
+        TileSet toTileSet(Identifier location, @Nullable Identifier categoryId) {
             return new TileSet(
                 location,
                 categoryId,

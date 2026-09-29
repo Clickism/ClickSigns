@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.texture;
 
 import de.clickism.clicksigns.util.PixelSized;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Texture interface to represent a texture with its resource location and dimensions.
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
  * @param height   height of the texture image in pixels
  */
 public record Texture(
-    ResourceLocation location,
+    Identifier location,
     int width,
     int height
 ) implements PixelSized {

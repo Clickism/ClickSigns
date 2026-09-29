@@ -139,7 +139,7 @@ public class EditorActionHandler {
 
     public void handleMouseUp(Editable<SignElement> element) {
         // If ctrl is held, toggle selection
-        if (!Screen.hasControlDown() && !justDragged) {
+        if (!KeyUtil.hasControlDown() && !justDragged) {
             // Clear selection and select the clicked element
             context.setSelected(element, true);
         }

@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.serialization;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -22,8 +22,8 @@ public interface TagReader {
 
     Result<TagReader> getTag(String key);
 
-    default Result<ResourceLocation> getResourceLocation(String key) {
-        return getString(key).map(ResourceLocation::tryParse);
+    default Result<Identifier> getIdentifier(String key) {
+        return getString(key).map(Identifier::tryParse);
     }
 
     interface Reader<T> {
@@ -34,6 +34,14 @@ public interface TagReader {
                 return read(nbt);
             } catch (Exception e) {
                 return null;
+            }
+        }
+
+        default Result<T> readResult(TagReader nbt) {
+            try {
+                return Result.success(read(nbt));
+            } catch (Exception e) {
+                return Result.failure(e);
             }
         }
     }

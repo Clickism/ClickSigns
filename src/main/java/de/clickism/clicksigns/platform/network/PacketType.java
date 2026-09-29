@@ -3,7 +3,7 @@ package de.clickism.clicksigns.platform.network;
 import de.clickism.clicksigns.serialization.PacketReader;
 import de.clickism.clicksigns.serialization.PacketWriter;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
  * @param <T>           the type of payload of the packet
  */
 public record PacketType<T extends Packet>(
-    ResourceLocation id,
+    Identifier id,
     PacketWriter<T> writer,
     PacketReader<T> reader,
     ServerHandler<T> serverHandler,

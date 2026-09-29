@@ -4,7 +4,7 @@ import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.RoadSign;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +14,8 @@ public record Template(
     Meta meta,
     RoadSign signData,
     // Other data
-    @NotNull ResourceLocation identifier,
-    @Nullable ResourceLocation categoryId
+    @NotNull Identifier identifier,
+    @Nullable Identifier categoryId
 ) implements Categorized<Template> {
     /**
      * Builds a road sign based on this template.

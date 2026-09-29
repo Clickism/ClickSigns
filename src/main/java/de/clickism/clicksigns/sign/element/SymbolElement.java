@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.Alignment;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Symbol element on a road sign.
@@ -22,7 +22,7 @@ public record SymbolElement(
     int x,
     int y,
     Alignment alignment,
-    ResourceLocation symbolId,
+    Identifier symbolId,
     TextureSource textureSource,
     float scale
 ) implements SignElement {

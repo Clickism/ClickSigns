@@ -82,16 +82,15 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                 var line = element.lines().get(i);
                 int offsetX = element.lineXOffset(line);
                 var formatted = FormattedCharSequence.forward(line, componentStyle);
-                font.drawInBatch(
-                    formatted,
+                context.submitText(
                     offsetX, -offsetY,
-                    multiplyColor(color, COLOR_DARKEN_FACTOR),
+                    formatted,
                     false,
-                    context.stack().last().pose(),
-                    context.source(),
                     Font.DisplayMode.POLYGON_OFFSET,
-                    0, // No background
-                    context.light()
+                    context.light(),
+                    color,
+                    0,
+                    0 // No outline
                 );
                 offsetY += font.lineHeight + style.lineGap();
             }

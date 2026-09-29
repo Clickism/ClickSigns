@@ -3,12 +3,12 @@ package de.clickism.clicksigns.util;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import java.io.IOException;
 
-public class NamespaceAndPathTypeAdapter extends TypeAdapter<ResourceLocation> {
+public class NamespaceAndPathTypeAdapter extends TypeAdapter<Identifier> {
     @Override
-    public void write(JsonWriter out, ResourceLocation value) throws IOException {
+    public void write(JsonWriter out, Identifier value) throws IOException {
         if (value == null) {
             out.nullValue();
         } else {
@@ -17,12 +17,12 @@ public class NamespaceAndPathTypeAdapter extends TypeAdapter<ResourceLocation> {
     }
 
     @Override
-    public ResourceLocation read(JsonReader in) throws IOException {
+    public Identifier read(JsonReader in) throws IOException {
         if (in.peek() == null) {
             in.nextNull();
             return null;
         } else {
-            return ResourceLocation.tryParse(in.nextString());
+            return Identifier.tryParse(in.nextString());
         }
     }
 }

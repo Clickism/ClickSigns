@@ -2,7 +2,7 @@ package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.ReloadListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -43,13 +43,13 @@ public interface SignReloadListener extends ReloadListener {
      * @param <C>           the type of the category
      * @return a map of namespace:directory to category
      */
-    default <C> Map<ResourceLocation, C> loadAndRegisterCategories(
+    default <C> Map<Identifier, C> loadAndRegisterCategories(
         ResourceManager manager,
         String subDirectory,
         Class<C> categoryClass,
-        BiConsumer<ResourceLocation, C> registerer
+        BiConsumer<Identifier, C> registerer
     ) {
-        Map<ResourceLocation, C> directoryToCategory = new HashMap<>();
+        Map<Identifier, C> directoryToCategory = new HashMap<>();
         manager.listResources(
             fromRoot(subDirectory),
             identifier -> isCategoryPath(identifier.getPath())
@@ -58,7 +58,7 @@ public interface SignReloadListener extends ReloadListener {
             var category = fromJsonOrNull(resource, categoryClass);
             if (category == null) return;
             // Category id is based on the directory
-            var categoryId = ResourceLocation.tryBuild(location.getNamespace(), directory);
+            var categoryId = Identifier.tryBuild(location.getNamespace(), directory);
             directoryToCategory.put(categoryId, category);
             registerer.accept(categoryId, category);
         });
@@ -103,31 +103,31 @@ public interface SignReloadListener extends ReloadListener {
     }
 
     /**
-     * Strips the given extension from the path of the given ResourceLocation if it ends with it.
+     * Strips the given extension from the path of the given Identifier if it ends with it.
      *
-     * @param location  the ResourceLocation to strip the extension from
+     * @param location  the Identifier to strip the extension from
      * @param extension the extension to strip, including the dot (e.g. ".json")
      * @return resource location with stripped extension
      */
-    default ResourceLocation stripExtension(ResourceLocation location, String extension) {
+    default Identifier stripExtension(Identifier location, String extension) {
         var path = stripExtension(location.getPath(), extension);
-        return ResourceLocation.tryBuild(location.getNamespace(), path);
+        return Identifier.tryBuild(location.getNamespace(), path);
     }
 
     /**
-     * Replaces the old extension with the new extension in the path of the given ResourceLocation if it ends with the old extension.
+     * Replaces the old extension with the new extension in the path of the given Identifier if it ends with the old extension.
      *
-     * @param location     the ResourceLocation to replace the extension in
+     * @param location     the Identifier to replace the extension in
      * @param oldExtension the extension to replace, including the dot (e.g. ".json")
      * @param newExtension the extension to replace with, including the dot (e.g. ".png")
      * @return resource location with replaced extension
      */
-    default ResourceLocation replaceExtension(ResourceLocation location, String oldExtension, String newExtension) {
+    default Identifier replaceExtension(Identifier location, String oldExtension, String newExtension) {
         var path = location.getPath();
         if (path.endsWith(oldExtension)) {
             path = path.substring(0, path.length() - oldExtension.length()) + newExtension;
         }
-        return ResourceLocation.tryBuild(location.getNamespace(), path);
+        return Identifier.tryBuild(location.getNamespace(), path);
     }
 
     /**
@@ -136,9 +136,9 @@ public interface SignReloadListener extends ReloadListener {
      * @param resourceLocation the resource location to get the category id for
      * @return the category id for the given resource location
      */
-    default ResourceLocation categoryIdOf(ResourceLocation resourceLocation) {
+    default Identifier categoryIdOf(Identifier resourceLocation) {
         var directory = stripFileName(resourceLocation.getPath());
-        return ResourceLocation.tryBuild(resourceLocation.getNamespace(), directory);
+        return Identifier.tryBuild(resourceLocation.getNamespace(), directory);
     }
 
     /**
@@ -156,7 +156,7 @@ public interface SignReloadListener extends ReloadListener {
         ResourceManager manager,
         String subDirectory,
         String suffix,
-        BiConsumer<ResourceLocation, Resource> consumer) {
+        BiConsumer<Identifier, Resource> consumer) {
         manager.listResources(
             fromRoot(subDirectory),
             identifier -> identifier.getPath().endsWith(suffix)

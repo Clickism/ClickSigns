@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class Registry<T extends Identifiable> {
     /**
      * Map from identifier to registered entry
      */
-    protected final Map<ResourceLocation, T> entries = new HashMap<>();
+    protected final Map<Identifier, T> entries = new HashMap<>();
     /**
      * The default entry when an identifier is not found
      */
@@ -55,7 +55,7 @@ public class Registry<T extends Identifiable> {
      * @param id the identifier of the entry to get
      * @return the entry with the given identifier, or the default entry if it doesn't exist
      */
-    public T get(ResourceLocation id) {
+    public T get(Identifier id) {
         return entries.getOrDefault(id, defaultEntry);
     }
 
@@ -65,7 +65,7 @@ public class Registry<T extends Identifiable> {
      * @param id the identifier to check for
      * @return true if an entry with the given identifier exists, false otherwise
      */
-    public boolean has(ResourceLocation id) {
+    public boolean has(Identifier id) {
         return entries.containsKey(id);
     }
 
@@ -76,7 +76,7 @@ public class Registry<T extends Identifiable> {
      * @return the entry with the given identifier
      * @throws IllegalArgumentException if no entry with the given identifier exists
      */
-    public T getOrThrow(ResourceLocation id) {
+    public T getOrThrow(Identifier id) {
         T entry = entries.get(id);
         if (entry == null) {
             throw new IllegalArgumentException("No entry found for id: " + id);
@@ -98,7 +98,7 @@ public class Registry<T extends Identifiable> {
      *
      * @return unmodifiable collection of all registered identifiers
      */
-    public Collection<ResourceLocation> allIds() {
+    public Collection<Identifier> allIds() {
         return Collections.unmodifiableSet(entries.keySet());
     }
 

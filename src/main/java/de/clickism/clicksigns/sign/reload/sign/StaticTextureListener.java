@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.StaticTexture;
 import de.clickism.clicksigns.sign.reload.DefinedTextureListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -41,10 +41,10 @@ public class StaticTextureListener extends DefinedTextureListener<StaticTextureL
 
     @Override
     protected void processImage(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
         @Nullable StaticDefinition definition,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable StaticTextureListener.CategoryJson category
     ) {
         if (definition != null) {

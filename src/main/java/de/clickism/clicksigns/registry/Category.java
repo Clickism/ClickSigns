@@ -1,6 +1,6 @@
 package de.clickism.clicksigns.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,9 +11,9 @@ import java.util.Set;
  * Represents a category of symbols.
  */
 public class Category<T extends Categorized<T>> {
-    private final ResourceLocation identifier;
+    private final Identifier identifier;
     private final String name;
-    private final Set<ResourceLocation> entries = new HashSet<>();
+    private final Set<Identifier> entries = new HashSet<>();
     private final CategorizedRegistry<T> registry;
     private final int priority;
 
@@ -24,7 +24,7 @@ public class Category<T extends Categorized<T>> {
      * @param name       the name of the category
      * @param priority   the priority of the category
      */
-    public Category(ResourceLocation identifier, String name, CategorizedRegistry<T> registry, int priority) {
+    public Category(Identifier identifier, String name, CategorizedRegistry<T> registry, int priority) {
         this.identifier = identifier;
         this.name = name;
         this.registry = registry;
@@ -36,7 +36,7 @@ public class Category<T extends Categorized<T>> {
      *
      * @param identifier the unique identifier of the entry to add
      */
-    public void add(ResourceLocation identifier) {
+    public void add(Identifier identifier) {
         entries.add(identifier);
     }
 
@@ -45,7 +45,7 @@ public class Category<T extends Categorized<T>> {
      *
      * @return the unique identifier of this category
      */
-    public ResourceLocation identifier() {
+    public Identifier identifier() {
         return identifier;
     }
 
@@ -72,7 +72,7 @@ public class Category<T extends Categorized<T>> {
      *
      * @return the set of entry identifiers in this category
      */
-    public Set<ResourceLocation> entries() {
+    public Set<Identifier> entries() {
         return Collections.unmodifiableSet(entries);
     }
 

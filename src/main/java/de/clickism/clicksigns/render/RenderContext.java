@@ -1,19 +1,28 @@
 package de.clickism.clicksigns.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
+
+import java.util.function.BiConsumer;
 
 import static de.clickism.clicksigns.render.RenderLayers.Z_FIGHTING_OFFSET;
 
 /**
  * Rnder context for rendering road signs, providing access to the pose stack, buffer source, light level, and direction.
  */
+//~ if >=26.1 'MultiBufferSource' -> 'SubmitNodeCollector' {
 public final class RenderContext {
     private final PoseStack stack;
-    private final MultiBufferSource source;
+    private final SubmitNodeCollector source;
     private final int light;
     private final Direction direction;
 
@@ -27,7 +36,7 @@ public final class RenderContext {
      * @param light     the light level to use for rendering
      * @param direction the direction to render in
      */
-    public RenderContext(PoseStack stack, MultiBufferSource source, int light, Direction direction) {
+    public RenderContext(PoseStack stack, SubmitNodeCollector source, int light, Direction direction) {
         this.stack = stack;
         this.source = source;
         this.light = light;
@@ -49,7 +58,7 @@ public final class RenderContext {
      *
      * @return the buffer source
      */
-    public MultiBufferSource source() {
+    public SubmitNodeCollector source() {
         return source;
     }
 
@@ -169,4 +178,44 @@ public final class RenderContext {
         action.run();
         pushZ(-index);
     }
+
+    public void submit(RenderType renderType, BiConsumer<PoseStack.Pose, VertexConsumer> renderer) {
+        source.submitCustomGeometry(
+            stack,
+            renderType,
+            renderer::accept
+        );
+    }
+
+    public void submitText(
+        float x, float y,
+        FormattedCharSequence string,
+        boolean shadow,
+        Font.DisplayMode mode,
+        int lightCoords,
+        int color,
+        int backgroundColor,
+        int outlineColor
+    ) {
+        source.submitText(
+            stack,
+            x, y,
+            string,
+            shadow,
+            mode,
+            lightCoords,
+            color,
+            backgroundColor,
+            outlineColor
+        );
+    }
+
+    public RenderType textureRenderType(Identifier texture) {
+        return RenderTypes.entityTranslucent(texture);
+    }
+
+    public RenderType colorRenderType() {
+        return RenderTypes.textBackground();
+    }
 }
+//~}

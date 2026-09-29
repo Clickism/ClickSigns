@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.sign.reload;
 
 import de.clickism.clicksigns.registry.CategorizedRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import java.util.Map;
 public abstract class DefinedTextureListener<T, C extends DefinedTextureListener.CategoryWithDefault<T>>
     extends CategorizedListener<C> {
 
-    private final Map<ResourceLocation, T> definitions = new HashMap<>();
+    private final Map<Identifier, T> definitions = new HashMap<>();
 
     private final Class<T> definitionClass;
 
@@ -40,24 +40,24 @@ public abstract class DefinedTextureListener<T, C extends DefinedTextureListener
     }
 
     protected abstract void processImage(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
         @Nullable T definition,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable C category
     );
 
     protected void processDefinition(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable C category
     ) {
         var definition = fromJsonOrThrow(resource, definitionClass);
         definitions.put(location, definition);
     }
 
-    protected @Nullable T definitionOf(ResourceLocation location, @Nullable C category) {
+    protected @Nullable T definitionOf(Identifier location, @Nullable C category) {
         var defined = definitions.get(location);
         if (defined != null) {
             return defined;

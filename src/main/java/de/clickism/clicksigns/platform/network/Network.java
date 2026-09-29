@@ -42,7 +42,7 @@ public abstract class Network {
         var buf = new FriendlyByteBuf(Unpooled.buffer());
         // Write packet id
         var type = (PacketType<T>) packet.type();
-        buf.writeResourceLocation(type.id());
+        buf.writeIdentifier(type.id());
         // Write packet data
         type.writer().write(buf, packet);
         return buf;
@@ -56,7 +56,7 @@ public abstract class Network {
      */
     protected static Packet readPacket(FriendlyByteBuf buf) {
         // Read packet id
-        var id = buf.readResourceLocation();
+        var id = buf.readIdentifier();
         var type = PacketRegistry.get(id);
         if (type == null) {
             throw new IllegalStateException("Received packet with unknown id: " + id);

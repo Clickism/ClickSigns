@@ -5,9 +5,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -17,7 +15,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
@@ -33,6 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+//? if >=26.1 {
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+//?} else
+//import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+
 /**
  * Fabric platform implementation
  */
@@ -42,7 +45,7 @@ public class FabricPlatform implements Platform {
      */
     public static final FabricPlatform INSTANCE = new FabricPlatform();
 
-    private static final ResourceLocation RELOAD_LISTENER_ID = ClickSigns.identifier("reload_listener");
+    private static final Identifier RELOAD_LISTENER_ID = ClickSigns.identifier("reload_listener");
 
     private final List<ReloadListener> reloadListeners = new ArrayList<>();
 
@@ -131,7 +134,8 @@ public class FabricPlatform implements Platform {
 
     @Override
     public void addItemToCreativeTab(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {
-        ItemGroupEvents.modifyEntriesEvent(tab)
+        //~ if >=26.1  'ItemGroupEvents' -> 'CreativeModeTabEvents', 'modifyEntriesEvent' -> 'modifyOutputEvent'
+        CreativeModeTabEvents.modifyOutputEvent(tab)
             .register(entries -> entries.accept(item.get()));
     }
 
@@ -144,7 +148,7 @@ public class FabricPlatform implements Platform {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
             .registerReloadListener(new SimpleSynchronousResourceReloadListener() {
                 @Override
-                public ResourceLocation getFabricId() {
+                public Identifier getFabricId() {
                     return RELOAD_LISTENER_ID;
                 }
 

@@ -6,7 +6,7 @@ import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.codec.RoadSignCodec;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.util.JsonHandler;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Template parsing logic.
@@ -22,8 +22,8 @@ public class TemplateParser implements JsonHandler {
      */
     public Template parse(
         JsonObject json,
-        ResourceLocation location,
-        ResourceLocation categoryId
+        Identifier location,
+        Identifier categoryId
     ) throws Exception {
         var templateJson = fromJsonOrThrow(json, TemplateJson.class);
         return templateJson.parse(location, categoryId);
@@ -69,7 +69,7 @@ public class TemplateParser implements JsonHandler {
         /**
          * Converts the JSON into a template object
          */
-        private Template parse(ResourceLocation id, ResourceLocation categoryId) throws Exception {
+        private Template parse(Identifier id, Identifier categoryId) throws Exception {
             var tag = new JsonTagImpl(sign);
             var parsedSign = RoadSignCodec.codec().readTag(tag);
             return new Template(

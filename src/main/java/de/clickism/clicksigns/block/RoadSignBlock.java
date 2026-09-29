@@ -67,9 +67,9 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
     public @NotNull VoxelShape getOcclusionShape(
         @NotNull BlockState state
         //? if <26.1 {
-        ,@NotNull BlockGetter level,
+        /*,@NotNull BlockGetter level,
         @NotNull BlockPos pos
-        //?}
+        *///?}
     ) {
         return Shapes.empty();
     }
@@ -87,12 +87,11 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         @NotNull BlockHitResult hit
     ) {
         //~ if >=26.1 'isClientSide' -> 'isClientSide()'
-        if (!level.isClientSide) return InteractionResult.SUCCESS;
+        if (!level.isClientSide()) return InteractionResult.SUCCESS;
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RoadSignBlockEntity roadSignEntity) {
             new SignOverviewScreen(roadSignEntity).open();
-//            GuiUtils.openScreen(new SignOverviewScreen(null, roadSignEntity));
         }
         return InteractionResult.SUCCESS;
     }

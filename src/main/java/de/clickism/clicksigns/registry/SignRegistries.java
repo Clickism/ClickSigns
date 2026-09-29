@@ -5,7 +5,7 @@ import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.TileSet;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.template.Template;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,11 +33,11 @@ public class SignRegistries {
     /**
      * Registry for color resolvers.
      */
-    public static final Map<ResourceLocation, ColorResolver> TILE_SET_COLOR_RESOLVERS = new HashMap<>();
+    public static final Map<Identifier, ColorResolver> TILE_SET_COLOR_RESOLVERS = new HashMap<>();
     /**
      * Registry for static texture color resolvers.
      */
-    public static final Map<ResourceLocation, ColorResolver> STATIC_TEXTURE_COLOR_RESOLVERS = new HashMap<>();
+    public static final Map<Identifier, ColorResolver> STATIC_TEXTURE_COLOR_RESOLVERS = new HashMap<>();
     /**
      * Registry for pack names. From namespace to pack name. Used for displaying the pack name in the UI.
      */

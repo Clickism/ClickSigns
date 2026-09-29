@@ -1,18 +1,21 @@
-package de.clickism.clicksigns.serialization;
+//? if <26.1 {
+/*package de.clickism.clicksigns.serialization;
 
 import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
+import java.util.function.Consumer;
 
 import java.util.Collection;
 import java.util.Objects;
 
-/**
- * Implementation of TagReader and TagWriter using NBT's.
+/^*
+ * Implementation of TagReader and TagWriter using NBTs.
  *
  * @param tag
- */
+ ^/
 public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     public static NbtTagImpl empty() {
         return new NbtTagImpl(new CompoundTag());
@@ -130,15 +133,14 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
     }
 
     @Override
-    public void putTag(String key, TagWriter tag) {
-        if (tag == null) {
+    public void putTag(String key, @Nullable Consumer<TagWriter> writer) {
+        if (writer == null) {
             this.tag.remove(key);
             return;
         }
-        if (!(tag instanceof NbtTagImpl nbtTag)) {
-            throw new IllegalArgumentException("compoundTag must be an instance of NbtTagImpl");
-        }
-        this.tag.put(key, nbtTag.tag);
+        var childTag = new CompoundTag();
+        writer.accept(new NbtTagImpl(childTag));
+        this.tag.put(key, childTag);
     }
 
     @Override
@@ -147,9 +149,5 @@ public record NbtTagImpl(CompoundTag tag) implements TagReader, TagWriter {
             return Result.failure("Key '" + key + "' is not a compound tag or does not exist.");
         return Result.success(new NbtTagImpl(tag.getCompound(key)));
     }
-
-    @Override
-    public TagWriter createTag() {
-        return empty();
-    }
 }
+*///?}

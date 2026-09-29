@@ -25,7 +25,7 @@ stonecutter {
         }
         version("1.20.1", "fabric-remap", "forge")
         version("1.21.1", "fabric-remap", "neoforge")
-//        version("26.1", "fabric", "neoforge")
-        vcsVersion = "1.21.1-fabric"
+        version("26.1", "fabric", "neoforge")
+        vcsVersion = "26.1-fabric"
     }
 }

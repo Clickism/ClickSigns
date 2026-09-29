@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Implementation of TagReader and TagWriter using GSON's JsonObject.
@@ -158,22 +159,14 @@ public record JsonTagImpl(JsonObject jsonObject) implements TagReader, TagWriter
     }
 
     @Override
-    public void putTag(String key, @Nullable TagWriter writer) {
+    public void putTag(String key, @Nullable Consumer<TagWriter> writer) {
         if (writer == null) {
             jsonObject.remove(key);
             return;
         }
-
-        if (!(writer instanceof JsonTagImpl jsonTag)) {
-            throw new IllegalArgumentException("writer must be an instance of JsonTagImpl");
-        }
-
-        jsonObject.add(key, jsonTag.jsonObject);
-    }
-
-    @Override
-    public TagWriter createTag() {
-        return new JsonTagImpl(new JsonObject());
+        var childObject = new JsonObject();
+        writer.accept(new JsonTagImpl(childObject));
+        jsonObject.add(key, childObject);
     }
 
     /**

@@ -5,7 +5,7 @@ import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.sign.texture.source.processors.Tiler;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.List;
  * @param cornerSize size of the corners in pixels
  */
 public record TileSet(
-    ResourceLocation identifier,
-    @Nullable ResourceLocation categoryId,
+    Identifier identifier,
+    @Nullable Identifier categoryId,
     int cornerSize
 ) implements Categorized<TileSet> {
     @Override

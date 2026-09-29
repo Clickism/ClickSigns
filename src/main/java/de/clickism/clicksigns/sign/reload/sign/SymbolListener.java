@@ -8,7 +8,7 @@ import de.clickism.clicksigns.serialization.JsonTagImpl;
 import de.clickism.clicksigns.sign.Symbol;
 import de.clickism.clicksigns.sign.reload.DefinedTextureListener;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +38,10 @@ public class SymbolListener extends DefinedTextureListener<SymbolListener.Symbol
 
     @Override
     protected void processImage(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
         @Nullable SymbolListener.SymbolDefinition definition,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable SymbolListener.CategoryJson category
     ) {
         TextureSource textureSource = TextureSource.ofStatic(location);

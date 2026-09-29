@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.util.JsonHandler;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +46,7 @@ public class LocalTemplateLoader implements JsonHandler {
 
     public Template loadTemplate(Path path) throws Exception {
         var jsonObject = GSON.fromJson(Files.readString(path), JsonObject.class);
-        var location = pathToResourceLocation(path);
+        var location = pathToIdentifier(path);
         return TEMPLATE_PARSER.parse(jsonObject, location, null);
     }
 
@@ -64,16 +64,16 @@ public class LocalTemplateLoader implements JsonHandler {
         }
     }
 
-    private ResourceLocation pathToResourceLocation(Path path) {
+    private Identifier pathToIdentifier(Path path) {
         var relative = root.relativize(path);
         var name = relative.toString().toLowerCase(Locale.ROOT)
             .replace("\\", "/")
             .replace(TEMPLATE_EXTENSION, "")
             .replaceAll("[^a-z0-9/._-]", "_");
         try {
-            return ResourceLocation.tryBuild(LOCAL_TEMPLATE_NAMESPACE, name);
+            return Identifier.tryBuild(LOCAL_TEMPLATE_NAMESPACE, name);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create a valid ResourceLocation for local template: " + path, e);
+            throw new RuntimeException("Failed to create a valid Identifier for local template: " + path, e);
         }
     }
 }

@@ -1,7 +1,9 @@
 package de.clickism.clicksigns.serialization;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public interface TagWriter {
     void putString(String key, String value);
@@ -18,11 +20,9 @@ public interface TagWriter {
 
     <T> void putCollection(String key, @Nullable Iterable<T> collection, Writer<T> writer);
 
-    void putTag(String key, @Nullable TagWriter writer);
+    void putTag(String key, @Nullable Consumer<TagWriter> writer);
 
-    TagWriter createTag();
-
-    default void putResourceLocation(String key, ResourceLocation value) {
+    default void putIdentifier(String key, Identifier value) {
         putString(key, value.toString());
     }
 

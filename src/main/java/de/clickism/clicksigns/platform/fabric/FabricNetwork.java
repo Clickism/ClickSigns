@@ -6,7 +6,7 @@ import de.clickism.clicksigns.platform.network.Packet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -22,7 +22,7 @@ public class FabricNetwork extends Network {
      */
     public static final FabricNetwork INSTANCE = new FabricNetwork();
 
-    private static final ResourceLocation CHANNEL = ClickSigns.identifier("main");
+    private static final Identifier CHANNEL = ClickSigns.identifier("main");
 
     private FabricNetwork() {
         // Singleton class
@@ -31,8 +31,10 @@ public class FabricNetwork extends Network {
     @Override
     public void registerServer() {
         //? if >=1.21.1 {
-        PayloadTypeRegistry.playC2S().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
+        //~ if >=26.1 'playC2S' -> 'serverboundPlay', 'playS2C' -> 'clientboundPlay' {
+        PayloadTypeRegistry.serverboundPlay().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(GlobalPacket.TYPE, GlobalPacket.CODEC);
+        //~}
         ServerPlayNetworking.registerGlobalReceiver(
             GlobalPacket.TYPE,
             (payload, context) -> {
@@ -89,7 +91,8 @@ public class FabricNetwork extends Network {
     @Override
     public void sendToAllInLevel(ServerLevel level, Packet packet) {
         level.getServer().execute(() -> {
-            PlayerLookup.world(level).forEach(player -> sendToPlayer(player, packet));
+            //~ if >=26.1 'world(' -> 'level('
+            PlayerLookup.level(level).forEach(player -> sendToPlayer(player, packet));
         });
     }
 }

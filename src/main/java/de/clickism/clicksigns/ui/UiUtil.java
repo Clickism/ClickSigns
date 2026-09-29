@@ -6,7 +6,7 @@ import de.clickism.clickui.elements.Image;
 import de.clickism.clickui.render.UiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
@@ -41,7 +41,7 @@ public class UiUtil {
     /**
      * Renders a plus sign on top of other graphics.
      *
-     * @param guiGraphics the GuiGraphics to render with
+     * @param guiGraphics the GuiGraphicsExtractor to render with
      * @param x           the x position of the center of the plus sign
      * @param y           the y position of the center of the plus sign
      * @param size        how many pixels wide the plus sign should be (minimum 3)
@@ -60,7 +60,7 @@ public class UiUtil {
     /**
      * Renders an outline around a rectangle.
      *
-     * @param graphics     the GuiGraphics to render with
+     * @param graphics     the GuiGraphicsExtractor to render with
      * @param x            the x position of the top-left corner of the rectangle
      * @param y            the y position of the top-left corner of the rectangle
      * @param width        the width of the rectangle

@@ -23,12 +23,12 @@ public interface RoadSignCodec {
         return CommonCodec.of(
             TagCodec.of(
                 (tag, sign) -> {
-                    var front = tag.createTag();
-                    var back = tag.createTag();
-                    TextureSource.codec().writeTag(front, sign.frontSource());
-                    TextureSource.codec().writeTag(back, sign.backSource());
-                    tag.putTag("front", front);
-                    tag.putTag("back", back);
+                    tag.putTag("front", front -> {
+                        TextureSource.codec().writeTag(front, sign.frontSource());
+                    });
+                    tag.putTag("back", back -> {
+                        TextureSource.codec().writeTag(back, sign.backSource());
+                    });
                     tag.putCollection("elements", sign.elements(), SignElementCodec.codec().tagWriter());
                     tag.putString("alignment", sign.alignment().name());
                 },

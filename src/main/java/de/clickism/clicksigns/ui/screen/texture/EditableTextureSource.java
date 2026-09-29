@@ -3,7 +3,7 @@ package de.clickism.clicksigns.ui.screen.texture;
 import de.clickism.clicksigns.sign.texture.source.TextureProcessor;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
 import de.clickism.clicksigns.ui.editable.Editable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -13,7 +13,7 @@ public class EditableTextureSource {
     private final Map<UUID, Editable<TextureProcessor>> processorMap = new HashMap<>();
     private final List<Editable<TextureProcessor>> processors;
     private final List<Runnable> onChangeListeners = new ArrayList<>();
-    private ResourceLocation base;
+    private Identifier base;
 
     public EditableTextureSource(TextureSource textureSource) {
         this.base = textureSource.base();
@@ -35,11 +35,11 @@ public class EditableTextureSource {
         }
     }
 
-    public ResourceLocation base() {
+    public Identifier base() {
         return base;
     }
 
-    public void base(ResourceLocation base) {
+    public void base(Identifier base) {
         this.base = base;
         notifyListeners();
     }

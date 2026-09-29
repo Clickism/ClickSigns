@@ -8,7 +8,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.layout.Align;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -132,7 +132,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
      */
     public record Entry(
         Texture texture,
-        ResourceLocation identifier,
+        Identifier identifier,
         @NotNull Category<?> category,
         float displayScale
     ) {
@@ -147,7 +147,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
      * @param category   the category of the texture
      * @return a new Entry instance
      */
-    public static Entry entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category) {
+    public static Entry entry(Texture texture, Identifier identifier, @NotNull Category<?> category) {
         return new Entry(texture, identifier, category, 1.0f);
     }
 
@@ -160,7 +160,7 @@ public class TextureList extends UiComponent<TextureList> implements CommonCompo
      * @param displayScale the scale at which to display the texture in the list
      * @return a new Entry instance
      */
-    public static Entry entry(Texture texture, ResourceLocation identifier, @NotNull Category<?> category, float displayScale) {
+    public static Entry entry(Texture texture, Identifier identifier, @NotNull Category<?> category, float displayScale) {
         return new Entry(texture, identifier, category, displayScale);
     }
 }

@@ -5,7 +5,7 @@ import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.reload.SimpleReloadListener;
 import de.clickism.clicksigns.sign.template.TemplateParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,9 +37,9 @@ public class TemplateListener extends SimpleReloadListener<TemplateListener.Cate
 
     @Override
     protected void processResource(
-        ResourceLocation location,
+        Identifier location,
         Resource resource,
-        @Nullable ResourceLocation categoryId,
+        @Nullable Identifier categoryId,
         @Nullable CategoryJson category
     ) {
         var json = fromJsonOrThrow(resource, JsonObject.class);

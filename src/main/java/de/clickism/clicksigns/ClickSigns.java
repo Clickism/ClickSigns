@@ -6,7 +6,7 @@ import de.clickism.clicksigns.platform.network.PacketRegistry;
 import de.clickism.clicksigns.sign.reload.SignReloadListener;
 import de.clickism.modrinthupdatechecker.ModrinthUpdateChecker;
 import net.minecraft.DetectedVersion;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class ClickSigns {
      */
     private static void checkUpdates() {
         //~ if >=26.1 'getName' -> 'name'
-        var minecraftVersion = DetectedVersion.BUILT_IN.getName();
+        var minecraftVersion = DetectedVersion.BUILT_IN.name();
         var loader = Platform.get().name();
         ModrinthUpdateChecker.loader(MOD_ID, loader)
             .minecraftVersion(minecraftVersion)
@@ -77,8 +77,8 @@ public class ClickSigns {
      * @param path the path of the resource location
      * @return the resource location
      */
-    public static ResourceLocation identifier(String path) {
-        return ResourceLocation.tryBuild(MOD_ID, path);
+    public static Identifier identifier(String path) {
+        return Identifier.tryBuild(MOD_ID, path);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ClickSigns {
      * @param path the path of the sign asset, relative to the signs root directory
      * @return the resource location for the sign asset
      */
-    public static ResourceLocation signAsset(String path) {
+    public static Identifier signAsset(String path) {
         return identifier(SignReloadListener.ROOT_DIR + "/" + path);
     }
 }

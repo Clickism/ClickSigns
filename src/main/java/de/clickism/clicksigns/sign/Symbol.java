@@ -5,7 +5,7 @@ import de.clickism.clicksigns.registry.Categorized;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.texture.source.TextureSource;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,10 +17,10 @@ import org.jetbrains.annotations.Nullable;
  * @param categoryId    optional category identifier for the symbol
  */
 public record Symbol(
-    ResourceLocation identifier,
+    Identifier identifier,
     TextureSource textureSource,
     float defaultScale,
-    @Nullable ResourceLocation categoryId
+    @Nullable Identifier categoryId
 ) implements Categorized<Symbol> {
     /**
      * Error symbol to be used as fallback
