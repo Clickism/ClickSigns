@@ -17,6 +17,7 @@ public class ClickSignsClient {
      * Initializes the client mod.
      */
     public static void initialize() {
+        Platform.network().registerClient(); // Register network
         // Local template manager
         LOCAL_TEMPLATE_MANAGER.initialize();
         // Add reload listeners
