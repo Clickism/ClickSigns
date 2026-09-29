@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.render.element;
 
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
@@ -42,23 +41,18 @@ public class TextRenderer implements ElementRenderer<TextElement> {
 
     @Override
     public void render(TextElement element, RenderContext context, RoadSign roadSign) {
-        var text = element.text();
-        if (text.isEmpty()) {
-            return;
-        }
+        if (element.text().isEmpty()) return;
+        int order = orderOf(element, roadSign);
         var scale = TEXT_RENDER_SCALE * element.scale();
         // Apply scale
         context.withScale(scale, () -> {
-            int zIndex = roadSign.elements().indexOf(element);
-            context.withZ(zIndex, () -> {
-                // Render background and outline
-                renderStyle(element, context, roadSign);
+            // Render background and outline
+            renderStyle(order, element, context, roadSign);
+            // Render text
+            var textPos = element.textOffset();
+            context.withTranslation(textPos.x, textPos.y, 0, () -> {
                 // Render text
-                var textPos = element.textOffset();
-                context.withTranslation(textPos.x, textPos.y, 0, () -> {
-                    // Render text
-                    renderText(element, context, roadSign);
-                });
+                renderText(order + 1, element, context, roadSign);
             });
         });
     }
@@ -70,7 +64,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      * @param context  the render context
      * @param roadSign the road sign being rendered
      */
-    private void renderText(TextElement element, RenderContext context, RoadSign roadSign) {
+    private void renderText(int order, TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
         var componentStyle = style.asComponentStyle();
         var color = roadSign.colorResolver().resolve(style.color());
@@ -83,6 +77,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                 int offsetX = element.lineXOffset(line);
                 var formatted = FormattedCharSequence.forward(line, componentStyle);
                 context.submitText(
+                    order,
                     offsetX, -offsetY,
                     formatted,
                     false,
@@ -104,7 +99,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      * @param context  the render context
      * @param roadSign the road sign being rendered
      */
-    private void renderStyle(TextElement element, RenderContext context, RoadSign roadSign) {
+    private void renderStyle(int order, TextElement element, RenderContext context, RoadSign roadSign) {
         var style = element.style();
         var background = element.paddedSize();
         var outlineWidth = style.isOutlineShown()
@@ -116,7 +111,8 @@ public class TextRenderer implements ElementRenderer<TextElement> {
             .ifPresent(color -> {
                 context.withTranslation(outlineWidth, outlineWidth, 0, () -> {
                     context.textureRenderer().renderColor(
-                        multiplyColor(color, COLOR_DARKEN_FACTOR),
+                        order,
+                        color,
                         background.width(),
                         background.height()
                     );
@@ -131,7 +127,8 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                 if (thickness <= 0) return;
                 // Darken background color to match texture colors
                 context.textureRenderer().renderOutline(
-                    multiplyColor(color, COLOR_DARKEN_FACTOR),
+                    order,
+                    color,
                     background.width() + thickness * 2,
                     background.height() + thickness * 2,
                     thickness

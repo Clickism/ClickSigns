@@ -4,23 +4,19 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.function.BiConsumer;
-
-import static de.clickism.clicksigns.render.RenderLayers.Z_FIGHTING_OFFSET;
 
 /**
  * Rnder context for rendering road signs, providing access to the pose stack, buffer source, light level, and direction.
  */
 //~ if >=26.1 'MultiBufferSource' -> 'SubmitNodeCollector' {
 public final class RenderContext {
+    private static final float Z_FIGHTING_OFFSET = 0.001f;
     private final PoseStack stack;
     private final SubmitNodeCollector source;
     private final int light;
@@ -158,29 +154,12 @@ public final class RenderContext {
         });
     }
 
-    /**
-     * Pushes the pose stack along the Z-axis to prevent z-fighting.
-     *
-     * @param index the index of the Z-fighting offset to apply
-     */
-    public void pushZ(int index) {
-        stack.translate(0, 0, index * Z_FIGHTING_OFFSET);
-    }
-
-    /**
-     * Executes the given action with the Z-fighting offset applied.
-     *
-     * @param index  the index of the Z-fighting offset to apply
-     * @param action the action to execute
-     */
-    public void withZ(int index, Runnable action) {
-        pushZ(index);
-        action.run();
-        pushZ(-index);
-    }
-
-    public void submit(RenderType renderType, BiConsumer<PoseStack.Pose, VertexConsumer> renderer) {
-        source.submitCustomGeometry(
+    public void submit(
+        int order,
+        RenderType renderType,
+        BiConsumer<PoseStack.Pose, VertexConsumer> renderer
+    ) {
+        source.order(order).submitCustomGeometry(
             stack,
             renderType,
             renderer::accept
@@ -188,6 +167,7 @@ public final class RenderContext {
     }
 
     public void submitText(
+        int order,
         float x, float y,
         FormattedCharSequence string,
         boolean shadow,
@@ -197,7 +177,7 @@ public final class RenderContext {
         int backgroundColor,
         int outlineColor
     ) {
-        source.submitText(
+        source.order(order).submitText(
             stack,
             x, y,
             string,
@@ -208,14 +188,6 @@ public final class RenderContext {
             backgroundColor,
             outlineColor
         );
-    }
-
-    public RenderType textureRenderType(Identifier texture) {
-        return RenderTypes.entityTranslucent(texture);
-    }
-
-    public RenderType colorRenderType() {
-        return RenderTypes.textBackground();
     }
 }
 //~}

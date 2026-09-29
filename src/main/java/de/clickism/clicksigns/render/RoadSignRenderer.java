@@ -79,7 +79,9 @@ public final class RoadSignRenderer {
      */
     private void renderFront() {
         var frontTexture = roadSign.frontTexture();
-        context.textureRenderer().renderTexture(frontTexture);
+        context.withTranslation(0, 0, SignRenderPipelines.SURFACE_OFFSET, () -> {
+            context.textureRenderer().renderTexture(SignRenderPipelines.BASE_ORDER, frontTexture);
+        });
     }
 
     /**
@@ -89,7 +91,9 @@ public final class RoadSignRenderer {
         context.withFlip(roadSign.blockWidth(), () -> {
             var backTexture = RoadSign.maskedBackOf(roadSign.frontSource(), roadSign.backSource())
                 .resolve(roadSign.colorResolver());
-            context.textureRenderer().renderTexture(backTexture);
+            context.withTranslation(0, 0, SignRenderPipelines.SURFACE_OFFSET, () -> {
+                context.textureRenderer().renderTexture(0, backTexture);
+            });
         });
     }
 
@@ -101,15 +105,11 @@ public final class RoadSignRenderer {
         // Set up the transformatiosn for the road sign based on its direction and alignment
         setupTransform();
         // Render the front texture of the road sign
-        context.pushZ(RenderLayers.SIGN_FRONT);
         renderFront();
-        context.pushZ(-RenderLayers.SIGN_FRONT);
         // Render elements
         renderElements();
         // Render the back texture of the road sign
-        context.pushZ(RenderLayers.SIGN_BACK);
         renderBack();
-        context.pushZ(RenderLayers.SIGN_BACK);
 
         // End pose
         context.stack().popPose();
@@ -126,7 +126,7 @@ public final class RoadSignRenderer {
         var renderer = rendererForElement(element);
         var x = element.alignedX() / BLOCK_PIXELS;
         var y = element.alignedY() / BLOCK_PIXELS;
-        var z = renderer.zIndexOf(element, roadSign) * RenderLayers.Z_FIGHTING_OFFSET;
+        var z = renderer.zOf(element, roadSign);
         context.withTranslation(x, y, z, () -> {
             renderer.render(element, context, roadSign);
         });

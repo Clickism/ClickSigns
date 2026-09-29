@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.render.element;
 
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.RenderLayers;
+import de.clickism.clicksigns.render.SignRenderPipelines;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 
@@ -20,7 +20,12 @@ public interface ElementRenderer<T extends SignElement> {
      */
     void render(T element, RenderContext context, RoadSign roadSign);
 
-    default int zIndexOf(T element, RoadSign roadSign) {
-        return RenderLayers.SIGN_SURFACE + roadSign.elements().indexOf(element);
+    default int orderOf(T element, RoadSign roadSign) {
+        return 1 + 2 * roadSign.elements().indexOf(element); // 0 is reserved for the base plane
+    }
+
+    default float zOf(T element, RoadSign roadSign) {
+        return SignRenderPipelines.ELEMENT_OFFSET
+               + roadSign.elements().indexOf(element) * SignRenderPipelines.ELEMENT_STEP;
     }
 }

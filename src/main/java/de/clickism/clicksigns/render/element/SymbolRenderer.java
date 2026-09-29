@@ -1,7 +1,6 @@
 package de.clickism.clicksigns.render.element;
 
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.RenderLayers;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 
@@ -11,10 +10,8 @@ import de.clickism.clicksigns.sign.element.SymbolElement;
 public class SymbolRenderer implements ElementRenderer<SymbolElement> {
     @Override
     public void render(SymbolElement element, RenderContext context, RoadSign roadSign) {
-        int zIndex = roadSign.elements().indexOf(element);
-        context.withZ(zIndex, () -> {
-            var texture = element.textureSource().resolve(roadSign.colorResolver());
-            context.textureRenderer().renderTexture(texture, element.scale());
-        });
+        int order = orderOf(element, roadSign);
+        var texture = element.textureSource().resolve(roadSign.colorResolver());
+        context.textureRenderer().renderTexture(order, texture, element.scale());
     }
 }

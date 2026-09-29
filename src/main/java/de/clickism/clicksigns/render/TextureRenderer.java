@@ -8,6 +8,8 @@ import net.minecraft.core.Direction;
 
 //? if >=26.1 {
 import net.minecraft.client.renderer.rendertype.RenderType;
+
+import static net.minecraft.client.renderer.RenderPipelines.ENTITY_CUTOUT_Z_OFFSET;
 //?} else
 //import net.minecraft.client.renderer.RenderType;
 
@@ -31,8 +33,8 @@ public class TextureRenderer {
      *
      * @param texture the texture to render
      */
-    public void renderTexture(Texture texture) {
-        renderTexture(texture, 1.0f);
+    public void renderTexture(int order, Texture texture) {
+        renderTexture(order, texture, 1.0f);
     }
 
     /**
@@ -41,10 +43,11 @@ public class TextureRenderer {
      * @param texture the texture to render
      * @param scale   the scale factor to apply to the texture dimensions
      */
-    public void renderTexture(Texture texture, float scale) {
+    public void renderTexture(int order, Texture texture, float scale) {
         var textureLocation = texture.location();
         context.submit(
-            context.textureRenderType(textureLocation),
+            order,
+            SignRenderPipelines.textureRenderType(order, textureLocation),
             (stack, buffer) -> {
                 render(buffer, stack, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
             }
@@ -58,9 +61,10 @@ public class TextureRenderer {
      * @param blockWidth  the width of the quad in blocks
      * @param blockHeight the height of the quad in blocks
      */
-    public void renderColor(int color, float blockWidth, float blockHeight) {
+    public void renderColor(int order, int color, float blockWidth, float blockHeight) {
         context.submit(
-            context.colorRenderType(),
+            order,
+            SignRenderPipelines.colorRenderType(),
             (stack, buffer) -> {
                 render(buffer, stack, blockWidth, blockHeight, color);
             }
@@ -75,15 +79,15 @@ public class TextureRenderer {
      * @param blockHeight the height of the outline in blocks
      * @param thickness   the thickness of the outline in blocks
      */
-    public void renderOutline(int color, float blockWidth, float blockHeight, float thickness) {
+    public void renderOutline(int order, int color, float blockWidth, float blockHeight, float thickness) {
         // Top
-        renderColor(color, blockWidth, thickness);
+        renderColor(order, color, blockWidth, thickness);
         // Bottom
-        context.withTranslation(0, blockHeight - thickness, 0, () -> renderColor(color, blockWidth, thickness));
+        context.withTranslation(0, blockHeight - thickness, 0, () -> renderColor(order, color, blockWidth, thickness));
         // Left
-        context.withTranslation(0, 0, 0, () -> renderColor(color, thickness, blockHeight));
+        context.withTranslation(0, 0, 0, () -> renderColor(order, color, thickness, blockHeight));
         // Right
-        context.withTranslation(blockWidth - thickness, 0, 0, () -> renderColor(color, thickness, blockHeight));
+        context.withTranslation(blockWidth - thickness, 0, 0, () -> renderColor(order, color, thickness, blockHeight));
     }
 
     /**

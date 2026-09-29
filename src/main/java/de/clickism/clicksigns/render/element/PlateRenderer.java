@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.render.element;
 
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.RenderLayers;
+import de.clickism.clicksigns.render.SignRenderPipelines;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
@@ -32,32 +32,20 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
 
     @Override
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
-        var intersects = intersects(roadSign, element);
-        int index = roadSign.elements().indexOf(element);
-        int z = intersects
-            ? RenderLayers.SIGN_SURFACE + index
-            : RenderLayers.SIGN_FRONT;
-        context.withZ(z, () -> {
-            // Render front
-            var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
-            context.textureRenderer().renderTexture(frontTexture);
-        });
-        // Render back
+        boolean onSign = intersects(roadSign, element);
+        // Base order for plates hanging off the sign, so they use the block-safe pipeline
+        int order = onSign ? orderOf(element, roadSign) : SignRenderPipelines.BASE_ORDER;
+
+        // Front
+        var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
+        context.textureRenderer().renderTexture(order, frontTexture);
+
+        // Back
         var masked = RoadSign.maskedBackOf(element.frontSource(), element.backSource());
         var backTexture = masked.resolve(roadSign.colorResolver());
-        // If not intersecting with the road sign, align with the front, so that there is not a gap inbetween
-        z = intersects
-            ? RenderLayers.PLATE_BACK - index
-            : RenderLayers.SIGN_BACK;
-        context.withZ(z, () -> {
-            context.withFlip(element.width() / BLOCK_PIXELS, () -> {
-                context.textureRenderer().renderTexture(backTexture);
-            });
-        });
-    }
-
-    @Override
-    public int zIndexOf(PlateElement element, RoadSign roadSign) {
-        return 0;
+        context.withFlip(element.width() / BLOCK_PIXELS, () ->
+            // FIX: Make flush with the front texture, so it doesn't float above the sign
+            context.withTranslation(0, 0, SignRenderPipelines.ELEMENT_OFFSET, () ->
+                context.textureRenderer().renderTexture(order, backTexture)));
     }
 }
