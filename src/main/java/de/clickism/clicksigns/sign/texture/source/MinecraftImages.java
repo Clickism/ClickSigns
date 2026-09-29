@@ -33,10 +33,10 @@ public class MinecraftImages {
                 for (int x = 0; x < width; x++) {
 
                     //~ if >=26.1 'getPixelRGBA(' -> 'getPixel('
-                    int abgr = nativeImage.getPixel(x, y);
-
-                    int argb = ColorUtil.abgrToArgb(abgr);
-                    pixels[y * width + x] = argb;
+                    int color = nativeImage.getPixel(x, y);
+                    //? if <26.1
+                    //color = ColorUtil.abgrToArgb(color);
+                    pixels[y * width + x] = color;
                 }
             }
             return new Image(width, height, pixels);
@@ -74,11 +74,12 @@ public class MinecraftImages {
         var nativeImage = new NativeImage(NativeImage.Format.RGBA, width, height, false);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int argb = image.pixelAt(x, y);
-                int abgr = ColorUtil.argbToAbgr(argb);
+                int color = image.pixelAt(x, y);
+                //? if <26.1
+                //color = ColorUtil.argbToAbgr(color);
 
                 //~ if >=26.1 'setPixelRGBA(' -> 'setPixel('
-                nativeImage.setPixel(x, y, abgr);
+                nativeImage.setPixel(x, y, color);
             }
         }
         return nativeImage;
