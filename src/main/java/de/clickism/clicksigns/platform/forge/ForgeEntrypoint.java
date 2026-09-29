@@ -1,4 +1,3 @@
-/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.forge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -35,4 +34,3 @@ public class ForgeEntrypoint {
         ClickSignsClient.initialize();
     }
 }
-*/

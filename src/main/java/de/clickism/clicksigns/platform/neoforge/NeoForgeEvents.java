@@ -1,4 +1,3 @@
-/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -14,4 +13,3 @@ public class NeoForgeEvents {
         ClickSigns.UPDATE_NOTIFIER.notify((ServerPlayer) player);
     }
 }
-*/

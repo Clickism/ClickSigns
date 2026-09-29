@@ -1,4 +1,3 @@
-/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -27,13 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-/^*
+/**
  * Neoforge platform implementation
- ^/
+ */
 public class NeoForgePlatform implements Platform {
-    /^*
+    /**
      * The neoforge platform instance
-     ^/
+     */
     public static final NeoForgePlatform INSTANCE = new NeoForgePlatform();
 
     private static final DeferredRegister<Item> ITEMS_REGISTRY =
@@ -52,11 +51,11 @@ public class NeoForgePlatform implements Platform {
         // Singleton class
     }
 
-    /^*
+    /**
      * Initializes the neoforge platform
      *
      * @param bus event bus
-     ^/
+     */
     public void initialize(IEventBus bus) {
         ITEMS_REGISTRY.register(bus);
         BLOCKS_REGISTRY.register(bus);
@@ -156,11 +155,11 @@ public class NeoForgePlatform implements Platform {
                 .forEach(entry -> event.accept(entry.item.get()));
     }
 
-    /^*
+    /**
      * A creative tab entry
      *
      * @param tab  the creative tab
      * @param item the item to add
-     ^/
+     */
     private record TabEntry(ResourceKey<CreativeModeTab> tab, Supplier<? extends Item> item) {}
-}*/
+}

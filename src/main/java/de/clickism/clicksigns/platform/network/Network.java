@@ -1,10 +1,18 @@
 package de.clickism.clicksigns.platform.network;
 
+import de.clickism.clicksigns.ClickSigns;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
+
+//? if >= 1.21.1 {
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+//?}
 
 /**
  * Network system abstraction.
@@ -100,8 +108,30 @@ public abstract class Network {
      * @param <T>    the type of the packet
      */
     @SuppressWarnings("unchecked")
-    protected <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
+    protected static <T extends Packet> void handleServer(T packet, MinecraftServer server, ServerPlayer player) {
         var type = (PacketType<T>) packet.type();
         server.execute(() -> type.serverHandler().handle(packet, player));
     }
+
+    //? if >= 1.21.1 {
+    public record GlobalPacket(Packet packet) implements CustomPacketPayload {
+        public static final Type<GlobalPacket> TYPE =
+            new Type<>(ClickSigns.identifier("global_packet"));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, GlobalPacket> CODEC = StreamCodec.of(
+            (buf, packet) -> {
+                buf.writeBytes(writePacket(packet.packet()));
+            },
+            buf -> {
+                var packet = readPacket(buf);
+                return new GlobalPacket(packet);
+            }
+        );
+
+        @Override
+        public @NotNull Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+    //?}
 }

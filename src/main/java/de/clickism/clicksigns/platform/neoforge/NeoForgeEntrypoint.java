@@ -1,4 +1,3 @@
-/*!stonecutter-disabled
 package de.clickism.clicksigns.platform.neoforge;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -12,7 +11,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import static net.neoforged.api.distmarker.Dist.CLIENT;
 
@@ -23,6 +21,7 @@ public class NeoForgeEntrypoint {
         ClickSigns.initialize();
         // Initialize forge platform with event bus
         NeoForgePlatform.INSTANCE.initialize(eventBus);
+        NeoForgeNetwork.INSTANCE.initialize(eventBus);
         NeoForge.EVENT_BUS.register(new NeoForgeEvents());
     }
 
@@ -35,11 +34,4 @@ public class NeoForgeEntrypoint {
     public static void onClientSetup(FMLClientSetupEvent event) {
         ClickSignsClient.initialize();
     }
-
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("1");
-        NeoForgeNetwork.INSTANCE.registerServer(registrar);
-    }
 }
-*/
