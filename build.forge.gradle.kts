@@ -50,7 +50,7 @@ dependencies {
 
     // Dependencies
     jarJarNonMod("de.clickism:modrinth-update-checker:1.1")
-    jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-forge") {
+    jarJar(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-$loader") {
         isChanging = true
     })
 

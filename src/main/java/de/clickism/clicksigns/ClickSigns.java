@@ -52,6 +52,7 @@ public class ClickSigns {
      * Checks for updates on Modrinth and notifies the user if a newer version is available.
      */
     private static void checkUpdates() {
+        //~ if >=26.1 'getName' -> 'name'
         var minecraftVersion = DetectedVersion.BUILT_IN.getName();
         var loader = Platform.get().name();
         ModrinthUpdateChecker.loader(MOD_ID, loader)

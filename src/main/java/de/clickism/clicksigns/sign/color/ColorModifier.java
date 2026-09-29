@@ -1,11 +1,9 @@
 package de.clickism.clicksigns.sign.color;
 
-import net.minecraft.util.FastColor;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.minecraft.util.FastColor.ARGB32.*;
+import static de.clickism.clicksigns.util.ColorUtil.ARGB.*;
 
 public interface ColorModifier {
     Map<String, ColorModifier> ALL = new HashMap<>();
@@ -31,7 +29,7 @@ public interface ColorModifier {
         r = (int) (r * (1 - percentage));
         g = (int) (g * (1 - percentage));
         b = (int) (b * (1 - percentage));
-        return FastColor.ARGB32.color(a, r, g, b);
+        return argb(a, r, g, b);
     }));
 
     ColorModifier LIGHTEN = register(create("l", (color, context) -> {
@@ -43,7 +41,7 @@ public interface ColorModifier {
         r = (int) (r + (255 - r) * percentage);
         g = (int) (g + (255 - g) * percentage);
         b = (int) (b + (255 - b) * percentage);
-        return FastColor.ARGB32.color(a, r, g, b);
+        return argb(a, r, g, b);
     }));
 
     /**

@@ -7,6 +7,7 @@ import de.clickism.clickui.event.events.DragEvent;
 import de.clickism.clickui.event.events.DragStartEvent;
 import de.clickism.clickui.event.events.KeyPressEvent;
 import de.clickism.clickui.layout.Point;
+import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -43,24 +44,25 @@ public class EditorActionHandler {
      */
     public void handleKeyPress(KeyPressEvent event) {
         // Duplicate selected elements with Ctrl+D
-        if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_D) {
+        var controlDown = KeyUtil.hasControlDown();
+        if (controlDown && event.code() == GLFW.GLFW_KEY_D) {
             forEachSelectedAndClearOld(element -> spawnElementNear(element, element));
             event.consume();
         }
         // Copy selected elements with Ctrl+C
-        if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_C) {
+        if (controlDown && event.code() == GLFW.GLFW_KEY_C) {
             CLIPBOARD.clear();
             CLIPBOARD.addAll(context.selection());
             event.consume();
         }
         // Paste copied elements with Ctrl+V
-        if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_V) {
+        if (controlDown && event.code() == GLFW.GLFW_KEY_V) {
             context.clearSelection();
             CLIPBOARD.forEach(element -> spawnElementNear(element, element));
             event.consume();
         }
         // Select all elements with Ctrl+A
-        if (Screen.hasControlDown() && event.code() == GLFW.GLFW_KEY_A) {
+        if (controlDown && event.code() == GLFW.GLFW_KEY_A) {
             context.clearSelection();
             context.roadSign().elements().forEach(context::toggleSelection);
             event.consume();
@@ -125,7 +127,7 @@ public class EditorActionHandler {
 
     public void handleMouseDown(Editable<SignElement> element) {
         // If ctrl is held, toggle selection
-        if (Screen.hasControlDown()) {
+        if (KeyUtil.hasControlDown()) {
             context.setSelected(null, false); // So that no controls are shown
             context.toggleSelection(element);
         } else {

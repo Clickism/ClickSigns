@@ -23,10 +23,46 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
 
     }
 
+    //? if >= 26.1 {
+    /*@Override
+    public void submit(
+        RoadSignBlockEntityState state,
+        @NonNull PoseStack poseStack,
+        @NonNull SubmitNodeCollector submitNodeCollector,
+        @NonNull CameraRenderState camera
+    ) {
+        var roadSign = state.roadSign;
+        var renderer = new RoadSignRenderer(
+            new RenderContext(poseStack, null, state.lightCoords, state.direction),
+            roadSign
+        );
+        renderer.submit();
+    }
+
+    @Override
+    public void extractRenderState(
+        RoadSignBlockEntity entity,
+        RoadSignBlockEntityState state,
+        float partialTicks,
+        Vec3 cameraPosition,
+        ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+    ) {
+        BlockEntityRenderer.super.extractRenderState(entity, state, partialTicks, cameraPosition, breakProgress);
+        // Use road sign renderer
+        var roadSign = roadSignToRender(entity);
+        var direction = entity.getBlockState().getValue(HORIZONTAL_FACING);
+        var renderer = new RoadSignRenderer(
+            new RenderContext(stack, source, light, direction),
+            roadSign
+        );
+        renderer.render();
+    }
+
+    *///?}
     @Override
     public void render(
         RoadSignBlockEntity entity,
-        float tickDelta,
+        float partialTicks,
         PoseStack stack,
         MultiBufferSource source,
         int light,
@@ -68,4 +104,19 @@ public class RoadSignBlockEntityRenderer implements BlockEntityRenderer<RoadSign
         }
         return defaultRoadSign;
     }
+    
+    //? if >=26.1 {
+
+    /*@Override
+    public RoadSignBlockEntityState createRenderState() {
+        return new RoadSignBlockEntityState();
+    }
+
+    // TODO: Fix
+    public static class RoadSignBlockEntityState extends BlockEntityRenderState {
+        private RoadSign roadSign;
+        private Direction direction;
+    }
+
+    *///?}
 }

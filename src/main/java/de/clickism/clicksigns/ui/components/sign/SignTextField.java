@@ -11,6 +11,7 @@ import de.clickism.clickui.layout.Point;
 import de.clickism.clickui.layout.Size;
 import de.clickism.clickui.render.RenderContext;
 import de.clickism.clickui.util.Util;
+import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
@@ -147,7 +148,7 @@ public class SignTextField extends TextField implements ElementProvider {
             }
         }
         cursorPos = new LinePos(newLine, newPos).toCursorPos();
-        if (!Screen.hasShiftDown()) {
+        if (!KeyUtil.hasShiftDown()) {
             highlightPos = cursorPos;
         }
     }

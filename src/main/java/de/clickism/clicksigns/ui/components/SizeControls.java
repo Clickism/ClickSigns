@@ -4,6 +4,7 @@ import de.clickism.clicksigns.util.Size;
 import de.clickism.clickui.State;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
+import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -137,7 +138,7 @@ public class SizeControls extends UiComponent<SizeControls> implements CommonCom
     }
 
     private int changeAmount() {
-        if (fineChangeAmount != 0 && Screen.hasShiftDown()) {
+        if (fineChangeAmount != 0 && KeyUtil.hasShiftDown()) {
             return fineChangeAmount;
         }
         return changeAmount;

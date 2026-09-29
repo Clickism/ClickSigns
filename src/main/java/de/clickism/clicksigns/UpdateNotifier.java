@@ -8,12 +8,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import static de.clickism.clicksigns.util.ComponentUtil.l;
 import static de.clickism.clicksigns.util.ComponentUtil.t;
+
+//? if >=1.21.11 {
+//import net.minecraft.server.permissions.Permissions;
+//?}
+
 
 /**
  * UpdateNotifier is responsible for notifying players about newer versions of the mod.
@@ -60,10 +66,17 @@ public class UpdateNotifier {
             .append("\n")
             .append(t("clicksigns.update.download").copy()
                 .withStyle(style -> style
+                    //? if >=26.1 {
+                    /*.withClickEvent(new ClickEvent.OpenUrl(
+                        URI.create(link)
+                    ))
+                    *///?} else {
                     .withClickEvent(new ClickEvent(
                         ClickEvent.Action.OPEN_URL,
                         link
-                    ))));
+                    ))
+                    //?}
+                ));
     }
 
     private static boolean isOpOrInSinglePlayer(CommandSourceStack source) {

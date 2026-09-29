@@ -5,6 +5,7 @@ import de.clickism.clickui.UiColor;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.UiElement;
 import de.clickism.clickui.style.Style;
+import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -135,9 +136,9 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
 
     private Style buttonStyle() {
         return style()
-            .when(c -> Screen.hasShiftDown() && fineChangeAmount != 0, style()
+            .when(c -> KeyUtil.hasShiftDown() && fineChangeAmount != 0, style()
                 .overlayColor(UiColor.TEAL.alpha(0.4f)))
-            .when(c -> Screen.hasShiftDown() && fastChangeAmount != 0, style()
+            .when(c -> KeyUtil.hasShiftDown() && fastChangeAmount != 0, style()
                 .overlayColor(UiColor.LIME.alpha(0.4f)));
     }
 
@@ -152,7 +153,7 @@ public class NumberControl extends UiComponent<NumberControl> implements CommonC
     }
 
     private int changeAmount() {
-        if (Screen.hasShiftDown()) {
+        if (KeyUtil.hasShiftDown()) {
             if (fineChangeAmount != 0) {
                 return fineChangeAmount;
             }

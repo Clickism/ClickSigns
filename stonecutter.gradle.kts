@@ -7,6 +7,16 @@ stonecutter parameters {
     val loader = current.project.substringAfterLast('-')
     val loaders = listOf("fabric", "neoforge", "forge")
     constants.match(loader, loaders)
+
+    // String replacements
+    replacements {
+        string(current.parsed < "1.21.11") {
+            replace("Identifier", "ResourceLocation")
+        }
+        string(current.parsed < "26.1") {
+            replace("GuiGraphicsExtractor", "GuiGraphics")
+        }
+    }
 }
 
 val modVersion = property("mod.version").toString()

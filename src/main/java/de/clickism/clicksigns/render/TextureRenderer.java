@@ -3,9 +3,13 @@ package de.clickism.clicksigns.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.clickism.clicksigns.sign.texture.Texture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+
+//? if >=26.1 {
+//import net.minecraft.client.renderer.rendertype.RenderType;
+//?} else
+import net.minecraft.client.renderer.RenderType;
 
 /**
  * A utility class for rendering textures and solid colors in a given render context.
@@ -39,7 +43,9 @@ public class TextureRenderer {
      */
     public void renderTexture(Texture texture, float scale) {
         var textureLocation = texture.location();
-        var buffer = context.source().getBuffer(RenderType.entityTranslucentCull(textureLocation));
+        var buffer = context.source().getBuffer(
+            RenderType.entityTranslucentCull(textureLocation)
+        );
         render(buffer, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
     }
 

@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("net.fabricmc.fabric-loom-remap") version "1.18-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.18-SNAPSHOT"
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
 val modVersion = property("mod.version").toString()
@@ -30,15 +30,10 @@ sourceSets {
 }
 
 java {
-    if (sc.current.parsed >= "1.20.5") {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    } else {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+    // Only 26.x, so always Java 25
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 base {
@@ -53,20 +48,14 @@ configurations.all {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    // Mappings
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
-    })
 
     // Fabric
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+    implementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
     // Libraries
     implementation(include("de.clickism:modrinth-update-checker:1.1")!!)
-    include(modImplementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-$loader") {
+    include(implementation("de.clickism:clickui:${property("deps.clickui")}+$minecraftVersion-$loader") {
         isChanging = true
         isTransitive = false
     })
@@ -115,7 +104,7 @@ tasks.register<Delete>("cleanLoomCache") {
 
 publishMods {
     displayName.set("ClickSigns ${property("mod.version")} for Fabric")
-    file.set(tasks.remapJar.get().archiveFile)
+    file.set(tasks.jar.get().archiveFile)
     version.set(project.version.toString())
     changelog.set(rootProject.file("CHANGELOG.md").readText())
     type.set(BETA)

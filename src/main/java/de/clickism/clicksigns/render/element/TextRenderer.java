@@ -7,11 +7,11 @@ import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
+import static de.clickism.clicksigns.util.ColorUtil.ARGB.*;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
 
 /**
@@ -29,15 +29,15 @@ public class TextRenderer implements ElementRenderer<TextElement> {
      * @return the resulting ARGB color with the same alpha and multiplied RGB components
      */
     private static int multiplyColor(int color, float factor) {
-        int a = FastColor.ARGB32.alpha(color);
-        int r = (int) (FastColor.ARGB32.red(color) * factor);
-        int g = (int) (FastColor.ARGB32.green(color) * factor);
-        int b = (int) (FastColor.ARGB32.blue(color) * factor);
+        int a = alpha(color);
+        int r = (int) (red(color) * factor);
+        int g = (int) (green(color) * factor);
+        int b = (int) (blue(color) * factor);
         // Keep within bounds just in case
         r = r & 0xFF;
         g = g & 0xFF;
         b = b & 0xFF;
-        return FastColor.ARGB32.color(a, r, g, b);
+        return argb(a, r, g, b);
     }
 
     @Override

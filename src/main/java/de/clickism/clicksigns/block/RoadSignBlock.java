@@ -65,9 +65,11 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
 
     @Override
     public @NotNull VoxelShape getOcclusionShape(
-        @NotNull BlockState state,
-        @NotNull BlockGetter level,
+        @NotNull BlockState state
+        //? if <26.1 {
+        ,@NotNull BlockGetter level,
         @NotNull BlockPos pos
+        //?}
     ) {
         return Shapes.empty();
     }
@@ -84,6 +86,7 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         //@NotNull InteractionHand hand,
         @NotNull BlockHitResult hit
     ) {
+        //~ if >=26.1 'isClientSide' -> 'isClientSide()'
         if (!level.isClientSide) return InteractionResult.SUCCESS;
         if (player.isShiftKeyDown()) return InteractionResult.PASS;
         var blockEntity = level.getBlockEntity(pos);
