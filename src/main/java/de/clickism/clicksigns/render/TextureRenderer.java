@@ -116,7 +116,7 @@ public class TextureRenderer {
     /**
      * Creates a vertex with the given positions and UV coordinates
      */
-    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int setColor) {
+    private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int clr) {
         var xAxis = context.direction().getAxis() == Direction.Axis.X;
 
         /*~ if >=1.21.1
@@ -125,7 +125,7 @@ public class TextureRenderer {
          */
 
         buffer.addVertex(pose.pose(), x, y, 0)
-            .setColor(setColor)
+            .setColor(clr)
             .setUv(u, v)
             .setOverlay(OverlayTexture.NO_OVERLAY)
             .setLight(context.light())
