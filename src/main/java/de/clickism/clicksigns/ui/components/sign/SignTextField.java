@@ -230,9 +230,10 @@ public class SignTextField extends TextField implements ElementProvider {
             .getString()
             .length();
             //?} else
-            /*.formattedHeadByWidth(lineText, x, element.style().asComponentStyle()).length();
-         Calculate cursor position
-*/        int lineCursorPos = 0;
+            //.formattedHeadByWidth(lineText, x, element.style().asComponentStyle()).length();
+
+        // Calculate cursor position
+        int lineCursorPos = 0;
         for (int i = 0; i < lineIndex; i++) {
             lineCursorPos += lines.get(i).length() + 1; // +1 for newline
         }

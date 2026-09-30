@@ -5,11 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.clickism.clicksigns.sign.texture.Texture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-
-//? if >=26.1 {
-
-//?} else
-//import net.minecraft.client.renderer.RenderType;
+import org.joml.Vector3f;
 
 /**
  * A utility class for rendering textures and solid colors in a given render context.
@@ -134,31 +130,22 @@ public class TextureRenderer {
     private void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float u, float v, int clr) {
         var xAxis = context.direction().getAxis() == Direction.Axis.X;
 
-        /*~ if >=1.21.1
-        'vertex' -> 'addVertex', 'color' -> 'setColor', 'uv' -> 'setUv',
-        'overlayCoords' -> 'setOverlay', 'uv2' -> 'setLight', 'normal' -> 'setNormal' {
-         */
-
+        //? if >=1.21.1 {
         buffer.addVertex(pose.pose(), x, y, 0)
             .setColor(clr)
             .setUv(u, v)
             .setOverlay(OverlayTexture.NO_OVERLAY)
             .setLight(context.light())
-            // Texture is facing towards -Z
-            .setNormal(
-                pose
-                    //? if < 1.21.1
-                    //.setNormal()
-                ,xAxis
-                    ? 1
-                    : 0, 0,
-                xAxis
-                    ? 0
-                    : 1)
-            //? if < 1.21.1
-            //.endVertex()
-        ;
+            .setNormal(pose, xAxis ? 1 : 0, 0, xAxis ? 0 : 1);
+        //?} else {
+        /*var normal = pose.normal().transform(new Vector3f(xAxis ? 1 : 0, 0, xAxis ? 0 : 1)).normalize();
+        buffer.vertex(pose.pose(), x, y, 0)
+            .color(clr)
+            .uv(u, v)
+            .overlayCoords(OverlayTexture.NO_OVERLAY)
+            .uv2(context.light())
+            .normal(normal.x(), normal.y(), normal.z())
+            .endVertex();
+        *///?}
     }
-
-    //~}
 }

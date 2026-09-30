@@ -15,9 +15,13 @@ stonecutter parameters {
         }
         string(current.parsed < "26.1") {
             replace("GuiGraphicsExtractor", "GuiGraphics")
+            replace("net.minecraft.client.renderer.rendertype.RenderType", "net.minecraft.client.renderer.RenderType")
+
+            // Datagen
             replace("FabricPackOutput", "FabricDataOutput")
             replace("FabricBlockLootSubProvider", "FabricBlockLootTableProvider")
-            replace("FabricTagsProvider.BlockTagsProvider", "FabricTagProvider.BlockTagProvider")
+            replace("FabricTagsProvider", "FabricTagProvider")
+            replace("BlockTagsProvider", "BlockTagProvider")
         }
         string {  }
     }

@@ -3,20 +3,26 @@ package de.clickism.clicksigns.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.function.BiConsumer;
 
+//? if >=26.1 {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
+
+//~ if >=26.1 'MultiBufferSource' -> 'SubmitNodeCollector' {
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 /**
  * Rnder context for rendering road signs, providing access to the pose stack, buffer source, light level, and direction.
  */
-//~ if >=26.1 'MultiBufferSource' -> 'SubmitNodeCollector' {
 public final class RenderContext {
-    private static final float Z_FIGHTING_OFFSET = 0.001f;
     private final PoseStack stack;
     private final SubmitNodeCollector source;
     private final int light;
@@ -159,11 +165,18 @@ public final class RenderContext {
         RenderType renderType,
         BiConsumer<PoseStack.Pose, VertexConsumer> renderer
     ) {
+        //? if >=26.1 {
         source.order(order).submitCustomGeometry(
             stack,
             renderType,
             renderer::accept
         );
+        //?} else {
+        /*withTranslation(0, 0, order * RenderConstants.ELEMENT_STEP, () -> {
+            var buffer = source.getBuffer(renderType);
+            renderer.accept(stack.last(), buffer);
+        });
+        *///?}
     }
 
     public void submitText(
@@ -177,6 +190,7 @@ public final class RenderContext {
         int backgroundColor,
         int outlineColor
     ) {
+        //? if >=26.1 {
         source.order(order).submitText(
             stack,
             x, y,
@@ -188,6 +202,22 @@ public final class RenderContext {
             backgroundColor,
             outlineColor
         );
+        //?} else {
+        /*withTranslation(0, 0, -order * RenderConstants.ELEMENT_STEP, () -> {
+            var font = Util.font();
+            font.drawInBatch(
+                string,
+                x, y,
+                color,
+                shadow,
+                stack.last().pose(),
+                source,
+                mode,
+                backgroundColor,
+                lightCoords
+            );
+        });
+        *///?}
     }
 }
 //~}

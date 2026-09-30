@@ -13,9 +13,9 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Register block tags for the mod.
  */
-class ModBlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
+class ModBlockTagsProvider extends FabricTagsProvider.BlockTagsProvider {
 
-    public ModBlockTagProvider(
+    public ModBlockTagsProvider(
         FabricPackOutput output,
         CompletableFuture<HolderLookup.Provider> registriesFuture
     ) {

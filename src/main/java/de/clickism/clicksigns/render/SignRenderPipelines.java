@@ -1,24 +1,29 @@
 package de.clickism.clicksigns.render;
 
+
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
+
+import de.clickism.clicksigns.ClickSigns;
+
+//? if >=26.1 {
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
-import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-
-import java.util.HashMap;
-import java.util.Map;
+//?}
 
 public class SignRenderPipelines {
-    public static final float SURFACE_OFFSET = 0.001f; // base plane, in blocks
-    public static final float ELEMENT_OFFSET = 0.002f; // element layer, sits above the base plane
-    public static final float ELEMENT_STEP = 0.0005f; // per-element depth separation, in blocks
 
+    private static final Identifier WHITE = ClickSigns.identifier("textures/misc/white.png");
+
+    //? if >=26.1 {
     public static final RenderPipeline SIGN_BASE = RenderPipelines.register(
         RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
             .withLocation(ClickSigns.identifier("pipeline/sign_base"))
@@ -45,8 +50,6 @@ public class SignRenderPipelines {
             .build()
     );
 
-    public static final int BASE_ORDER = 0;
-    private static final Identifier WHITE = ClickSigns.identifier("textures/misc/white.png");
 
     private static final Map<Identifier, RenderType> BASE_TYPES = new HashMap<>();
     private static final Map<Identifier, RenderType> ELEMENT_TYPES = new HashMap<>();
@@ -64,16 +67,26 @@ public class SignRenderPipelines {
                 .createRenderSetup()
         );
     }
+    //?}
 
     public static RenderType baseRenderType(Identifier texture) {
+        //? if >=26.1 {
         return BASE_TYPES.computeIfAbsent(texture, id -> create(SIGN_BASE, id));
+        //?} else
+        //return RenderType.entityTranslucentCull(texture);
     }
 
     public static RenderType elementRenderType(Identifier texture) {
+        //? if >=26.1 {
         return ELEMENT_TYPES.computeIfAbsent(texture, id -> create(SIGN_ELEMENT, id));
+        //?} else
+        //return RenderType.entityTranslucentCull(texture);
     }
 
     public static RenderType colorRenderType() {
+        //? if >=26.1 {
         return ELEMENT_TYPES.computeIfAbsent(WHITE, id -> create(SIGN_ELEMENT, id));
+        //?} else
+        //return RenderType.entityTranslucentCull(WHITE);
     }
 }

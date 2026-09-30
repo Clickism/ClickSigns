@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.render.element;
 
+import de.clickism.clicksigns.render.RenderConstants;
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.SignRenderPipelines;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.PlateElement;
 import de.clickism.clicksigns.sign.element.SignElement;
@@ -34,7 +34,7 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
         boolean onSign = intersects(roadSign, element);
         // Base order for plates hanging off the sign, so they use the block-safe pipeline
-        int order = onSign ? orderOf(element, roadSign) : SignRenderPipelines.BASE_ORDER;
+        int order = onSign ? orderOf(element, roadSign) : RenderConstants.BASE_ORDER;
 
         // Front
         var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
@@ -51,6 +51,6 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     public float zOf(PlateElement element, RoadSign roadSign) {
         return intersects(roadSign, element)
             ? ElementRenderer.super.zOf(element, roadSign)
-            : SignRenderPipelines.SURFACE_OFFSET;
+            : RenderConstants.SURFACE_OFFSET;
     }
 }

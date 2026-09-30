@@ -79,8 +79,8 @@ public final class RoadSignRenderer {
      */
     private void renderFront() {
         var frontTexture = roadSign.frontTexture();
-        context.withTranslation(0, 0, SignRenderPipelines.SURFACE_OFFSET, () -> {
-            context.textureRenderer().renderBaseTexture(SignRenderPipelines.BASE_ORDER, frontTexture, 1f);
+        context.withTranslation(0, 0, RenderConstants.SURFACE_OFFSET, () -> {
+            context.textureRenderer().renderBaseTexture(RenderConstants.BASE_ORDER, frontTexture, 1f);
         });
     }
 
@@ -91,8 +91,8 @@ public final class RoadSignRenderer {
         context.withFlip(roadSign.blockWidth(), () -> {
             var backTexture = RoadSign.maskedBackOf(roadSign.frontSource(), roadSign.backSource())
                 .resolve(roadSign.colorResolver());
-            context.withTranslation(0, 0, SignRenderPipelines.SURFACE_OFFSET, () -> {
-                context.textureRenderer().renderBaseTexture(SignRenderPipelines.BASE_ORDER, backTexture, 1f);
+            context.withTranslation(0, 0, RenderConstants.SURFACE_OFFSET, () -> {
+                context.textureRenderer().renderBaseTexture(RenderConstants.BASE_ORDER, backTexture, 1f);
             });
         });
     }

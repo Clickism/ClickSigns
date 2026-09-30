@@ -79,19 +79,21 @@ public class RoadSignBlockEntity extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag(
         //? if >= 1.21.1
-        HolderLookup.@NonNull Provider provider
+        HolderLookup.Provider provider
     ) {
-        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        //? if >=26.1 {
+        var tag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        //?} else
+        //var tag = new CompoundTag();
         this.saveAdditional(
-            //? if >= 26.1 {
-            output
-            //?} else {
-            /*tag
-            //? if >= 1.21.1
-            ,provider
-            *///?}
+            tag
+            //? if >= 1.21.1 && <26.1
+            //,provider
         );
-        return output.buildResult();
+        //? if >=26.1 {
+        return tag.buildResult();
+        //?} else
+        //return tag;
     }
 
     //? if >=26.1 {
@@ -137,6 +139,7 @@ public class RoadSignBlockEntity extends BlockEntity {
             //? if >= 1.21.1
             ,provider
         );
+        this.roadSign = readRoadSign(new NbtTagImpl(tag));
     }
 
     //~}

@@ -1,7 +1,7 @@
 package de.clickism.clicksigns.render.element;
 
+import de.clickism.clicksigns.render.RenderConstants;
 import de.clickism.clicksigns.render.RenderContext;
-import de.clickism.clicksigns.render.SignRenderPipelines;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
 
@@ -25,7 +25,7 @@ public interface ElementRenderer<T extends SignElement> {
     }
 
     default float zOf(T element, RoadSign roadSign) {
-        return SignRenderPipelines.ELEMENT_OFFSET
-               + roadSign.elements().indexOf(element) * SignRenderPipelines.ELEMENT_STEP;
+        return RenderConstants.ELEMENT_OFFSET
+               + roadSign.elements().indexOf(element) * RenderConstants.ELEMENT_STEP;
     }
 }

@@ -2,8 +2,6 @@ package de.clickism.clicksigns.platform.fabric.datagen;
 
 import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.minecraft.client.data.models.BlockModelGenerators;
-
 
 //? if >=26.1 {
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;

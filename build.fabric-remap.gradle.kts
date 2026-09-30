@@ -53,6 +53,8 @@ configurations.all {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
+    compileOnly("org.jspecify:jspecify:1.0.0") // For compat with newer versions
+
     // Mappings
     @Suppress("UnstableApiUsage")
     mappings(loom.layered() {
