@@ -15,7 +15,6 @@ import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
 
 import static de.clickism.clicksigns.render.element.TextRenderer.TEXT_RENDER_SCALE;
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
@@ -157,17 +156,17 @@ public class SignTextField extends TextField implements ElementProvider {
     @Override
     protected boolean handleKeyPress(KeyEvent event) {
         int code = event.code();
-        if (code == GLFW.GLFW_KEY_ENTER || code == GLFW.GLFW_KEY_KP_ENTER) {
+        if (code == KeyUtil.KEY_ENTER || code == KeyUtil.KEY_KP_ENTER) {
             // Insert newline
             insertText("\n");
             return true;
         }
-        if (code == GLFW.GLFW_KEY_UP) {
+        if (code == KeyUtil.KEY_UP) {
             // Move cursor up a line
             moveCursorVertically(-1);
             return true;
         }
-        if (code == GLFW.GLFW_KEY_DOWN) {
+        if (code == KeyUtil.KEY_DOWN) {
             // Move cursor down a line
             moveCursorVertically(1);
             return true;

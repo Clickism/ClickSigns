@@ -1,7 +1,7 @@
 plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.2.0"
 }
-stonecutter active "26.2-fabric"
+stonecutter active "26.3-fabric"
 
 stonecutter parameters {
     val loader = current.project.substringAfterLast('-')

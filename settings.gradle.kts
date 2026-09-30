@@ -28,6 +28,7 @@ stonecutter {
         // TODO: 1.21.11?
         version("26.1", "fabric", "neoforge")
         version("26.2", "fabric", "neoforge")
+        version("26.3", "fabric", "neoforge")
         vcsVersion = "26.2-fabric"
     }
 }

@@ -10,7 +10,6 @@ import de.clickism.clickui.layout.Point;
 import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +19,25 @@ import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
+//? if >=26.3 {
+import org.lwjgl.sdl.SDLKeycode;
+//?} else {
+//import org.lwjgl.glfw.GLFW;
+//?}
+
 public class EditorActionHandler {
+    //? if >=26.3 {
+    private static final int KEY_D = SDLKeycode.SDLK_D;
+    private static final int KEY_C = SDLKeycode.SDLK_C;
+    private static final int KEY_V = SDLKeycode.SDLK_V;
+    private static final int KEY_A = SDLKeycode.SDLK_A;
+    //?} else {
+    /*private static final int KEY_D = GLFW.GLFW_KEY_D;
+    private static final int KEY_C = GLFW.GLFW_KEY_C;
+    private static final int KEY_V = GLFW.GLFW_KEY_V;
+    private static final int KEY_A = GLFW.GLFW_KEY_A;
+    *///?}
+
     /**
      * Global clipboard
      */
@@ -45,30 +62,30 @@ public class EditorActionHandler {
     public void handleKeyPress(KeyPressEvent event) {
         // Duplicate selected elements with Ctrl+D
         var controlDown = KeyUtil.hasControlDown();
-        if (controlDown && event.code() == GLFW.GLFW_KEY_D) {
+        if (controlDown && event.code() == KEY_D) {
             forEachSelectedAndClearOld(element -> spawnElementNear(element, element));
             event.consume();
         }
         // Copy selected elements with Ctrl+C
-        if (controlDown && event.code() == GLFW.GLFW_KEY_C) {
+        if (controlDown && event.code() == KEY_C) {
             CLIPBOARD.clear();
             CLIPBOARD.addAll(context.selection());
             event.consume();
         }
         // Paste copied elements with Ctrl+V
-        if (controlDown && event.code() == GLFW.GLFW_KEY_V) {
+        if (controlDown && event.code() == KEY_V) {
             context.clearSelection();
             CLIPBOARD.forEach(element -> spawnElementNear(element, element));
             event.consume();
         }
         // Select all elements with Ctrl+A
-        if (controlDown && event.code() == GLFW.GLFW_KEY_A) {
+        if (controlDown && event.code() == KEY_A) {
             context.clearSelection();
             context.roadSign().elements().forEach(context::toggleSelection);
             event.consume();
         }
         // Delete selected elements with Delete key
-        if (event.code() == GLFW.GLFW_KEY_DELETE) {
+        if (event.code() == KeyUtil.KEY_DELETE) {
             // Don't use the delete key for text elements
             forEachSelectedAndClearOld(element -> {
                 var current = element.current();
