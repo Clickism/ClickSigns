@@ -1,1 +1,3 @@
-- Added support for 1.21.1 Fabric and NeoForge.
+- Added support for 26.1 Fabric and NeoForge.
+- Refactored rendering logic
+- Fix: Error shown in console for road sign blocks with the default road sign data.
