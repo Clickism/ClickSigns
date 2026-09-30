@@ -9,6 +9,7 @@ import de.clickism.clicksigns.ClickSigns;
 //? if >=26.1 {
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
@@ -24,7 +25,7 @@ public class SignRenderPipelines {
     private static final Identifier WHITE = ClickSigns.identifier("textures/misc/white.png");
 
     //? if >=26.1 {
-    public static final RenderPipeline SIGN_BASE = RenderPipelines.register(
+    public static final RenderPipeline SIGN_BASE =
         RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
             .withLocation(ClickSigns.identifier("pipeline/sign_base"))
             .withShaderDefine("ALPHA_CUTOUT", 0.1F)
@@ -33,10 +34,9 @@ public class SignRenderPipelines {
             .withCull(true)
             .withDepthStencilState(new DepthStencilState(
                 CompareOp.LESS_THAN_OR_EQUAL, true, -1.0f, -2.0f))
-            .build()
-    );
+            .build();
 
-    public static final RenderPipeline SIGN_ELEMENT = RenderPipelines.register(
+    public static final RenderPipeline SIGN_ELEMENT =
         RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
             .withLocation(ClickSigns.identifier("pipeline/sign_element"))
             .withShaderDefine("ALPHA_CUTOUT", 0.1F)
@@ -47,12 +47,15 @@ public class SignRenderPipelines {
             // layers can't punch holes in each other, order decides who is on top
             .withDepthStencilState(new DepthStencilState(
                 CompareOp.LESS_THAN_OR_EQUAL, false, -2.0f, -6.0f))
-            .build()
-    );
-
+            .build();
 
     private static final Map<Identifier, RenderType> BASE_TYPES = new HashMap<>();
     private static final Map<Identifier, RenderType> ELEMENT_TYPES = new HashMap<>();
+
+    public static void registerAll(Consumer<RenderPipeline> consumer) {
+        consumer.accept(SIGN_BASE);
+        consumer.accept(SIGN_ELEMENT);
+    }
 
     private static RenderType create(RenderPipeline pipeline, Identifier texture) {
         return RenderType.create(

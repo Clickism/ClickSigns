@@ -12,6 +12,11 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
+//? if >=26.1 {
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import de.clickism.clicksigns.render.SignRenderPipelines;
+//?}
+
 import static net.neoforged.api.distmarker.Dist.CLIENT;
 
 @Mod(ClickSigns.MOD_ID)
@@ -33,5 +38,11 @@ public class NeoForgeEntrypoint {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         ClickSignsClient.initialize();
+    }
+
+    @SubscribeEvent
+    public static void onRegisterRenderPipelinesEvent(RegisterRenderPipelinesEvent event) {
+        //? if >=26.1
+        SignRenderPipelines.registerAll(event::registerPipeline);
     }
 }

@@ -8,6 +8,11 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
+//? if >=26.1 {
+import de.clickism.clicksigns.render.SignRenderPipelines;
+import net.minecraft.client.renderer.RenderPipelines;
+//?}
+
 /**
  * Fabric entrypoint
  */
@@ -22,5 +27,7 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
     public void onInitializeClient() {
         ClickSignsClient.initialize();
         BlockEntityRenderers.register(ClickSignsBlockEntityTypes.ROAD_SIGN.get(), RoadSignBlockEntityRenderer::new);
+        //? if >=26.1
+        SignRenderPipelines.registerAll(RenderPipelines::register);
     }
 }

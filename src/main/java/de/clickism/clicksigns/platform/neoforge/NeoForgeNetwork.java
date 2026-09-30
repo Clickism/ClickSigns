@@ -1,15 +1,26 @@
 package de.clickism.clicksigns.platform.neoforge;
 
+import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.platform.network.Network;
 import de.clickism.clicksigns.platform.network.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+
+import static net.neoforged.api.distmarker.Dist.CLIENT;
+
+//? if >= 26.1 {
+
+//?} else {
+/*import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+*///?}
 
 /**
  * Forge implementation of the network system.
@@ -44,26 +55,35 @@ public class NeoForgeNetwork extends Network {
         registrar.playBidirectional(
             GlobalPacket.TYPE,
             GlobalPacket.CODEC,
-            new DirectionalPayloadHandler<>(
+            //? if <26.1 {
+            /*new DirectionalPayloadHandler<>(
                 (payload, context) -> {
                     handleClient(payload.packet());
                 },
+                *///?}
                 (payload, context) -> {
                     var packet = payload.packet();
                     var player = (ServerPlayer) context.player();
-                    var server = player.getServer();
+                    //? if >=26.1 {
+                    var server = player.level().getServer();
+                    //?} else
+                    //var server = player.getServer();
                     if (server == null) {
                         throw new IllegalStateException("Server is null in server context whilst handling packet: " + packet.type().id());
                     }
                     handleServer(packet, server, player);
                 }
-            )
+            //? if <26.1
+            //)
         );
     }
 
     @Override
     public void sendToServer(Packet packet) {
-        PacketDistributor.sendToServer(new GlobalPacket(packet));
+        //? if >=26.1 {
+        ClientPacketDistributor.sendToServer(new GlobalPacket(packet));
+        //?} else
+        //PacketDistributor.sendToServer(new GlobalPacket(packet));
     }
 
     @Override
@@ -76,5 +96,18 @@ public class NeoForgeNetwork extends Network {
         level.getServer().execute(() -> {
             level.players().forEach(player -> sendToPlayer(player, packet));
         });
+    }
+
+    @EventBusSubscriber(modid = ClickSigns.MOD_ID, value = CLIENT)
+    private static class ClientEvents {
+        @SubscribeEvent
+        public static void register(RegisterClientPayloadHandlersEvent event) {
+            event.register(
+                GlobalPacket.TYPE,
+                (payload, context) -> {
+                    handleClient(payload.packet());
+                }
+            );
+        }
     }
 }

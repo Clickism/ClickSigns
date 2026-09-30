@@ -5,6 +5,7 @@ import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.platform.ReloadListener;
 import de.clickism.clicksigns.platform.network.Network;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.BlockItem;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,6 +26,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+//? if >=26.1 {
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+//?} else
+//import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 
 /**
  * Neoforge platform implementation
@@ -86,7 +92,11 @@ public class NeoForgePlatform implements Platform {
             Item.Properties settings,
             ItemFactory<T> itemSupplier
     ) {
-        var holder = ITEMS_REGISTRY.register(name, () -> itemSupplier.create(settings));
+        var holder = ITEMS_REGISTRY.register(name, () -> itemSupplier.create(
+            settings
+                //? if >=26.1
+                .setId(ResourceKey.create(Registries.ITEM, ClickSigns.identifier(name)))
+        ));
         return () -> holder.get();
     }
 
@@ -96,7 +106,11 @@ public class NeoForgePlatform implements Platform {
             BlockBehaviour.Properties settings,
             BlockFactory<T> blockSupplier
     ) {
-        var holder = BLOCKS_REGISTRY.register(name, () -> blockSupplier.create(settings));
+        var holder = BLOCKS_REGISTRY.register(name, () -> blockSupplier.create(
+            settings
+                //? if >=26.1
+                .setId(ResourceKey.create(Registries.BLOCK, ClickSigns.identifier(name)))
+        ));
         return () -> holder.get();
     }
 
@@ -112,6 +126,8 @@ public class NeoForgePlatform implements Platform {
                 new BlockItem(
                         block.get(),
                         new Item.Properties()
+                        //? if >=26.1
+                        .setId(ResourceKey.create(Registries.ITEM, ClickSigns.identifier(name)))
                 )
         );
 
@@ -126,7 +142,14 @@ public class NeoForgePlatform implements Platform {
     ) {
         return BLOCK_ENTITY_TYPE_REGISTRY.register(
                 name,
-                () -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
+                //? if >=26.1 {
+                () -> new BlockEntityType<>(
+                    factory::create,
+                    false,
+                    block.get()
+                )
+                //?} else
+                //() -> BlockEntityType.Builder.of(factory::create, block.get()).build(null)
         );
     }
 
@@ -140,12 +163,24 @@ public class NeoForgePlatform implements Platform {
         reloadListeners.add(listener);
     }
 
+    //? if >=26.1 {
     @SubscribeEvent
+    public void onReload(AddClientReloadListenersEvent event) {
+        event.addListener(
+            ClickSigns.identifier("global_listener"),
+            (ResourceManagerReloadListener) manager -> {
+                reloadListeners.forEach(listener -> listener.onReload(manager));
+            }
+        );
+    }
+    //?} else {
+    /*@SubscribeEvent
     public void onReload(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener((ResourceManagerReloadListener) manager -> {
             reloadListeners.forEach(listener -> listener.onReload(manager));
         });
     }
+    *///?}
 
     @SubscribeEvent
     public void onBuildCreativeTabs(BuildCreativeModeTabContentsEvent event) {

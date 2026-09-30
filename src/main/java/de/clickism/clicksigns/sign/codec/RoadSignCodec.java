@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.codec;
 
+import de.clickism.clicksigns.serialization.TagReader;
 import de.clickism.clicksigns.serialization.codec.CommonCodec;
 import de.clickism.clicksigns.serialization.codec.PacketCodec;
 import de.clickism.clicksigns.serialization.codec.TagCodec;
@@ -14,6 +15,16 @@ import java.util.List;
  * Codec for serializing and deserializing {@link RoadSign} objects.
  */
 public interface RoadSignCodec {
+    /**
+     * Checks if the given {@link TagReader} contains any valid/invalid road sign.
+     *
+     * @param reader the tag reader to check
+     * @return true if the tag reader contains a valid/invalid road sign, false otherwise
+     */
+    static boolean hasSign(TagReader reader) {
+        return reader.getTag("front").isSuccess() || reader.getTag("back").isSuccess();
+    }
+
     /**
      * Gets the codec for serializing and deserializing road signs.
      *

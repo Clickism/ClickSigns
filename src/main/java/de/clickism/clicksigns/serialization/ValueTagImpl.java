@@ -2,6 +2,8 @@ package de.clickism.clicksigns.serialization;
 
 //? if >=26.1 {
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
@@ -93,7 +95,7 @@ public class ValueTagImpl {
 
         @Override
         public Result<Float> getFloat(String key) {
-            if (!value.contains(key)) {
+            if (!contains(key)) {
                 return Result.failure("Key '" + key + "' does not exist.");
             }
             return Result.success(value.getFloatOr(key, 0f));
@@ -101,7 +103,7 @@ public class ValueTagImpl {
 
         @Override
         public Result<Double> getDouble(String key) {
-            if (!value.contains(key)) {
+            if (!contains(key)) {
                 return Result.failure("Key '" + key + "' does not exist.");
             }
             return Result.success(value.getDoubleOr(key, 0d));
@@ -114,7 +116,7 @@ public class ValueTagImpl {
 
         @Override
         public Result<Boolean> getBoolean(String key) {
-            if (!value.contains(key)) {
+            if (!contains(key)) {
                 return Result.failure("Key '" + key + "' does not exist.");
             }
             return Result.success(value.getBooleanOr(key, false));
@@ -122,7 +124,7 @@ public class ValueTagImpl {
 
         @Override
         public <T> Result<Collection<T>> getCollection(String key, Reader<T> reader) {
-            if (!value.contains(key)) {
+            if (!contains(key)) {
                 return Result.failure("Key '" + key + "' does not exist.");
             }
             var list = value.childrenListOrEmpty(key);
@@ -140,11 +142,15 @@ public class ValueTagImpl {
 
         @Override
         public Result<TagReader> getTag(String key) {
-            if (!value.contains(key)) {
+            if (!contains(key)) {
                 return Result.failure("Key '" + key + "' does not exist.");
             }
             var child = value.childOrEmpty(key);
             return Result.success(reader(child));
+        }
+
+        private boolean contains(String key) {
+            return value.read(key, Codec.PASSTHROUGH).isPresent();
         }
     }
 }

@@ -153,6 +153,10 @@ public class RoadSignBlockEntity extends BlockEntity {
 
     private RoadSign readRoadSign(TagReader reader) {
         try {
+            if (!RoadSignCodec.hasSign(reader)) {
+                // No road sign data found in the tag, return null
+                return null;
+            }
             return RoadSignCodec.codec().readTag(reader);
         } catch (Exception e) {
             ClickSigns.LOGGER.error("Failed to read road sign from block entity at {}", worldPosition, e);
