@@ -1,6 +1,7 @@
 package de.clickism.clicksigns.render;
 
 
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
@@ -29,24 +30,28 @@ public class SignRenderPipelines {
         RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
             .withLocation(ClickSigns.identifier("pipeline/sign_base"))
             .withShaderDefine("ALPHA_CUTOUT", 0.1F)
-            .withSampler("Sampler1")
+            //? >=26.2 {
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
+            //?} else
+            //.withSampler("Sampler1")
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
             .withCull(true)
-            .withDepthStencilState(new DepthStencilState(
-                CompareOp.LESS_THAN_OR_EQUAL, true, -1.0f, -2.0f))
+            .withDepthStencilState(depth(true, -1.0f, -2.0f))
             .build();
 
     public static final RenderPipeline SIGN_ELEMENT =
         RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
             .withLocation(ClickSigns.identifier("pipeline/sign_element"))
             .withShaderDefine("ALPHA_CUTOUT", 0.1F)
-            .withSampler("Sampler1")
+            //? >=26.2 {
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
+            //?} else
+            //.withSampler("Sampler1")
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
             .withCull(true)
             // Test against the base plane, but never write depth:
             // layers can't punch holes in each other, order decides who is on top
-            .withDepthStencilState(new DepthStencilState(
-                CompareOp.LESS_THAN_OR_EQUAL, false, -2.0f, -6.0f))
+            .withDepthStencilState(depth(false, -2.0f, -6.0f))
             .build();
 
     private static final Map<Identifier, RenderType> BASE_TYPES = new HashMap<>();
@@ -70,6 +75,14 @@ public class SignRenderPipelines {
                 .createRenderSetup()
         );
     }
+
+    private static DepthStencilState depth(boolean write, float scale, float constant) {
+        //? if >=26.2 {
+        return new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, write, -scale, -constant);
+        //?} else
+        //return new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, write, scale, constant);
+    }
+
     //?}
 
     public static RenderType baseRenderType(Identifier texture) {

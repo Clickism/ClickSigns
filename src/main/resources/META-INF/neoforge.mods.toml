@@ -8,7 +8,10 @@ showAsResourcePack=false
 modId="clicksigns"
 version="${mod_version}"
 displayName="ClickSigns"
-logoFile="assets/clicksigns/icon.png"
+#? if >=26.2 {
+iconFile="assets/clicksigns/icon.png"
+#?} else
+#logoFile="assets/clicksigns/icon.png"
 authors="Clickism"
 description="An innovative mod that lets you create custom highway & street signs!"
 
