@@ -1,8 +1,5 @@
 package de.clickism.clicksigns.render;
 
-
-import net.minecraft.client.renderer.BindGroupLayouts;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
 import de.clickism.clicksigns.ClickSigns;
@@ -11,14 +8,22 @@ import de.clickism.clicksigns.ClickSigns;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import net.minecraft.client.renderer.BindGroupLayouts;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
+//? if >=26.3 {
+import com.mojang.renderpearl.api.pipeline.*;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?} else {
+/*import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
+*///?}
 //?}
 
 public class SignRenderPipelines {

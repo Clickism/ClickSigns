@@ -115,10 +115,17 @@ public final class RenderContext {
     public void withFlip(float blockWidth, Runnable action) {
         withPose(() -> {
             stack.translate(blockWidth / 2, 0, 0);
-            stack.mulPose(Axis.YP.rotationDegrees(180));
+            rotate(Axis.YP, 180);
             stack.translate(-blockWidth / 2, 0, 0);
             action.run();
         });
+    }
+
+    public void rotate(Axis axis, float degrees) {
+        //? if >=26.3 {
+        axis.rotateDegrees(stack.last().pose(), degrees);
+        //?} else
+        //stack.mulPose(axis.rotationDegrees(degrees));
     }
 
     /**
@@ -153,8 +160,8 @@ public final class RenderContext {
      */
     public void withTextTransform(Font font, Runnable action) {
         withPose(() -> {
-            stack.mulPose(Axis.YP.rotationDegrees(180));
-            stack.mulPose(Axis.ZP.rotationDegrees(180));
+            rotate(Axis.XP, 180);
+            rotate(Axis.ZP, 180);
             stack.translate(0, -font.lineHeight, 0);
             action.run();
         });

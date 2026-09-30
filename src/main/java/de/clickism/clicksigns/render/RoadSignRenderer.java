@@ -39,9 +39,9 @@ public final class RoadSignRenderer {
         // Face the direction of the road sign
         stack.translate(.5, .5, .5); // Rotate from the center of the block
         // Rotate 180 to base around "north", so that X goes right and Y goes up
-        stack.mulPose(Axis.YP.rotationDegrees(180));
+        context.rotate(Axis.YP, 180);
         // Rotate to match the direction of the road sign
-        stack.mulPose(Axis.YP.rotationDegrees(-context.direction().toYRot()));
+        context.rotate(Axis.YP, -context.direction().toYRot());
         stack.translate(-.5, -.5, -.5);
 
         // Here, (0,0) is bottom left, and (width, height) is top right of the block

@@ -39,14 +39,14 @@ public class RoadSignBlock extends HorizontalFacingBlockWithEntity {
         super(properties);
     }
 
-    //? if >= 1.21.1 {
-    public static final MapCodec<RoadSignBlock> CODEC = simpleCodec(RoadSignBlock::new);
+    //? if >= 1.21.1 && <26.3 {
+    /*public static final MapCodec<RoadSignBlock> CODEC = simpleCodec(RoadSignBlock::new);
 
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
-    //?}
+    *///?}
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

@@ -57,13 +57,13 @@ public interface RoadSignCodec {
                 (buf, sign) -> {
                     TextureSource.codec().writePacket(buf, sign.frontSource());
                     TextureSource.codec().writePacket(buf, sign.backSource());
-                    buf.writeCollection(sign.elements(), SignElementCodec.codec().packetWriter());
+                    PacketCodec.writeCollection(buf, sign.elements(), SignElementCodec.codec().packetWriter());
                     buf.writeInt(sign.alignment().ordinal());
                 },
                 (buf) -> {
                     var front = TextureSource.codec().readPacket(buf);
                     var back = TextureSource.codec().readPacket(buf);
-                    var elements = buf.readList(SignElementCodec.codec().packetReader());
+                    var elements = PacketCodec.readList(buf, SignElementCodec.codec().packetReader());
                     var alignment = Alignment.values()[buf.readInt()];
                     return new RoadSign(front, back, elements, alignment);
                 }

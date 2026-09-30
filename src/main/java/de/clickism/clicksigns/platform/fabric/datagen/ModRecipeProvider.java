@@ -3,9 +3,12 @@ package de.clickism.clicksigns.platform.fabric.datagen;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.ClickSignsBlocks;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -16,13 +19,11 @@ import net.minecraft.data.recipes.RecipeProvider;
 //?}
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.RecipeOutput;
 //?} else {
 /*import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 *///?}
 
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 
 /**
  * Recipe generator for the mod.
@@ -45,10 +46,16 @@ class ModRecipeProvider extends FabricRecipeProvider {
 
     @Override
     protected @NonNull RecipeProvider createRecipeProvider(
+        //? if >=26.3 {
         HolderLookup.@NonNull Provider registries,
-        @NonNull RecipeOutput output
+        @NonNull BootstrapContext<Recipe<?>> arg0,
+        @NonNull BootstrapContext<Advancement> arg1
+        //?} else {
+        /*HolderLookup.@NonNull Provider arg0,
+        @NonNull RecipeOutput arg1
+        *///?}
     ) {
-        return new RecipeProvider(registries, output) {
+        return new RecipeProvider(arg0, arg1) {
             @Override
             public void buildRecipes() {
                 // Generate road sign recipe

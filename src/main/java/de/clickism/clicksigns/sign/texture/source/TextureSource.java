@@ -104,12 +104,12 @@ public record TextureSource(
             PacketCodec.of(
                 (buf, value) -> {
                     buf.writeIdentifier(value.base());
-                    buf.writeCollection(value.processors(), TextureProcessor.codec()::writePacket);
+                    PacketCodec.writeCollection(buf, value.processors(), TextureProcessor.codec()::writePacket);
                 },
                 buf -> {
                     return new TextureSource(
                         buf.readIdentifier(),
-                        buf.readList(TextureProcessor.codec()::readPacket)
+                        PacketCodec.readList(buf, TextureProcessor.codec()::readPacket)
                     );
                 }
             )
