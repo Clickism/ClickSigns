@@ -40,9 +40,10 @@ public class NeoForgeEntrypoint {
         ClickSignsClient.initialize();
     }
 
+    //? if >=26.1 {
     @SubscribeEvent
     public static void onRegisterRenderPipelinesEvent(RegisterRenderPipelinesEvent event) {
-        //? if >=26.1
         SignRenderPipelines.registerAll(event::registerPipeline);
     }
+    //?}
 }

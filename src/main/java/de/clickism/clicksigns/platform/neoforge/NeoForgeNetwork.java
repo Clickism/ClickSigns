@@ -8,15 +8,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
+
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import static net.neoforged.api.distmarker.Dist.CLIENT;
 
 //? if >= 26.1 {
-
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 //?} else {
 /*import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -98,6 +98,7 @@ public class NeoForgeNetwork extends Network {
         });
     }
 
+    //? if >=26.1 {
     @EventBusSubscriber(modid = ClickSigns.MOD_ID, value = CLIENT)
     private static class ClientEvents {
         @SubscribeEvent
@@ -110,4 +111,5 @@ public class NeoForgeNetwork extends Network {
             );
         }
     }
+    //?}
 }
