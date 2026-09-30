@@ -81,20 +81,18 @@ public class RoadSignBlockEntity extends BlockEntity {
         //? if >= 1.21.1
         HolderLookup.@NonNull Provider provider
     ) {
-        var tag = new CompoundTag();
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
         this.saveAdditional(
             //? if >= 26.1 {
-            TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider)
+            output
             //?} else {
             /*tag
             //? if >= 1.21.1
             ,provider
             *///?}
         );
-        return tag;
+        return output.buildResult();
     }
-
-
 
     //? if >=26.1 {
 

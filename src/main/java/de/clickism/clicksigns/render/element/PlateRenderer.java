@@ -38,14 +38,19 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
 
         // Front
         var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
-        context.textureRenderer().renderTexture(order, frontTexture);
+        context.textureRenderer().renderBaseTexture(order, frontTexture, 1f);
 
         // Back
         var masked = RoadSign.maskedBackOf(element.frontSource(), element.backSource());
         var backTexture = masked.resolve(roadSign.colorResolver());
         context.withFlip(element.width() / BLOCK_PIXELS, () ->
-            // FIX: Make flush with the front texture, so it doesn't float above the sign
-            context.withTranslation(0, 0, SignRenderPipelines.ELEMENT_OFFSET, () ->
-                context.textureRenderer().renderTexture(order, backTexture)));
+        context.textureRenderer().renderBaseTexture(order, backTexture, 1f));
+    }
+
+    @Override
+    public float zOf(PlateElement element, RoadSign roadSign) {
+        return intersects(roadSign, element)
+            ? ElementRenderer.super.zOf(element, roadSign)
+            : SignRenderPipelines.SURFACE_OFFSET;
     }
 }

@@ -65,16 +65,12 @@ public class SignRenderPipelines {
         );
     }
 
-    /**
-     * Order 0 = front/back plane, anything else = element layer.
-     */
-    public static RenderType textureRenderType(int order, Identifier texture) {
-        return (order == BASE_ORDER
-            ? BASE_TYPES
-            : ELEMENT_TYPES)
-            .computeIfAbsent(texture, id -> create(order == BASE_ORDER
-                ? SIGN_BASE
-                : SIGN_ELEMENT, id));
+    public static RenderType baseRenderType(Identifier texture) {
+        return BASE_TYPES.computeIfAbsent(texture, id -> create(SIGN_BASE, id));
+    }
+
+    public static RenderType elementRenderType(Identifier texture) {
+        return ELEMENT_TYPES.computeIfAbsent(texture, id -> create(SIGN_ELEMENT, id));
     }
 
     public static RenderType colorRenderType() {

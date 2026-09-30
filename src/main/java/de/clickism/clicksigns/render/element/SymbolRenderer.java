@@ -12,6 +12,6 @@ public class SymbolRenderer implements ElementRenderer<SymbolElement> {
     public void render(SymbolElement element, RenderContext context, RoadSign roadSign) {
         int order = orderOf(element, roadSign);
         var texture = element.textureSource().resolve(roadSign.colorResolver());
-        context.textureRenderer().renderTexture(order, texture, element.scale());
+        context.textureRenderer().renderElementTexture(order, texture, element.scale());
     }
 }

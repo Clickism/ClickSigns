@@ -7,9 +7,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 
 //? if >=26.1 {
-import net.minecraft.client.renderer.rendertype.RenderType;
 
-import static net.minecraft.client.renderer.RenderPipelines.ENTITY_CUTOUT_Z_OFFSET;
 //?} else
 //import net.minecraft.client.renderer.RenderType;
 
@@ -29,25 +27,33 @@ public class TextureRenderer {
     }
 
     /**
-     * Renders a texture from (0,0) to (texture.blockWidth(), texture.blockHeight())
-     *
-     * @param texture the texture to render
-     */
-    public void renderTexture(int order, Texture texture) {
-        renderTexture(order, texture, 1.0f);
-    }
-
-    /**
-     * Renders a texture from (0,0) to (texture.blockWidth() * scale, texture.blockHeight() * scale)
+     * Renders a base texture from (0,0) to (texture.blockWidth() * scale, texture.blockHeight() * scale)
      *
      * @param texture the texture to render
      * @param scale   the scale factor to apply to the texture dimensions
      */
-    public void renderTexture(int order, Texture texture, float scale) {
+    public void renderBaseTexture(int order, Texture texture, float scale) {
         var textureLocation = texture.location();
         context.submit(
             order,
-            SignRenderPipelines.textureRenderType(order, textureLocation),
+            SignRenderPipelines.baseRenderType(textureLocation),
+            (stack, buffer) -> {
+                render(buffer, stack, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
+            }
+        );
+    }
+
+    /**
+     * Renders an element texture from (0,0) to (texture.blockWidth() * scale, texture.blockHeight() * scale)
+     *
+     * @param texture the texture to render
+     * @param scale   the scale factor to apply to the texture dimensions
+     */
+    public void renderElementTexture(int order, Texture texture, float scale) {
+        var textureLocation = texture.location();
+        context.submit(
+            order,
+            SignRenderPipelines.elementRenderType(textureLocation),
             (stack, buffer) -> {
                 render(buffer, stack, texture.blockWidth() * scale, texture.blockHeight() * scale, 0xFFFFFFFF);
             }
