@@ -24,6 +24,7 @@ public class SymbolView extends UiComponent<SymbolView>
     public SymbolView(SymbolElement element, ColorResolver colorResolver) {
         this.element = element;
         this.colorResolver = colorResolver;
+        this.renderChildrenFirst(true);
     }
 
     /**

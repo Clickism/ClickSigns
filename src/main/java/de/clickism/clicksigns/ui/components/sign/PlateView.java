@@ -16,6 +16,7 @@ public class PlateView extends UiComponent<PlateView>
     public PlateView(PlateElement element, ColorResolver colorResolver) {
         this.element = element;
         this.colorResolver = colorResolver;
+        this.renderChildrenFirst(true);
     }
 
     @Override
