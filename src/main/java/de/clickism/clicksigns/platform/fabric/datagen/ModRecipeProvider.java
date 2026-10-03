@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 
 //? if >=1.21.1 {
 //? if >=26.1 {

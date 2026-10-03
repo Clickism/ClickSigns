@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.client.renderer.BindGroupLayouts;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 //? if >=26.3 {
 import com.mojang.renderpearl.api.pipeline.*;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
 //?} else {
 /*import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;

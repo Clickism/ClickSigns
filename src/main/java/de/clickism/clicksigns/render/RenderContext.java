@@ -123,7 +123,7 @@ public final class RenderContext {
 
     public void rotate(Axis axis, float degrees) {
         //? if >=26.3 {
-        axis.rotateDegrees(stack.last().pose(), degrees);
+        stack.rotateDegrees(axis, degrees);
         //?} else
         //stack.mulPose(axis.rotationDegrees(degrees));
     }
@@ -160,7 +160,7 @@ public final class RenderContext {
      */
     public void withTextTransform(Font font, Runnable action) {
         withPose(() -> {
-            rotate(Axis.XP, 180);
+            rotate(Axis.YP, 180);
             rotate(Axis.ZP, 180);
             stack.translate(0, -font.lineHeight, 0);
             action.run();
@@ -184,6 +184,21 @@ public final class RenderContext {
             renderer.accept(stack.last(), buffer);
         });
         *///?}
+    }
+
+    public void submitTextBackground(
+        int order,
+        float x0, float y0, float x1, float y1,
+        int color,
+        Font.DisplayMode mode
+    ) {
+        source.order(order).submitTextBackground(
+            stack,
+            x0, y0, x1, y1,
+            color,
+            mode,
+            light
+        );
     }
 
     public void submitText(
