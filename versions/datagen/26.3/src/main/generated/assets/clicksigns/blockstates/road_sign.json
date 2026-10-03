@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "clicksigns:block/road_sign"
+    }
+  }
+}
