@@ -84,11 +84,11 @@ class SignEditorView extends UiComponent<SignEditorView> {
                                             })))
                                 // Update selected on click
                                 .onClick(event -> {
-                                    actionHandler.handleMouseDown(editable);
+                                    actionHandler.handleMouseDown(editable, uiElement);
                                     signViewRef.get().invalidateTree();
                                 })
                                 .onRelease(event -> {
-                                    actionHandler.handleMouseUp(editable);
+                                    actionHandler.handleMouseUp(editable, uiElement);
                                 })
                                 .onDragStart(event -> {
                                     actionHandler.handleDragStart(event);

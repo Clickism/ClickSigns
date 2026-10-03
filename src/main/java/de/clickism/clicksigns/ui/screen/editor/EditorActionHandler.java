@@ -1,8 +1,8 @@
 package de.clickism.clicksigns.ui.screen.editor;
 
 import de.clickism.clicksigns.sign.element.SignElement;
-import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clicksigns.ui.editable.Editable;
+import de.clickism.clickui.UiElement;
 import de.clickism.clickui.event.events.DragEvent;
 import de.clickism.clickui.event.events.DragStartEvent;
 import de.clickism.clickui.event.events.KeyPressEvent;
@@ -11,26 +11,23 @@ import de.clickism.clickui.util.versioning.KeyUtil;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static de.clickism.clicksigns.ui.UiConstants.UI_SCALE;
 
 //? if >=26.3 {
-import org.lwjgl.sdl.SDLKeycode;
+import com.mojang.blaze3d.platform.InputConstants;
 //?} else {
 //import org.lwjgl.glfw.GLFW;
 //?}
 
 public class EditorActionHandler {
     //? if >=26.3 {
-    private static final int KEY_D = SDLKeycode.SDLK_D;
-    private static final int KEY_C = SDLKeycode.SDLK_C;
-    private static final int KEY_V = SDLKeycode.SDLK_V;
-    private static final int KEY_A = SDLKeycode.SDLK_A;
+    private static final int KEY_D = InputConstants.KEY_D;
+    private static final int KEY_C = InputConstants.KEY_C;
+    private static final int KEY_V = InputConstants.KEY_V;
+    private static final int KEY_A = InputConstants.KEY_A;
     //?} else {
     /*private static final int KEY_D = GLFW.GLFW_KEY_D;
     private static final int KEY_C = GLFW.GLFW_KEY_C;
@@ -42,6 +39,7 @@ public class EditorActionHandler {
      * Global clipboard
      */
     private static final Set<Editable<SignElement>> CLIPBOARD = new HashSet<>();
+    private static final int SPAWN_OFFSET = 4;
 
     private final Map<Editable<SignElement>, Point> dragStartPositions = new HashMap<>();
     private final Map<Editable<SignElement>, Point> dragCurrentPositions = new HashMap<>();
@@ -63,7 +61,9 @@ public class EditorActionHandler {
         // Duplicate selected elements with Ctrl+D
         var controlDown = KeyUtil.hasControlDown();
         if (controlDown && event.code() == KEY_D) {
-            forEachSelectedAndClearOld(element -> spawnElementNear(element, element));
+            forEachSelectedAndClearOld(element -> {
+                spawnElementNear(element, element);
+            });
             event.consume();
         }
         // Copy selected elements with Ctrl+C
@@ -88,10 +88,7 @@ public class EditorActionHandler {
         if (event.code() == KeyUtil.KEY_DELETE) {
             // Don't use the delete key for text elements
             forEachSelectedAndClearOld(element -> {
-                var current = element.current();
-                if (current != null && !(current instanceof TextElement)) {
-                    context.roadSign().removeElement(element.id());
-                }
+                context.roadSign().removeElement(element.id());
             });
             event.consume();
         }
@@ -142,7 +139,7 @@ public class EditorActionHandler {
         dragCurrentPositions.clear();
     }
 
-    public void handleMouseDown(Editable<SignElement> element) {
+    public void handleMouseDown(Editable<SignElement> element, UiElement<?> uiElement) {
         // If ctrl is held, toggle selection
         if (KeyUtil.hasControlDown()) {
             context.setSelected(null, false); // So that no controls are shown
@@ -152,13 +149,15 @@ public class EditorActionHandler {
             var isSelected = context.isSelected(element);
             context.setSelected(element, !isSelected);
         }
+        uiElement.focused(false);
     }
 
-    public void handleMouseUp(Editable<SignElement> element) {
+    public void handleMouseUp(Editable<SignElement> element, UiElement<?> uiElement) {
         // If ctrl is held, toggle selection
         if (!KeyUtil.hasControlDown() && !justDragged) {
             // Clear selection and select the clicked element
             context.setSelected(element, true);
+            uiElement.focused(true);
         }
         justDragged = false;
     }
@@ -196,13 +195,13 @@ public class EditorActionHandler {
         } else {
             var current = other.current();
             position = new Point(
-                // Position the new element offset from the selected element, so they don't overlap
-                (int) (current.x() + current.width() / 2),
-                (int) (current.y() + current.height() / 2)
+                // Position the new element offset 4px from the selected element, so they don't overlap
+                current.x() + SPAWN_OFFSET,
+                current.y() + SPAWN_OFFSET
             );
         }
         var newElement = element.current().withPosition(position.x(), position.y());
         var editable = context.roadSign().addElement(newElement);
-        context.setSelected(editable);
+        context.setSelected(editable, false);
     }
 }
