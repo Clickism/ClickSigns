@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "name": "Exit",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/plain/green.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 24,
+          "outputHeight": 8
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/transit/light/light_underline_gray.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 3,
+          "outputWidth": 24,
+          "outputHeight": 8
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 4,
+        "y": 4,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/pictograms/exit.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/pictograms/exit.png",
+          "processors": []
+        },
+        "scale": 0.6
+      },
+      {
+        "type": "symbol",
+        "x": 9,
+        "y": 4,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/arrows/tiny/right.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/arrows/tiny/right.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        },
+        "scale": 0.7
+      },
+      {
+        "type": "text",
+        "x": 17,
+        "y": 4,
+        "alignment": "CENTER",
+        "scale": 1.0,
+        "text": "Exit",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      }
+    ],
+    "alignment": "TOP_CENTER"
+  }
+}

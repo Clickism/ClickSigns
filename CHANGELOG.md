@@ -4,3 +4,13 @@
 - Fixed: Duplicated elements not being selected properly.
 - Fixed: Can't delete text element when multiple elements are selected.
 - Texture caches are now invalidated when the texture pack is reloaded.
+- New Sign Textures:
+  - Added **Priority Road** and **End of Priority Road** textures.
+- New Symbols:
+  - Added **Cancel lines** with red and black variants and different angles.
+  - Added **U Turn** symbols.
+  - Added new pictograms: **EU Highway, Plane**
+- New Templates:
+  - Added **Highway Area** and **Highway Area Cancel** signs.
+  - Added **Town Exit** sign.
+  - Added **Exit** sign to Transit templates.

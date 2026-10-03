@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "name": "Highway Area Cancel",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/green.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 18,
+          "outputHeight": 18
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 18,
+          "outputHeight": 18
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "symbol",
+        "x": 9,
+        "y": 9,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/pictograms/highway.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/pictograms/highway.png",
+          "processors": [
+            {
+              "type": "replaceColor",
+              "to": "foreground"
+            }
+          ]
+        },
+        "scale": 1.1
+      },
+      {
+        "type": "symbol",
+        "x": 9,
+        "y": 9,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/cross/crossed_out.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/cross/crossed_out.png",
+          "processors": []
+        },
+        "scale": 1.0
+      }
+    ],
+    "alignment": "BOTTOM_CENTER"
+  }
+}

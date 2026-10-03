@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "name": "Town Exit",
+    "author": "Clickism"
+  },
+  "sign": {
+    "front": {
+      "base": "clicksigns:signs/tilesets/highway/white.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 14
+        }
+      ]
+    },
+    "back": {
+      "base": "clicksigns:signs/tilesets/backs/back.png",
+      "processors": [
+        {
+          "type": "tiler",
+          "cornerSize": 4,
+          "outputWidth": 32,
+          "outputHeight": 14
+        }
+      ]
+    },
+    "elements": [
+      {
+        "type": "text",
+        "x": 16,
+        "y": 7,
+        "alignment": "CENTER",
+        "scale": 1.4444444,
+        "text": "Old Town",
+        "style": {
+          "color": "foreground",
+          "outlineWidth": 1,
+          "paddingX": 2,
+          "paddingY": 1,
+          "textAlignment": 1,
+          "lineGap": 0
+        }
+      },
+      {
+        "type": "symbol",
+        "x": 10,
+        "y": 4,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+          "processors": []
+        },
+        "scale": 1.0
+      },
+      {
+        "type": "symbol",
+        "x": 16,
+        "y": 7,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+          "processors": []
+        },
+        "scale": 1.0
+      },
+      {
+        "type": "symbol",
+        "x": 22,
+        "y": 10,
+        "alignment": "CENTER",
+        "symbol": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+        "texture": {
+          "base": "clicksigns:signs/symbols/cross/crossed_out_right_20.png",
+          "processors": []
+        },
+        "scale": 1.0
+      }
+    ],
+    "alignment": "CENTER"
+  }
+}
