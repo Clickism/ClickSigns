@@ -1,3 +1,3 @@
-- Added support for 26.1 Fabric and NeoForge.
-- Refactored rendering logic
-- Fix: Error shown in console for road sign blocks with the default road sign data.
+- Added support for 26.3 Fabric and NeoForge.
+- Fixed element anchor rendering behind symbol and plate elements in
+  the editor UI.
