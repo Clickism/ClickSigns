@@ -3,13 +3,14 @@ package de.clickism.clicksigns.render;
 import net.minecraft.resources.Identifier;
 
 import de.clickism.clicksigns.ClickSigns;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 //? if >=26.1 {
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+//? if >=26.2
 import net.minecraft.client.renderer.BindGroupLayouts;
-import net.minecraft.client.renderer.rendertype.RenderType;
 
 //? if >=26.3 {
 import com.mojang.renderpearl.api.pipeline.*;
@@ -56,7 +57,7 @@ public class SignRenderPipelines {
             .withCull(true)
             // Test against the base plane, but never write depth:
             // layers can't punch holes in each other, order decides who is on top
-            .withDepthStencilState(depth(false, -2.0f, -6.0f))
+            .withDepthStencilState(depth(false, -1.0f, -4.0f))
             .build();
 
     private static final Map<Identifier, RenderType> BASE_TYPES = new HashMap<>();

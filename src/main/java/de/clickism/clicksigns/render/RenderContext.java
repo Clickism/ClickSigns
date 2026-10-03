@@ -186,21 +186,6 @@ public final class RenderContext {
         *///?}
     }
 
-    public void submitTextBackground(
-        int order,
-        float x0, float y0, float x1, float y1,
-        int color,
-        Font.DisplayMode mode
-    ) {
-        source.order(order).submitTextBackground(
-            stack,
-            x0, y0, x1, y1,
-            color,
-            mode,
-            light
-        );
-    }
-
     public void submitText(
         int order,
         float x, float y,
@@ -213,17 +198,19 @@ public final class RenderContext {
         int outlineColor
     ) {
         //? if >=26.1 {
-        source.order(order).submitText(
-            stack,
-            x, y,
-            string,
-            shadow,
-            mode,
-            lightCoords,
-            color,
-            backgroundColor,
-            outlineColor
-        );
+        withTranslation(0, 0, -RenderConstants.ELEMENT_STEP / 2, () -> {
+            source.order(order).submitText(
+                stack,
+                x, y,
+                string,
+                shadow,
+                mode,
+                lightCoords,
+                color,
+                backgroundColor,
+                outlineColor
+            );
+        });
         //?} else {
         /*withTranslation(0, 0, -order * RenderConstants.ELEMENT_STEP, () -> {
             var font = Util.font();
