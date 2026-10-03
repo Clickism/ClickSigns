@@ -23,7 +23,7 @@ legacyForge {
             client()
             gameDirectory = rootProject.file("runs/forge")
             ideName = "Forge Client (${stonecutter.active?.version})"
-            programArgument("--username=ClickToPlay")
+            programArgument("--username=Clickism")
         }
         register("server") {
             server()

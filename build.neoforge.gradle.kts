@@ -23,7 +23,7 @@ neoForge {
             client()
             gameDirectory = rootProject.file("runs/neoforge")
             ideName = "Neoforge Client (${stonecutter.active?.version})"
-            programArgument("--username=ClickToPlay")
+            programArgument("--username=Clickism")
         }
         register("server") {
             server()

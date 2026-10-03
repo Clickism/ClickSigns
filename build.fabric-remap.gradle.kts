@@ -105,7 +105,7 @@ loom {
         generateRunConfig.set(true)
         runDirectory.set(rootProject.file("runs/fabric"))
         if (runtimeEnvironment.get() == "client") {
-            programArguments.set(listOf("--username=ClickToPlay"))
+            programArguments.set(listOf("--username=Clickism"))
         }
     }
 }
