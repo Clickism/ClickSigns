@@ -3,6 +3,7 @@ package de.clickism.clicksigns;
 import de.clickism.clicksigns.platform.Platform;
 import de.clickism.clicksigns.sign.reload.sign.*;
 import de.clickism.clicksigns.sign.template.LocalTemplateManager;
+import de.clickism.clicksigns.sign.texture.source.TextureSource;
 
 /**
  * Client mod class.
@@ -21,6 +22,7 @@ public class ClickSignsClient {
         // Local template manager
         LOCAL_TEMPLATE_MANAGER.initialize();
         // Add reload listeners
+        Platform.get().addReloadListener(manager -> TextureSource.clearCaches()); // Clear texture source caches on resource reload
         Platform.get().addReloadListener(new PackListener());
         Platform.get().addReloadListener(new TileSetListener());
         Platform.get().addReloadListener(new StaticTextureListener());

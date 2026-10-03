@@ -56,6 +56,19 @@ public record TextureSource(
     }
 
     /**
+     * Clears all caches used for texture sources, including texture cache, image cache, resource locations, error cache, and dynamic color resolvers.
+     * <p>
+     * This method is useful for freeing up memory or resetting the state of the texture source system.
+     */
+    public static void clearCaches() {
+        TEXTURE_CACHE.clear();
+        IMAGE_CACHE.clear();
+        RESOURCE_LOCATIONS.clear();
+        ERROR_CACHE.clear();
+        DYNAMIC_COLOR_RESOLVERS.clear();
+    }
+
+    /**
      * Returns a unique resource location for the given key, generating a new one if it doesn't exist.
      *
      * @param key the key to get or assign a resource location for
