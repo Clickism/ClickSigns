@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.sign.reload;
 
+import com.mojang.datafixers.util.Pair;
 import de.clickism.clicksigns.ClickSigns;
 import de.clickism.clicksigns.registry.CategorizedRegistry;
 import net.minecraft.resources.Identifier;
@@ -61,6 +62,18 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
     protected static String stripFileName(String path) {
         var lastSlash = path.lastIndexOf('/');
         if (lastSlash == -1) return path;
+        return path.substring(0, lastSlash);
+    }
+
+    /**
+     * Pops the last directory from the given path, returning the parent directory.
+     *
+     * @param path the path to pop the last directory from
+     * @return the parent directory of the given path, or an empty string if there is no parent directory
+     */
+    protected static String popDirectory(String path) {
+        var lastSlash = path.lastIndexOf('/');
+        if (lastSlash == -1) return "";
         return path.substring(0, lastSlash);
     }
 
@@ -144,16 +157,43 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
         // Process resources
         extensionProcessors.forEach((fileSuffix, processor) -> {
             forEachResource(manager, subDirectory, fileSuffix, (location, resource) -> {
-                var categoryId = categoryIdOf(location);
-                var category = categories.get(categoryId);
-                if (category == null) {
-                    categoryId = null; // No category
+                var pair = findCategory(categories, location);
+                Identifier categoryId = null;
+                C category = null;
+                if (pair != null) {
+                    category = pair.getFirst();
+                    categoryId = pair.getSecond();
                 }
                 processor.process(location, resource, categoryId, category);
             });
         });
         // Process categories after all resources have been processed
         categories.forEach(this::processCategory);
+    }
+
+    /**
+     * Finds the category for the given resource location by looking up the directory in the categories map.
+     * If no category is found, it will keep going up the directory tree until it finds a category or reaches the root.
+     *
+     * @param categories the map of directory to category
+     * @param location   the resource location to find the category for
+     * @return a pair of category and category id if found, null otherwise
+     */
+    protected @Nullable Pair<C, Identifier> findCategory(Map<Identifier, C> categories, Identifier location) {
+        // Keep going up the directory tree until we find a category
+        var directory = stripFileName(location.getPath());
+        while (!directory.isEmpty()) {
+            var categoryId = Identifier.tryBuild(location.getNamespace(), directory);
+            var category = categories.get(categoryId);
+            if (category != null) {
+                return Pair.of(category, categoryId);
+            }
+            directory = popDirectory(directory);
+            if (directory.isEmpty()) {
+                return null; // No category found
+            }
+        }
+        return null; // No category found
     }
 
     /**
@@ -165,8 +205,7 @@ public abstract class CategorizedListener<C> implements SignReloadListener {
      * @param registerer    a consumer that registers the loaded category, called for each loaded category
      * @return a map of namespace:directory to category
      */
-    // TODO: Refactor into category tree, with subcategories and show them in the UI that way as well.
-    //  Or at the very least, categories should also support subfolders
+    // TODO: Refactor into category tree, with subcategories and show them in the UI that way as well?
     protected Map<Identifier, C> loadAndRegisterCategories(
         ResourceManager manager,
         String subDirectory,
