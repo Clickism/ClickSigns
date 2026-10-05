@@ -17,12 +17,16 @@ description="An innovative mod that lets you create custom highway & street sign
 [[dependencies.clicksigns]]
 modId="forge"
 type="required"
+mandatory=true
 versionRange="*"
 side="BOTH"
 
 [[dependencies.clicksigns]]
 modId = "minecraft"
+mandatory=true
+versionRange="*"
 type = "required"
+side="BOTH"
 
 [[dependencies.clicksigns]]
 modId="clickui"
