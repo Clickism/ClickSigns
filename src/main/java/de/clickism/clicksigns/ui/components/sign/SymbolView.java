@@ -1,12 +1,13 @@
 package de.clickism.clicksigns.ui.components.sign;
 
+import de.clickism.clicksigns.registry.SignRegistries;
 import de.clickism.clicksigns.sign.color.ColorResolver;
 import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.SymbolElement;
 import de.clickism.clicksigns.sign.texture.TextureCategory;
 import de.clickism.clicksigns.ui.UiUtil;
-import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.editable.Editable;
+import de.clickism.clicksigns.ui.editable.EditableRoadSign;
 import de.clickism.clicksigns.ui.screen.texture.TextureSelectScreen;
 import de.clickism.clickui.UiComponent;
 import de.clickism.clickui.event.events.MouseClickEvent;
@@ -51,8 +52,11 @@ public class SymbolView extends UiComponent<SymbolView>
             var nextSymbol = symbol.resolveSymbol().nextInCategory();
             sign.updateSymbolElement(
                 symbolElement.id(),
-                // Keep scale when cycling
                 element -> element.withTextureSource(nextSymbol.textureSource())
+                    // Only change scale if scale wasn't changed from default
+                    .withScale(element.scale() == element.resolveSymbol().defaultScale()
+                        ? nextSymbol.defaultScale()
+                        : element.scale())
             );
         }
         if (event.isRightClick()) {
@@ -63,8 +67,11 @@ public class SymbolView extends UiComponent<SymbolView>
                 List.of(TextureCategory.SYMBOL_TEXTURES),
                 textureSource -> sign.updateSymbolElement(
                     symbolElement.id(),
-                    // Keep scale when selecting new symbol
+                    // Only change scale if scale wasn't changed from default
                     element -> element.withTextureSource(textureSource)
+                        .withScale(element.scale() == element.resolveSymbol().defaultScale()
+                            ? SignRegistries.SYMBOLS.get(textureSource.base()).defaultScale()
+                            : element.scale())
                 )
             ).open();
         }
