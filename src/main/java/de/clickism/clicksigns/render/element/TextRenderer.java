@@ -3,13 +3,10 @@ package de.clickism.clicksigns.render.element;
 import de.clickism.clicksigns.compat.IrisCompat;
 import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.sign.RoadSign;
-import de.clickism.clicksigns.sign.element.SignElement;
 import de.clickism.clicksigns.sign.element.TextElement;
 import de.clickism.clickui.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FormattedCharSequence;
-
-import java.util.List;
 
 import static de.clickism.clicksigns.util.ColorUtil.ARGB.*;
 import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
@@ -19,7 +16,6 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  */
 public class TextRenderer implements ElementRenderer<TextElement> {
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
-    // FIXME: Darkening colors with shaders enabled looks weird!
     private static final float VANILLA_COLOR_DARKEN_FACTOR = 0.74f;
 
     /**
