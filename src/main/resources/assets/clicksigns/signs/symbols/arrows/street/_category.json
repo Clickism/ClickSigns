@@ -1,5 +1,6 @@
 {
   "name": "Arrows (Street)",
+  "priority": 9,
   "default": {
     "texture": {
       "processors": [

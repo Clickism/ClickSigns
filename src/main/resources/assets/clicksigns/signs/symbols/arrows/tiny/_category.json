@@ -1,5 +1,6 @@
 {
   "name": "Arrows (Tiny)",
+  "priority": 7,
   "default": {
     "texture": {
       "processors": [

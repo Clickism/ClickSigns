@@ -1,5 +1,6 @@
 {
   "name": "Arrow Connectors",
+  "priority": 6,
   "default": {
     "texture": {
       "processors": [

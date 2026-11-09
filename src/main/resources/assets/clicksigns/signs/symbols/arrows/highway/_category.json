@@ -1,5 +1,6 @@
 {
   "name": "Arrows (Highway)",
+  "priority": 10,
   "default": {
     "texture": {
       "processors": [
