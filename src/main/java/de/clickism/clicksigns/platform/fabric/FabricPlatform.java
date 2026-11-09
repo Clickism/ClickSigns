@@ -79,6 +79,11 @@ public class FabricPlatform implements Platform {
     }
 
     @Override
+    public boolean isModLoaded(String modId) {
+        return FabricLoader.getInstance().isModLoaded(modId);
+    }
+
+    @Override
     public <T extends Item> Supplier<T> registerItem(
         String name,
         Item.Properties settings,

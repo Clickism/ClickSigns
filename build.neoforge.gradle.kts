@@ -13,6 +13,15 @@ version = "$modVersion+$minecraftVersion-$loader"
 repositories {
     mavenCentral()
     mavenLocal()
+    // Modrinth Maven Repository
+    exclusiveContent {
+        forRepository {
+            maven("https://api.modrinth.com/maven")
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 neoForge {
@@ -58,6 +67,9 @@ dependencies {
     // Configured
     jarJarNonMod("de.clickism:configured-core:${property("deps.configured")}")
     jarJarNonMod("de.clickism:configured-json:${property("deps.configured")}")
+
+    // Iris Compat
+    compileOnly("maven.modrinth:YL57xq9U:s5eFLITc")
 }
 
 sourceSets {

@@ -1,5 +1,6 @@
 package de.clickism.clicksigns.render.element;
 
+import de.clickism.clicksigns.compat.IrisCompat;
 import de.clickism.clicksigns.render.RenderContext;
 import de.clickism.clicksigns.sign.RoadSign;
 import de.clickism.clicksigns.sign.element.SignElement;
@@ -18,7 +19,8 @@ import static de.clickism.clicksigns.util.Constants.BLOCK_PIXELS;
  */
 public class TextRenderer implements ElementRenderer<TextElement> {
     public static final float TEXT_RENDER_SCALE = 3.5f / (9f * BLOCK_PIXELS);
-    private static final float COLOR_DARKEN_FACTOR = 0.74f;
+    // FIXME: Darkening colors with shaders enabled looks weird!
+    private static final float VANILLA_COLOR_DARKEN_FACTOR = 0.74f;
 
     /**
      * Multiplies the RGB components of the given ARGB color
@@ -69,6 +71,10 @@ public class TextRenderer implements ElementRenderer<TextElement> {
         var componentStyle = style.asComponentStyle();
         var color = roadSign.colorResolver().resolve(style.color());
         var font = Util.font();
+        var darkenFactor = IrisCompat.isShaderPackInUse()
+            ? 1f // Don't darken colors when shaders are enabled, as it looks weird
+            : VANILLA_COLOR_DARKEN_FACTOR;
+        // Render each line of text
         context.withTextTransform(font, () -> {
             int offsetY = 0;
             // Render in reverse, so that the first line is on top
@@ -83,7 +89,7 @@ public class TextRenderer implements ElementRenderer<TextElement> {
                     false,
                     Font.DisplayMode.POLYGON_OFFSET,
                     context.light(),
-                    multiplyColor(color, COLOR_DARKEN_FACTOR),
+                    multiplyColor(color, darkenFactor),
                     0,
                     0 // No outline
                 );

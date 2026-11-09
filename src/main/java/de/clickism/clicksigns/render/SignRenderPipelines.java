@@ -1,114 +1,50 @@
 package de.clickism.clicksigns.render;
 
-import net.minecraft.resources.Identifier;
-
 import de.clickism.clicksigns.ClickSigns;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 
-//? if >=26.1 {
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-//? if >=26.2
-import net.minecraft.client.renderer.BindGroupLayouts;
+//? if >=26.1
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-//? if >=26.3 {
-import com.mojang.renderpearl.api.pipeline.*;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-//?} else {
-/*import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-*///?}
-//?}
-
+/**
+ * A utility class for managing render pipelines for sign rendering.
+ */
 public class SignRenderPipelines {
 
     private static final Identifier WHITE = ClickSigns.identifier("textures/misc/white.png");
 
-    //? if >=26.1 {
-    public static final RenderPipeline SIGN_BASE =
-        RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
-            .withLocation(ClickSigns.identifier("pipeline/sign_base"))
-            .withShaderDefine("ALPHA_CUTOUT", 0.1F)
-            //? >=26.2 {
-            .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
-            //?} else
-            //.withSampler("Sampler1")
-            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withCull(true)
-            .withDepthStencilState(depth(true, -1.0f, -2.0f))
-            .build();
-
-    public static final RenderPipeline SIGN_ELEMENT =
-        RenderPipeline.builder(RenderPipelines.ENTITY_SNIPPET)
-            .withLocation(ClickSigns.identifier("pipeline/sign_element"))
-            .withShaderDefine("ALPHA_CUTOUT", 0.1F)
-            //? >=26.2 {
-            .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
-            //?} else
-            //.withSampler("Sampler1")
-            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withCull(true)
-            // Test against the base plane, but never write depth:
-            // layers can't punch holes in each other, order decides who is on top
-            .withDepthStencilState(depth(false, -1.0f, -4.0f))
-            .build();
-
-    private static final Map<Identifier, RenderType> BASE_TYPES = new HashMap<>();
-    private static final Map<Identifier, RenderType> ELEMENT_TYPES = new HashMap<>();
-
-    public static void registerAll(Consumer<RenderPipeline> consumer) {
-        consumer.accept(SIGN_BASE);
-        consumer.accept(SIGN_ELEMENT);
-    }
-
-    private static RenderType create(RenderPipeline pipeline, Identifier texture) {
-        return RenderType.create(
-            "clicksigns_sign_layer",
-            RenderSetup.builder(pipeline)
-                .withTexture("Sampler0", texture)
-                .useLightmap()
-                .useOverlay()
-                .affectsCrumbling()
-                .sortOnUpload()
-                .setOutline(RenderSetup.OutlineProperty.NONE)
-                .createRenderSetup()
-        );
-    }
-
-    private static DepthStencilState depth(boolean write, float scale, float constant) {
-        //? if >=26.2 {
-        return new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, write, -scale, -constant);
-        //?} else
-        //return new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, write, scale, constant);
-    }
-
-    //?}
-
+    /**
+     * Gets the render type for rendering a base texture with the given texture identifier.
+     *
+     * @param texture the texture identifier
+     * @return the render type for rendering the base texture
+     */
     public static RenderType baseRenderType(Identifier texture) {
-        //? if >=26.1 {
-        return BASE_TYPES.computeIfAbsent(texture, id -> create(SIGN_BASE, id));
+        //? if >=26.3 {
+        return RenderTypes.entityTranslucentCull(texture);
+        //?} elif >=26.1 {
+        //return RenderTypes.entityTranslucentCullItemTarget(texture);
         //?} else
         //return RenderType.entityTranslucentCull(texture);
     }
 
+    /**
+     * Gets the render type for rendering an element texture with the given texture identifier.
+     *
+     * @param texture the texture identifier
+     * @return the render type for rendering the element texture
+     */
     public static RenderType elementRenderType(Identifier texture) {
-        //? if >=26.1 {
-        return ELEMENT_TYPES.computeIfAbsent(texture, id -> create(SIGN_ELEMENT, id));
-        //?} else
-        //return RenderType.entityTranslucentCull(texture);
+        return baseRenderType(texture);
     }
 
+    /**
+     * Gets the render type for rendering a solid color.
+     *
+     * @return the render type for rendering a solid color
+     */
     public static RenderType colorRenderType() {
-        //? if >=26.1 {
-        return ELEMENT_TYPES.computeIfAbsent(WHITE, id -> create(SIGN_ELEMENT, id));
-        //?} else
-        //return RenderType.entityTranslucentCull(WHITE);
+        return baseRenderType(WHITE);
     }
 }

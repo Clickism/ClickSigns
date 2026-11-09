@@ -34,7 +34,9 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
     public void render(PlateElement element, RenderContext context, RoadSign roadSign) {
         boolean onSign = intersects(roadSign, element);
         // Base order for plates hanging off the sign, so they use the block-safe pipeline
-        int order = onSign ? orderOf(element, roadSign) : RenderConstants.BASE_ORDER;
+        int order = onSign
+            ? orderOf(element, roadSign)
+            : RenderConstants.BASE_ORDER;
 
         // Front
         var frontTexture = element.frontSource().resolve(roadSign.colorResolver());
@@ -43,8 +45,9 @@ public class PlateRenderer implements ElementRenderer<PlateElement> {
         // Back
         var masked = RoadSign.maskedBackOf(element.frontSource(), element.backSource());
         var backTexture = masked.resolve(roadSign.colorResolver());
-        context.withFlip(element.width() / BLOCK_PIXELS, () ->
-        context.textureRenderer().renderBaseTexture(order, backTexture, 1f));
+        context.withFlip(element.width() / BLOCK_PIXELS, () -> {
+            context.textureRenderer().renderBaseTexture(order, backTexture, 1f);
+        });
     }
 
     @Override

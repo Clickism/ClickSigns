@@ -69,6 +69,14 @@ public interface Platform {
     @Nullable String modVersion(String modId);
 
     /**
+     * Checks if a mod is loaded by its id
+     *
+     * @param modId Mod id
+     * @return True if the mod is loaded, false otherwise
+     */
+    boolean isModLoaded(String modId);
+
+    /**
      * Registers a new item
      */
     <T extends Item> Supplier<T> registerItem(

@@ -14,6 +14,15 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://maven.parchmentmc.org")
+    // Modrinth Maven Repository
+    exclusiveContent {
+        forRepository {
+            maven("https://api.modrinth.com/maven")
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
 }
 
 sourceSets {
@@ -76,6 +85,9 @@ dependencies {
     // Configured
     implementation(include("de.clickism:configured-core:${property("deps.configured")}")!!)
     implementation(include("de.clickism:configured-json:${property("deps.configured")}")!!)
+
+    // Iris Compat
+    compileOnly("maven.modrinth:YL57xq9U:s5eFLITc")
 }
 
 tasks.processResources {

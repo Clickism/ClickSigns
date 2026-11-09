@@ -84,6 +84,11 @@ public class ForgePlatform implements Platform {
     }
 
     @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
+    }
+
+    @Override
     public <T extends Item> Supplier<T> registerItem(
         String name,
         Item.Properties settings,
