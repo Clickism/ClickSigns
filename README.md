@@ -22,9 +22,9 @@ ClickSigns 2.0 has been completely rewritten from scratch. ClickSigns is now ful
 - The UI is built using [ClickUI](https://github.com/Clickism/ClickUI) (Docs [here](https://clickism.de/docs/clickui/))
 
 > [!NOTE]
-> >Full documentation can be found here: [ClickSigns Docs 📚](https://clickism.de/docs/clicksigns/)
+> Full documentation can be found here: [ClickSigns Docs 📚](https://clickism.de/docs/clicksigns/)
 >
-> >Documentation on the **sign pack (resourcepack)** format can be found here: [Sign Packs 📦](https://clickism.de/docs/clicksigns/pack_format)
+> Documentation on the **sign pack (resourcepack)** format can be found here: [Sign Packs 📦](https://clickism.de/docs/clicksigns/pack_format)
 ---
 ### Showcase
 Here are some of mine and community-made signs/builds created with ClickSigns. You are more than welcome to join the [Discord Server](https://discord.gg/zUetzp3Gzk) to share your own creations in the `#clicksigns-showcase` channel!
