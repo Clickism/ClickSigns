@@ -1,57 +1,52 @@
-![banner](https://cdn.modrinth.com/data/cached_images/d418f45c6a9a85c1d5f12821ec8440961ed9d8fd_0.webp)
+![banner](https://cdn.modrinth.com/data/xaXWiLzT/images/f606ee4448e9540f4d914a38b4e610b0fc244522.png)
 
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/mod/clicksigns)
 [![curseforge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/mc-mods/clicksigns)
 [![discord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/zUetzp3Gzk)
+## ClickSigns
+ClickSigns is a minecraft mod that allows you to create beautiful custom road signs (or any other type of sign) ingame. You can place text, symbols, and resize signs to your liking, allowing for realistic and immersive signs.
 
-![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/fabric_vector.svg)
-### What is ClickSigns?
-ClickSigns is a simple fabric mod that lets you create custom highway & street signs. Even though the main focus is street signs, you can create any type of image that can dynamically have text on it ingame. Ideal for building cities and towns!
-- **Make your own road signs (Resourcepack Guide):** [Wiki](https://github.com/Clickism/ClickSigns/wiki/Making-Custom-Road-Sign-Templates)
-- *P.S: There will be more and more road signs added through regular updates & extensions*
+![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/fabric_vector.svg)
+![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/forge_vector.svg)
+![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/neoforge_vector.svg)
+---
+### Features 
+ClickSigns 2.0 has been completely rewritten from scratch. ClickSigns is now fully dynamic, with no limitations, allowing you to create much more complex and realistic signs than ever before:
 
-> [!IMPORTANT]
-> ClickSigns 2.0 has been completely rewritten from scratch. ClickSigns is now fully dynamic, with no limitations, allowing you to create
-much more complex and realistic signs than ever before.
-> The information in this readme is mostly outdated for the new version, and will be updated soon.
+- Place text, symbols, and plates anywhere on a sign
+- Style text with custom colors, outlines, backgrounds, and formatting
+- Stretch signs (tilesets) to any size with auto-generated back textures
+- Recolor, tile, flip, and rotate textures directly in the editor
+- Includes **EU** and **US** signs, transit boards, arrows, and many **ready-to-use templates**!
+- Save and share local templates, or add new assets with client-side [Sign Packs 📦](https://clickism.de/docs/clicksigns/pack_format)
+- The UI is built using [ClickUI](https://github.com/Clickism/ClickUI) (Docs [here](https://clickism.de/docs/clickui/))
+
+> [!NOTE]
+> >Full documentation can be found here: [ClickSigns Docs 📚](https://clickism.de/docs/clicksigns/)
 >
-> 2.0 is currently in beta, and will soon be released as a full version
->
-> Here's a tiny showcase of what's possible in 2.0:
->
-> ![](https://cdn.modrinth.com/data/xaXWiLzT/images/035b3f5761c075339fb6ff47c37772dd8c149f8b.png)
+> >Documentation on the **sign pack (resourcepack)** format can be found here: [Sign Packs 📦](https://clickism.de/docs/clicksigns/pack_format)
+---
+### Showcase
+Here are some of mine and community-made signs/builds created with ClickSigns. You are more than welcome to join the [Discord Server](https://discord.gg/zUetzp3Gzk) to share your own creations in the `#clicksigns-showcase` channel!
 
-### How to: Create & Edit Road Signs
-To craft a *Road Sign*, put **8 iron ingots** around **any sign**:
+> By @zapstn:
+> 
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/7cce88ce0cc60c673b15e5e3ee8a6825363e490e.png" width="600" alt="">
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/1d0a4057f7366d48b8c48f1878d7f261d5f26154.png" width="600" alt="">
 
-![](https://cdn.modrinth.com/data/cached_images/bfafe170b70044d731ce1383d4a43bfeecfef7ac.jpeg)
+> By @alan_theplaneguy:
+> 
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/27e93f7095e0a404cece6cc817d8ab1908e596b0.png" width="600" alt="">
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/84f657ff33575868e4747af109a90e36e32dd6f1.png" width="600" alt="">
 
-Then, place it on a wall, on iron bars or anywhere you'd like, then click on the road sign to access the edit menu:
+> By @Fanconma:
+> 
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/0c857dacac2445fc5cbe0d9ca2b1d93319d8daba.png" width="600" alt="">
 
-![](https://cdn.modrinth.com/data/cached_images/d8eda3c79c84934a543928b75ed33aa12866c1a7.jpeg)
+> Transit Sign Examples (by @Clickism):
+> 
+> <img src="https://cdn.modrinth.com/data/xaXWiLzT/images/76063e9c7de16c9ed84d478a55f02bfe35f92466.png" width="600" alt="">
 
-- Fill in your text like on the image.
-- Use the arrows to change between different variants (aka. color schemes) of this template.
-- Use the alignment buttons to change the alignment of the sign.
-- **Make sure to click CONFIRM once you're done.** *Your changes won't be saved if you don't.*
-- Click **Change Template** to browse through all the various templates.
-  
-### How to: Changing The Road Sign Template
-- After you click *Change Template*, you will be welcomed by this screen:
-  
-![](https://cdn.modrinth.com/data/cached_images/4c5b226a9012829ec5d9cd8fc5a57e2ba69f7bf0.jpeg)
-  
-- _On the left side_, you have a list of all the templates **you have installed.**
-- The templates are displayed in the format: *"Width x Height : Pack : Name : (Details)"*
-- _On the right side_, you have all the details regarding the selectedRef template.
-- You can use the arrows to look at different variants here as well.
-- **Using Filters:** To use the filters, either click on the direction you want, or input the width/height you're searching. If you for example select both **Left** and **Forward**, it will only show you the sign templates that have both directions.
-
-### How to: Custom Road Signs
-- You can't find a certain road sign template you want? Make it yourself!
-- The template system is fully modular and client-side through **resourcepacks!**.
-- That means, you can create or install custom resourcepacks to have access to new road sign templates. These don't have to be installed on the server, but other players would need to have the same resourcepack installed in order to see them.
-
+---
 ### Licensing
-- This project is licensed under the GPLv3 license.
-- Refer to LICENSE.md for more information.
+This project is licensed under the **GPLv3** license. Refer to [LICENSE.md](LICENSE.md) for more information.
