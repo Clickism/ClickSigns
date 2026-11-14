@@ -77,7 +77,6 @@ public class RoadSignBlockEntityRenderer
         return new RenderState();
     }
 
-    // TODO: Fix
     public static class RenderState extends BlockEntityRenderState {
         private RoadSign roadSign;
         private Direction direction;

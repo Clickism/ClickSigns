@@ -132,7 +132,7 @@ publishMods {
     file.set(tasks.remapJar.get().archiveFile)
     version.set(project.version.toString())
     changelog.set(rootProject.file("CHANGELOG.md").readText())
-    type.set(BETA)
+    type.set(STABLE)
     modLoaders.add("fabric")
     val mcVersions = property("mod.publishing_target_minecraft_versions").toString().split(',')
     modrinth {

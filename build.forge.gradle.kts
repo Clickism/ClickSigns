@@ -123,7 +123,7 @@ publishMods {
     file.set(tasks.getByName<Jar>("reobfJar").archiveFile)
     version.set(project.version.toString())
     changelog.set(rootProject.file("CHANGELOG.md").readText())
-    type.set(BETA)
+    type.set(STABLE)
     modLoaders.add("forge")
     val mcVersions = property("mod.publishing_target_minecraft_versions").toString().split(',')
     modrinth {
