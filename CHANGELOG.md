@@ -1,6 +1,2 @@
-- Fixed 26.1 version crashing for 26.1.1 and 26.1.2
-- Added **Iris Shaders** compatibility.
-  - Fixed: Rendering/transparency issues when using shaders
-  - Fixed: Text renders too dark when using shaders
-  - Some shaders still may not be compatible with ClickSigns, please report any issues.
-- Added 4 new US Route symbols.
+- Stable release.
+- Updated mod icon.
