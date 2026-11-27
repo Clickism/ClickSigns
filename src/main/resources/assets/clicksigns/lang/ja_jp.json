@@ -23,14 +23,14 @@
   "clicksigns.ui.ctrl": "Ctrl",
   "clicksigns.ui.delete": "Delete",
 
-  "clicksigns.ui.textureList.tooltip.leftClick": "テクスチャ選択",
+  "clicksigns.ui.textureList.tooltip.leftClick": "テクスチャを選択",
 
-  "clicksigns.ui.textureButton.tooltip.leftClick": "テクスチャ切り替え",
+  "clicksigns.ui.textureButton.tooltip.leftClick": "テクスチャを切り替え",
   "clicksigns.ui.textureButton.tooltip.rightClick": "テクスチャメニューを開く",
   "clicksigns.ui.textureButton.textureMenu.header": "テクスチャ選択",
 
   "clicksigns.overview.text.tooltip.leftClick": "テキストを編集",
-  "clicksigns.overview.symbol.tooltip.leftClick": "図柄切り替え",
+  "clicksigns.overview.symbol.tooltip.leftClick": "図柄を切り替え",
   "clicksigns.overview.symbol.tooltip.rightClick": "図柄メニューを開く",
 
   "clicksigns.element.symbol": "図柄",
@@ -39,7 +39,7 @@
 
   "clicksigns.editor.sign.header": "道路標識",
   "clicksigns.editor.sign.textures": "看板のテクスチャ",
-  "clicksigns.ui.textures.front": "全面",
+  "clicksigns.ui.textures.front": "前面",
   "clicksigns.ui.textures.back": "背面",
   "clicksigns.ui.textures.edit": "編集",
   "clicksigns.ui.textures.static": "（静的）",
@@ -141,7 +141,7 @@
   "clicksigns.texture.processor.flip.horizontal": "水平",
   "clicksigns.texture.processor.flip.vertical": "垂直",
   "clicksigns.texture.processor.alphaMask": "アルファマスク",
-  "clicksigns.texture.processor.alphaMask.description": "背面のテクスチャと表面のテクスチャを対応させるために使用されます。編集できません",
+  "clicksigns.texture.processor.alphaMask.description": "背面のテクスチャと前面のテクスチャを対応させるために使用されます。編集できません",
   "clicksigns.texture.processor.unknown": "不明なプロセッサ",
   "clicksigns.texture.processor.unknown.description": "編集できません。",
 
