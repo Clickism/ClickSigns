@@ -1,0 +1,159 @@
+{
+  "clicksigns.update.newer_version": "§e新しいバージョンのClickSignsが利用可能です：%1$s",
+  "clicksigns.update.changelog": "§e変更履歴：%1$s",
+  "clicksigns.update.download": "§a§nダウンロードリンク",
+
+  "clicksigns.confirm": "確認",
+
+  "clicksigns.textPlaceholder": "テキスト",
+
+  "clicksigns.overview.signOptions": "看板の設定",
+  "clicksigns.overview.templates": "テンプレート",
+  "clicksigns.overview.edit": "編集",
+  "clicksigns.overview.alignment": "配置",
+
+  "clicksigns.signElements.text": "テキスト要素",
+  "clicksigns.signElements.symbol": "図柄要素",
+  "clicksigns.signElements.plate": "プレート要素",
+
+  "clicksigns.ui.leftClick": "クリック",
+  "clicksigns.ui.rightClick": "右クリック",
+  "clicksigns.ui.shiftClick": "Shiftクリック",
+  "clicksigns.ui.drag": "ドラッグ",
+  "clicksigns.ui.ctrl": "Ctrl",
+  "clicksigns.ui.delete": "Delete",
+
+  "clicksigns.ui.textureList.tooltip.leftClick": "テクスチャ選択",
+
+  "clicksigns.ui.textureButton.tooltip.leftClick": "テクスチャ切り替え",
+  "clicksigns.ui.textureButton.tooltip.rightClick": "テクスチャメニューを開く",
+  "clicksigns.ui.textureButton.textureMenu.header": "テクスチャ選択",
+
+  "clicksigns.overview.text.tooltip.leftClick": "テキストを編集",
+  "clicksigns.overview.symbol.tooltip.leftClick": "図柄切り替え",
+  "clicksigns.overview.symbol.tooltip.rightClick": "図柄メニューを開く",
+
+  "clicksigns.element.symbol": "図柄",
+  "clicksigns.element.text": "テキスト",
+  "clicksigns.element.plate": "プレート",
+
+  "clicksigns.editor.sign.header": "道路標識",
+  "clicksigns.editor.sign.textures": "看板のテクスチャ",
+  "clicksigns.ui.textures.front": "全面",
+  "clicksigns.ui.textures.back": "背面",
+  "clicksigns.ui.textures.edit": "編集",
+  "clicksigns.ui.textures.static": "（静的）",
+  "clicksigns.ui.textures.tileset": "（タイルセット）",
+
+  "clicksigns.editor.sign.elements.header": "要素を追加",
+  "clicksigns.editor.sign.elements.addSymbol": "図柄を追加",
+  "clicksigns.editor.sign.elements.addText": "テキストを追加",
+  "clicksigns.editor.sign.elements.addPlate": "プレートを追加",
+
+  "clicksigns.editor.sign.tools.header": "ツール",
+  "clicksigns.editor.sign.tools.resetTexts": "テキストをリセット",
+  "clicksigns.editor.sign.tools.removeElements": "要素を全削除",
+
+  "clicksigns.editor.sign.export.header": "書き出し",
+  "clicksigns.editor.sign.export.exportTemplate": "テンプレートを書き出す",
+
+  "clicksigns.editor.element.header": "要素",
+
+
+  "clicksigns.editor.element.text.textColor": "テキスト色",
+  "clicksigns.editor.element.text.backgroundColor": "背景色",
+  "clicksigns.editor.element.text.outlineColor": "枠線の色",
+  "clicksigns.editor.element.text.outlineWidth": "枠線の幅",
+  "clicksigns.editor.element.text.padding": "テキストの余白",
+  "clicksigns.editor.element.text.padding.horizontal": "水平方向",
+  "clicksigns.editor.element.text.padding.vertical": "垂直方向",
+  "clicksigns.editor.element.text.fontSize": "フォントの大きさ",
+  "clicksigns.editor.element.text.lineAlignment": "行揃え",
+  "clicksigns.editor.element.text.formatting": "書式設定",
+  "clicksigns.editor.element.text.lineGap": "行間",
+  "clicksigns.editor.element.text.formatting.bold": "太字",
+  "clicksigns.editor.element.text.formatting.italic": "斜体",
+  "clicksigns.editor.element.text.formatting.underline": "下線",
+  "clicksigns.editor.element.text.formatting.strikethrough": "打消し線",
+  "clicksigns.editor.element.text.pushUp": "要素を上げる",
+
+  "clicksigns.editor.element.plate.matchSignTextures": "看板のテクスチャを合わせる",
+  "clicksigns.editor.element.plate.textures": "プレートのテクスチャ",
+  "clicksigns.editor.element.plate.size": "プレートの大きさ",
+
+  "clicksigns.editor.element.symbol.symbol": "図柄のテクスチャ",
+  "clicksigns.editor.element.symbol.scale": "大きさ",
+
+  "clicksigns.editor.element.general.alignment": "配置",
+  "clicksigns.editor.element.other.header": "その他",
+  "clicksigns.editor.element.other.removeElement": "要素を削除",
+
+  "clicksigns.editor.info.noneSelected": "要素が選択されていません。",
+  "clicksigns.editor.info.noneSelected.description": "要素をクリックで選択して編集できます。",
+
+  "clicksigns.editor.info.header": "案内",
+  "clicksigns.editor.info.controls.header": "操作",
+  "clicksigns.editor.info.controls.select": "選択",
+  "clicksigns.editor.info.controls.move": "移動",
+  "clicksigns.editor.info.controls.copy": "コピー",
+  "clicksigns.editor.info.controls.paste": "貼り付け",
+  "clicksigns.editor.info.controls.duplicate": "複製",
+  "clicksigns.editor.info.controls.selectAll": "全選択",
+  "clicksigns.editor.info.controls.delete": "削除",
+  "clicksigns.editor.info.tips.header": "小技",
+  "clicksigns.editor.info.tips.numberControls": "Shiftキーを押しながら数値を操作すると、値の変化が速く/遅くなります。",
+  "clicksigns.editor.info.tips.multipleElements": "Ctrlキーを押しながら複数の要素を一度に選択できます。",
+
+  "clicksigns.templateExport.header": "テンプレートの書き出し",
+  "clicksigns.templateExport.export.header": "テンプレートの書き出し",
+  "clicksigns.templateExport.export.includeTexts": "書かれたテキストを含める",
+  "clicksigns.templateExport.export.save": "ローカルテンプレートに保存",
+  "clicksigns.templateExport.export.copyJson": "テンプレートのJSONをコピー",
+  "clicksigns.templateExport.newTemplate": "新しいテンプレート",
+  "clicksigns.templateExport.info.name": "名称",
+  "clicksigns.templateExport.info.author": "作成者",
+
+  "clicksigns.templateList.noneSelected": "テンプレートが選択されていません",
+  "clicksigns.templateList.apply": "テンプレートを適用",
+  "clicksigns.templateList.delete": "テンプレートを削除",
+  "clicksigns.templateList.info.name": "名称",
+  "clicksigns.templateList.info.author": "作成者",
+
+  "clicksigns.template.placeholder.name": "名称",
+  "clicksigns.template.placeholder.author": "作成者",
+  "clicksigns.template.category.local": "ローカルテンプレート",
+  "clicksigns.template.category.local.tooltip": "ローカルテンプレートはお使いのコンピューター（.minecraft/sign_templates）に保存されます。 エディタ内で看板をテンプレートとして保存でき、それらはここで確認できます。",
+  "clicksigns.template.category.resource": "リソーステンプレート",
+  "clicksigns.template.category.resource.tooltip": "リソーステンプレートはリソースパックから読み込まれるかModに組み込まれています。",
+
+  "clicksigns.category.uncategorized": "未分類",
+
+  "clicksigns.texture.processor.tiler": "敷き詰め",
+  "clicksigns.texture.processor.cornerSize": "角の大きさ",
+  "clicksigns.texture.processor.width": "幅",
+  "clicksigns.texture.processor.height": "高さ",
+  "clicksigns.texture.processor.replaceColor": "色の置き換え",
+  "clicksigns.texture.processor.replaceColor.from": "置換元（任意）",
+  "clicksigns.texture.processor.replaceColor.to": "置換先",
+  "clicksigns.texture.processor.rotate": "回転",
+  "clicksigns.texture.processor.rotate.degrees": "角度",
+  "clicksigns.texture.processor.flip": "反転",
+  "clicksigns.texture.processor.flip.horizontal": "水平",
+  "clicksigns.texture.processor.flip.vertical": "垂直",
+  "clicksigns.texture.processor.alphaMask": "アルファマスク",
+  "clicksigns.texture.processor.alphaMask.description": "背面のテクスチャと表面のテクスチャを対応させるために使用されます。編集できません",
+  "clicksigns.texture.processor.unknown": "不明なプロセッサ",
+  "clicksigns.texture.processor.unknown.description": "編集できません。",
+
+  "clicksigns.texture.editor.header": "テクスチャパイプラインエディタ",
+  "clicksigns.texture.editor.base.header": "ベーステクスチャ",
+  "clicksigns.texture.editor.output.header": "出力テクスチャ",
+  "clicksigns.texture.editor.textureInfo.size": "テクスチャの大きさ",
+  "clicksigns.texture.editor.textureInfo.path": "リソースのパス",
+
+  "clicksigns.texture.editor.processors.headers": "テクスチャプロセッサ",
+  "clicksigns.texture.editor.processors.add": "プロセッサを追加",
+
+  "item.clicksigns.road_sign": "道路標識",
+  "block.clicksigns.road_sign": "道路標識"
+}
